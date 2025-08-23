@@ -5,53 +5,15 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
-  Home as HomeIcon, // 👈 FIX: Rename icon
-  Heart,
-  MessageSquare,
+  Home as HomeIcon,
   User,
   Calendar,
-  Star,
   Package,
   Sparkles,
+  Bookmark,
+  Menu,
+  ShoppingCart,
 } from "lucide-react";
-
-/* ----------------- Logo ----------------- */
-function GradientLogo() {
-  return (
-    <div className="flex items-center">
-      <img
-        src="sanskaraa-logo.png"
-        alt="Sanskaraa"
-        className="h-9 w-9 sm:h-10 sm:w-10 mr-2 object-contain"
-      />
-      <span className="text-lg sm:text-xl font-bold text-gray-800">
-        Sanskaraa
-      </span>
-    </div>
-  );
-}
-
-/* ----------------- Navbar ----------------- */
-function HeaderNavbar() {
-  return (
-    <motion.div
-      initial={{ y: -50, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="flex items-center justify-between flex-wrap gap-4"
-    >
-      <GradientLogo />
-      <div className="flex items-center gap-4">
-        <Bell className="w-6 h-6 sm:w-7 sm:h-7 text-gray-500 cursor-pointer hover:scale-110 transition-transform" />
-        <img
-          src="https://randomuser.me/api/portraits/women/44.jpg"
-          alt="Profile"
-          className="w-9 h-9 rounded-full object-cover border border-gray-200 hover:scale-110 transition-transform"
-        />
-      </div>
-    </motion.div>
-  );
-}
 
 /* ----------------- Search Bar ----------------- */
 function AnimatedSearch() {
@@ -59,16 +21,15 @@ function AnimatedSearch() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.3 }}
-      className="mt-4"
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="mt-6"
     >
-      <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-amber-400 transition-all">
-        <Search className="w-5 h-5 text-gray-400" />
+      <div className="flex items-center bg-[#FFF7E0] rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-amber-400 transition-all shadow-sm">
+        <Search className="w-5 h-5 text-orange-500" />
         <input
           type="text"
           placeholder="Search pujas, pandits..."
-          className="ml-2 bg-transparent outline-none text-gray-600 w-full
-          focus:placeholder-opacity-50 transition-all duration-300"
+          className="ml-2 bg-transparent outline-none text-gray-700 w-full placeholder-gray-400"
         />
       </div>
     </motion.div>
@@ -80,21 +41,21 @@ function HeroBanner() {
   const slides = [
     {
       id: 1,
-      img: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1600&auto=format&fit=crop",
-      title: "Fresh Morning Mix",
-      subtitle: "Start your day with calm energy",
+      img: "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?q=80&w=1600",
+      title: "Griha Pravesh Puja",
+      subtitle: "Sacred beginnings with blessings",
     },
     {
       id: 2,
-      img: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=1600&auto=format&fit=crop",
-      title: "Focus Beats",
-      subtitle: "Lo-fi tunes to get in flow",
+      img: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=1600",
+      title: "Satyanarayan Puja",
+      subtitle: "Invoke prosperity & harmony",
     },
     {
       id: 3,
-      img: "https://images.unsplash.com/photo-1519340241574-2cec6aef0c01?q=80&w=1600&auto=format&fit=crop",
-      title: "Evening Unwind",
-      subtitle: "Relax & recharge",
+      img: "https://images.unsplash.com/photo-1524492449090-a4e24e37f2c4?q=80&w=1600",
+      title: "Wedding Rituals",
+      subtitle: "Memorable sacred unions",
     },
   ];
 
@@ -117,32 +78,25 @@ function HeroBanner() {
 
   return (
     <div
-      className="relative mt-6 rounded-3xl overflow-hidden bg-gray-100"
+      className="relative mt-6 rounded-3xl overflow-hidden shadow-lg"
       onMouseEnter={stop}
       onMouseLeave={start}
     >
-      {/* Slides */}
       <div
         className="flex w-full transition-transform duration-700 ease-out"
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
-        {slides.map((s, i) => (
-          <div key={s.id} className="w-full shrink-0">
-            <div className="relative h-52 sm:h-64 md:h-72">
-              <img
-                src={s.img}
-                alt={s.title}
-                className={`absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out ${
-                  i === index ? "scale-100" : "scale-105"
-                }`}
-              />
-              <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-black/10 to-transparent" />
-              <div className="absolute left-5 right-5 bottom-5 text-white drop-shadow">
-                <p className="text-xs sm:text-sm opacity-90">{s.subtitle}</p>
-                <h3 className="text-lg sm:text-2xl font-semibold leading-tight">
-                  {s.title}
-                </h3>
-              </div>
+        {slides.map((s) => (
+          <div key={s.id} className="w-full shrink-0 relative h-64 sm:h-72 md:h-80">
+            <img
+              src={s.img}
+              alt={s.title}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-black/10 to-transparent" />
+            <div className="absolute left-5 bottom-5 text-white drop-shadow-md">
+              <p className="text-sm opacity-90">{s.subtitle}</p>
+              <h3 className="text-xl sm:text-2xl font-bold">{s.title}</h3>
             </div>
           </div>
         ))}
@@ -150,29 +104,26 @@ function HeroBanner() {
 
       {/* Controls */}
       <button
-        aria-label="Previous"
         onClick={prev}
-        className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 backdrop-blur px-2 py-2 shadow hover:bg-white"
+        className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 px-2 py-2 shadow-md hover:bg-white"
       >
-        <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+        <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
       </button>
       <button
-        aria-label="Next"
         onClick={next}
-        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 backdrop-blur px-2 py-2 shadow hover:bg-white"
+        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 px-2 py-2 shadow-md hover:bg-white"
       >
-        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-2 left-0 right-0 flex items-center justify-center gap-2">
+      <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-2">
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setIndex(i)}
-            aria-label={`Go to slide ${i + 1}`}
             className={`h-1.5 rounded-full transition-all ${
-              index === i ? "w-6 bg-white" : "w-2 bg-white/60"
+              index === i ? "w-6 bg-orange-500" : "w-2 bg-white/60"
             }`}
           />
         ))}
@@ -189,18 +140,19 @@ function ServicesSection() {
     { name: "Puja Kits", icon: Package },
     { name: "Decoration", icon: Sparkles },
   ];
+
   return (
     <div className="mt-6 grid grid-cols-2 gap-4">
       {services.map((s) => {
         const Icon = s.icon;
         return (
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             key={s.name}
-            className="bg-amber-50 rounded-xl p-4 text-center shadow hover:shadow-md transition"
+            className="bg-[#FFF7E0] rounded-2xl p-4 text-center shadow hover:shadow-lg border border-orange-200 transition"
           >
-            <Icon className="mx-auto w-7 h-7 sm:w-8 sm:h-8 text-amber-600" />
-            <p className="font-medium text-gray-700 mt-2">{s.name}</p>
+            <Icon className="mx-auto w-7 h-7 text-orange-500" />
+            <p className="font-medium text-gray-800 mt-2">{s.name}</p>
           </motion.button>
         );
       })}
@@ -214,50 +166,78 @@ function GaneshPromo() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-      className="mt-6 bg-gradient-to-r from-amber-400 to-orange-300 rounded-2xl p-5 flex items-center justify-between shadow-md"
+      transition={{ duration: 0.5 }}
+      className="mt-6 bg-gradient-to-r from-[#FFD700] to-[#FFA500] rounded-2xl p-5 flex items-center justify-between shadow-lg"
     >
       <div className="flex items-center gap-4">
         <img
           src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
           alt="Ganesh Ji"
-          className="w-14 h-14 sm:w-16 sm:h-16"
+          className="w-14 h-14"
         />
-        <h3 className="text-lg font-bold text-brown-800">
+        <h3 className="text-lg font-bold text-[#800000]">
           Ganesh Chaturthi Puja
         </h3>
       </div>
-      <button className="bg-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-600 transition">
+      <button className="bg-[#800000] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#A52A2A]">
         Book Now
       </button>
     </motion.div>
   );
 }
 
-/* ----------------- Specials ----------------- */
-function SpecialSections() {
-  const specials = [
-    { title: "Pandit Ji Profiles", desc: "Expert in Marriage", icon: User },
-    { title: "Seasonal Offers", desc: "Wedding combo", icon: Star },
-  ];
+/* ----------------- Pandit Profile ----------------- */
+function PanditProfile() {
   return (
-    <div className="mt-8">
-      <h3 className="text-lg font-semibold mb-4">Special Sections</h3>
+    <div className="mt-6">
+      <h3 className="text-lg font-semibold text-[#800000] mb-2">Pandit Ji Profile</h3>
+      <div className="bg-[#FFF7E0] rounded-2xl p-4 shadow-md border border-orange-200 space-y-2">
+        <img
+          src="/assets/pandit-profile.jpg"
+          alt="Pandit Ji"
+          className="rounded-xl w-full h-36 object-cover"
+        />
+        <p className="text-base font-semibold text-gray-800">Pandit Ram Sharma</p>
+        <p className="text-sm text-gray-600">
+          Specializes in Satyanarayan, Griha Pravesh, Marriage
+        </p>
+        <div className="flex justify-between">
+          <button className="border border-gray-400 px-4 py-1 rounded text-gray-700 hover:bg-gray-100">
+            Call
+          </button>
+          <button className="bg-[#800000] text-white px-4 py-1 rounded hover:bg-[#A52A2A]">
+            Book
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ----------------- Puja Kits ----------------- */
+function PujaKits() {
+  const kits = [
+    { title: "Grih Pravesh Kit", price: "₹999" },
+    { title: "Satyanarayan Kit", price: "₹799" },
+  ];
+
+  return (
+    <div className="mt-6">
+      <h3 className="text-lg font-semibold text-[#800000] mb-2">Puja Kits</h3>
       <div className="grid grid-cols-2 gap-4">
-        {specials.map((s) => {
-          const Icon = s.icon;
-          return (
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              key={s.title}
-              className="bg-white rounded-xl p-4 shadow hover:shadow-md transition border"
-            >
-              <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-orange-500 mb-2" />
-              <h4 className="font-medium">{s.title}</h4>
-              <p className="text-sm text-gray-500">{s.desc}</p>
-            </motion.div>
-          );
-        })}
+        {kits.map((kit) => (
+          <motion.div
+            key={kit.title}
+            whileHover={{ scale: 1.03 }}
+            className="bg-[#FFF7E0] p-4 rounded-2xl shadow-md border border-orange-200 transition"
+          >
+            <h4 className="font-medium text-gray-800">{kit.title}</h4>
+            <p className="text-sm text-gray-600">{kit.price}</p>
+            <button className="mt-3 w-full bg-[#800000] text-white py-2 rounded hover:bg-[#A52A2A]">
+              Add to Cart
+            </button>
+          </motion.div>
+        ))}
       </div>
     </div>
   );
@@ -266,71 +246,73 @@ function SpecialSections() {
 /* ----------------- Bottom Navbar ----------------- */
 function BottomNavbar() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg rounded-t-2xl px-6 py-3 z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-[#FFF7E0] shadow-lg rounded-t-2xl px-6 py-3 z-50 border-t border-orange-200">
       <div className="flex justify-between items-center">
-        <div className="flex flex-col items-center text-blue-600">
-          <HomeIcon className="w-6 h-6 sm:w-7 sm:h-7" />
+        <div className="flex flex-col items-center text-[#800000]">
+          <HomeIcon className="w-6 h-6" />
           <span className="text-xs">Home</span>
         </div>
         <div className="flex flex-col items-center text-gray-600">
-          <Search className="w-6 h-6 sm:w-7 sm:h-7" />
+          <Search className="w-6 h-6" />
           <span className="text-xs">Search</span>
         </div>
-        <div className="relative flex flex-col items-center text-gray-600">
-          <Heart className="w-6 h-6 sm:w-7 sm:h-7" />
-          <span className="absolute -top-2 right-0 bg-red-500 text-white text-[10px] px-1 rounded-full">
-            99+
-          </span>
-          <span className="text-xs mt-1">Favorites</span>
+        <div className="flex flex-col items-center text-gray-600">
+          <Package className="w-6 h-6" />
+          <span className="text-xs">Kits</span>
         </div>
         <div className="flex flex-col items-center text-gray-600">
-          <MessageSquare className="w-6 h-6 sm:w-7 sm:h-7" />
-          <span className="text-xs">Inbox</span>
+          <Bookmark className="w-6 h-6" />
+          <span className="text-xs">Bookings</span>
         </div>
         <div className="flex flex-col items-center text-gray-600">
-          <User className="w-6 h-6 sm:w-7 sm:h-7" />
-          <span className="text-xs">Account</span>
+          <Menu className="w-6 h-6" />
+          <span className="text-xs">More</span>
         </div>
       </div>
     </div>
   );
 }
 
+/* ----------------- Floating Cart ----------------- */
+function FloatingCart() {
+  return (
+    <motion.div
+      className="fixed bottom-20 right-5 z-50"
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.6 }}
+    >
+      <button className="bg-[#800000] text-white rounded-full p-3 shadow-lg hover:bg-[#A52A2A]">
+        <ShoppingCart size={22} />
+      </button>
+    </motion.div>
+  );
+}
 
-
-/* ----------------- Home Page ----------------- */
+/* ----------------- Main Home ----------------- */
 export default function Home() {
   return (
-    <>
-      <div className="p-4 bg-white rounded-3xl shadow-sm">
-        {/* Navbar */}
-        <HeaderNavbar />
+    <main className="min-h-screen pb-24 p-6 bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] font-sans text-gray-800 relative">
+      {/* Greeting */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="mt-6"
+      >
+        <p className="text-gray-600 text-sm">Good morning,</p>
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#800000]">Avinash Sharma</h2>
+      </motion.div>
 
-        {/* Greeting */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mt-6"
-        >
-          <p className="text-gray-500 text-sm">Good morning,</p>
-          <h2 className="text-2xl font-bold">Avinash Sharma</h2>
-        </motion.div>
+      <AnimatedSearch />
+      <HeroBanner />
+      <ServicesSection />
+      <GaneshPromo />
+      <PanditProfile />
+      <PujaKits />
 
-        {/* Search */}
-        <AnimatedSearch />
-
-        {/* Hero */}
-        <HeroBanner />
-
-        {/* Sections */}
-        <ServicesSection />
-        <GaneshPromo />
-        <SpecialSections />
-      </div>
-
-      {/* Footer Navbar last me */}
+      <FloatingCart />
       <BottomNavbar />
-    </>
+    </main>
   );
 }

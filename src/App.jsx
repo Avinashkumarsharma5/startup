@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
+import BottomNavbar from "./components/layout/BottomNavbar";  // import
 
 import Home from "./pages/Home";
 import Services from "./pages/Services";
@@ -15,13 +16,14 @@ import KitStore from "./pages/KitStore";
 export default function App() {
   const location = useLocation();
 
-  // Jisme Navbar/Footer nahi chahiye
+  // Jisme Navbar/Footer/BottomNavbar nahi chahiye
   const noLayoutRoutes = ["/login", "/signup"];
   const hideLayout = noLayoutRoutes.includes(location.pathname);
 
   return (
     <div className="min-h-screen flex flex-col">
       {!hideLayout && <Navbar />}
+      
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -31,10 +33,12 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/panditbooking" element={<PanditBooking />} />
-          <Route path="/KitStore" element={<KitStore />} />
-          
+          <Route path="/kitstore" element={<KitStore />} />
         </Routes>
       </main>
+
+      {/* Footer ke upar BottomNavbar dikhayenge */}
+      {!hideLayout && <BottomNavbar />}
       {!hideLayout && <Footer />}
     </div>
   );
