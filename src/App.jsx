@@ -11,7 +11,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 import PanditBooking from "./pages/PanditBooking";
-import KitStore from "./pages/KitStore";
+
 
 export default function App() {
   const location = useLocation();
@@ -33,7 +33,7 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/panditbooking" element={<PanditBooking />} />
-          <Route path="/kitstore" element={<KitStore />} />
+         
         </Routes>
       </main>
 

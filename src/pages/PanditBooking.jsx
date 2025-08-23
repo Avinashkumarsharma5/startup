@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Search, MapPin, Star, Phone, Mail, Heart } from "lucide-react";
 
 export default function PanditBooking() {
+  const [filters, setFilters] = useState({ service: "", location: "", language: "" });
+
   const pandits = [
     {
       name: "Pandit Ramesh Sharma",
@@ -25,56 +27,201 @@ export default function PanditBooking() {
       price: "₹1800 / service",
       image: "/pandit2.png",
     },
+    {
+      name: "Pandit Mahesh Tiwari",
+      experience: "12+ years",
+      languages: "Hindi, Sanskrit",
+      rating: 4.7,
+      reviews: 110,
+      location: "Mumbai",
+      services: ["Marriage Ceremony", "Griha Pravesh"],
+      price: "₹2000 / service",
+      image: "/pandit3.png",
+    },
+    {
+      name: "Pandit Dinesh Pathak",
+      experience: "20+ years",
+      languages: "Hindi, English",
+      rating: 4.9,
+      reviews: 150,
+      location: "Jaipur",
+      services: ["Maha Mrityunjaya Jaap", "Satyanarayan Katha"],
+      price: "₹2500 / service",
+      image: "/pandit4.png",
+    },
+    {
+      name: "Pandit Rajesh Dubey",
+      experience: "8+ years",
+      languages: "Hindi",
+      rating: 4.5,
+      reviews: 70,
+      location: "Lucknow",
+      services: ["Griha Pravesh", "Marriage Ceremony"],
+      price: "₹1500 / service",
+      image: "/pandit5.png",
+    },
+    {
+      name: "Pandit Manoj Pandey",
+      experience: "18+ years",
+      languages: "Hindi, Sanskrit",
+      rating: 4.8,
+      reviews: 140,
+      location: "Prayagraj",
+      services: ["Maha Mrityunjaya Jaap", "Marriage Ceremony"],
+      price: "₹2300 / service",
+      image: "/pandit6.png",
+    },
+    {
+      name: "Pandit Keshav Shastri",
+      experience: "11+ years",
+      languages: "Hindi, English",
+      rating: 4.6,
+      reviews: 95,
+      location: "Pune",
+      services: ["Satyanarayan Katha", "Griha Pravesh"],
+      price: "₹1900 / service",
+      image: "/pandit7.png",
+    },
+    {
+      name: "Pandit Vinod Mishra",
+      experience: "16+ years",
+      languages: "Hindi, Sanskrit",
+      rating: 4.7,
+      reviews: 130,
+      location: "Hyderabad",
+      services: ["Marriage Ceremony", "Maha Mrityunjaya Jaap"],
+      price: "₹2200 / service",
+      image: "/pandit8.png",
+    },
+    {
+      name: "Pandit Harish Tripathi",
+      experience: "14+ years",
+      languages: "Hindi, English, Sanskrit",
+      rating: 4.9,
+      reviews: 160,
+      location: "Bhopal",
+      services: ["Griha Pravesh", "Satyanarayan Katha"],
+      price: "₹2400 / service",
+      image: "/pandit9.png",
+    },
+    {
+      name: "Pandit Prakash Joshi",
+      experience: "9+ years",
+      languages: "Hindi, English",
+      rating: 4.5,
+      reviews: 85,
+      location: "Udaipur",
+      services: ["Marriage Ceremony", "Satyanarayan Katha"],
+      price: "₹1700 / service",
+      image: "/pandit10.png",
+    },
   ];
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-amber-800 to-yellow-900 text-white py-16 px-6 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-          Rooted in Dharma, Guided by Devotion
-        </h1>
-        <p className="text-lg mb-6">
-          Find Verified Pandits for All Your Ritual Needs
-        </p>
-        <div className="flex flex-wrap justify-center gap-4 mb-6">
-          <button className="bg-white text-amber-800 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition">
-            Book Blessings
-          </button>
-          <button className="bg-transparent border border-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-amber-800 transition">
-            Learn More
-          </button>
-        </div>
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
 
-        {/* Filter Bar */}
-        <div className="bg-white p-4 rounded-xl shadow-lg flex flex-wrap gap-3 items-center justify-center max-w-3xl mx-auto">
-          <select className="border px-4 py-2 rounded-lg">
-            <option>Service Type</option>
-            <option>Griha Pravesh</option>
-            <option>Satyanarayan Katha</option>
-          </select>
-          <select className="border px-4 py-2 rounded-lg">
-            <option>Location</option>
-            <option>Varanasi</option>
-            <option>Delhi</option>
-          </select>
-          <select className="border px-4 py-2 rounded-lg">
-            <option>Language</option>
-            <option>Hindi</option>
-            <option>Sanskrit</option>
-          </select>
-          <button className="bg-amber-800 hover:bg-yellow-900 text-white px-6 py-2 rounded-lg flex items-center gap-2">
-            <Search size={18} /> Search
-          </button>
+  const filteredPandits = pandits.filter((p) => {
+    return (
+      (!filters.service || p.services.includes(filters.service)) &&
+      (!filters.location || p.location === filters.location) &&
+      (!filters.language || p.languages.includes(filters.language))
+    );
+  });
+
+  return (
+    <div className="min-h-screen bg-orange-100 flex flex-col font-sans">
+      {/* Hero Section with Search */}
+      <section className="relative bg-gradient-to-r from-amber-800 to-yellow-900 text-white py-20 px-6 text-center">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+            Rooted in Dharma, Guided by Devotion
+          </h1>
+          <p className="text-lg md:text-xl mb-10">
+            Find Verified Pandits for Every Ritual and Ceremony
+          </p>
+
+          <div className="bg-white shadow-xl rounded-xl p-6 flex flex-col md:flex-row items-center gap-4">
+            <select
+              name="service"
+              value={filters.service}
+              onChange={handleFilterChange}
+              className="flex-1 border px-4 py-3 rounded-lg text-gray-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+            >
+              <option value="">Select Service</option>
+              <option value="Griha Pravesh">Griha Pravesh</option>
+              <option value="Satyanarayan Katha">Satyanarayan Katha</option>
+              <option value="Marriage Ceremony">Marriage Ceremony</option>
+              <option value="Maha Mrityunjaya Jaap">Maha Mrityunjaya Jaap</option>
+            </select>
+            <select
+              name="location"
+              value={filters.location}
+              onChange={handleFilterChange}
+              className="flex-1 border px-4 py-3 rounded-lg text-gray-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+            >
+              <option value="">Select Location</option>
+              <option value="Varanasi">Varanasi</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Jaipur">Jaipur</option>
+              <option value="Lucknow">Lucknow</option>
+              <option value="Prayagraj">Prayagraj</option>
+              <option value="Pune">Pune</option>
+              <option value="Hyderabad">Hyderabad</option>
+              <option value="Bhopal">Bhopal</option>
+              <option value="Udaipur">Udaipur</option>
+            </select>
+            <select
+              name="language"
+              value={filters.language}
+              onChange={handleFilterChange}
+              className="flex-1 border px-4 py-3 rounded-lg text-gray-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+            >
+              <option value="">Select Language</option>
+              <option value="Hindi">Hindi</option>
+              <option value="English">English</option>
+              <option value="Sanskrit">Sanskrit</option>
+            </select>
+            <button className="bg-amber-700 hover:bg-yellow-900 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition">
+              <Search size={20} /> Search
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Popular Pandit Ji Section */}
+      <section className="py-10 px-6 bg-white">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          🌟 Popular Pandit Ji
+        </h2>
+        <div className="flex gap-6 overflow-x-auto scrollbar-hide">
+          {pandits.slice(0, 6).map((p, i) => (
+            <div
+              key={i}
+              className="flex flex-col items-center cursor-pointer hover:scale-105 transition"
+            >
+              <div className="p-[3px] bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 rounded-full">
+                <img
+                  src={p.image}
+                  alt={p.name}
+                  className="w-20 h-20 rounded-full object-cover border-4 border-white"
+                />
+              </div>
+              <p className="text-sm font-semibold mt-2 text-gray-700">{p.name}</p>
+              <p className="text-xs text-gray-500">{p.services[0]}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Pandit Cards Section */}
-      <section className="py-12 px-6 max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
-        {pandits.map((p, i) => (
+      <section className="py-16 px-6 max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {filteredPandits.map((p, i) => (
           <div
             key={i}
-            className="bg-white rounded-2xl shadow-md p-6 flex flex-col"
+            className="bg-white rounded-2xl shadow-md p-6 flex flex-col hover:shadow-lg transition"
           >
             <div className="flex gap-4 items-center mb-4">
               <img
@@ -83,34 +230,24 @@ export default function PanditBooking() {
                 className="w-20 h-20 rounded-full object-cover border"
               />
               <div>
-                <h3 className="text-lg font-bold">{p.name}</h3>
-                <p className="text-gray-500">{p.experience}</p>
-                <p className="text-gray-500">{p.languages}</p>
+                <h3 className="text-lg font-bold text-gray-900">{p.name}</h3>
+                <p className="text-gray-500 text-sm">{p.experience}</p>
+                <p className="text-gray-500 text-sm">{p.languages}</p>
               </div>
             </div>
-
-            {/* Rating & Reviews */}
             <div className="flex items-center gap-2 text-yellow-600 mb-3">
               <Star size={18} /> {p.rating} ({p.reviews} reviews)
             </div>
-
-            {/* Location */}
             <p className="flex items-center gap-2 text-gray-600 mb-3">
               <MapPin size={18} /> {p.location}
             </p>
-
-            {/* Services */}
-            <ul className="mb-3 list-disc list-inside text-gray-700">
+            <ul className="mb-3 list-disc list-inside text-gray-700 text-sm">
               {p.services.map((s, idx) => (
                 <li key={idx}>{s}</li>
               ))}
             </ul>
-
-            {/* Price */}
             <p className="font-semibold text-amber-800 mb-4">{p.price}</p>
-
-            {/* Buttons */}
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mt-auto">
               <button className="bg-amber-800 text-white px-4 py-2 rounded-lg hover:bg-yellow-900 transition">
                 View Profile
               </button>
@@ -123,18 +260,18 @@ export default function PanditBooking() {
       </section>
 
       {/* Trust & Benefits */}
-      <section className="bg-gray-100 py-12 text-center grid md:grid-cols-3 gap-6 px-6">
+      <section className="bg-gray-100 py-16 px-6 text-center grid md:grid-cols-3 gap-8">
         <div className="p-6 bg-white rounded-xl shadow-md">
           <h4 className="font-bold text-lg mb-2">✅ Verified Pandits</h4>
-          <p className="text-gray-600">Trained and background-checked</p>
+          <p className="text-gray-600 text-sm">Trained and background-checked</p>
         </div>
         <div className="p-6 bg-white rounded-xl shadow-md">
           <h4 className="font-bold text-lg mb-2">📜 Authentic Rituals</h4>
-          <p className="text-gray-600">Performed with Vedic traditions</p>
+          <p className="text-gray-600 text-sm">Performed with Vedic traditions</p>
         </div>
         <div className="p-6 bg-white rounded-xl shadow-md">
           <h4 className="font-bold text-lg mb-2">🙏 Peace of Mind</h4>
-          <p className="text-gray-600">End-to-end hassle free booking</p>
+          <p className="text-gray-600 text-sm">End-to-end hassle free booking</p>
         </div>
       </section>
 
@@ -143,13 +280,13 @@ export default function PanditBooking() {
         <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
           <div>
             <h3 className="text-2xl font-bold mb-2">PanditJi</h3>
-            <p className="text-gray-200">
+            <p className="text-gray-200 text-sm">
               Serving families with devotion since 2020
             </p>
           </div>
           <div>
             <h4 className="font-semibold mb-2">Services</h4>
-            <ul className="space-y-1">
+            <ul className="space-y-1 text-sm">
               <li>Griha Pravesh</li>
               <li>Satyanarayan Katha</li>
               <li>Marriage Ceremony</li>
@@ -158,16 +295,16 @@ export default function PanditBooking() {
           </div>
           <div>
             <h4 className="font-semibold mb-2">Support</h4>
-            <p className="flex items-center gap-2">
+            <p className="flex items-center gap-2 text-sm">
               <Phone size={16} /> Chat with us
             </p>
-            <p className="flex items-center gap-2">
+            <p className="flex items-center gap-2 text-sm">
               <Mail size={16} /> support@panditji.com
             </p>
           </div>
         </div>
-        <div className="text-center mt-6 text-gray-200">
-          © 2024 PanditJi 🙏 All rights reserved
+        <div className="text-center mt-6 text-gray-200 text-sm">
+          © {new Date().getFullYear()} PanditJi 🙏 All rights reserved
         </div>
       </footer>
     </div>
