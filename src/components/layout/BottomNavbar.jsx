@@ -1,4 +1,3 @@
-/* ----------------- Bottom Navbar ----------------- */
 import React from "react";
 import { Home as HomeIcon, Search, Package, Bookmark, Menu } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -15,8 +14,8 @@ export default function BottomNavbar() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-[#5C3A21] to-[#8B4513] shadow-lg rounded-t-2xl px-4 sm:px-6 py-2 sm:py-3 z-50 border-t-2 border-[#FFD700] sm:hidden">
-      <div className="flex justify-between items-center">
+    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-[#5C3A21] to-[#8B4513] shadow-lg rounded-t-2xl px-6 py-3 z-50 border-t-2 border-[#FFD700]">
+      <div className="flex justify-around items-center max-w-4xl mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;

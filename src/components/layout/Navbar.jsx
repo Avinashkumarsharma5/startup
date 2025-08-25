@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Bell, Menu, X } from "lucide-react";
-import { Link } from "react-router-dom"; // <-- Import Link
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const menuItems = [
     { name: "Services", path: "/services" },
-    { name: "Store", path: "/pujakits" }, // Ya store page jab ready ho
+    { name: "Store", path: "/pujakits" },
     { name: "Pandit Booking", path: "/panditbooking" },
     { name: "Event", path: "/EventsPage" },
   ];
@@ -23,6 +23,7 @@ export default function Navbar() {
       <div className="flex items-center justify-between">
         {/* Left: Logo + Hamburger */}
         <div className="flex items-center gap-4">
+          {/* Mobile Hamburger */}
           <button
             className="sm:hidden text-[#FFD700] focus:outline-none"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -30,7 +31,7 @@ export default function Navbar() {
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
 
-          {/* Logo */}
+          {/* Logo placeholder */}
           {/* <GradientLogo /> */}
         </div>
 
@@ -48,7 +49,7 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Right: Notifications + Profile */}
+        {/* Right Icons */}
         <div className="flex items-center gap-4">
           <Bell className="w-6 h-6 sm:w-7 sm:h-7 text-[#FFD700] cursor-pointer hover:scale-110 transition-transform" />
           <img
@@ -64,7 +65,6 @@ export default function Navbar() {
         <motion.ul
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
           className="sm:hidden mt-4 flex flex-col gap-3 text-[#FFD700] font-medium"
         >
@@ -73,7 +73,7 @@ export default function Navbar() {
               <Link
                 to={item.path}
                 className="hover:text-[#FFC107] transition-colors"
-                onClick={() => setMobileOpen(false)} // Close menu on click
+                onClick={() => setMobileOpen(false)}
               >
                 {item.name}
               </Link>
