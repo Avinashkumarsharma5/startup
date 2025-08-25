@@ -59,7 +59,7 @@ const kits = [
 // --- Final Page Component ---
 export default function KitStorePage() {
   return (
-    <div className="bg-gradient-to-br from-[#FFF7E8] via-[#FDF0D5] to-[#FFE4B3] min-h-screen">
+    <div className="bg-gradient-to-br from-[#FFF7E8] via-[#FDF0D5] to-[#FFE4B3] min-h-screen mt-14">
       {/* --- Category Scroll --- */}
       <div className="flex gap-4 overflow-x-auto py-4 px-4 scrollbar-hide">
         {categories.map((cat) => (

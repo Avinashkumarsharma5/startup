@@ -14,6 +14,8 @@ import {
   Menu,
   ShoppingCart,
 } from "lucide-react";
+import { link } from "framer-motion/client";
+import EventsPage from "./EventsPage";
 
 /* ----------------- Search Bar ----------------- */
 function AnimatedSearch() {
@@ -133,26 +135,31 @@ function HeroBanner() {
 }
 
 /* ----------------- Services ----------------- */
+import { useNavigate } from "react-router-dom"; // <-- Add this
+
 function ServicesSection() {
+  const navigate = useNavigate(); // <-- Create navigate function
+
   const services = [
-    { name: "Book Event", icon: Calendar },
-    { name: "Book Pandit", icon: User },
-    { name: "Puja Kits", icon: Package },
-    { name: "Decoration", icon: Sparkles },
+    { name: "Book Event", icon: Calendar, path: "/EventsPage" },
+    { name: "Book Pandit", icon: User, path: "/panditbooking" },
+    { name: "Puja Kits", icon: Package, path: "/pujakits" },
+    { name: "services", icon: Sparkles, path: "/services" },
   ];
 
   return (
     <div className="mt-6 grid grid-cols-2 gap-4">
-      {services.map((s) => {
-        const Icon = s.icon;
+      {services.map((service) => {
+        const Icon = service.icon;
         return (
           <motion.button
             whileTap={{ scale: 0.95 }}
-            key={s.name}
+            key={service.name}
+            onClick={() => navigate(service.path)} // <-- Now works
             className="bg-[#FFF7E0] rounded-2xl p-4 text-center shadow hover:shadow-lg border border-orange-200 transition"
           >
             <Icon className="mx-auto w-7 h-7 text-orange-500" />
-            <p className="font-medium text-gray-800 mt-2">{s.name}</p>
+            <p className="font-medium text-gray-800 mt-2">{service.name}</p>
           </motion.button>
         );
       })}
@@ -292,7 +299,8 @@ function FloatingCart() {
 /* ----------------- Main Home ----------------- */
 export default function Home() {
   return (
-    <main className="min-h-screen pb-24 p-6 bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] font-sans text-gray-800 relative">
+    <main className="min-h-screen pb-24 p-6 bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] font-sans text-gray-800 relative mt-5
+    ">
       {/* Greeting */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}

@@ -4,6 +4,8 @@ import { Search, MapPin, Star, Phone, Mail, Heart } from "lucide-react";
 export default function PanditBooking() {
   const [filters, setFilters] = useState({ service: "", location: "", language: "" });
 
+
+// --- Pandit Data ---
   const pandits = [
     {
       name: "Pandit Ramesh Sharma",
