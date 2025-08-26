@@ -43,19 +43,19 @@ function HeroBanner() {
   const slides = [
     {
       id: 1,
-      img: "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?q=80&w=1600",
+      img: "https://tse4.mm.bing.net/th/id/OIP.6edUbnuA_BxJrjfBY11BSAHaEO?w=1200&h=686&rs=1&pid=ImgDetMain&o=7&rm=3",
       title: "Griha Pravesh Puja",
       subtitle: "Sacred beginnings with blessings",
     },
     {
       id: 2,
-      img: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=1600",
+      img: "https://tse3.mm.bing.net/th/id/OIP.K5DFatDkEfxEGeCEe0Z8ygHaEO?w=1344&h=768&rs=1&pid=ImgDetMain&o=7&rm=3",
       title: "Satyanarayan Puja",
       subtitle: "Invoke prosperity & harmony",
     },
     {
       id: 3,
-      img: "https://images.unsplash.com/photo-1524492449090-a4e24e37f2c4?q=80&w=1600",
+      img: "https://as2.ftcdn.net/v2/jpg/05/44/08/21/1000_F_544082192_7efjldpSJLEM7EnlxmFqYX2C4VwG80Z3.jpg",
       title: "Wedding Rituals",
       subtitle: "Memorable sacred unions",
     },
@@ -178,7 +178,7 @@ function GaneshPromo() {
     >
       <div className="flex items-center gap-4">
         <img
-          src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
+          src="https://tse2.mm.bing.net/th/id/OIP.rUHDO5E0p0FGE7EIKxElpwHaHb?pid=Api&P=0&h=180"
           alt="Ganesh Ji"
           className="w-14 h-14"
         />
@@ -197,13 +197,15 @@ function GaneshPromo() {
 function PanditProfile() {
   return (
     <div className="mt-6">
-      <h3 className="text-lg font-semibold text-[#800000] mb-2">Pandit Ji Profile</h3>
-      <div className="bg-[#FFF7E0] rounded-2xl p-4 shadow-md border border-orange-200 space-y-2">
-        <img
-          src="/assets/pandit-profile.jpg"
-          alt="Pandit Ji"
-          className="rounded-xl w-full h-36 object-cover"
-        />
+      <h3 className="text-lg font-semibold text-[#800000] mb-5">Pandit Ji Profile</h3>
+      <div className="bg-[#FFF7E0] rounded-2xl p-20 shadow-md border border-orange-200 space-y-4">
+        <div className="w-full overflow-hidden rounded-xl">
+          <img
+            src="https://tse3.mm.bing.net/th/id/OIP.InT1MAwd-CrF5LOkyF34XQHaFB?pid=Api&P=0&h=180"
+            alt="Pandit Ji"
+            className="w-full h-auto object-cover"
+          />
+        </div>
         <p className="text-base font-semibold text-gray-800">Pandit Ram Sharma</p>
         <p className="text-sm text-gray-600">
           Specializes in Satyanarayan, Griha Pravesh, Marriage
