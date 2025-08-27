@@ -43,13 +43,13 @@ function HeroBanner() {
   const slides = [
     {
       id: 1,
-      img: "https://tse4.mm.bing.net/th/id/OIP.6edUbnuA_BxJrjfBY11BSAHaEO?w=1200&h=686&rs=1&pid=ImgDetMain&o=7&rm=3",
+      img: "src/assets/images/sanskaraa banner1.jpg",
       title: "Griha Pravesh Puja",
       subtitle: "Sacred beginnings with blessings",
     },
     {
       id: 2,
-      img: "https://tse3.mm.bing.net/th/id/OIP.K5DFatDkEfxEGeCEe0Z8ygHaEO?w=1344&h=768&rs=1&pid=ImgDetMain&o=7&rm=3",
+      img: "src/assets/images/sanskaraa1.png",
       title: "Satyanarayan Puja",
       subtitle: "Invoke prosperity & harmony",
     },

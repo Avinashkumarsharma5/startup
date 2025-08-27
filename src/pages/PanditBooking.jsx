@@ -222,10 +222,6 @@ export default function PanditBooking() {
     navigate("/PanditProfile", { state: { pandit } });
   };
 
-  const handleBookNow = (pandit) => {
-    navigate("/Pbc", { state: { pandit } });
-  };
-
   return (
     <div className="min-h-screen bg-orange-100 flex flex-col font-sans">
       <section className="relative bg-gradient-to-r from-amber-800 to-yellow-900 text-white py-20 px-6 text-center">
@@ -310,13 +306,6 @@ export default function PanditBooking() {
             </ul>
             <p className="font-semibold text-amber-800 mb-4">{p.price}</p>
             <div className="flex justify-between items-center mt-auto gap-2">
-              <button
-                onClick={() => handleBookNow(p)}
-                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
-              >
-                Book Now
-              </button>
-
               <button
                 onClick={() => handleViewProfile(p)}
                 className="bg-amber-800 text-white px-4 py-2 rounded-lg hover:bg-yellow-900 transition"

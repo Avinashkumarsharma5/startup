@@ -87,7 +87,7 @@ export default function KitStorePage() {
         className="mx-4 mt-4 relative rounded-2xl overflow-hidden shadow-lg"
       >
         <img
-          src="https://indiacsr.in/wp-content/uploads/2024/10/Navratri.jpg"
+          src="src/assets/images/sanskaraa1.png"
           alt="Puja Banner"
           className="w-full h-52 sm:h-64 md:h-72 object-cover"
         />
