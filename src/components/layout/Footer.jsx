@@ -4,12 +4,12 @@ import { Facebook, Instagram, Twitter } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-r from-[#5C3A21] to-[#8B4513] text-[#FFD700] py-6 px-8 mt-10 border-t-2 border-[#FFD700]">
+    <footer className="bg-gradient-to-r from-[#5C3A21] to-[#8B4513] text-[#FFD700] py-6 px-8 mt- border-t-2 border-[#FFD700]">
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         {/* Branding */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <img
-            src="/assets/logo-icon.png"
+            src="src/assets/images/sanskaraa-logo.png"
             alt="Sanskaraa"
             className="h-8 w-8 object-contain"
           />
@@ -32,7 +32,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <p className="text-center text-xs mt-4 text-[#FFD700]/80">
+      <p className="text-center text-xs mt-10 text-[#FFD700]/80">
         &copy; 2025 Sanskaraa. All Rights Reserved.
       </p>
     </footer>

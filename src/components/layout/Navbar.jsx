@@ -53,7 +53,7 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <Bell className="w-6 h-6 sm:w-7 sm:h-7 text-[#FFD700] cursor-pointer hover:scale-110 transition-transform" />
           <img
-            src="https://randomuser.me/api/portraits/men/32.jpg"
+            src="https://randomuser.me/api/portraits/lego/0.jpg"
             alt="Profile"
             className="w-9 h-9 rounded-full object-cover border-2 border-[#FFD700] hover:scale-110 transition-transform"
           />

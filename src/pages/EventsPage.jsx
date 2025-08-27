@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 const banners = [
-  "/images/banner1.jpg",
-  "/images/banner2.jpg",
-  "/images/banner3.jpg",
+  "src/assets/images/sanskaraa1.png",
+  "src/assets/images/sanskaraa banner1.jpg",
+  "src/assets/images/banner1.png",
 ];
 
 const eventsData = [

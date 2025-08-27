@@ -16,7 +16,7 @@ export default function PanditBooking() {
       location: "Varanasi",
       services: ["Griha Pravesh", "Maha Mrityunjaya Jaap"],
       price: "₹2100 / service",
-      image: "/pandit1.png",
+      image: "https://randomuser.me/api/portraits/men/92.jpg",
     },
     {
       name: "Pandit Suresh Mishra",
@@ -27,7 +27,7 @@ export default function PanditBooking() {
       location: "Delhi",
       services: ["Satyanarayan Katha", "Marriage Ceremony"],
       price: "₹1800 / service",
-      image: "/pandit2.png",
+      image: "https://randomuser.me/api/portraits/men/72.jpg",
     },
     {
       name: "Pandit Mahesh Tiwari",
@@ -38,7 +38,7 @@ export default function PanditBooking() {
       location: "Mumbai",
       services: ["Marriage Ceremony", "Griha Pravesh"],
       price: "₹2000 / service",
-      image: "/pandit3.png",
+      image: "https://randomuser.me/api/portraits/men/73.jpg",
     },
     {
       name: "Pandit Dinesh Pathak",
@@ -49,7 +49,7 @@ export default function PanditBooking() {
       location: "Jaipur",
       services: ["Maha Mrityunjaya Jaap", "Satyanarayan Katha"],
       price: "₹2500 / service",
-      image: "/pandit4.png",
+      image: "https://randomuser.me/api/portraits/men/64.jpg",
     },
     {
       name: "Pandit Rajesh Dubey",
@@ -60,7 +60,7 @@ export default function PanditBooking() {
       location: "Lucknow",
       services: ["Griha Pravesh", "Marriage Ceremony"],
       price: "₹1500 / service",
-      image: "/pandit5.png",
+      image: "https://randomuser.me/api/portraits/men/16.jpg",
     },
     {
       name: "Pandit Manoj Pandey",
@@ -71,7 +71,7 @@ export default function PanditBooking() {
       location: "Prayagraj",
       services: ["Maha Mrityunjaya Jaap", "Marriage Ceremony"],
       price: "₹2300 / service",
-      image: "/pandit6.png",
+      image: "https://randomuser.me/api/portraits/men/43.jpg",
     },
     {
       name: "Pandit Keshav Shastri",
@@ -82,7 +82,7 @@ export default function PanditBooking() {
       location: "Pune",
       services: ["Satyanarayan Katha", "Griha Pravesh"],
       price: "₹1900 / service",
-      image: "/pandit7.png",
+      image: "https://randomuser.me/api/portraits/men/47.jpg",
     },
     {
       name: "Pandit Vinod Mishra",
@@ -93,7 +93,7 @@ export default function PanditBooking() {
       location: "Hyderabad",
       services: ["Marriage Ceremony", "Maha Mrityunjaya Jaap"],
       price: "₹2200 / service",
-      image: "/pandit8.png",
+      image: "https://randomuser.me/api/portraits/men/85.jpg",
     },
     {
       name: "Pandit Harish Tripathi",
@@ -104,7 +104,7 @@ export default function PanditBooking() {
       location: "Bhopal",
       services: ["Griha Pravesh", "Satyanarayan Katha"],
       price: "₹2400 / service",
-      image: "/pandit9.png",
+      image: "https://randomuser.me/api/portraits/men/11.jpg",
     },
     {
       name: "Pandit Prakash Joshi",
@@ -115,7 +115,7 @@ export default function PanditBooking() {
       location: "Udaipur",
       services: ["Marriage Ceremony", "Satyanarayan Katha"],
       price: "₹1700 / service",
-      image: "/pandit10.png",
+      image: "https://randomuser.me/api/portraits/men/33.jpg",
     },
   ];
 
