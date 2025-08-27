@@ -9,7 +9,7 @@ export default function BottomNavbar() {
     { name: "Home", path: "/", icon: HomeIcon },
     { name: "Search", path: "/search", icon: Search },
     { name: "Kits", path: "/pujakits", icon: Package },
-    { name: "Bookings", path: "/bookings", icon: Bookmark },
+    { name: "Bookings", path: "/BookingsPage", icon: Bookmark },
     { name: "More", path: "/more", icon: Menu },
   ];
 

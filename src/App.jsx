@@ -12,6 +12,11 @@ import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 import PanditBooking from "./pages/PanditBooking";
 import EventsPage from "./pages/EventsPage";
+import PanditProfile from "./pages/PanditProfile";
+import Pbc from "./pages/Pbc";
+import BookingsPage from "./pages/BookingsPage";
+
+
 
 
 
@@ -36,6 +41,11 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/panditbooking" element={<PanditBooking />} />
          <Route path="/EventsPage" element={<EventsPage />} />
+         <Route path="/PanditProfile" element={<PanditProfile />} />
+         <Route path="/Pbc" element={<Pbc />} />
+         <Route path="/BookingsPage" element={<BookingsPage />} />
+
+          
         </Routes>
       </main>
 
