@@ -15,6 +15,7 @@ import EventsPage from "./pages/EventsPage";
 import PanditProfile from "./pages/PanditProfile";
 import Pbc from "./pages/Pbc";
 import BookingsPage from "./pages/BookingsPage";
+import UserProfile from "./pages/UserProfile";
 
 
 
@@ -44,6 +45,7 @@ export default function App() {
          <Route path="/PanditProfile" element={<PanditProfile />} />
          <Route path="/Pbc" element={<Pbc />} />
          <Route path="/BookingsPage" element={<BookingsPage />} />
+        <Route path="/UserProfile" element={<UserProfile />} />
 
           
         </Routes>

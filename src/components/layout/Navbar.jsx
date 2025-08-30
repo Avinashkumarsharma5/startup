@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Bell, Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
 
   const menuItems = [
     { name: "Services", path: "/services" },
@@ -23,16 +24,12 @@ export default function Navbar() {
       <div className="flex items-center justify-between">
         {/* Left: Logo + Hamburger */}
         <div className="flex items-center gap-4">
-          {/* Mobile Hamburger */}
           <button
             className="sm:hidden text-[#FFD700] focus:outline-none"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
-
-          {/* Logo placeholder */}
-          {/* <GradientLogo /> */}
         </div>
 
         {/* Desktop Menu */}
@@ -52,10 +49,12 @@ export default function Navbar() {
         {/* Right Icons */}
         <div className="flex items-center gap-4">
           <Bell className="w-6 h-6 sm:w-7 sm:h-7 text-[#FFD700] cursor-pointer hover:scale-110 transition-transform" />
+          {/* Profile Icon */}
           <img
             src="https://randomuser.me/api/portraits/lego/0.jpg"
             alt="Profile"
-            className="w-9 h-9 rounded-full object-cover border-2 border-[#FFD700] hover:scale-110 transition-transform"
+            className="w-9 h-9 rounded-full object-cover border-2 border-[#FFD700] hover:scale-110 transition-transform cursor-pointer"
+            onClick={() => navigate("/UserProfile")}
           />
         </div>
       </div>
@@ -79,6 +78,18 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          {/* Mobile Profile Link */}
+          <li>
+            <button
+              className="w-full text-left hover:text-[#FFC107]"
+              onClick={() => {
+                navigate("/UserProfile");
+                setMobileOpen(false);
+              }}
+            >
+              My Profile
+            </button>
+          </li>
         </motion.ul>
       )}
     </motion.nav>
