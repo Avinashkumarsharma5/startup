@@ -9,7 +9,7 @@ const banners = [
   "src/assets/images/banner1.png",
 ];
 
-// --- Event Images Mapping (replace with your real images) ---
+// --- Event Images Mapping ---
 const eventImages = {
   // 🏡 Ghar ke Sanskaar
   "Griha Pravesh / गृह प्रवेश": "https://th.bing.com/th/id/OIP.v9bx4BEkqD3o1qgOCHgsqAAAAA?w=222&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=320",
@@ -178,6 +178,13 @@ export default function EventsPage() {
       e.toLowerCase().includes(searchQuery.toLowerCase().trim())
     );
 
+  // Collect all matching events for search
+  const allFilteredEvents = eventsData.flatMap((cat) =>
+    cat.events.filter((e) =>
+      e.toLowerCase().includes(searchQuery.toLowerCase().trim())
+    )
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 p-6 space-y-8">
       {/* Hero Carousel */}
@@ -195,10 +202,16 @@ export default function EventsPage() {
             Sanskaraa Event Services for Every Occasion
           </p>
           <div className="flex space-x-4">
-            <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg shadow">
+            <button
+              onClick={() => navigate("/book")}
+              className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg shadow"
+            >
               Book Now
             </button>
-            <button className="bg-white hover:bg-gray-100 text-orange-600 px-6 py-2 rounded-lg shadow">
+            <button
+              onClick={() => window.scrollTo({ top: 600, behavior: "smooth" })}
+              className="bg-white hover:bg-gray-100 text-orange-600 px-6 py-2 rounded-lg shadow"
+            >
               Explore Events
             </button>
           </div>
@@ -216,68 +229,106 @@ export default function EventsPage() {
         />
       </div>
 
-      {/* Event Categories */}
-      <div className="space-y-6">
-        {eventsData.map((category, idx) => {
-          const filtered = filterEvents(category.events);
-          if (filtered.length === 0) return null;
-
-          return (
-            <div key={idx} className="bg-white rounded-xl shadow-lg p-4">
-              <button
-                onClick={() => toggleCategory(idx)}
-                className="w-full flex justify-between items-center text-lg font-semibold text-orange-700"
-              >
-                {category.category}
-                {openCategory === idx ? (
-                  <ChevronUp className="h-5 w-5 text-orange-600" />
-                ) : (
-                  <ChevronDown className="h-5 w-5 text-orange-600" />
-                )}
-              </button>
-
-              <AnimatePresence>
-                {openCategory === idx && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
+      {/* Search Results OR Event Categories */}
+      {searchQuery.trim() !== "" ? (
+        <div className="bg-white rounded-xl shadow-lg p-4">
+          <h2 className="text-lg font-semibold text-orange-700 mb-4">
+            Search Results
+          </h2>
+          {allFilteredEvents.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {allFilteredEvents.map((event, i) => (
+                <div
+                  key={i}
+                  className="bg-white rounded-xl shadow-md p-4 flex flex-col text-center hover:bg-orange-50 transition"
+                >
+                  <img
+                    src={eventImages[event] || "src/assets/images/default.png"}
+                    alt={event}
+                    className="w-full h-28 object-cover rounded-lg mb-3"
+                    loading="lazy"
+                  />
+                  <span className="text-gray-800 text-sm md:text-base mb-3 font-medium">
+                    {event}
+                  </span>
+                  <button
+                    onClick={() =>
+                      navigate(`/book?event=${encodeURIComponent(event)}`)
+                    }
+                    className="bg-orange-500 hover:bg-orange-600 text-white text-xs md:text-sm rounded-md px-3 py-2 shadow"
                   >
-                    <div className="mt-4 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
-  {filtered.map((event, i) => (
-    <div
-      key={i}
-      className="bg-white rounded-xl shadow-md p-4 flex flex-col text-center hover:bg-orange-50 transition"
-    >
-      <img
-        src={eventImages[event] || "src/assets/images/default.png"}
-        alt={event}
-        className="w-full h-28 object-cover rounded-lg mb-3"
-      />
-      <span className="text-gray-800 text-sm md:text-base mb-3 font-medium">
-        {event}
-      </span>
-      <button
-        onClick={() =>
-          navigate(`/book?event=${encodeURIComponent(event)}`)
-        }
-        className="bg-orange-500 hover:bg-orange-600 text-white text-xs md:text-sm rounded-md px-3 py-2 shadow"
-      >
-        Book Now
-      </button>
-    </div>
-  ))}
-</div>
-
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    Book Now
+                  </button>
+                </div>
+              ))}
             </div>
-          );
-        })}
-      </div>
+          ) : (
+            <p className="text-gray-600">No events found for your search.</p>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {eventsData.map((category, idx) => {
+            const filtered = filterEvents(category.events);
+            if (filtered.length === 0) return null;
+
+            return (
+              <div key={idx} className="bg-white rounded-xl shadow-lg p-4">
+                <button
+                  onClick={() => toggleCategory(idx)}
+                  className="w-full flex justify-between items-center text-lg font-semibold text-orange-700"
+                >
+                  {category.category}
+                  {openCategory === idx ? (
+                    <ChevronUp className="h-5 w-5 text-orange-600" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5 text-orange-600" />
+                  )}
+                </button>
+
+                <AnimatePresence>
+                  {openCategory === idx && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-4 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        {filtered.map((event, i) => (
+                          <div
+                            key={i}
+                            className="bg-white rounded-xl shadow-md p-4 flex flex-col text-center hover:bg-orange-50 transition"
+                          >
+                            <img
+                              src={eventImages[event] || "src/assets/images/default.png"}
+                              alt={event}
+                              className="w-full h-28 object-cover rounded-lg mb-3"
+                              loading="lazy"
+                            />
+                            <span className="text-gray-800 text-sm md:text-base mb-3 font-medium">
+                              {event}
+                            </span>
+                            <button
+                              onClick={() =>
+                                navigate(`/book?event=${encodeURIComponent(event)}`)
+                              }
+                              className="bg-orange-500 hover:bg-orange-600 text-white text-xs md:text-sm rounded-md px-3 py-2 shadow"
+                            >
+                              Book Now
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* CTA */}
       <div className="bg-orange-100 rounded-xl text-center p-6 shadow">
@@ -287,7 +338,10 @@ export default function EventsPage() {
         <p className="text-gray-700 mb-4">
           Expert Pandit Ji & Complete Puja Kit Delivered!
         </p>
-        <button className="bg-orange-500 text-white px-6 py-2 rounded-lg shadow hover:bg-orange-600">
+        <button
+          onClick={() => navigate("/book")}
+          className="bg-orange-500 text-white px-6 py-2 rounded-lg shadow hover:bg-orange-600"
+        >
           Start Booking
         </button>
       </div>
