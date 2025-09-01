@@ -15,17 +15,65 @@ const categories = [
 
 // --- Kits Data ---
 const kits = [
-  { id: 1, name: "Griha Pravesh Kit", price: 1500, category: "Ghar ke Sanskaar" },
-  { id: 2, name: "Vastu Shanti Kit", price: 1300, category: "Ghar ke Sanskaar" },
-  { id: 3, name: "Navagraha Shanti Kit", price: 1400, category: "Ghar ke Sanskaar" },
-  { id: 4, name: "Naamkaran Kit", price: 1200, category: "Bacchon ke Sanskaar" },
-  { id: 5, name: "Annaprashan Kit", price: 1100, category: "Bacchon ke Sanskaar" },
-  { id: 6, name: "Vivah Ceremony Kit", price: 2500, category: "Vivah Sanskar" },
-  { id: 7, name: "Haldi Kit", price: 900, category: "Vivah Sanskar" },
-  { id: 8, name: "Antim Sanskar Kit", price: 2000, category: "Pitrakarya" },
-  { id: 9, name: "Chhath Puja Kit", price: 1000, category: "Festival Pujas" },
-  { id: 10, name: "Rudrabhishek Kit", price: 2200, category: "Temple / Special Pujas" },
-  { id: 11, name: "Personalized Puja Kit", price: 3000, category: "Others / Custom Options" },
+  // 🏡 Ghar ke Sanskaar
+  { id: 1, name: "Griha Pravesh / गृह प्रवेश", price: 1500, category: "Ghar ke Sanskaar", img: "https://th.bing.com/th/id/OIP.v9bx4BEkqD3o1qgOCHgsqAAAAA?w=222&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=320" },
+  { id: 2, name: "Vastu Shanti / वास्तु शांति", price: 1300, category: "Ghar ke Sanskaar", img: "src/assets/images/vastu-shanti.jpg" },
+  { id: 3, name: "Navagraha Shanti / नवग्रह शांति", price: 1400, category: "Ghar ke Sanskaar", img: "src/assets/images/navagraha.jpg" },
+  { id: 4, name: "Sundarkand Path / सुंदरकांड पाठ", price: 1000, category: "Ghar ke Sanskaar", img: "src/assets/images/sundarkand.jpg" },
+  { id: 5, name: "Ramayan Path / रामायण पाठ", price: 1000, category: "Ghar ke Sanskaar", img: "src/assets/images/ramayan.jpg" },
+  { id: 6, name: "Satyanarayan Katha / सत्यनारायण कथा", price: 1200, category: "Ghar ke Sanskaar", img: "src/assets/images/satyanarayan.jpg" },
+  { id: 7, name: "Lakshmi Puja / लक्ष्मी पूजा", price: 800, category: "Ghar ke Sanskaar", img: "src/assets/images/lakshmi.jpg" },
+  { id: 8, name: "Ganesh Puja / गणेश पूजा", price: 800, category: "Ghar ke Sanskaar", img: "src/assets/images/ganesh.jpg" },
+  { id: 9, name: "Durga Saptashati / दुर्गा सप्तशती पाठ", price: 900, category: "Ghar ke Sanskaar", img: "src/assets/images/durga.jpg" },
+  { id: 10, name: "Hanuman Chalisa Path / हनुमान चालीसा पाठ", price: 700, category: "Ghar ke Sanskaar", img: "src/assets/images/hanuman.jpg" },
+
+  // 👶 Bacchon ke Sanskaar
+  { id: 11, name: "Naamkaran Sanskar / नामकरण संस्कार", price: 1200, category: "Bacchon ke Sanskaar", img: "src/assets/images/naamkaran.jpg" },
+  { id: 12, name: "Annaprashan / अन्नप्राशन", price: 1100, category: "Bacchon ke Sanskaar", img: "src/assets/images/annaprashan.jpg" },
+  { id: 13, name: "Mundan Sanskar / मुंडन संस्कार", price: 1000, category: "Bacchon ke Sanskaar", img: "src/assets/images/mundan.jpg" },
+  { id: 14, name: "Janamdin Puja / जन्मदिन पूजा", price: 900, category: "Bacchon ke Sanskaar", img: "src/assets/images/birthday.jpg" },
+
+  // 💑 Vivah Sanskar
+  { id: 15, name: "Vivah / विवाह", price: 2500, category: "Vivah Sanskar", img: "src/assets/images/vivah.jpg" },
+  { id: 16, name: "Roka / रोका समारोह", price: 2000, category: "Vivah Sanskar", img: "src/assets/images/roka.jpg" },
+  { id: 17, name: "Sagai / सगाई", price: 1800, category: "Vivah Sanskar", img: "src/assets/images/sagai.jpg" },
+  { id: 18, name: "Haldi / हल्दी रस्म", price: 900, category: "Vivah Sanskar", img: "src/assets/images/haldi.jpg" },
+  { id: 19, name: "Mehendi / मेहंदी", price: 1200, category: "Vivah Sanskar", img: "src/assets/images/mehendi.jpg" },
+  { id: 20, name: "Sangeet / संगीत", price: 1500, category: "Vivah Sanskar", img: "src/assets/images/sangeet.jpg" },
+  { id: 21, name: "Reception / रिसेप्शन", price: 2000, category: "Vivah Sanskar", img: "src/assets/images/reception.jpg" },
+  { id: 22, name: "Wedding Anniversary Puja / विवाह वर्षगांठ पूजा", price: 1500, category: "Vivah Sanskar", img: "src/assets/images/anniversary.jpg" },
+
+  // ⚰ Pitrakarya
+  { id: 23, name: "Antim Sanskar / अंतिम संस्कार", price: 2000, category: "Pitrakarya", img: "src/assets/images/antim.jpg" },
+  { id: 24, name: "Pind Daan / पिंडदान", price: 1800, category: "Pitrakarya", img: "src/assets/images/pind-daan.jpg" },
+  { id: 25, name: "Shraddh / श्राद्ध पूजा", price: 1500, category: "Pitrakarya", img: "src/assets/images/shraddh.jpg" },
+  { id: 26, name: "Asthi Visarjan / अस्थि विसर्जन", price: 1300, category: "Pitrakarya", img: "src/assets/images/asthi.jpg" },
+  { id: 27, name: "Tehravin / तेरहवीं संस्कार", price: 1200, category: "Pitrakarya", img: "src/assets/images/tehravin.jpg" },
+
+  // 📿 Festival Pujas
+  { id: 28, name: "Karwa Chauth Puja / करवा चौथ पूजा", price: 900, category: "Festival Pujas", img: "src/assets/images/karwa.jpg" },
+  { id: 29, name: "Diwali Lakshmi Ganesh Puja / दिवाली लक्ष्मी गणेश पूजा", price: 1200, category: "Festival Pujas", img: "src/assets/images/diwali.jpg" },
+  { id: 30, name: "Raksha Bandhan / रक्षा बंधन पूजा", price: 800, category: "Festival Pujas", img: "src/assets/images/raksha.jpg" },
+  { id: 31, name: "Navratri Puja / नवरात्रि पूजा", price: 1000, category: "Festival Pujas", img: "src/assets/images/navratri.jpg" },
+  { id: 32, name: "Saraswati Puja / सरस्वती पूजा", price: 1000, category: "Festival Pujas", img: "src/assets/images/saraswati.jpg" },
+  { id: 33, name: "Mahashivratri Puja / महाशिवरात्रि पूजा", price: 1100, category: "Festival Pujas", img: "src/assets/images/shivratri.jpg" },
+  { id: 34, name: "Chhath Puja / छठ पूजा", price: 1000, category: "Festival Pujas", img: "src/assets/images/chhath.jpg" },
+  { id: 35, name: "Holi Dahan Puja / होली दहन पूजा", price: 900, category: "Festival Pujas", img: "src/assets/images/holi.jpg" },
+  { id: 36, name: "Janmashtami Puja / जन्माष्टमी पूजा", price: 1000, category: "Festival Pujas", img: "src/assets/images/janmashtami.jpg" },
+
+  // 🛕 Temple / Special Pujas
+  { id: 37, name: "Rudrabhishek / रुद्राभिषेक", price: 2200, category: "Temple / Special Pujas", img: "src/assets/images/rudrabhishek.jpg" },
+  { id: 38, name: "Mahamrityunjaya Jaap / महामृत्युंजय जाप", price: 2500, category: "Temple / Special Pujas", img: "src/assets/images/mahamrityunjaya.jpg" },
+  { id: 39, name: "Bhumi Pujan / भूमि पूजन", price: 2000, category: "Temple / Special Pujas", img: "src/assets/images/bhumi.jpg" },
+  { id: 40, name: "Kundali Shanti / कुंडली शांति", price: 1800, category: "Temple / Special Pujas", img: "src/assets/images/kundali.jpg" },
+  { id: 41, name: "Upanayan Sanskar / उपनयन संस्कार", price: 1700, category: "Temple / Special Pujas", img: "src/assets/images/upnayan.jpg" },
+  { id: 42, name: "Kalash Sthapana / कलश स्थापना", price: 1600, category: "Temple / Special Pujas", img: "src/assets/images/kalash.jpg" },
+  { id: 43, name: "Ayushya Homam / आयुष्य हवन", price: 1500, category: "Temple / Special Pujas", img: "src/assets/images/ayushya.jpg" },
+
+  // 🧾 Others / Custom Options
+  { id: 44, name: "Personalized Puja Package / व्यक्तिगत पूजा पैकेज", price: 3000, category: "Others / Custom Options", img: "src/assets/images/custom-package.jpg" },
+  { id: 45, name: "Online Puja Seva / ऑनलाइन पूजा सेवा", price: 2500, category: "Others / Custom Options", img: "src/assets/images/online.jpg" },
+  { id: 46, name: "Customized Event Plan / कस्टम इवेंट प्लान", price: 3500, category: "Others / Custom Options", img: "src/assets/images/custom-plan.jpg" },
 ];
 
 export default function KitStoreWithCart() {
@@ -69,7 +117,6 @@ export default function KitStoreWithCart() {
       <div className="relative w-full h-64 md:h-96 rounded-2xl overflow-hidden mb-6">
         <video autoPlay loop muted className="w-full h-full object-cover">
           <source src="/videos/puja_hero.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
         </video>
         <div className="absolute inset-0 bg-black/30 flex items-end p-4">
           <h1 className="text-white text-2xl md:text-4xl font-bold">
@@ -111,7 +158,7 @@ export default function KitStoreWithCart() {
           <div key={kit.id} className="bg-white rounded-xl shadow hover:shadow-lg transition p-4 flex flex-col">
             <div className="h-40 w-full mb-4 bg-gray-100 flex items-center justify-center rounded-lg">
               <img
-                src={`https://via.placeholder.com/150?text=${kit.name}`}
+                src={kit.img}
                 alt={kit.name}
                 className="h-full object-contain"
               />
@@ -199,7 +246,7 @@ export default function KitStoreWithCart() {
 
             <div className="flex gap-4 mb-4">
               <img
-                src={`https://via.placeholder.com/100?text=${buyKit.name}`}
+                src={buyKit.img}
                 alt={buyKit.name}
                 className="w-24 h-24 object-contain rounded-lg"
               />
