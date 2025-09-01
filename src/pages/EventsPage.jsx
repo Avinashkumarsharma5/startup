@@ -13,7 +13,7 @@ const banners = [
 const eventImages = {
   // 🏡 Ghar ke Sanskaar
   "Griha Pravesh / गृह प्रवेश": "https://th.bing.com/th/id/OIP.v9bx4BEkqD3o1qgOCHgsqAAAAA?w=222&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=320",
-  "Vastu Shanti / वास्तु शांति": "src/assets/images/vastu-shanti.jpg",
+  "Vastu Shanti / वास्तु शांति": "https://dhaarmi.com/wp-content/uploads/2024/03/vastu-pooja.webp",
   "Navagraha Shanti / नवग्रह शांति": "src/assets/images/navagraha.jpg",
   "Sundarkand Path / सुंदरकांड पाठ": "src/assets/images/sundarkand.jpg",
   "Ramayan Path / रामायण पाठ": "src/assets/images/ramayan.jpg",
@@ -24,7 +24,7 @@ const eventImages = {
   "Hanuman Chalisa Path / हनुमान चालीसा पाठ": "src/assets/images/hanuman.jpg",
 
   // 👶 Bacchon ke Sanskaar
-  "Naamkaran Sanskar / नामकरण संस्कार": "src/assets/images/naamkaran.jpg",
+  "Naamkaran Sanskar / नामकरण संस्कार": "https://dhaarmi.com/wp-content/uploads/2024/03/vastu-pooja.webp",
   "Annaprashan / अन्नप्राशन": "src/assets/images/annaprashan.jpg",
   "Mundan Sanskar / मुंडन संस्कार": "src/assets/images/mundan.jpg",
   "Janamdin Puja / जन्मदिन पूजा": "src/assets/images/birthday.jpg",

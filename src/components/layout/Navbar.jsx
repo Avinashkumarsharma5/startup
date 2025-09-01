@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Bell, Menu, X } from "lucide-react";
+import { Bell, Menu, X, Mic } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Navbar() {
+export default function Navbar({ onMicClick }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -16,13 +16,13 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      initial={{ y: -50, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="bg-gradient-to-r from-[#5C3A21] to-[#8B4513] shadow-md py-4 px-4 sm:px-6 md:px-8 fixed w-full z-50 border-b-2 border-[#FFD700]"
-    >
-      <div className="flex items-center justify-between">
-        {/* Left: Logo + Hamburger */}
+  initial={{ y: -50, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  transition={{ duration: 0.6, ease: "easeOut" }}
+  className="bg-gradient-to-r from-[#5C3A21] to-[#8B4513] shadow-md py-2 px-4 sm:px-6 md:px-8 fixed w-full z-50 border-b-2 border-[#FFD700]"
+>
+
+      <div className="flex items-center justify-between mt-2 ">
         <div className="flex items-center gap-4">
           <button
             className="sm:hidden text-[#FFD700] focus:outline-none"
@@ -32,24 +32,27 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Desktop Menu */}
         <ul className="hidden sm:flex space-x-6 text-[#FFD700] font-medium">
           {menuItems.map((item) => (
             <li key={item.name}>
-              <Link
-                to={item.path}
-                className="hover:text-[#FFC107] transition-colors"
-              >
+              <Link to={item.path} className="hover:text-[#FFC107] transition-colors">
                 {item.name}
               </Link>
             </li>
           ))}
         </ul>
 
-        {/* Right Icons */}
         <div className="flex items-center gap-4">
           <Bell className="w-6 h-6 sm:w-7 sm:h-7 text-[#FFD700] cursor-pointer hover:scale-110 transition-transform" />
-          {/* Profile Icon */}
+
+          {/* Guru Mic Button */}
+          <button
+            onClick={onMicClick}
+            className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+          >
+            <Mic size={20} />
+          </button>
+
           <img
             src="https://randomuser.me/api/portraits/lego/0.jpg"
             alt="Profile"
@@ -59,7 +62,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {mobileOpen && (
         <motion.ul
           initial={{ height: 0, opacity: 0 }}
@@ -69,25 +71,14 @@ export default function Navbar() {
         >
           {menuItems.map((item) => (
             <li key={item.name}>
-              <Link
-                to={item.path}
-                className="hover:text-[#FFC107] transition-colors"
-                onClick={() => setMobileOpen(false)}
-              >
+              <Link to={item.path} className="hover:text-[#FFC107] transition-colors" onClick={() => setMobileOpen(false)}>
                 {item.name}
               </Link>
             </li>
           ))}
-          {/* Mobile Profile Link */}
           <li>
-            <button
-              className="w-full text-left hover:text-[#FFC107]"
-              onClick={() => {
-                navigate("/UserProfile");
-                setMobileOpen(false);
-              }}
-            >
-              My Profile
+            <button onClick={onMicClick} className="w-full text-left flex items-center gap-2 hover:text-[#FFC107]">
+              <Mic size={18} /> Activate Guru
             </button>
           </li>
         </motion.ul>

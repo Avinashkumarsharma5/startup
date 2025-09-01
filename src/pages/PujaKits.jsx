@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
+import { motion } from "framer-motion";
+
 
 // --- Category Data ---
 const categories = [
   { name: "All", img: "https://img.icons8.com/color/96/000000/categorize.png" },
   { name: "Ghar ke Sanskaar", img: "https://img.icons8.com/emoji/96/000000/house-emoji.png" },
   { name: "Bacchon ke Sanskaar", img: "https://img.icons8.com/emoji/96/000000/baby-emoji.png" },
-  { name: "Vivah Sanskar", img: "https://img.icons8.com/emoji/96/000000/couple-emoji.png" },
+  { name: "Vivah Sanskar", img: "src/assets/images/catering1.jpg" },
   { name: "Pitrakarya", img: "https://img.icons8.com/emoji/96/000000/coffin-emoji.png" },
   { name: "Festival Pujas", img: "https://img.icons8.com/emoji/96/000000/festival-emoji.png" },
   { name: "Temple / Special Pujas", img: "https://img.icons8.com/emoji/96/000000/temple-emoji.png" },
@@ -17,7 +19,7 @@ const categories = [
 const kits = [
   // 🏡 Ghar ke Sanskaar
   { id: 1, name: "Griha Pravesh / गृह प्रवेश", price: 1500, category: "Ghar ke Sanskaar", img: "https://th.bing.com/th/id/OIP.v9bx4BEkqD3o1qgOCHgsqAAAAA?w=222&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=320" },
-  { id: 2, name: "Vastu Shanti / वास्तु शांति", price: 1300, category: "Ghar ke Sanskaar", img: "src/assets/images/vastu-shanti.jpg" },
+  { id: 2, name: "Vastu Shanti / वास्तु शांति", price: 1300, category: "Ghar ke Sanskaar", img: "https://tse3.mm.bing.net/th/id/OIP.SbpIf9v7T5UKq2MZDZBqKwHaHa?pid=ImgDet&w=173&h=173&c=7&dpr=1.3&o=7&rm=3" },
   { id: 3, name: "Navagraha Shanti / नवग्रह शांति", price: 1400, category: "Ghar ke Sanskaar", img: "src/assets/images/navagraha.jpg" },
   { id: 4, name: "Sundarkand Path / सुंदरकांड पाठ", price: 1000, category: "Ghar ke Sanskaar", img: "src/assets/images/sundarkand.jpg" },
   { id: 5, name: "Ramayan Path / रामायण पाठ", price: 1000, category: "Ghar ke Sanskaar", img: "src/assets/images/ramayan.jpg" },
@@ -116,7 +118,7 @@ export default function KitStoreWithCart() {
       {/* Hero Video Section */}
       <div className="relative w-full h-64 md:h-96 rounded-2xl overflow-hidden mb-6">
         <video autoPlay loop muted className="w-full h-full object-cover">
-          <source src="/videos/puja_hero.mp4" type="video/mp4" />
+          <source src="src/assets/images/sanskaravideo1.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/30 flex items-end p-4">
           <h1 className="text-white text-2xl md:text-4xl font-bold">
@@ -184,17 +186,21 @@ export default function KitStoreWithCart() {
       </div>
 
       {/* Cart Icon Button */}
-      <button
-        onClick={() => setShowCart(!showCart)}
-        className="fixed bottom-6 right-6 bg-yellow-500 text-white p-4 rounded-full shadow-lg hover:bg-yellow-600 transition z-50"
-      >
-        <FiShoppingCart size={28} />
-        {cart.length > 0 && (
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-            {cart.length}
-          </span>
-        )}
-      </button>
+      <motion.button
+  drag
+  dragMomentum={true} // inertia effect
+  className="fixed bg-yellow-500 text-white p-4 rounded-full shadow-lg hover:bg-yellow-600 hover:scale-110 hover:shadow-2xl transition transform duration-200 z-50"
+  style={{ top: 100, right: 20 }} // initial position
+  onClick={() => setShowCart(!showCart)}
+>
+  <FiShoppingCart size={28} />
+  {cart.length > 0 && (
+    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+      {cart.length}
+    </span>
+  )}
+</motion.button>
+
 
       {/* Cart Sidebar */}
       {showCart && (

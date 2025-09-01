@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
-import BottomNavbar from "./components/layout/BottomNavbar";  // import
+import BottomNavbar from "./components/layout/BottomNavbar";
 
 import Home from "./pages/Home";
 import Services from "./pages/Services";
@@ -17,42 +17,43 @@ import Pbc from "./pages/Pbc";
 import BookingsPage from "./pages/BookingsPage";
 import UserProfile from "./pages/UserProfile";
 import BookEvent from "./pages/BookEvents";
-
-
-
-
+import VoiceAssistant from "./pages/VoiceAssistant";
 
 export default function App() {
   const location = useLocation();
+  const [micOpen, setMicOpen] = useState(false);
 
-  // Jisme Navbar/Footer/BottomNavbar nahi chahiye
   const noLayoutRoutes = ["/login", "/signup"];
   const hideLayout = noLayoutRoutes.includes(location.pathname);
 
+  const handleMicClick = () => setMicOpen(true);
+  const handleMicClose = () => setMicOpen(false);
+
   return (
     <div className="min-h-screen flex flex-col">
-      {!hideLayout && <Navbar />}
-      
-      <main className="flex-grow">
+      {!hideLayout && <Navbar onMicClick={handleMicClick} />}
+
+      <main className="flex-grow relative">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />
-         <Route path="/pujakits" element={<PujaKits />} />
+          <Route path="/pujakits" element={<PujaKits />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/panditbooking" element={<PanditBooking />} />
-         <Route path="/EventsPage" element={<EventsPage />} />
-         <Route path="/PanditProfile" element={<PanditProfile />} />
-         <Route path="/Pbc" element={<Pbc />} />
-         <Route path="/BookingsPage" element={<BookingsPage />} />
-        <Route path="/UserProfile" element={<UserProfile />} />
-         <Route path="/book" element={<BookEvent />} />
-          
+          <Route path="/EventsPage" element={<EventsPage />} />
+          <Route path="/PanditProfile" element={<PanditProfile />} />
+          <Route path="/Pbc" element={<Pbc />} />
+          <Route path="/BookingsPage" element={<BookingsPage />} />
+          <Route path="/UserProfile" element={<UserProfile />} />
+          <Route path="/book" element={<BookEvent />} />
         </Routes>
+
+        {/* VoiceAssistant Overlay */}
+        {micOpen && <VoiceAssistant onClose={handleMicClose} />}
       </main>
 
-      {/* Footer ke upar BottomNavbar dikhayenge */}
       {!hideLayout && <BottomNavbar />}
       {!hideLayout && <Footer />}
     </div>
