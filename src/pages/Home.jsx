@@ -13,18 +13,159 @@ import {
   Bookmark,
   Menu,
   ShoppingCart,
+  Mic,
+  Phone,
+  MessageCircle,
+  Gift,
+  Star,
+  Clock,
+  X
 } from "lucide-react";
-import { link } from "framer-motion/client";
-import EventsPage from "./EventsPage";
+import { useNavigate } from "react-router-dom";
 
-/* ----------------- Search Bar ----------------- */
-function AnimatedSearch() {
+// Sanskrit shlokas and quotes for different times of day
+const dailyShlokas = {
+  morning: [
+    "ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं भर्गो देवस्य धीमहि धियो यो नः प्रचोदयात्।",
+    "कराग्रे वसते लक्ष्मीः करमध्ये सरस्वती। करमूले स्थितो ब्रह्मा प्रभाते करदर्शनम्॥",
+    "उत्तिष्ठत जाग्रत प्राप्य वरान्निबोधत। क्षुरस्य धारा निशिता दुरत्यया दुर्गं पथस्तत्कवयो वदन्ति॥"
+  ],
+  afternoon: [
+    "विद्या ददाति विनयं विनयाद्याति पात्रताम्। पात्रत्वाद्धनमाप्नोति धनाद्धर्मं ततः सुखम्॥",
+    "असंखेयाः समुद्रस्य शीकराः पर्वतस्य च। उपमा लोकरक्षितुर्नास्ति तुल्यः प्रभुर्हरिः॥"
+  ],
+  evening: [
+    "शांति मंत्र: ॐ द्यौ: शान्तिरन्तरिक्षं शान्ति: पृथिवी शान्तिराप: शान्तिरोषधय: शान्ति:।",
+    "सर्वमङ्गलमाङ्गल्ये शिवे सर्वार्थसाधिके। शरण्ये त्र्यम्बके गौरि नारायणि नमोऽस्तु ते॥"
+  ],
+  night: [
+    "शुभरात्रि, ध्यान और आशीर्वाद",
+    "करजये वसते लक्ष्मी, करमध्ये सरस्वती, करमूले तु गोविन्दः, प्रभाते करदर्शनम्।",
+    "ॐ सह नाववतु। सह नौ भुनक्तु। सह वीर्यं करवावहै। तेजस्विनावधीतमस्तु मा विद्विषावहै। ॐ शान्तिः शान्तिः शान्तिः॥"
+  ]
+};
+
+// Sample events data
+const upcomingEvents = [
+  { id: 1, name: "Ganesh Chaturthi", date: "2025-09-12", type: "festival" },
+  { id: 2, name: "Satyanarayan Puja", date: "2025-08-25", type: "booking" },
+  { id: 3, name: "Navratri", date: "2025-09-30", type: "festival" },
+  { id: 4, name: "Griha Pravesh", date: "2025-08-20", type: "booking" }
+];
+
+// Sample testimonials
+const testimonials = [
+  { id: 1, name: "Rajesh Kumar", rating: 5, review: "Excellent service, very satisfied with the puja arrangements.", image: "https://randomuser.me/api/portraits/men/32.jpg" },
+  { id: 2, name: "Priya Singh", rating: 4, review: "Pandit ji was very knowledgeable and punctual.", image: "https://randomuser.me/api/portraits/women/44.jpg" },
+  { id: 3, name: "Vikram Mehta", rating: 5, review: "The puja kit was complete and of good quality.", image: "https://randomuser.me/api/portraits/men/67.jpg" }
+];
+
+// Sample offers
+const specialOffers = [
+  { id: 1, title: "Ganesh Puja Kits", discount: "20% off", expiry: "2025-09-10" },
+  { id: 2, title: "Navratri Special", discount: "15% off", expiry: "2025-09-25" },
+  { id: 3, title: "Wedding Puja Package", discount: "25% off", expiry: "2025-10-15" }
+];
+
+// Sample past bookings
+const pastBookings = [
+  { id: 1, name: "Satyanarayan Puja", date: "2025-07-15", status: "completed" },
+  { id: 2, name: "Griha Pravesh", date: "2025-06-20", status: "completed" }
+];
+
+// ----------------- Dynamic Greeting Component -----------------
+function DynamicGreeting() {
+  const [greeting, setGreeting] = useState("");
+  const [shloka, setShloka] = useState("");
+
+  useEffect(() => {
+    const updateGreeting = () => {
+      const hour = new Date().getHours();
+      let timeOfDay;
+      
+      if (hour >= 5 && hour < 12) {
+        timeOfDay = "morning";
+        setGreeting("Good morning");
+      } else if (hour >= 12 && hour < 17) {
+        timeOfDay = "afternoon";
+        setGreeting("Good afternoon");
+      } else if (hour >= 17 && hour < 21) {
+        timeOfDay = "evening";
+        setGreeting("Good evening");
+      } else {
+        timeOfDay = "night";
+        setGreeting("Good night");
+      }
+
+      // Select a random shloka for the time of day
+      const shlokas = dailyShlokas[timeOfDay];
+      const randomIndex = Math.floor(Math.random() * shlokas.length);
+      setShloka(shlokas[randomIndex]);
+    };
+
+    updateGreeting();
+    // Update every hour
+    const interval = setInterval(updateGreeting, 3600000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
+      className="mt-12"
+    >
+      <p className="text-gray-600 text-sm">{greeting},</p>
+      <h2 className="text-2xl sm:text-3xl font-bold text-[#800000]">Avinash Sharma</h2>
+      <p className="mt-2 text-sm text-amber-800 bg-amber-100 p-2 rounded-lg">{shloka}</p>
+    </motion.div>
+  );
+}
+
+// ----------------- Daily Panchang Widget -----------------
+function PanchangWidget() {
+  const [panchang, setPanchang] = useState({
+    tithi: "Shukla Paksha Dwadashi",
+    nakshatra: "Uttara Phalguni",
+    yoga: "Vyaghata",
+    muhurat: "09:00 AM - 11:30 AM"
+  });
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+      className="mt-4 bg-white rounded-xl p-3 shadow-md border border-orange-200"
+    >
+      <h3 className="font-semibold text-[#800000] text-center mb-2">Today's Panchang</h3>
+      <div className="grid grid-cols-2 gap-2 text-xs">
+        <div>
+          <span className="font-medium">Tithi:</span> {panchang.tithi}
+        </div>
+        <div>
+          <span className="font-medium">Nakshatra:</span> {panchang.nakshatra}
+        </div>
+        <div>
+          <span className="font-medium">Yoga:</span> {panchang.yoga}
+        </div>
+        <div>
+          <span className="font-medium">Muhurat:</span> {panchang.muhurat}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ----------------- Search Bar with Voice -----------------
+function AnimatedSearch({ onVoiceSearch }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="mt-6"
+      className="mt-4"
     >
       <div className="flex items-center bg-[#FFF7E0] rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-amber-400 transition-all shadow-sm">
         <Search className="w-5 h-5 text-orange-500" />
@@ -33,29 +174,32 @@ function AnimatedSearch() {
           placeholder="Search pujas, pandits..."
           className="ml-2 bg-transparent outline-none text-gray-700 w-full placeholder-gray-400"
         />
+        <button onClick={onVoiceSearch} className="p-1">
+          <Mic className="w-5 h-5 text-orange-500" />
+        </button>
       </div>
     </motion.div>
   );
 }
 
-/* ----------------- Hero Banner ----------------- */
+// ----------------- Hero Banner -----------------
 function HeroBanner() {
   const slides = [
     {
       id: 1,
-      img: "src/assets/images/sanskaraa banner1.jpg",
+      img: "https://images.unsplash.com/photo-1581578021517-5d8ad8597856?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cHVqYXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
       title: "Griha Pravesh Puja",
       subtitle: "Sacred beginnings with blessings",
     },
     {
       id: 2,
-      img: "src/assets/images/sanskaraa1.png",
+      img: "https://images.unsplash.com/photo-1596450229552-4be056d72a0e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHB1amF8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
       title: "Satyanarayan Puja",
       subtitle: "Invoke prosperity & harmony",
     },
     {
       id: 3,
-      img: "https://as2.ftcdn.net/v2/jpg/05/44/08/21/1000_F_544082192_7efjldpSJLEM7EnlxmFqYX2C4VwG80Z3.jpg",
+      img: "https://images.unsplash.com/photo-1600080972464-8a96f7002e5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHB1amF8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
       title: "Wedding Rituals",
       subtitle: "Memorable sacred unions",
     },
@@ -134,11 +278,9 @@ function HeroBanner() {
   );
 }
 
-/* ----------------- Services ----------------- */
-import { useNavigate } from "react-router-dom"; // <-- Add this
-
+// ----------------- Services -----------------
 function ServicesSection() {
-  const navigate = useNavigate(); // <-- Create navigate function
+  const navigate = useNavigate();
 
   const services = [
     { name: "Book Event", icon: Calendar, path: "/EventsPage" },
@@ -155,7 +297,7 @@ function ServicesSection() {
           <motion.button
             whileTap={{ scale: 0.95 }}
             key={service.name}
-            onClick={() => navigate(service.path)} // <-- Now works
+            onClick={() => navigate(service.path)}
             className="bg-[#FFF7E0] rounded-2xl p-4 text-center shadow hover:shadow-lg border border-orange-200 transition"
           >
             <Icon className="mx-auto w-7 h-7 text-orange-500" />
@@ -167,7 +309,70 @@ function ServicesSection() {
   );
 }
 
-/* ----------------- Promo Banner ----------------- */
+// ----------------- Upcoming Events Section -----------------
+function UpcomingEvents() {
+  const navigate = useNavigate();
+
+  // Calculate days until event
+  const getDaysUntil = (dateString) => {
+    const eventDate = new Date(dateString);
+    const today = new Date();
+    const diffTime = eventDate - today;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
+  return (
+    <div className="mt-6">
+      <div className="flex justify-between items-center mb-3">
+        <h3 className="text-lg font-semibold text-[#800000]">Upcoming Events</h3>
+        <button 
+          onClick={() => navigate('/bookings')}
+          className="text-sm text-orange-600 font-medium"
+        >
+          View All
+        </button>
+      </div>
+      
+      <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-4">
+        {upcomingEvents.map(event => (
+          <div 
+            key={event.id} 
+            className="inline-block w-64 bg-white rounded-2xl p-4 shadow-md border border-orange-200"
+          >
+            <div className="flex justify-between items-start">
+              <div>
+                <h4 className="font-medium text-gray-800">{event.name}</h4>
+                <p className="text-sm text-gray-600 mt-1">
+                  {new Date(event.date).toLocaleDateString('en-IN', {
+                    day: 'numeric', month: 'short', year: 'numeric'
+                  })}
+                </p>
+              </div>
+              {event.type === 'festival' && (
+                <span className="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full">
+                  Festival
+                </span>
+              )}
+            </div>
+            
+            <div className="mt-3 flex items-center">
+              <Clock className="w-4 h-4 text-orange-500 mr-1" />
+              <span className="text-sm font-medium text-amber-700">
+                {getDaysUntil(event.date)} days left
+              </span>
+            </div>
+            
+            <button className="mt-3 w-full bg-amber-100 text-amber-800 py-2 rounded-lg text-sm font-medium hover:bg-amber-200">
+              {event.type === 'festival' ? 'Learn More' : 'View Details'}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ----------------- Promo Banner -----------------
 function GaneshPromo() {
   return (
     <motion.div
@@ -193,12 +398,94 @@ function GaneshPromo() {
   );
 }
 
-/* ----------------- Pandit Profile ----------------- */
+// ----------------- Pandit Availability -----------------
+function PanditAvailability() {
+  const [panditAvailable, setPanditAvailable] = useState(true);
+  
+  return (
+    <div className="mt-6 bg-white rounded-2xl p-4 shadow-md border border-orange-200">
+      <div className="flex justify-between items-center mb-3">
+        <h3 className="text-lg font-semibold text-[#800000]">Pandit Assistance</h3>
+        <div className="flex items-center">
+          <div className={`w-3 h-3 rounded-full mr-2 ${panditAvailable ? 'bg-green-500' : 'bg-red-500'}`}></div>
+          <span className="text-sm">{panditAvailable ? 'Available' : 'Busy'}</span>
+        </div>
+      </div>
+      
+      <p className="text-sm text-gray-600 mb-4">
+        Connect with our expert pandits for guidance and booking assistance.
+      </p>
+      
+      <div className="flex gap-3">
+        <button className="flex-1 flex items-center justify-center gap-2 bg-amber-100 text-amber-800 py-2 rounded-lg font-medium hover:bg-amber-200">
+          <Phone size={16} />
+          Call Now
+        </button>
+        <button className="flex-1 bg-[#800000] text-white py-2 rounded-lg font-medium hover:bg-[#A52A2A]">
+          Schedule Call
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ----------------- Personalized Dashboard -----------------
+function DashboardSection() {
+  const navigate = useNavigate();
+  const [loyaltyPoints] = useState(350);
+
+  return (
+    <div className="mt-6">
+      <h3 className="text-lg font-semibold text-[#800000] mb-3">Your Dashboard</h3>
+      
+      <div className="bg-white rounded-2xl p-4 shadow-md border border-orange-200">
+        <div className="flex justify-between items-center mb-4">
+          <h4 className="font-medium text-gray-800">Loyalty Points</h4>
+          <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+            {loyaltyPoints} points
+          </span>
+        </div>
+        
+        <p className="text-sm text-gray-600 mb-4">
+          Earn 50 points for every booking. Redeem points for discounts on future pujas.
+        </p>
+        
+        <div className="mb-5">
+          <h4 className="font-medium text-gray-800 mb-2">Past Bookings</h4>
+          <div className="space-y-2">
+            {pastBookings.map(booking => (
+              <div key={booking.id} className="flex justify-between items-center p-2 bg-amber-50 rounded-lg">
+                <div>
+                  <p className="text-sm font-medium">{booking.name}</p>
+                  <p className="text-xs text-gray-600">
+                    {new Date(booking.date).toLocaleDateString('en-IN')}
+                  </p>
+                </div>
+                <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                  Completed
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <button 
+          onClick={() => navigate('/bookings')}
+          className="w-full bg-amber-100 text-amber-800 py-2 rounded-lg font-medium hover:bg-amber-200"
+        >
+          View All Bookings
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ----------------- Pandit Profile -----------------
 function PanditProfile() {
   return (
     <div className="mt-6">
       <h3 className="text-lg font-semibold text-[#800000] mb-5">Pandit Ji Profile</h3>
-      <div className="bg-[#FFF7E0] rounded-2xl p-20 shadow-md border border-orange-200 space-y-4">
+      <div className="bg-[#FFF7E0] rounded-2xl p-4 shadow-md border border-orange-200 space-y-4">
         <div className="w-full overflow-hidden rounded-xl">
           <img
             src="https://tse3.mm.bing.net/th/id/OIP.InT1MAwd-CrF5LOkyF34XQHaFB?pid=Api&P=0&h=180"
@@ -223,7 +510,7 @@ function PanditProfile() {
   );
 }
 
-/* ----------------- Puja Kits ----------------- */
+// ----------------- Puja Kits -----------------
 function PujaKits() {
   const kits = [
     { title: "Grih Pravesh Kit", price: "₹999" },
@@ -252,38 +539,153 @@ function PujaKits() {
   );
 }
 
-/* ----------------- Bottom Navbar ----------------- */
-function BottomNavbar() {
+// ----------------- Testimonials Section -----------------
+function TestimonialsSection() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-[#FFF7E0] shadow-lg rounded-t-2xl px-6 py-3 z-50 border-t border-orange-200">
-      <div className="flex justify-between items-center">
-        <div className="flex flex-col items-center text-[#800000]">
-          <HomeIcon className="w-6 h-6" />
-          <span className="text-xs">Home</span>
-        </div>
-        <div className="flex flex-col items-center text-gray-600">
-          <Search className="w-6 h-6" />
-          <span className="text-xs">Search</span>
-        </div>
-        <div className="flex flex-col items-center text-gray-600">
-          <Package className="w-6 h-6" />
-          <span className="text-xs">Kits</span>
-        </div>
-        <div className="flex flex-col items-center text-gray-600">
-          <Bookmark className="w-6 h-6" />
-          <span className="text-xs">Bookings</span>
-        </div>
-        <div className="flex flex-col items-center text-gray-600">
-          <Menu className="w-6 h-6" />
-          <span className="text-xs">More</span>
-        </div>
+    <div className="mt-6">
+      <h3 className="text-lg font-semibold text-[#800000] mb-3">Testimonials</h3>
+      
+      <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-4">
+        {testimonials.map(testimonial => (
+          <div 
+            key={testimonial.id} 
+            className="inline-block w-64 bg-white rounded-2xl p-4 shadow-md border border-orange-200"
+          >
+            <div className="flex items-center mb-3">
+              <img 
+                src={testimonial.image} 
+                alt={testimonial.name}
+                className="w-10 h-10 rounded-full object-cover mr-3"
+              />
+              <div>
+                <h4 className="font-medium text-gray-800">{testimonial.name}</h4>
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => (
+                    <Star 
+                      key={i} 
+                      size={14} 
+                      className={i < testimonial.rating ? "text-amber-400 fill-amber-400" : "text-gray-300"} 
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            <p className="text-sm text-gray-600">"{testimonial.review}"</p>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-/* ----------------- Floating Cart ----------------- */
-function FloatingCart() {
+// ----------------- Festival Offers Section -----------------
+function FestivalOffers() {
+  // Calculate time until offer expires
+  const getTimeUntil = (expiryDate) => {
+    const expiry = new Date(expiryDate);
+    const now = new Date();
+    const diffTime = expiry - now;
+    
+    if (diffTime <= 0) return "Expired";
+    
+    const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    return `${days}d ${hours}h left`;
+  };
+
+  return (
+    <div className="mt-6">
+      <h3 className="text-lg font-semibold text-[#800000] mb-3">Special Offers</h3>
+      
+      <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-4">
+        {specialOffers.map(offer => {
+          const timeLeft = getTimeUntil(offer.expiry);
+          const isExpired = timeLeft === "Expired";
+          
+          return (
+            <div 
+              key={offer.id} 
+              className="inline-block w-56 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-4 shadow-md text-white"
+            >
+              <div className="flex justify-between items-start mb-3">
+                <h4 className="font-bold">{offer.title}</h4>
+                <span className="bg-white text-amber-700 text-xs font-bold px-2 py-1 rounded-full">
+                  {offer.discount}
+                </span>
+              </div>
+              
+              <p className="text-sm opacity-90 mb-3">Limited time offer</p>
+              
+              <div className="flex items-center justify-between">
+                <span className={`text-xs font-medium ${isExpired ? 'text-red-100' : 'text-white'}`}>
+                  {timeLeft}
+                </span>
+                <button 
+                  disabled={isExpired}
+                  className={`text-xs font-bold py-1 px-3 rounded-full ${isExpired ? 'bg-gray-300' : 'bg-white text-amber-700'}`}
+                >
+                  {isExpired ? 'Expired' : 'Grab Now'}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ----------------- Quick Actions Floating Buttons -----------------
+function QuickActions() {
+  const [expanded, setExpanded] = useState(false);
+  
+  const actions = [
+    { icon: MessageCircle, label: "WhatsApp Support", color: "bg-green-500" },
+    { icon: Gift, label: "Request Puja", color: "bg-amber-500" },
+    { icon: Sparkles, label: "Donate", color: "bg-[#800000]" },
+  ];
+
+  const handleAction = (index) => {
+    setExpanded(false);
+    // Add actual functionality here
+    if (index === 0) window.open('https://wa.me/1234567890', '_blank');
+  };
+
+  return (
+    <div className="fixed left-5 bottom-28 z-50 flex flex-col items-center gap-3">
+      {expanded && actions.map((action, index) => (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: index * 0.1 }}
+          className="flex items-center gap-2 bg-white rounded-full shadow-lg pl-4 pr-5 py-2"
+        >
+          <span className="text-xs font-medium whitespace-nowrap">{action.label}</span>
+          <button 
+            onClick={() => handleAction(index)}
+            className={`${action.color} rounded-full p-2 text-white`}
+          >
+            <action.icon size={18} />
+          </button>
+        </motion.div>
+      ))}
+      
+      <motion.button
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setExpanded(!expanded)}
+        className="rounded-full p-3 bg-[#800000] text-white shadow-lg"
+      >
+        {expanded ? <X size={24} /> : <Sparkles size={24} />}
+      </motion.button>
+    </div>
+  );
+}
+
+// ----------------- Floating Cart with Badge -----------------
+function FloatingCart({ itemCount }) {
   return (
     <motion.div
       className="fixed bottom-20 right-5 z-50"
@@ -291,38 +693,185 @@ function FloatingCart() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.6 }}
     >
-      <button className="bg-[#800000] text-white rounded-full p-3 shadow-lg hover:bg-[#A52A2A]">
+      <button className="bg-[#800000] text-white rounded-full p-3 shadow-lg hover:bg-[#A52A2A] relative">
         <ShoppingCart size={22} />
+        {itemCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            {itemCount}
+          </span>
+        )}
       </button>
     </motion.div>
   );
 }
 
-/* ----------------- Main Home ----------------- */
-export default function Home() {
-  return (
-    <main className="min-h-screen pb-24 p-6 bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] font-sans text-gray-800 relative mt-5
-    ">
-      {/* Greeting */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="mt-6"
-      >
-        <p className="text-gray-600 text-sm">Good morning,</p>
-        <h2 className="text-2xl sm:text-3xl font-bold text-[#800000]">Avinash Sharma</h2>
-      </motion.div>
+// ----------------- Bottom Navbar -----------------
+function BottomNavbar() {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("home");
 
-      <AnimatedSearch />
+  const navItems = [
+    { id: "home", icon: HomeIcon, label: "Home" },
+    { id: "search", icon: Search, label: "Search" },
+    { id: "kits", icon: Package, label: "Kits" },
+    { id: "bookings", icon: Bookmark, label: "Bookings" },
+    { id: "more", icon: Menu, label: "More" },
+  ];
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 bg-[#FFF7E0] shadow-lg rounded-t-2xl px-6 py-3 z-50 border-t border-orange-200">
+      <div className="flex justify-between items-center">
+        {navItems.map(item => {
+          const Icon = item.icon;
+          const isActive = activeTab === item.id;
+          
+          return (
+            <button 
+              key={item.id}
+              onClick={() => {
+                setActiveTab(item.id);
+                if (item.id === "bookings") navigate("/bookings");
+              }}
+              className="flex flex-col items-center"
+            >
+              <Icon className={`w-6 h-6 ${isActive ? "text-[#800000]" : "text-gray-600"}`} />
+              <span className={`text-xs ${isActive ? "text-[#800000] font-medium" : "text-gray-600"}`}>
+                {item.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ----------------- Voice Search Modal -----------------
+function VoiceSearchModal({ isOpen, onClose, onResult }) {
+  const [isListening, setIsListening] = useState(false);
+  const [transcript, setTranscript] = useState("");
+  
+  const startListening = () => {
+    setIsListening(true);
+    setTranscript("Listening...");
+    
+    // Simulate voice recognition
+    setTimeout(() => {
+      const commands = [
+        "Book Satyanarayan Puja",
+        "Book Pandit for Griha Pravesh",
+        "Buy Puja Kit",
+        "Schedule Call with Pandit"
+      ];
+      
+      const randomCommand = commands[Math.floor(Math.random() * commands.length)];
+      setTranscript(`You said: ${randomCommand}`);
+      setIsListening(false);
+      
+      // Auto-close after result
+      setTimeout(() => onResult(randomCommand), 1500);
+    }, 2000);
+  };
+  
+  if (!isOpen) return null;
+  
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white rounded-2xl p-6 w-full max-w-md"
+      >
+        <div className="text-center">
+          <div className="flex justify-center mb-4">
+            <div className={`p-4 rounded-full ${isListening ? 'bg-red-100 animate-pulse' : 'bg-gray-100'}`}>
+              <Mic className={`w-8 h-8 ${isListening ? 'text-red-500' : 'text-gray-500'}`} />
+            </div>
+          </div>
+          
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">Voice Search</h3>
+          <p className="text-gray-600 mb-4">{transcript || "Click the mic and speak your command"}</p>
+          
+          <div className="flex gap-3 justify-center">
+            {!isListening ? (
+              <button 
+                onClick={startListening}
+                className="bg-[#800000] text-white px-6 py-2 rounded-full font-medium flex items-center gap-2"
+              >
+                <Mic size={18} /> Start Listening
+              </button>
+            ) : (
+              <button 
+                onClick={() => setIsListening(false)}
+                className="bg-gray-500 text-white px-6 py-2 rounded-full font-medium"
+              >
+                Stop
+              </button>
+            )}
+            <button 
+              onClick={onClose}
+              className="border border-gray-300 text-gray-700 px-6 py-2 rounded-full font-medium"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ----------------- Main Home Component -----------------
+export default function Home() {
+  const navigate = useNavigate();
+  const [cartItems] = useState(2); // Sample cart items count
+  const [voiceModalOpen, setVoiceModalOpen] = useState(false);
+
+  const handleVoiceSearch = () => {
+    setVoiceModalOpen(true);
+  };
+
+  const handleVoiceResult = (command) => {
+    setVoiceModalOpen(false);
+    
+    // Navigate based on command
+    if (command.includes("Satyanarayan")) {
+      navigate("/puja-booking", { state: { pujaType: "Satyanarayan" } });
+    } else if (command.includes("Griha Pravesh")) {
+      navigate("/puja-booking", { state: { pujaType: "Griha Pravesh" } });
+    } else if (command.includes("Puja Kit")) {
+      navigate("/pujakits");
+    } else if (command.includes("Schedule Call")) {
+      // Logic to schedule call
+    }
+  };
+
+  return (
+    <main className="min-h-screen pb-24 p-6 bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] font-sans text-gray-800 relative">
+      <DynamicGreeting />
+      <PanchangWidget />
+      <AnimatedSearch onVoiceSearch={handleVoiceSearch} />
+      
       <HeroBanner />
       <ServicesSection />
+      <UpcomingEvents />
       <GaneshPromo />
+      <PanditAvailability />
+      <DashboardSection />
       <PanditProfile />
       <PujaKits />
+      <TestimonialsSection />
+      <FestivalOffers />
 
-      <FloatingCart />
+      <QuickActions />
+      <FloatingCart itemCount={cartItems} />
       <BottomNavbar />
+      
+      <VoiceSearchModal 
+        isOpen={voiceModalOpen} 
+        onClose={() => setVoiceModalOpen(false)}
+        onResult={handleVoiceResult}
+      />
     </main>
   );
 }
