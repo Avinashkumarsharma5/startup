@@ -187,19 +187,19 @@ function HeroBanner() {
   const slides = [
     {
       id: 1,
-      img: "https://images.unsplash.com/photo-1581578021517-5d8ad8597856?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cHVqYXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+      img: "src/assets/images/havan.jpg",
       title: "Griha Pravesh Puja",
       subtitle: "Sacred beginnings with blessings",
     },
     {
       id: 2,
-      img: "https://images.unsplash.com/photo-1596450229552-4be056d72a0e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHB1amF8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
+      img: "src/assets/images/sanskaraa1.png",
       title: "Satyanarayan Puja",
       subtitle: "Invoke prosperity & harmony",
     },
     {
       id: 3,
-      img: "https://images.unsplash.com/photo-1600080972464-8a96f7002e5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHB1amF8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
+      img: "src/assets/images/sadi1.jpg",
       title: "Wedding Rituals",
       subtitle: "Memorable sacred unions",
     },

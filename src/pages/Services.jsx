@@ -90,7 +90,7 @@ export default function ServicesPage() {
             popularity: 95,
             tags: ["Popular", "Trending"],
             images: [
-              "https://images.unsplash.com/photo-1546778313-8e3a6a8e8b0c?q=80&w=1080&auto=format&fit=crop",
+              "src/assets/images/sanskaraa1.png",
             ],
             vendors: [
               { id: "d1", name: "Royal Decor Co.", rating: 4.8, available: true },
@@ -110,7 +110,7 @@ export default function ServicesPage() {
             popularity: 88,
             tags: ["Limited"],
             images: [
-              "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1080&auto=format&fit=crop",
+              "src/assets/images/havan.jpg",
             ],
             vendors: [
               { id: "l1", name: "Shine & Co.", rating: 4.5, available: true },
@@ -131,7 +131,7 @@ export default function ServicesPage() {
             popularity: 97,
             tags: ["Popular", "Best Value"],
             images: [
-              "https://images.unsplash.com/photo-1498654200943-1088dd4438ae?q=80&w=1080&auto=format&fit=crop",
+              "src/assets/images/catering1.jpg",
             ],
             vendors: [
               { id: "c1", name: "Sharma Caterers", rating: 4.8, available: true },
@@ -152,7 +152,7 @@ export default function ServicesPage() {
             popularity: 82,
             tags: ["Recommended"],
             images: [
-              "https://images.unsplash.com/photo-1577805947697-89e18249d767?q=80&w=1080&auto=format&fit=crop",
+              "src/assets/images/sadi1.jpg",
             ],
             vendors: [
               { id: "t1", name: "Deluxe Tent House", rating: 4.5, available: true },
@@ -172,7 +172,7 @@ export default function ServicesPage() {
             popularity: 91,
             tags: ["Premium", "Trending"],
             images: [
-              "https://images.unsplash.com/photo-1484704849700-f032a568e944?q=80&w=1080&auto=format&fit=crop",
+              "https://thvnext.bing.com/th/id/OIP.mAFBhSCmaIIXId0fkPTrUQHaE8?w=174&h=150&c=6&o=7&cb=ucfimg2&dpr=1.3&pid=1.7&rm=3&ucfimg=1",
             ],
             vendors: [
               { id: "v1", name: "Pixel Studio", rating: 4.9, available: true },
@@ -192,7 +192,7 @@ export default function ServicesPage() {
             popularity: 93,
             tags: ["Popular"],
             images: [
-              "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1080&auto=format&fit=crop",
+              "https://thvnext.bing.com/th/id/OIP.JQMTofnHEUevCaayAWht3wHaFj?w=245&h=184&c=7&r=0&o=7&cb=ucfimg2&dpr=1.3&pid=1.7&rm=3&ucfimg=1",
             ],
             vendors: [
               { id: "h1", name: "Sanskaraa Palace", rating: 4.7, available: true },
@@ -216,7 +216,7 @@ export default function ServicesPage() {
   // Video ads
   const adsVideos = useMemo(
     () => [
-      "https://cdn.coverr.co/videos/coverr-wedding-bouquet-5196/1080p.mp4",
+      "src/assets/images/sanskaravideo1.mp4",
       "https://cdn.coverr.co/videos/coverr-golden-festive-lights-6428/1080p.mp4",
       "https://cdn.coverr.co/videos/coverr-pretty-wedding-cake-0496/1080p.mp4",
     ],
@@ -227,13 +227,13 @@ export default function ServicesPage() {
   const reels = [
     {
       id: "r1",
-      src: "https://cdn.coverr.co/videos/coverr-a-beautiful-wedding-ceremony-8799/1080p.mp4",
+      src: "src/assets/images/sanskaravideo1.mp4",
       title: "Wedding snippets",
       views: "12.4K",
     },
     {
       id: "r2",
-      src: "https://cdn.coverr.co/videos/coverr-glittering-party-4341/1080p.mp4",
+      src: "src/assets/images/sanskaravideo1.mp4",
       title: "Lighting highlights",
       views: "8.7K",
     },
