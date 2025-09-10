@@ -35,6 +35,7 @@ import {
   Eye,
   Crown,
   ThumbsUp,
+  Menu,
 } from "lucide-react";
 
 export default function ServicesPage() {
@@ -61,12 +62,24 @@ export default function ServicesPage() {
   const [appliedCoupon, setAppliedCoupon] = useState("");
   const [couponSuccess, setCouponSuccess] = useState(false);
   const [showCoinAnimation, setShowCoinAnimation] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Refs
   const adRef = useRef(null);
   const recognitionRef = useRef(null);
   const filtersRef = useRef(null);
   const coinAnimationRef = useRef(null);
+
+  // Check screen size and adjust layout
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Load services data
   useEffect(() => {
@@ -110,7 +123,7 @@ export default function ServicesPage() {
             popularity: 88,
             tags: ["Limited"],
             images: [
-              "src/assets/images/havan.jpg",
+              "src/assets/images/sanskaraa banner1.jpg",
             ],
             vendors: [
               { id: "l1", name: "Shine & Co.", rating: 4.5, available: true },
@@ -152,7 +165,7 @@ export default function ServicesPage() {
             popularity: 82,
             tags: ["Recommended"],
             images: [
-              "src/assets/images/sadi1.jpg",
+              "src/assets/images/havan.jpg",
             ],
             vendors: [
               { id: "t1", name: "Deluxe Tent House", rating: 4.5, available: true },
@@ -172,7 +185,7 @@ export default function ServicesPage() {
             popularity: 91,
             tags: ["Premium", "Trending"],
             images: [
-              "https://thvnext.bing.com/th/id/OIP.mAFBhSCmaIIXId0fkPTrUQHaE8?w=174&h=150&c=6&o=7&cb=ucfimg2&dpr=1.3&pid=1.7&rm=3&ucfimg=1",
+              "src/assets/images/havan.jpg",
             ],
             vendors: [
               { id: "v1", name: "Pixel Studio", rating: 4.9, available: true },
@@ -192,7 +205,7 @@ export default function ServicesPage() {
             popularity: 93,
             tags: ["Popular"],
             images: [
-              "https://thvnext.bing.com/th/id/OIP.JQMTofnHEUevCaayAWht3wHaFj?w=245&h=184&c=7&r=0&o=7&cb=ucfimg2&dpr=1.3&pid=1.7&rm=3&ucfimg=1",
+              "src/assets/images/sadi1.jpg",
             ],
             vendors: [
               { id: "h1", name: "Sanskaraa Palace", rating: 4.7, available: true },
@@ -469,21 +482,65 @@ export default function ServicesPage() {
       {/* Toast container (for programmatic toasts) */}
       <div id="toast-container" className="fixed top-4 right-4 z-50 space-y-2"></div>
       
+      {/* Mobile Menu Button */}
+      {isMobile && (
+        <button 
+          className="fixed top-4 left-4 z-40 p-2 rounded-full bg-amber-100 border border-amber-200 shadow-md"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          <Menu className="w-5 h-5 text-amber-800" />
+        </button>
+      )}
       
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && isMobile && (
+          <motion.div 
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
+            transition={{ type: 'tween' }}
+            className="fixed inset-0 z-30 bg-amber-50 p-4 shadow-lg"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-bold text-lg text-amber-800">Menu</h2>
+              <button onClick={() => setMobileMenuOpen(false)}>
+                <X className="w-6 h-6 text-amber-800" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800">
+                My Account
+              </button>
+              <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800">
+                My Bookings
+              </button>
+              <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800">
+                Notifications
+              </button>
+              <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800">
+                Help & Support
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Top Bar */}
       <header className="sticky top-0 z-30 backdrop-blur bg-amber-100/70 border-b border-amber-200">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between mt-12">
-          <div className="flex items-center gap-2 mt-6">
+          <div className="flex items-center gap-2 mt-9">
             <Sparkles className="w-5 h-5 text-amber-600" />
             <h1 className="font-bold text-lg text-amber-800">Sanskaraa Services</h1>
             <span className="ml-3 text-xs px-2 py-0.5 rounded-full bg-amber-200 text-amber-800">Coins: {coins}</span>
           </div>
           <div className="flex items-center gap-2">
             <button className={`px-3 py-1.5 rounded-xl border text-sm ${chatOpen ? "bg-amber-700 text-white" : "bg-white border-amber-200 text-amber-800"}`} onClick={() => setChatOpen((v) => !v)}>
-              <MessageSquare className="inline w-4 h-4 mr-1" /> Chat
+              <MessageSquare className="inline w-4 h-4 mr-1" /> {!isMobile && 'Chat'}
             </button>
             <a href="tel:+911234567890" className="px-3 py-1.5 rounded-xl border border-amber-200 text-sm bg-white text-amber-800">
-              <PhoneCall className="inline w-4 h-4 mr-1" /> Call
+              <PhoneCall className="inline w-4 h-4 mr-1" /> {!isMobile && 'Call'}
             </a>
           </div>
         </div>
@@ -569,7 +626,7 @@ export default function ServicesPage() {
             ref={adRef}
             key={currentAd}
             src={adsVideos[currentAd]}
-            className="w-full h-64 lg:h-[380px] object-cover"
+            className="w-full h-48 md:h-64 lg:h-[380px] object-cover"
             autoPlay
             muted
             playsInline
@@ -675,7 +732,7 @@ export default function ServicesPage() {
                 key={s.id} 
                 layout
                 className="rounded-2xl overflow-hidden bg-amber-50 border border-amber-200 shadow-sm group hover:shadow-md transition-all duration-300 relative"
-                whileHover={{ y: -5 }}
+                whileHover={{ y: isMobile ? 0 : -5 }}
               >
                 {/* Service Tags */}
                 <div className="absolute top-2 left-2 z-10 flex gap-1 flex-wrap max-w-[70%]">
@@ -924,10 +981,10 @@ export default function ServicesPage() {
               className="bg-amber-50 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto mx-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="p-6">
+              <div className="p-4 md:p-6">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h2 className="text-2xl font-bold text-amber-800">{selectedService.title}</h2>
+                    <h2 className="text-xl md:text-2xl font-bold text-amber-800">{selectedService.title}</h2>
                     <p className="text-amber-600 mt-1">{selectedService.desc}</p>
                   </div>
                   <button 
@@ -940,13 +997,13 @@ export default function ServicesPage() {
                 
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <img src={selectedService.images[0]} alt={selectedService.title} className="w-full h-60 object-cover rounded-xl" />
+                    <img src={selectedService.images[0]} alt={selectedService.title} className="w-full h-48 md:h-60 object-cover rounded-xl" />
                   </div>
                   
                   <div className="space-y-4">
                     <div>
                       <h3 className="font-semibold text-amber-800">Pricing</h3>
-                      <p className="text-2xl font-bold text-amber-800">{rupee(selectedService.basePrice)} {selectedService.unit && <span className="text-lg">{selectedService.unit}</span>}</p>
+                      <p className="text-xl md:text-2xl font-bold text-amber-800">{rupee(selectedService.basePrice)} {selectedService.unit && <span className="text-lg">{selectedService.unit}</span>}</p>
                     </div>
                     
                     <div>
