@@ -1,59 +1,84 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    // 🚀 Get registered user from localStorage
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    if (!storedUser) {
+      setError("No account found. Please sign up first.");
+      return;
+    }
+
+    if (storedUser.email === email && storedUser.password === password) {
+      // ✅ Login success
+      localStorage.setItem(
+        "loggedInUser",
+        JSON.stringify({ ...storedUser, isLoggedIn: true })
+      );
+
+      navigate("/UserProfile");
+    } else {
+      setError("Invalid email or password");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-200 via-orange-300 to-orange-400 flex items-center justify-center">
-      
-      {/* Portrait Login Card */}
-      <div className="w-full max-w-md bg-[#5c2b1d] rounded-2xl shadow-2xl flex flex-col items-center p-10">
-        
-        {/* Logo + Name */}
-        <div className="flex items-center space-x-2 mb-8">
-          <img
-            src="/sanskaraa-logo.png"
-            alt="Sanskaraa Logo"
-            className="w-12 h-12 object-contain"
-          />
-          <h1 className="text-3xl font-bold text-white">Sanskaraa</h1>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-orange-50 px-4">
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+        <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
+          Login to your account
+        </h2>
 
-        {/* Title */}
-        <h2 className="text-4xl font-semibold text-white mb-10">Log In</h2>
-
-        {/* Form */}
-        <form className="w-full space-y-6">
+        <form onSubmit={handleLogin} className="space-y-4">
           <input
-            type="text"
-            placeholder="Phone number or email"
-            className="w-full px-5 py-4 rounded-lg bg-transparent border border-yellow-500 text-white placeholder:text-yellow-200 focus:ring-2 focus:ring-yellow-400 outline-none"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
           />
 
           <input
             type="password"
             placeholder="Password"
-            className="w-full px-5 py-4 rounded-lg bg-transparent border border-yellow-500 text-white placeholder:text-yellow-200 focus:ring-2 focus:ring-yellow-400 outline-none"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
           />
 
-          <div className="text-right">
-            <a href="#" className="text-yellow-300 text-sm hover:underline">
-              Forgot password?
-            </a>
-          </div>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
           <button
             type="submit"
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-[#5c2b1d] font-semibold py-4 rounded-lg transition"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded-lg transition"
           >
-            Log In
+            Login
           </button>
         </form>
 
-        {/* Sign Up */}
-        <p className="mt-10 text-center text-sm text-white">
+        <div className="flex items-center my-6">
+          <hr className="flex-grow border-gray-300" />
+          <span className="px-3 text-gray-500 text-sm">Or</span>
+          <hr className="flex-grow border-gray-300" />
+        </div>
+
+        <p className="mt-6 text-center text-sm text-gray-700">
           Don’t have an account?{" "}
-          <a href="#" className="text-yellow-400 font-medium hover:underline">
+          <Link
+            to="/signup"
+            className="text-orange-500 font-medium hover:underline"
+          >
             Sign Up
-          </a>
+          </Link>
         </p>
       </div>
     </div>
