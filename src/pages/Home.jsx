@@ -564,7 +564,7 @@ function TestimonialsSection() {
                     <Star 
                       key={i} 
                       size={14} 
-                      className={i < testimonial.rating ? "text-amber-500 fill-amber-300" : "text-gray-300"} 
+                      className={i < testimonial.rating ? "text-amber-500 fill-amber-00" : "text-gray-300"} 
                     />
                   ))}
                 </div>
