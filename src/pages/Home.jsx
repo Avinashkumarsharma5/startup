@@ -545,17 +545,17 @@ function TestimonialsSection() {
     <div className="mt-6">
       <h3 className="text-lg font-semibold text-[#800000] mb-3">Testimonials</h3>
       
-      <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-4">
+      <div className="overflow-x-auto whitespace-nowrap pb-6 space-x-8">
         {testimonials.map(testimonial => (
           <div 
             key={testimonial.id} 
-            className="inline-block w-64 bg-white rounded-2xl p-4 shadow-md border border-orange-200"
+            className="inline-block w-64 bg-white rounded-2xl p-6 shadow-md border border-orange-200"
           >
-            <div className="flex items-center mb-3">
+            <div className="flex items-center mb-5">
               <img 
                 src={testimonial.image} 
                 alt={testimonial.name}
-                className="w-10 h-10 rounded-full object-cover mr-3"
+                className="w-15 h-12 rounded-full object-cover mr-7"
               />
               <div>
                 <h4 className="font-medium text-gray-800">{testimonial.name}</h4>
@@ -564,7 +564,7 @@ function TestimonialsSection() {
                     <Star 
                       key={i} 
                       size={14} 
-                      className={i < testimonial.rating ? "text-amber-400 fill-amber-400" : "text-gray-300"} 
+                      className={i < testimonial.rating ? "text-amber-500 fill-amber-300" : "text-gray-300"} 
                     />
                   ))}
                 </div>
