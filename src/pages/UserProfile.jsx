@@ -149,7 +149,7 @@ export default function UserProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] pb-20">
+    <div className="min-h-screen bg-[#FFF8F0] pb-20 mt-12">
       {/* Cover */}
       <div className="relative h-40 bg-gradient-to-r from-orange-300 to-yellow-200">
         <img
