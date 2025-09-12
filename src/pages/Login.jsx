@@ -9,8 +9,6 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-
-    // 🚀 Get registered user from localStorage
     const storedUser = JSON.parse(localStorage.getItem("user"));
 
     if (!storedUser) {
@@ -19,12 +17,7 @@ export default function Login() {
     }
 
     if (storedUser.email === email && storedUser.password === password) {
-      // ✅ Login success
-      localStorage.setItem(
-        "loggedInUser",
-        JSON.stringify({ ...storedUser, isLoggedIn: true })
-      );
-
+      localStorage.setItem("loggedInUser", JSON.stringify({ ...storedUser, isLoggedIn: true }));
       navigate("/UserProfile");
     } else {
       setError("Invalid email or password");
@@ -46,7 +39,6 @@ export default function Login() {
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
           />
-
           <input
             type="password"
             placeholder="Password"
@@ -65,18 +57,9 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="flex items-center my-6">
-          <hr className="flex-grow border-gray-300" />
-          <span className="px-3 text-gray-500 text-sm">Or</span>
-          <hr className="flex-grow border-gray-300" />
-        </div>
-
         <p className="mt-6 text-center text-sm text-gray-700">
           Don’t have an account?{" "}
-          <Link
-            to="/signup"
-            className="text-orange-500 font-medium hover:underline"
-          >
+          <Link to="/signup" className="text-orange-500 font-medium hover:underline">
             Sign Up
           </Link>
         </p>

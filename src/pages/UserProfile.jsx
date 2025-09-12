@@ -2,33 +2,31 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function UserProfile() {
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // ✅ Get logged-in user from localStorage
-    const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (storedUser && storedUser.isLoggedIn) {
-      setUser(storedUser);
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (!loggedInUser || !loggedInUser.isLoggedIn) {
+      navigate("/login");
     } else {
-      navigate("/login"); // ⚡ agar login nahi hai toh redirect
+      setUser(loggedInUser);
     }
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("loggedInUser"); // ✅ remove auth data
+    localStorage.removeItem("loggedInUser");
     navigate("/login");
   };
 
-  if (!user) return null; // jab tak user load ho raha hai
+  if (!user) return null;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-orange-50 px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">
-          Welcome, {user.name} 👋
-        </h2>
-        <p className="text-gray-600 mb-6">{user.email}</p>
+    <div className="min-h-screen bg-orange-50 p-6 mt-12">
+      <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Welcome, {user.name}</h2>
+        <p className="text-gray-700 mb-2">Email: {user.email}</p>
+        <p className="text-gray-700 mb-6">Role: {user.role}</p>
 
         <button
           onClick={handleLogout}
