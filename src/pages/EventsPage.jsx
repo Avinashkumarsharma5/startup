@@ -4,16 +4,16 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 const banners = [
-  "src/assets/images/sanskaraa1.png",
-  "src/assets/images/sanskaraa banner1.jpg",
-  "src/assets/images/banner1.png",
+  "src/assets/images/decor2.png",
+  "src/assets/images/decor3.png",
+  "src/assets/images/sanskaraa app.png",
 ];
 
 // --- Event Images Mapping ---
 const eventImages = {
   // 🏡 Ghar ke Sanskaar
-  "Griha Pravesh / गृह प्रवेश": "https://th.bing.com/th/id/OIP.v9bx4BEkqD3o1qgOCHgsqAAAAA?w=222&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=320",
-  "Vastu Shanti / वास्तु शांति": "https://dhaarmi.com/wp-content/uploads/2024/03/vastu-pooja.webp",
+  "Griha Pravesh / गृह प्रवेश": "src/assets/images/grrih prews 1.png",
+  "Vastu Shanti / वास्तु शांति": "src/assets/images/havan.jpg",
   "Navagraha Shanti / नवग्रह शांति": "src/assets/images/navagraha.jpg",
   "Sundarkand Path / सुंदरकांड पाठ": "src/assets/images/sundarkand.jpg",
   "Ramayan Path / रामायण पाठ": "src/assets/images/ramayan.jpg",
@@ -163,11 +163,11 @@ const getEventData = () => {
 
 // Mock pandit data
 const panditsData = [
-  { id: 1, name: "Pandit Ravi Shankar", experience: "15 years", languages: ["Hindi", "English"], rating: 4.9, image: "src/assets/pandits/pandit1.jpg" },
-  { id: 2, name: "Pandit Vijay Kumar", experience: "12 years", languages: ["Hindi", "Marathi"], rating: 4.8, image: "src/assets/pandits/pandit2.jpg" },
-  { id: 3, name: "Pandit Suresh Sharma", experience: "10 years", languages: ["Hindi", "Tamil"], rating: 4.7, image: "src/assets/pandits/pandit3.jpg" },
-  { id: 4, name: "Pandit Anil Joshi", experience: "18 years", languages: ["Hindi", "Gujarati"], rating: 4.9, image: "src/assets/pandits/pandit4.jpg" },
-  { id: 5, name: "Pandit Mohan Lal", experience: "8 years", languages: ["Hindi", "Telugu"], rating: 4.6, image: "src/assets/pandits/pandit5.jpg" },
+  { id: 1, name: "Pandit Ravi Shankar", experience: "15 years", languages: ["Hindi", "English"], rating: 4.9, image: "src/assets/images/panditji 2.png" },
+  { id: 2, name: "Pandit Vijay Kumar", experience: "12 years", languages: ["Hindi", "Marathi"], rating: 4.8, image: "src/assets/images/panditji 3.png" },
+  { id: 3, name: "Pandit Suresh Sharma", experience: "10 years", languages: ["Hindi", "Tamil"], rating: 4.7, image: "src/assets/images/pandit.jpg" },
+  { id: 4, name: "Pandit Anil Joshi", experience: "18 years", languages: ["Hindi", "Gujarati"], rating: 4.9, image: "ssrc/assets/images/panditji 2.png" },
+  { id: 5, name: "Pandit Mohan Lal", experience: "8 years", languages: ["Hindi", "Telugu"], rating: 4.6, image: "src/assets/images/panditji 3.png" },
 ];
 
 // Mock packages data
@@ -187,9 +187,9 @@ const reviewsData = [
 
 // Festival countdown data
 const festivalCountdown = [
-  { name: "Diwali", date: "2023-11-12", image: "src/assets/festivals/diwali.jpg" },
-  { name: "Holi", date: "2024-03-25", image: "src/assets/festivals/holi.jpg" },
-  { name: "Navratri", date: "2023-10-15", image: "src/assets/festivals/navratri.jpg" },
+  { name: "Diwali", date: "2023-11-12", image: "src/assets/images/sadi1.jpg" },
+  { name: "Holi", date: "2024-03-25", image: "src/assets/images/sanskaraa kit2.png" },
+  { name: "Navratri", date: "2023-10-15", image: "src/assets/images/kit puja.png" },
 ];
 
 export default function EventsPage() {

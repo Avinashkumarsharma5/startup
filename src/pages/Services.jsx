@@ -103,7 +103,7 @@ export default function ServicesPage() {
             popularity: 95,
             tags: ["Popular", "Trending"],
             images: [
-              "src/assets/images/sanskaraa1.png",
+              "src/assets/images/decor2.png",
             ],
             vendors: [
               { id: "d1", name: "Royal Decor Co.", rating: 4.8, available: true },
@@ -123,7 +123,7 @@ export default function ServicesPage() {
             popularity: 88,
             tags: ["Limited"],
             images: [
-              "src/assets/images/sanskaraa banner1.jpg",
+              "src/assets/images/decor3.png",
             ],
             vendors: [
               { id: "l1", name: "Shine & Co.", rating: 4.5, available: true },
@@ -230,8 +230,7 @@ export default function ServicesPage() {
   const adsVideos = useMemo(
     () => [
       "src/assets/images/sanskaravideo1.mp4",
-      "https://cdn.coverr.co/videos/coverr-golden-festive-lights-6428/1080p.mp4",
-      "https://cdn.coverr.co/videos/coverr-pretty-wedding-cake-0496/1080p.mp4",
+      
     ],
     []
   );
