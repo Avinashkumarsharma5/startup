@@ -122,8 +122,8 @@ export default function UserProfile() {
 
   const userData = {
     ...user,
-    coverImage: "https://images.unsplash.com/photo-1603791452906-bb8de6f7da57",
-    profileImage: "https://th.bing.com/th/id/OIP.EPUDQL3xjDfYLwuNm9L1fQHaLH?w=186&h=279",
+    coverImage: "src/assets/images/team 1.png",
+    profileImage: "src/assets/images/sanskaraa app.png",
     stats: { bookings: 5, wishlist: 3, orders: 2 },
     bookings: ["Ganesh Puja - 1 Sep", "Satyanarayan Puja - 5 Sep"],
     wishlist: ["Havan Kit", "Puja Thali Set"],
