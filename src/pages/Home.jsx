@@ -187,19 +187,19 @@ function HeroBanner() {
   const slides = [
     {
       id: 1,
-      img: "src/assets/images/havan.jpg",
+      img: "src/assets/images/grrih prews 1.png",
       title: "Griha Pravesh Puja",
       subtitle: "Sacred beginnings with blessings",
     },
     {
       id: 2,
-      img: "src/assets/images/sanskaraa1.png",
+      img: "src/assets/images/ganesh puja 1.jpeg",
       title: "Satyanarayan Puja",
       subtitle: "Invoke prosperity & harmony",
     },
     {
       id: 3,
-      img: "src/assets/images/sadi1.jpg",
+      img: "src/assets/images/decor2.png",
       title: "Wedding Rituals",
       subtitle: "Memorable sacred unions",
     },
@@ -383,7 +383,7 @@ function GaneshPromo() {
     >
       <div className="flex items-center gap-4">
         <img
-          src="https://tse2.mm.bing.net/th/id/OIP.rUHDO5E0p0FGE7EIKxElpwHaHb?pid=Api&P=0&h=180"
+          src="src/assets/images/ganesh puja 1.jpeg"
           alt="Ganesh Ji"
           className="w-14 h-14"
         />
@@ -488,7 +488,7 @@ function PanditProfile() {
       <div className="bg-[#FFF7E0] rounded-2xl p-4 shadow-md border border-orange-200 space-y-4">
         <div className="w-full overflow-hidden rounded-xl">
           <img
-            src="https://tse3.mm.bing.net/th/id/OIP.InT1MAwd-CrF5LOkyF34XQHaFB?pid=Api&P=0&h=180"
+            src="src/assets/images/panditji 3.png"
             alt="Pandit Ji"
             className="w-full h-auto object-cover"
           />
