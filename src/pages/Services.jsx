@@ -849,15 +849,15 @@ export default function ServicesPage() {
 
         {/* Top Bar */}
         <header className="sticky top-0 z-30 backdrop-blur bg-amber-100/70 border-b border-amber-200">
-          <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between mt-12">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between mt-12">
             <div className="flex items-center gap-2 mt-8">
-              <Sparkles className="w-5 h-5 text-amber-600" />
-              <h1 className="font-bold text-lg text-amber-800">Sanskaraa Services</h1>
-              <span className="ml-3 text-xs px-2 py-0.5 rounded-full bg-amber-200 text-amber-800">Coins: {coins}</span>
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
+              <h1 className="font-bold text-base sm:text-lg text-amber-800">Sanskaraa Services</h1>
+              <span className="ml-2 sm:ml-3 text-xs px-2 py-0.5 rounded-full bg-amber-200 text-amber-800 hidden sm:inline">Coins: {coins}</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               {/* Language Selector */}
-              <div className="relative">
+              <div className="relative hidden sm:block">
                 <button 
                   onClick={() => setShowLanguageSelector(!showLanguageSelector)}
                   className="px-2 py-1.5 rounded-xl border border-amber-200 text-sm bg-white text-amber-800 flex items-center gap-1"
@@ -893,11 +893,11 @@ export default function ServicesPage() {
                 </AnimatePresence>
               </div>
               
-              <button className={`px-3 py-1.5 rounded-xl border text-sm ${chatOpen ? "bg-amber-700 text-white" : "bg-white border-amber-200 text-amber-800"}`} onClick={() => setChatOpen((v) => !v)}>
-                <MessageSquare className="inline w-4 h-4 mr-1" /> {!isMobile && 'Chat'}
+              <button className={`px-2 sm:px-3 py-1.5 rounded-xl border text-sm ${chatOpen ? "bg-amber-700 text-white" : "bg-white border-amber-200 text-amber-800"}`} onClick={() => setChatOpen((v) => !v)}>
+                <MessageSquare className="inline w-4 h-4 sm:mr-1" /> {!isMobile && 'Chat'}
               </button>
-              <a href="tel:+911234567890" className="px-3 py-1.5 rounded-xl border border-amber-200 text-sm bg-white text-amber-800">
-                <PhoneCall className="inline w-4 h-4 mr-1" /> {!isMobile && 'Call'}
+              <a href="tel:+911234567890" className="px-2 sm:px-3 py-1.5 rounded-xl border border-amber-200 text-sm bg-white text-amber-800">
+                <PhoneCall className="inline w-4 h-4 sm:mr-1" /> {!isMobile && 'Call'}
               </a>
               
               {isLoggedIn ? (
@@ -913,7 +913,7 @@ export default function ServicesPage() {
                     setAuthModalOpen(true);
                     setAuthMode('login');
                   }}
-                  className="px-3 py-1.5 rounded-xl bg-amber-700 text-white text-sm hover:bg-amber-800"
+                  className="px-2 sm:px-3 py-1.5 rounded-xl bg-amber-700 text-white text-sm hover:bg-amber-800"
                 >
                   Login
                 </button>
@@ -924,28 +924,28 @@ export default function ServicesPage() {
 
         {/* Sticky Search & Filters */}
         <div ref={filtersRef} className="sticky top-[64px] z-20 bg-amber-50 border-b border-amber-200 shadow-sm transition-colors duration-300">
-          <div className="max-w-7xl mx-auto px-4 py-3">
-            <div className="flex flex-col lg:flex-row gap-3 items-start lg:items-center">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-start sm:items-center">
               <div className="relative flex-1 w-full">
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search (e.g., hall, catering, lights)"
-                  className="w-full px-4 py-2.5 rounded-xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-200 bg-white text-amber-800"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-200 bg-white text-amber-800 text-sm sm:text-base"
                 />
-                <Search className="w-4 h-4 text-amber-500 absolute right-3 top-3" />
+                <Search className="w-4 h-4 text-amber-500 absolute right-3 top-2.5 sm:top-3" />
               </div>
               
-              <div className="flex gap-2 w-full lg:w-auto">
-                <button onClick={onVoice} className={`px-3 py-2.5 rounded-xl border ${listening ? "bg-amber-100 border-amber-300" : "bg-white border-amber-200"}`}>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <button onClick={onVoice} className={`px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl border ${listening ? "bg-amber-100 border-amber-300" : "bg-white border-amber-200"}`}>
                   <Mic className={`w-4 h-4 ${listening ? "text-amber-600 animate-pulse" : "text-amber-600"}`} />
                 </button>
                 
                 <button 
                   onClick={() => setShowFilters(!showFilters)}
-                  className="px-3 py-2.5 rounded-xl border border-amber-200 bg-white text-amber-800 flex items-center gap-1"
+                  className="px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl border border-amber-200 bg-white text-amber-800 flex items-center gap-1 text-sm sm:text-base"
                 >
-                  <Filter className="w-4 h-4" /> Filters
+                  <Filter className="w-4 h-4" /> <span className="hidden sm:inline">Filters</span>
                   {showFilters ? <ChevronDown className="w-4 h-4 transform rotate-180" /> : <ChevronDown className="w-4 h-4" />}
                 </button>
               </div>
@@ -958,11 +958,11 @@ export default function ServicesPage() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 overflow-hidden"
+                  className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 overflow-hidden"
                 >
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-amber-800">Category</label>
-                    <select value={category || ""} onChange={(e) => setCategory(e.target.value || null)} className="px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800">
+                    <label className="text-xs sm:text-sm font-medium text-amber-800">Category</label>
+                    <select value={category || ""} onChange={(e) => setCategory(e.target.value || null)} className="px-2 sm:px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm">
                       <option value="">All Categories</option>
                       {[...new Set(services.map((s) => s.category))].map((c) => (
                         <option key={c} value={c}>{c}</option>
@@ -971,8 +971,8 @@ export default function ServicesPage() {
                   </div>
                   
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-amber-800">Min Rating</label>
-                    <select value={minRating} onChange={(e) => setMinRating(Number(e.target.value))} className="px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800">
+                    <label className="text-xs sm:text-sm font-medium text-amber-800">Min Rating</label>
+                    <select value={minRating} onChange={(e) => setMinRating(Number(e.target.value))} className="px-2 sm:px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm">
                       <option value={0}>Any rating</option>
                       <option value={4}>4.0+</option>
                       <option value={4.5}>4.5+</option>
@@ -981,8 +981,8 @@ export default function ServicesPage() {
                   </div>
                   
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-amber-800">Sort By</label>
-                    <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800">
+                    <label className="text-xs sm:text-sm font-medium text-amber-800">Sort By</label>
+                    <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="px-2 sm:px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm">
                       <option value="popularity">Popularity</option>
                       <option value="price-low">Price: Low to High</option>
                       <option value="price-high">Price: High to Low</option>
@@ -991,7 +991,7 @@ export default function ServicesPage() {
                   </div>
                   
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-amber-800">Price Range</label>
+                    <label className="text-xs sm:text-sm font-medium text-amber-800">Price Range</label>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-amber-600">₹{filters.priceRange[0]}</span>
                       <input 
@@ -1008,8 +1008,8 @@ export default function ServicesPage() {
                   </div>
                   
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-amber-800">Vendor Rating</label>
-                    <select value={filters.vendorRating} onChange={(e) => setFilters(prev => ({ ...prev, vendorRating: Number(e.target.value) }))} className="px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800">
+                    <label className="text-xs sm:text-sm font-medium text-amber-800">Vendor Rating</label>
+                    <select value={filters.vendorRating} onChange={(e) => setFilters(prev => ({ ...prev, vendorRating: Number(e.target.value) }))} className="px-2 sm:px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm">
                       <option value={0}>Any rating</option>
                       <option value={4}>4.0+</option>
                       <option value={4.5}>4.5+</option>
@@ -1022,42 +1022,42 @@ export default function ServicesPage() {
         </div>
 
         {/* Hero: Video Ads + Search */}
-        <section className="max-w-7xl mx-auto px-4 pt-5 grid lg:grid-cols-3 gap-6">
+        <section className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-5 grid lg:grid-cols-3 gap-4 sm:gap-6">
           <motion.div layout className="lg:col-span-2 rounded-2xl overflow-hidden bg-black/90 relative shadow">
             <video
               ref={adRef}
               key={currentAd}
               src={adsVideos[currentAd]}
-              className="w-full h-48 md:h-64 lg:h-[380px] object-cover"
+              className="w-full h-40 sm:h-48 md:h-64 lg:h-[380px] object-cover"
               autoPlay
               muted
               playsInline
               controls={false}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-            <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-              <div className="text-white/90 text-sm">Auto-playing ads • {currentAd + 1}/{adsVideos.length}</div>
-              <div className="flex gap-2">
+            <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3 right-2 sm:right-3 flex items-center justify-between">
+              <div className="text-white/90 text-xs sm:text-sm">Auto-playing ads • {currentAd + 1}/{adsVideos.length}</div>
+              <div className="flex gap-1 sm:gap-2">
                 <button
-                  className="p-2 rounded-full bg-white/80 hover:bg-white"
+                  className="p-1.5 sm:p-2 rounded-full bg-white/80 hover:bg-white"
                   onClick={() => setCurrentAd((p) => (p - 1 + adsVideos.length) % adsVideos.length)}
                   aria-label="Prev ad"
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
                 <button
-                  className="p-2 rounded-full bg-white/80 hover:bg-white"
+                  className="p-1.5 sm:p-2 rounded-full bg-white/80 hover:bg-white"
                   onClick={() => setCurrentAd((p) => (p + 1) % adsVideos.length)}
                   aria-label="Next ad"
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               </div>
             </div>
           </motion.div>
 
-          <motion.div layout className="rounded-2xl p-4 bg-amber-50 shadow border border-amber-200 transition-colors duration-300">
-            <div className="font-semibold flex items-center gap-2 mb-2 text-amber-800">
+          <motion.div layout className="rounded-2xl p-3 sm:p-4 bg-amber-50 shadow border border-amber-200 transition-colors duration-300">
+            <div className="font-semibold flex items-center gap-2 mb-2 text-amber-800 text-sm sm:text-base">
               <Search className="w-4 h-4" /> Find a service
             </div>
             
@@ -1066,7 +1066,7 @@ export default function ServicesPage() {
                 <CalendarDays className="w-4 h-4 text-amber-600" />
                 <input 
                   type="date" 
-                  className="flex-1 px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800" 
+                  className="flex-1 px-2 sm:px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm" 
                   value={eventDate} 
                   onChange={(e) => setEventDate(e.target.value)} 
                 />
@@ -1074,7 +1074,7 @@ export default function ServicesPage() {
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-amber-600" />
                 <input 
-                  className="px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800" 
+                  className="px-2 sm:px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm" 
                   value={city} 
                   onChange={(e) => setCity(e.target.value)} 
                 />
@@ -1082,7 +1082,7 @@ export default function ServicesPage() {
             </div>
             
             <div className="mt-4">
-              <div className="text-sm font-medium text-amber-800 mb-2">Apply Coupon</div>
+              <div className="text-xs sm:text-sm font-medium text-amber-800 mb-2">Apply Coupon</div>
               <div className="flex gap-2">
                 <input
                   value={appliedCoupon}
@@ -1091,12 +1091,12 @@ export default function ServicesPage() {
                     setCouponSuccess(false);
                   }}
                   placeholder="Enter coupon code"
-                  className="flex-1 px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800"
+                  className="flex-1 px-2 sm:px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm"
                 />
                 <button 
                   onClick={applyCoupon}
                   disabled={couponSuccess}
-                  className={`px-3 py-2 rounded-xl text-sm ${couponSuccess ? "bg-amber-600 text-white" : "bg-amber-700 text-white"}`}
+                  className={`px-2 sm:px-3 py-2 rounded-xl text-xs sm:text-sm ${couponSuccess ? "bg-amber-600 text-white" : "bg-amber-700 text-white"}`}
                 >
                   {couponSuccess ? "Applied!" : "Apply"}
                 </button>
@@ -1108,27 +1108,27 @@ export default function ServicesPage() {
         </section>
 
         {/* Seasonal / Trending chips */}
-        <section className="max-w-7xl mx-auto px-4 mt-6 flex flex-wrap gap-2">
+        <section className="max-w-7xl mx-auto px-3 sm:px-4 mt-4 sm:mt-6 flex flex-wrap gap-2">
           {seasonal.map((s) => (
             <span key={s.id} className={`text-xs px-2 py-1 rounded-full ${s.color} border border-amber-300`}>{s.tag}</span>
           ))}
         </section>
 
         {/* Services Grid */}
-        <section className="max-w-7xl mx-auto px-4 mt-5">
+        <section className="max-w-7xl mx-auto px-3 sm:px-4 mt-4 sm:mt-5">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-lg font-semibold text-amber-800">All Services</h2>
-            <span className="text-sm text-amber-600">{filtered.length} results</span>
+            <h2 className="text-base sm:text-lg font-semibold text-amber-800">All Services</h2>
+            <span className="text-xs sm:text-sm text-amber-600">{filtered.length} results</span>
           </div>
 
           {loading ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
               {[...Array(6)].map((_, i) => (
                 <ServiceSkeleton key={i} />
               ))}
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
               {filtered.map((s) => (
                 <motion.div 
                   key={s.id} 
@@ -1189,18 +1189,18 @@ export default function ServicesPage() {
                     </span>
                   </div>
                   
-                  <div className="p-4">
-                    <div className="flex items-center gap-2 font-semibold text-amber-800">
-                      <span className="p-1.5 rounded-xl bg-amber-100 text-amber-700">{s.icon}</span>
+                  <div className="p-3 sm:p-4">
+                    <div className="flex items-center gap-2 font-semibold text-amber-800 text-sm sm:text-base">
+                      <span className="p-1 sm:p-1.5 rounded-xl bg-amber-100 text-amber-700">{s.icon}</span>
                       {s.title}
                     </div>
-                    <p className="text-sm text-amber-600 mt-1 line-clamp-2">{s.desc}</p>
+                    <p className="text-xs sm:text-sm text-amber-600 mt-1 line-clamp-2">{s.desc}</p>
                     <div className="mt-2 flex items-center justify-between flex-col sm:flex-row gap-2">
-                      <div className="text-sm">
+                      <div className="text-xs sm:text-sm">
                         <span className="font-bold text-amber-800">{rupee(s.basePrice)}</span>
                         {s.unit && <span className="text-amber-600"> {s.unit}</span>}
                       </div>
-                      <button onClick={() => handleViewDetails(s)} className="px-3 py-1.5 rounded-xl text-sm bg-amber-100 text-amber-800 hover:bg-amber-200 w-full sm:w-auto text-center">
+                      <button onClick={() => handleViewDetails(s)} className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl text-xs sm:text-sm bg-amber-100 text-amber-800 hover:bg-amber-200 w-full sm:w-auto text-center">
                         Details
                       </button>
                     </div>
@@ -1210,9 +1210,9 @@ export default function ServicesPage() {
                       <div className="text-xs text-amber-600 mb-1">Vendors</div>
                       <div className="flex gap-2 overflow-x-auto pb-1">
                         {s.vendors.map((v) => (
-                          <div key={v.id} className="min-w-[180px] p-2 rounded-xl border border-amber-200 bg-amber-100 flex-shrink-0">
-                            <div className="flex items-center justify-between text-sm font-medium">
-                              <span className="text-amber-800 truncate max-w-[80px]">{v.name}</span>
+                          <div key={v.id} className="min-w-[160px] sm:min-w-[180px] p-2 rounded-xl border border-amber-200 bg-amber-100 flex-shrink-0">
+                            <div className="flex items-center justify-between text-xs sm:text-sm font-medium">
+                              <span className="text-amber-800 truncate max-w-[70px] sm:max-w-[80px]">{v.name}</span>
                               <span className="flex items-center gap-1">{stars(v.rating)}<span>{v.rating}</span></span>
                             </div>
                             <div className="mt-2 flex items-center justify-between">
@@ -1222,7 +1222,7 @@ export default function ServicesPage() {
                               <button className="px-2 py-1 text-xs rounded-lg bg-amber-700 text-white">Ask</button>
                             </div>
                             {eventDate && (
-                              <div className="mt-2 text-[11px] text-amber-700 bg-amber-200 px-2 py-1 rounded">
+                              <div className="mt-2 text-[10px] sm:text-[11px] text-amber-700 bg-amber-200 px-2 py-1 rounded">
                                 Likely available on {eventDate} in {city}
                               </div>
                             )}
@@ -1274,21 +1274,21 @@ export default function ServicesPage() {
 
         {/* Recently Viewed */}
         {recentlyViewed.length > 0 && (
-          <section className="max-w-7xl mx-auto px-4 mt-8">
-            <h2 className="text-lg font-semibold mb-2 flex items-center gap-2 text-amber-800">
-              <Eye className="w-5 h-5" /> Recently Viewed
+          <section className="max-w-7xl mx-auto px-3 sm:px-4 mt-6 sm:mt-8">
+            <h2 className="text-base sm:text-lg font-semibold mb-2 flex items-center gap-2 text-amber-800">
+              <Eye className="w-4 h-4 sm:w-5 sm:h-5" /> Recently Viewed
             </h2>
             <div className="flex gap-3 overflow-x-auto pb-2">
               {recentlyViewed.map((r) => (
-                <div key={r.id} className="min-w-[240px] rounded-2xl border border-amber-200 bg-amber-50 p-3 flex-shrink-0">
-                  <div className="font-semibold flex items-center gap-2 text-amber-800">
-                    <span className="p-1.5 rounded-xl bg-amber-100 text-amber-700">{r.icon}</span>
+                <div key={r.id} className="min-w-[200px] sm:min-w-[240px] rounded-2xl border border-amber-200 bg-amber-50 p-3 flex-shrink-0">
+                  <div className="font-semibold flex items-center gap-2 text-amber-800 text-sm sm:text-base">
+                    <span className="p-1 sm:p-1.5 rounded-xl bg-amber-100 text-amber-700">{r.icon}</span>
                     {r.title}
                   </div>
-                  <p className="text-sm text-amber-600 mt-1 line-clamp-2">{r.desc}</p>
+                  <p className="text-xs sm:text-sm text-amber-600 mt-1 line-clamp-2">{r.desc}</p>
                   <div className="mt-2 flex items-center justify-between">
-                    <span className="font-bold text-sm text-amber-800">{rupee(r.basePrice)}</span>
-                    <button onClick={() => handleViewDetails(r)} className="px-3 py-1.5 rounded-xl text-sm bg-amber-700 text-white hover:bg-amber-800">
+                    <span className="font-bold text-xs sm:text-sm text-amber-800">{rupee(r.basePrice)}</span>
+                    <button onClick={() => handleViewDetails(r)} className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl text-xs sm:text-sm bg-amber-700 text-white hover:bg-amber-800">
                       View Again
                     </button>
                   </div>
@@ -1299,23 +1299,23 @@ export default function ServicesPage() {
         )}
 
         {/* Smart Packages */}
-        <section className="max-w-7xl mx-auto px-4 mt-8">
-          <h2 className="text-lg font-semibold mb-3 flex items-center gap-2 text-amber-800">
-            <Gift className="w-5 h-5" /> Smart Packages
+        <section className="max-w-7xl mx-auto px-3 sm:px-4 mt-6 sm:mt-8">
+          <h2 className="text-base sm:text-lg font-semibold mb-3 flex items-center gap-2 text-amber-800">
+            <Gift className="w-4 h-4 sm:w-5 sm:h-5" /> Smart Packages
           </h2>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {packages.map((p) => (
-              <div key={p.id} className="rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow">
+              <div key={p.id} className="rounded-2xl border border-amber-200 bg-amber-50 p-3 sm:p-4 shadow">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-semibold text-amber-800">{p.name}</div>
-                    <div className="text-sm text-amber-600">Includes: {p.includes.join(", ")}</div>
+                    <div className="font-semibold text-amber-800 text-sm sm:text-base">{p.name}</div>
+                    <div className="text-xs sm:text-sm text-amber-600">Includes: {p.includes.join(", ")}</div>
                   </div>
                   <span className="text-xs px-2 py-1 rounded-full bg-amber-200 text-amber-800">Save {p.savePercent}%</span>
                 </div>
                 <div className="mt-3 flex items-center justify-between">
-                  <div className="text-lg font-bold text-amber-800">{rupee(p.price)}</div>
-                  <button className="px-3 py-1.5 rounded-xl text-sm bg-amber-700 text-white hover:bg-amber-800">Book Package</button>
+                  <div className="text-base sm:text-lg font-bold text-amber-800">{rupee(p.price)}</div>
+                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl text-xs sm:text-sm bg-amber-700 text-white hover:bg-amber-800">Book Package</button>
                 </div>
               </div>
             ))}
@@ -1324,21 +1324,21 @@ export default function ServicesPage() {
 
         {/* Recommendations */}
         {recommended.length > 0 && (
-          <section className="max-w-7xl mx-auto px-4 mt-8">
-            <h2 className="text-lg font-semibold mb-2 flex items-center gap-2 text-amber-800">
-              <HeartHandshake className="w-5 h-5" /> You may also need
+          <section className="max-w-7xl mx-auto px-3 sm:px-4 mt-6 sm:mt-8">
+            <h2 className="text-base sm:text-lg font-semibold mb-2 flex items-center gap-2 text-amber-800">
+              <HeartHandshake className="w-4 h-4 sm:w-5 sm:h-5" /> You may also need
             </h2>
             <div className="flex gap-3 overflow-x-auto pb-2">
               {recommended.map((r) => (
-                <div key={r.id} className="min-w-[240px] rounded-2xl border border-amber-200 bg-amber-50 p-3 flex-shrink-0">
-                  <div className="font-semibold flex items-center gap-2 text-amber-800">
-                    <span className="p-1.5 rounded-xl bg-amber-100 text-amber-700">{r.icon}</span>
+                <div key={r.id} className="min-w-[200px] sm:min-w-[240px] rounded-2xl border border-amber-200 bg-amber-50 p-3 flex-shrink-0">
+                  <div className="font-semibold flex items-center gap-2 text-amber-800 text-sm sm:text-base">
+                    <span className="p-1 sm:p-1.5 rounded-xl bg-amber-100 text-amber-700">{r.icon}</span>
                     {r.title}
                   </div>
-                  <p className="text-sm text-amber-600 mt-1 line-clamp-2">{r.desc}</p>
+                  <p className="text-xs sm:text-sm text-amber-600 mt-1 line-clamp-2">{r.desc}</p>
                   <div className="mt-2 flex items-center justify-between">
-                    <span className="font-bold text-sm text-amber-800">{rupee(r.basePrice)}</span>
-                    <button onClick={() => handleBook(r)} className="px-3 py-1.5 rounded-xl text-sm bg-amber-700 text-white hover:bg-amber-800">Add</button>
+                    <span className="font-bold text-xs sm:text-sm text-amber-800">{rupee(r.basePrice)}</span>
+                    <button onClick={() => handleBook(r)} className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl text-xs sm:text-sm bg-amber-700 text-white hover:bg-amber-800">Add</button>
                   </div>
                 </div>
               ))}
@@ -1347,16 +1347,16 @@ export default function ServicesPage() {
         )}
 
         {/* Reels / Shorts */}
-        <section className="max-w-7xl mx-auto px-4 mt-8">
-          <h2 className="text-lg font-semibold mb-3 flex items-center gap-2 text-amber-800">
-            <PlayCircle className="w-5 h-5" /> Reels & Highlights
+        <section className="max-w-7xl mx-auto px-3 sm:px-4 mt-6 sm:mt-8">
+          <h2 className="text-base sm:text-lg font-semibold mb-3 flex items-center gap-2 text-amber-800">
+            <PlayCircle className="w-4 h-4 sm:w-5 sm:h-5" /> Reels & Highlights
           </h2>
-          <div className="flex gap-4 overflow-x-auto pb-2">
+          <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2">
             {reels.map((r) => (
-              <div key={r.id} className="min-w-[220px] rounded-2xl overflow-hidden border border-amber-200 bg-black/90 flex-shrink-0">
-                <video src={r.src} playsInline controls muted className="w-[220px] h-[360px] object-cover" />
+              <div key={r.id} className="min-w-[180px] sm:min-w-[220px] rounded-2xl overflow-hidden border border-amber-200 bg-black/90 flex-shrink-0">
+                <video src={r.src} playsInline controls muted className="w-[180px] sm:w-[220px] h-[280px] sm:h-[360px] object-cover" />
                 <div className="p-2 flex justify-between items-center">
-                  <div className="text-white/90 text-sm">{r.title}</div>
+                  <div className="text-white/90 text-xs sm:text-sm">{r.title}</div>
                   <div className="text-xs text-white/70 flex items-center gap-1">
                     <Eye className="w-3 h-3" /> {r.views}
                   </div>
@@ -1548,30 +1548,30 @@ export default function ServicesPage() {
         </AnimatePresence>
 
         {/* Footer CTA */}
-        <footer className="max-w-7xl mx-auto px-4 my-10">
-          <div className="rounded-2xl p-5 bg-gradient-to-r from-amber-200 to-amber-100 border border-amber-300 text-center">
-            <div className="font-semibold text-lg flex items-center justify-center gap-2 text-amber-800">
-              <Gift className="w-5 h-5" /> Sign up & get 200 Sanskaraa Coins
+        <footer className="max-w-7xl mx-auto px-3 sm:px-4 my-8 sm:my-10">
+          <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-amber-200 to-amber-100 border border-amber-300 text-center">
+            <div className="font-semibold text-base sm:text-lg flex items-center justify-center gap-2 text-amber-800">
+              <Gift className="w-4 h-4 sm:w-5 sm:h-5" /> Sign up & get 200 Sanskaraa Coins
             </div>
-            <p className="text-sm text-amber-600 mt-1">Use coins for discounts on any service or package.</p>
+            <p className="text-xs sm:text-sm text-amber-600 mt-1">Use coins for discounts on any service or package.</p>
             <div className="mt-3 flex items-center justify-center gap-2 flex-col sm:flex-row">
               <button 
                 onClick={() => {
                   setAuthModalOpen(true);
                   setAuthMode('register');
                 }}
-                className="px-4 py-2 rounded-xl bg-amber-700 text-white hover:bg-amber-800 mb-2 sm:mb-0"
+                className="px-3 sm:px-4 py-2 rounded-xl bg-amber-700 text-white hover:bg-amber-800 mb-2 sm:mb-0 text-sm"
               >
                 Create account
               </button>
-              <button className="px-4 py-2 rounded-xl border border-amber-200 bg-white text-amber-800">Know more</button>
+              <button className="px-3 sm:px-4 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm">Know more</button>
             </div>
           </div>
           
-          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="mt-6 sm:mt-8 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             <div>
-              <h3 className="font-semibold text-amber-800 mb-3">Company</h3>
-              <ul className="space-y-2 text-sm text-amber-600">
+              <h3 className="font-semibold text-amber-800 mb-3 text-sm sm:text-base">Company</h3>
+              <ul className="space-y-2 text-xs sm:text-sm text-amber-600">
                 <li><a href="#" className="hover:text-amber-800">About Us</a></li>
                 <li><a href="#" className="hover:text-amber-800">Careers</a></li>
                 <li><a href="#" className="hover:text-amber-800">Blog</a></li>
@@ -1580,8 +1580,8 @@ export default function ServicesPage() {
             </div>
             
             <div>
-              <h3 className="font-semibold text-amber-800 mb-3">Support</h3>
-              <ul className="space-y-2 text-sm text-amber-600">
+              <h3 className="font-semibold text-amber-800 mb-3 text-sm sm:text-base">Support</h3>
+              <ul className="space-y-2 text-xs sm:text-sm text-amber-600">
                 <li><a href="#" className="hover:text-amber-800">Help Center</a></li>
                 <li><a href="#" className="hover:text-amber-800">Contact Us</a></li>
                 <li><a href="#" className="hover:text-amber-800">Privacy Policy</a></li>
@@ -1590,8 +1590,8 @@ export default function ServicesPage() {
             </div>
             
             <div>
-              <h3 className="font-semibold text-amber-800 mb-3">Services</h3>
-              <ul className="space-y-2 text-sm text-amber-600">
+              <h3 className="font-semibold text-amber-800 mb-3 text-sm sm:text-base">Services</h3>
+              <ul className="space-y-2 text-xs sm:text-sm text-amber-600">
                 <li><a href="#" className="hover:text-amber-800">Wedding</a></li>
                 <li><a href="#" className="hover:text-amber-800">Corporate</a></li>
                 <li><a href="#" className="hover:text-amber-800">Birthday</a></li>
@@ -1600,20 +1600,20 @@ export default function ServicesPage() {
             </div>
             
             <div>
-              <h3 className="font-semibold text-amber-800 mb-3">Connect</h3>
-              <div className="flex gap-3">
-                <a href="#" className="p-2 rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200"><Facebook className="w-4 h-4" /></a>
-                <a href="#" className="p-2 rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200"><Instagram className="w-4 h-4" /></a>
-                <a href="#" className="p-2 rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200"><Twitter className="w-4 h-4" /></a>
-                <a href="#" className="p-2 rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200"><Youtube className="w-4 h-4" /></a>
+              <h3 className="font-semibold text-amber-800 mb-3 text-sm sm:text-base">Connect</h3>
+              <div className="flex gap-2 sm:gap-3">
+                <a href="#" className="p-1.5 sm:p-2 rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200"><Facebook className="w-3 h-3 sm:w-4 sm:h-4" /></a>
+                <a href="#" className="p-1.5 sm:p-2 rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200"><Instagram className="w-3 h-3 sm:w-4 sm:h-4" /></a>
+                <a href="#" className="p-1.5 sm:p-2 rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200"><Twitter className="w-3 h-3 sm:w-4 sm:h-4" /></a>
+                <a href="#" className="p-1.5 sm:p-2 rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200"><Youtube className="w-3 h-3 sm:w-4 sm:h-4" /></a>
               </div>
-              <div className="mt-4">
-                <p className="text-sm text-amber-600">Download our app</p>
+              <div className="mt-3 sm:mt-4">
+                <p className="text-xs sm:text-sm text-amber-600">Download our app</p>
                 <div className="flex gap-2 mt-2">
-                  <button className="px-3 py-1.5 rounded-xl bg-amber-800 text-white text-xs flex items-center gap-1">
+                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-800 text-white text-xs flex items-center gap-1">
                     <Download className="w-3 h-3" /> Android
                   </button>
-                  <button className="px-3 py-1.5 rounded-xl bg-amber-800 text-white text-xs flex items-center gap-1">
+                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-800 text-white text-xs flex items-center gap-1">
                     <Download className="w-3 h-3" /> iOS
                   </button>
                 </div>
@@ -1621,7 +1621,7 @@ export default function ServicesPage() {
             </div>
           </div>
           
-          <div className="text-xs text-amber-600 text-center mt-8">© {new Date().getFullYear()} Sanskaraa. All rights reserved.</div>
+          <div className="text-xs text-amber-600 text-center mt-6 sm:mt-8">© {new Date().getFullYear()} Sanskaraa. All rights reserved.</div>
         </footer>
 
         {/* Coin Animation */}
