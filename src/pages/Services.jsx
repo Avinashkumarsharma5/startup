@@ -64,19 +64,9 @@ import {
   Minus
 } from "lucide-react";
 
-// Authentication Context
-const AuthContext = React.createContext();
-
 // Main Component
 export default function ServicesPage() {
-  // Authentication state
-  const [user, setUser] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
-  const [otpSent, setOtpSent] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [otp, setOtp] = useState('');
+  // const navigate = useNavigate();
 
   // State variables
   const [services, setServices] = useState([]);
@@ -89,7 +79,6 @@ export default function ServicesPage() {
   const [eventDate, setEventDate] = useState("");
   const [city, setCity] = useState("Your City");
   const [reviews, setReviews] = useState({});
-  const [coins, setCoins] = useState(250);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMsg, setChatMsg] = useState("");
   const [chatLog, setChatLog] = useState([]);
@@ -100,7 +89,6 @@ export default function ServicesPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState("");
   const [couponSuccess, setCouponSuccess] = useState(false);
-  const [showCoinAnimation, setShowCoinAnimation] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [bookingFlow, setBookingFlow] = useState({
@@ -130,7 +118,15 @@ export default function ServicesPage() {
   const adRef = useRef(null);
   const recognitionRef = useRef(null);
   const filtersRef = useRef(null);
-  const coinAnimationRef = useRef(null);
+
+  // Video ads (moved above effects to avoid TDZ)
+  const adsVideos = useMemo(
+    () => [
+      "https://player.vimeo.com/external/444435392.sd.mp4?s=57c5a9b1c4daea0b2b729e3d2e3d1b1b0c8b3b0a&profile_id=164&oauth2_token_id=57447761",
+      "https://player.vimeo.com/external/454194889.sd.mp4?s=7d80d18d5b9e57b386b5c5b5b5b5b5b5b5b5b5b5&profile_id=164&oauth2_token_id=57447761",
+    ],
+    []
+  );
 
   // Check screen size and adjust layout
   useEffect(() => {
@@ -160,6 +156,20 @@ export default function ServicesPage() {
       );
     }
   }, []);
+
+  // Video ad controls
+  useEffect(() => {
+    const v = adRef.current;
+    if (!v) return;
+    const handleEnd = () => setCurrentAd((p) => (p + 1) % adsVideos.length);
+    v.addEventListener("ended", handleEnd);
+    return () => v.removeEventListener("ended", handleEnd);
+  }, [adsVideos.length]);
+
+  // Navigation functions (unused, replaced by global header)
+  // const handleLogin = () => navigate('/login');
+  // const handleSignup = () => navigate('/signup');
+  // const handleProfile = () => navigate('/profile');
 
   // Load services data
   useEffect(() => {
@@ -328,15 +338,6 @@ export default function ServicesPage() {
     fetchServices();
   }, []);
 
-  // Video ads
-  const adsVideos = useMemo(
-    () => [
-      "https://player.vimeo.com/external/444435392.sd.mp4?s=57c5a9b1c4daea0b2b729e3d2e3d1b1b0c8b3b0a&profile_id=164&oauth2_token_id=57447761",
-      "https://player.vimeo.com/external/454194889.sd.mp4?s=7d80d18d5b9e57b386b5c5b5b5b5b5b5b5b5b5b5&profile_id=164&oauth2_token_id=57447761",
-    ],
-    []
-  );
-
   // Reels data
   const reels = [
     {
@@ -465,64 +466,21 @@ export default function ServicesPage() {
     }
   };
 
-  // Video ad controls
-  useEffect(() => {
-    const v = adRef.current;
-    if (!v) return;
-    const handleEnd = () => setCurrentAd((p) => (p + 1) % adsVideos.length);
-    v.addEventListener("ended", handleEnd);
-    return () => v.removeEventListener("ended", handleEnd);
-  }, [adsVideos.length]);
-
-  // Authentication functions
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    // Simulate login process
-    if (otp === "123456") { // Mock OTP verification
-      const userData = {
-        id: 1,
-        name: "Rahul Sharma",
-        phone: phoneNumber,
-        email: "rahul@example.com",
-        coins: 500,
-        bookings: [],
-        wishlist: [],
-      };
-      setUser(userData);
-      setIsLoggedIn(true);
-      setAuthModalOpen(false);
-      setOtpSent(false);
-      setOtp("");
-      setPhoneNumber("");
-      showToast("Login successful! Welcome back!");
-    } else {
-      showToast("Invalid OTP. Please try again.", "error");
-    }
+  // Navigation functions
+  const handleLogin = () => {
+    navigate('/login');
   };
 
-  const handleSendOtp = async (e) => {
-    e.preventDefault();
-    // Simulate OTP sending
-    setOtpSent(true);
-    showToast("OTP sent to your phone number");
+  const handleSignup = () => {
+    navigate('/signup');
   };
 
-  const handleLogout = () => {
-    setUser(null);
-    setIsLoggedIn(false);
-    setMobileMenuOpen(false);
-    showToast("Logged out successfully");
+  const handleProfile = () => {
+    navigate('/profile');
   };
 
   // Service interaction handlers
   const handleBook = (s) => {
-    if (!isLoggedIn) {
-      setAuthModalOpen(true);
-      setAuthMode('login');
-      showToast("Please login to book services", "error");
-      return;
-    }
-    
     setBookingFlow({
       step: 1,
       selectedService: s,
@@ -531,10 +489,6 @@ export default function ServicesPage() {
       customization: {},
       paymentMethod: 'card',
     });
-    
-    setCoins((c) => c + 50);
-    setShowCoinAnimation(true);
-    setTimeout(() => setShowCoinAnimation(false), 2000);
     
     showToast(`Starting booking for: ${s.title}`);
   };
@@ -551,13 +505,6 @@ export default function ServicesPage() {
   };
 
   const toggleWishlist = (serviceId) => {
-    if (!isLoggedIn) {
-      setAuthModalOpen(true);
-      setAuthMode('login');
-      showToast("Please login to save to wishlist", "error");
-      return;
-    }
-    
     setWishlist(prev => ({
       ...prev,
       [serviceId]: !prev[serviceId]
@@ -567,16 +514,8 @@ export default function ServicesPage() {
   };
 
   const addReview = (id, r) => {
-    if (!isLoggedIn) {
-      setAuthModalOpen(true);
-      setAuthMode('login');
-      showToast("Please login to add reviews", "error");
-      return;
-    }
-    
     setReviews((prev) => ({ ...prev, [id]: [...(prev[id] || []), r] }));
-    setCoins((c) => c + 10);
-    showToast("Review posted! +10 coins rewarded");
+    showToast("Review posted!");
   };
 
   const sendChat = () => {
@@ -656,28 +595,6 @@ export default function ServicesPage() {
       customization: {},
       paymentMethod: 'card',
     });
-    
-    // Add to user's bookings
-    if (user) {
-      const newBooking = {
-        id: Date.now(),
-        service: bookingFlow.selectedService,
-        vendor: bookingFlow.selectedVendor,
-        date: bookingFlow.selectedDate,
-        customization: bookingFlow.customization,
-        status: 'confirmed',
-        total: bookingFlow.selectedService.basePrice,
-      };
-      
-      // In a real app, this would update the user in the database
-      setUser(prev => ({
-        ...prev,
-        bookings: [...prev.bookings, newBooking],
-        coins: prev.coins + 50, // Reward coins for booking
-      }));
-      
-      setCoins(prev => prev + 50);
-    }
   };
 
   // Utility functions
@@ -754,8 +671,7 @@ export default function ServicesPage() {
   ];
 
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn, login: handleLogin, logout: handleLogout }}>
-      <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-50 transition-colors duration-300 overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-50 transition-colors duration-300 overflow-x-hidden">
         {/* Toast container (for programmatic toasts) */}
         <div id="toast-container" className="fixed top-4 right-4 z-50 space-y-2"></div>
         
@@ -786,63 +702,17 @@ export default function ServicesPage() {
                 </button>
               </div>
               
-              {isLoggedIn ? (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 bg-amber-100 rounded-xl">
-                    <div className="w-10 h-10 rounded-full bg-amber-700 flex items-center justify-center text-white">
-                      <User className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="font-medium text-amber-800">{user.name}</div>
-                      <div className="text-xs text-amber-600">{user.phone}</div>
-                    </div>
-                  </div>
-                  
-                  <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-2">
-                    <User className="w-4 h-4" /> My Profile
-                  </button>
-                  <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-2">
-                    <FileText className="w-4 h-4" /> My Bookings
-                  </button>
-                  <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-2">
-                    <Bookmark className="w-4 h-4" /> Wishlist
-                  </button>
-                  <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-2">
-                    <Bell className="w-4 h-4" /> Notifications
-                  </button>
-                  <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-2">
-                    <CreditCard className="w-4 h-4" /> Payments
-                  </button>
-                  <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-2">
-                    <HelpCircle className="w-4 h-4" /> Help & Support
-                  </button>
-                  <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-2">
-                    <Settings className="w-4 h-4" /> Settings
-                  </button>
-                  <button 
-                    onClick={handleLogout}
-                    className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-2"
-                  >
-                    <LogOut className="w-4 h-4" /> Logout
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <button 
-                    onClick={() => {
-                      setAuthModalOpen(true);
-                      setAuthMode('login');
-                      setMobileMenuOpen(false);
-                    }}
-                    className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800"
-                  >
-                    Login / Sign Up
-                  </button>
-                  <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800">
-                    Help & Support
-                  </button>
-                </div>
-              )}
+              <div className="space-y-4">
+                <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-2">
+                  <FileText className="w-4 h-4" /> My Bookings
+                </button>
+                <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-2">
+                  <Bookmark className="w-4 h-4" /> Wishlist
+                </button>
+                <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-2">
+                  <HelpCircle className="w-4 h-4" /> Help & Support
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -853,7 +723,6 @@ export default function ServicesPage() {
             <div className="flex items-center gap-2 mt-8">
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
               <h1 className="font-bold text-base sm:text-lg text-amber-800">Sanskaraa Services</h1>
-              <span className="ml-2 sm:ml-3 text-xs px-2 py-0.5 rounded-full bg-amber-200 text-amber-800 hidden sm:inline">Coins: {coins}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
               {/* Language Selector */}
@@ -899,25 +768,6 @@ export default function ServicesPage() {
               <a href="tel:+911234567890" className="px-2 sm:px-3 py-1.5 rounded-xl border border-amber-200 text-sm bg-white text-amber-800">
                 <PhoneCall className="inline w-4 h-4 sm:mr-1" /> {!isMobile && 'Call'}
               </a>
-              
-              {isLoggedIn ? (
-                <button 
-                  onClick={() => setMobileMenuOpen(true)}
-                  className="p-2 rounded-full bg-amber-100 border border-amber-200"
-                >
-                  <User className="w-4 h-4 text-amber-700" />
-                </button>
-              ) : (
-                <button 
-                  onClick={() => {
-                    setAuthModalOpen(true);
-                    setAuthMode('login');
-                  }}
-                  className="px-2 sm:px-3 py-1.5 rounded-xl bg-amber-700 text-white text-sm hover:bg-amber-800"
-                >
-                  Login
-                </button>
-              )}
             </div>
           </div>
         </header>
@@ -1478,24 +1328,6 @@ export default function ServicesPage() {
           )}
         </AnimatePresence>
 
-        {/* Authentication Modal */}
-        <AnimatePresence>
-          {authModalOpen && (
-            <AuthModal 
-              authMode={authMode}
-              setAuthMode={setAuthMode}
-              phoneNumber={phoneNumber}
-              setPhoneNumber={setPhoneNumber}
-              otp={otp}
-              setOtp={setOtp}
-              otpSent={otpSent}
-              setOtpSent={setOtpSent}
-              handleLogin={handleLogin}
-              handleSendOtp={handleSendOtp}
-              setAuthModalOpen={setAuthModalOpen}
-            />
-          )}
-        </AnimatePresence>
 
         {/* Chat Drawer */}
         <AnimatePresence>
@@ -1556,10 +1388,7 @@ export default function ServicesPage() {
             <p className="text-xs sm:text-sm text-amber-600 mt-1">Use coins for discounts on any service or package.</p>
             <div className="mt-3 flex items-center justify-center gap-2 flex-col sm:flex-row">
               <button 
-                onClick={() => {
-                  setAuthModalOpen(true);
-                  setAuthMode('register');
-                }}
+                onClick={handleSignup}
                 className="px-3 sm:px-4 py-2 rounded-xl bg-amber-700 text-white hover:bg-amber-800 mb-2 sm:mb-0 text-sm"
               >
                 Create account
@@ -1624,128 +1453,10 @@ export default function ServicesPage() {
           <div className="text-xs text-amber-600 text-center mt-6 sm:mt-8">© {new Date().getFullYear()} Sanskaraa. All rights reserved.</div>
         </footer>
 
-        {/* Coin Animation */}
-        <AnimatePresence>
-          {showCoinAnimation && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.5 }}
-              transition={{ duration: 0.5 }}
-              className="fixed bottom-4 left-4 z-50 bg-amber-600 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2"
-              ref={coinAnimationRef}
-            >
-              <Sparkles className="w-4 h-4" /> +50 Coins!
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
-    </AuthContext.Provider>
-  );
+    );
 }
 
-// Authentication Modal Component
-function AuthModal({ 
-  authMode, setAuthMode, phoneNumber, setPhoneNumber, otp, setOtp, 
-  otpSent, setOtpSent, handleLogin, handleSendOtp, setAuthModalOpen 
-}) {
-  return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-      onClick={() => setAuthModalOpen(false)}
-    >
-      <motion.div 
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-amber-50 rounded-2xl w-full max-w-md overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-amber-800">
-              {authMode === 'login' ? 'Login' : 'Create Account'}
-            </h2>
-            <button 
-              onClick={() => setAuthModalOpen(false)}
-              className="p-1 rounded-full bg-amber-100 text-amber-600"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-          
-          <form onSubmit={otpSent ? handleLogin : handleSendOtp}>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-amber-800 mb-1">Phone Number</label>
-                <div className="flex gap-2">
-                  <select className="px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800">
-                    <option>+91</option>
-                  </select>
-                  <input
-                    type="tel"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    placeholder="Enter your phone number"
-                    className="flex-1 px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800"
-                    required
-                    disabled={otpSent}
-                  />
-                </div>
-              </div>
-              
-              {otpSent && (
-                <div>
-                  <label className="block text-sm font-medium text-amber-800 mb-1">OTP</label>
-                  <input
-                    type="text"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    placeholder="Enter OTP"
-                    className="w-full px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800"
-                    required
-                  />
-                  <p className="text-xs text-amber-600 mt-1">We've sent a 6-digit code to your phone</p>
-                </div>
-              )}
-              
-              <button
-                type="submit"
-                className="w-full px-4 py-3 rounded-xl bg-amber-700 text-white hover:bg-amber-800 font-semibold"
-              >
-                {otpSent ? 'Verify & Login' : 'Send OTP'}
-              </button>
-            </div>
-          </form>
-          
-          <div className="mt-4 text-center">
-            <p className="text-sm text-amber-600">
-              {authMode === 'login' ? "Don't have an account? " : "Already have an account? "}
-              <button 
-                onClick={() => {
-                  setAuthMode(authMode === 'login' ? 'register' : 'login');
-                  setOtpSent(false);
-                }}
-                className="text-amber-700 font-medium hover:underline"
-              >
-                {authMode === 'login' ? 'Sign up' : 'Login'}
-              </button>
-            </p>
-          </div>
-          
-          <div className="mt-6 pt-4 border-t border-amber-200">
-            <p className="text-xs text-amber-600 text-center">
-              By continuing, you agree to our Terms of Service and Privacy Policy
-            </p>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}
 
 // Booking Flow Component
 function BookingFlow({ 
