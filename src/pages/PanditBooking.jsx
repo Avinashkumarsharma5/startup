@@ -455,58 +455,61 @@ export default function PanditBooking() {
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-orange-100'} transition-colors duration-300`}>
       {/* Header Section */}
-      <section className={`relative ${darkMode ? 'bg-gray-800' : 'bg-gradient-to-r from-amber-800 to-yellow-900'} text-white py-20 px-6 text-center`}>
+      <section className={`relative ${darkMode ? 'bg-gray-800' : 'bg-gradient-to-r from-amber-800 to-yellow-900'} text-white py-12 sm:py-16 md:py-20 px-4 sm:px-6 text-center`}>
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 leading-tight">
             Rooted in Dharma, Guided by Devotion
           </h1>
-          <p className="text-lg md:text-xl mb-10">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl mb-6 sm:mb-8 md:mb-10 px-2">
             Find Verified Pandits for Every Ritual and Ceremony
           </p>
 
-          <div className="bg-white shadow-xl rounded-xl p-6 flex flex-col md:flex-row items-center gap-4">
+          <div className="bg-white shadow-xl rounded-xl p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
             <div className="flex-1 w-full">
               <input
                 type="text"
                 placeholder="Search pandits by name or city..."
-                className="w-full border px-4 py-3 rounded-lg text-gray-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                className="w-full border px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-gray-700 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm sm:text-base"
                 onChange={(e) => handleFilterChange('search', e.target.value)}
               />
             </div>
-            <button 
-              onClick={() => setShowFilters(!showFilters)}
-              className="bg-amber-700 hover:bg-yellow-900 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition"
-            >
-              <Filter size={20} /> Filters
-            </button>
-            <button 
-              onClick={toggleDarkMode}
-              className="bg-gray-700 hover:bg-gray-900 text-white px-6 py-3 rounded-lg transition"
-            >
-              {darkMode ? 'Light' : 'Dark'} Mode
-            </button>
+            <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
+              <button 
+                onClick={() => setShowFilters(!showFilters)}
+                className="bg-amber-700 hover:bg-yellow-900 text-white px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-lg flex items-center gap-1 sm:gap-2 transition text-xs sm:text-sm font-medium"
+              >
+                <Filter size={16} className="sm:w-5 sm:h-5" /> 
+                <span className="hidden xs:inline">Filters</span>
+              </button>
+              <button 
+                onClick={toggleDarkMode}
+                className="bg-gray-700 hover:bg-gray-900 text-white px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-lg transition text-xs sm:text-sm font-medium"
+              >
+                {darkMode ? 'Light' : 'Dark'}
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg p-6 rounded-lg mx-4 mt-4`}>
+        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg p-4 sm:p-6 rounded-lg mx-3 sm:mx-4 mt-3 sm:mt-4`}>
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold">Filters</h3>
-            <button onClick={() => setShowFilters(false)} className="text-gray-500">
-              <X size={20} />
+            <h3 className="text-base sm:text-lg font-semibold">Filters</h3>
+            <button onClick={() => setShowFilters(false)} className="text-gray-500 hover:text-gray-700 p-1">
+              <X size={18} className="sm:w-5 sm:h-5" />
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {/* Service Filter */}
             <div>
-              <label className="block text-sm font-medium mb-2">Service</label>
+              <label className="block text-xs sm:text-sm font-medium mb-2">Service</label>
               <select
                 value={filters.service}
                 onChange={(e) => handleFilterChange('service', e.target.value)}
-                className="w-full border px-3 py-2 rounded-lg"
+                className="w-full border px-2 sm:px-3 py-2 rounded-lg text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none"
               >
                 <option value="">All Services</option>
                 {allServices.map(service => (
@@ -517,11 +520,11 @@ export default function PanditBooking() {
 
             {/* Location Filter */}
             <div>
-              <label className="block text-sm font-medium mb-2">Location</label>
+              <label className="block text-xs sm:text-sm font-medium mb-2">Location</label>
               <select
                 value={filters.location}
                 onChange={(e) => handleFilterChange('location', e.target.value)}
-                className="w-full border px-3 py-2 rounded-lg"
+                className="w-full border px-2 sm:px-3 py-2 rounded-lg text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none"
               >
                 <option value="">All Locations</option>
                 {allLocations.map(location => (
@@ -532,11 +535,11 @@ export default function PanditBooking() {
 
             {/* Language Filter */}
             <div>
-              <label className="block text-sm font-medium mb-2">Language</label>
+              <label className="block text-xs sm:text-sm font-medium mb-2">Language</label>
               <select
                 value={filters.language}
                 onChange={(e) => handleFilterChange('language', e.target.value)}
-                className="w-full border px-3 py-2 rounded-lg"
+                className="w-full border px-2 sm:px-3 py-2 rounded-lg text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none"
               >
                 <option value="">All Languages</option>
                 {allLanguages.map(language => (
@@ -547,11 +550,11 @@ export default function PanditBooking() {
 
             {/* Sort By */}
             <div>
-              <label className="block text-sm font-medium mb-2">Sort By</label>
+              <label className="block text-xs sm:text-sm font-medium mb-2">Sort By</label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full border px-3 py-2 rounded-lg"
+                className="w-full border px-2 sm:px-3 py-2 rounded-lg text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none"
               >
                 <option value="rating">Rating</option>
                 <option value="experience">Experience</option>
@@ -561,35 +564,39 @@ export default function PanditBooking() {
             </div>
 
             {/* Price Range */}
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-2">
+            <div className="sm:col-span-2">
+              <label className="block text-xs sm:text-sm font-medium mb-2">
                 Price Range: ₹{filters.minPrice} - ₹{filters.maxPrice}
               </label>
-              <div className="flex gap-4">
-                <input
-                  type="range"
-                  min="1000"
-                  max="5000"
-                  step="500"
-                  value={filters.minPrice}
-                  onChange={(e) => handleFilterChange('minPrice', parseInt(e.target.value))}
-                  className="w-full"
-                />
-                <input
-                  type="range"
-                  min="1000"
-                  max="5000"
-                  step="500"
-                  value={filters.maxPrice}
-                  onChange={(e) => handleFilterChange('maxPrice', parseInt(e.target.value))}
-                  className="w-full"
-                />
+              <div className="flex gap-2 sm:gap-4">
+                <div className="flex-1">
+                  <input
+                    type="range"
+                    min="1000"
+                    max="5000"
+                    step="500"
+                    value={filters.minPrice}
+                    onChange={(e) => handleFilterChange('minPrice', parseInt(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  />
+                </div>
+                <div className="flex-1">
+                  <input
+                    type="range"
+                    min="1000"
+                    max="5000"
+                    step="500"
+                    value={filters.maxPrice}
+                    onChange={(e) => handleFilterChange('maxPrice', parseInt(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  />
+                </div>
               </div>
             </div>
 
             {/* Rating Filter */}
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-2">
+            <div className="sm:col-span-2">
+              <label className="block text-xs sm:text-sm font-medium mb-2">
                 Minimum Rating: {filters.minRating}★
               </label>
               <input
@@ -599,7 +606,7 @@ export default function PanditBooking() {
                 step="0.5"
                 value={filters.minRating}
                 onChange={(e) => handleFilterChange('minRating', parseFloat(e.target.value))}
-                className="w-full"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
               />
             </div>
           </div>
@@ -607,158 +614,170 @@ export default function PanditBooking() {
       )}
 
       {/* Active Filters Chips */}
-      <div className="px-6 py-4 flex flex-wrap gap-2">
+      <div className="px-3 sm:px-6 py-3 sm:py-4 flex flex-wrap gap-2">
         {filters.service && (
-          <span className={`${darkMode ? 'bg-gray-700' : 'bg-amber-100'} px-3 py-1 rounded-full text-sm flex items-center gap-2`}>
+          <span className={`${darkMode ? 'bg-gray-700' : 'bg-amber-100'} px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm flex items-center gap-1 sm:gap-2`}>
             Service: {filters.service}
-            <X size={14} onClick={() => handleFilterChange('service', '')} className="cursor-pointer" />
+            <X size={12} className="sm:w-3.5 sm:h-3.5 cursor-pointer hover:text-red-500 transition-colors" onClick={() => handleFilterChange('service', '')} />
           </span>
         )}
         {filters.location && (
-          <span className={`${darkMode ? 'bg-gray-700' : 'bg-amber-100'} px-3 py-1 rounded-full text-sm flex items-center gap-2`}>
+          <span className={`${darkMode ? 'bg-gray-700' : 'bg-amber-100'} px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm flex items-center gap-1 sm:gap-2`}>
             Location: {filters.location}
-            <X size={14} onClick={() => handleFilterChange('location', '')} className="cursor-pointer" />
+            <X size={12} className="sm:w-3.5 sm:h-3.5 cursor-pointer hover:text-red-500 transition-colors" onClick={() => handleFilterChange('location', '')} />
           </span>
         )}
         {filters.language && (
-          <span className={`${darkMode ? 'bg-gray-700' : 'bg-amber-100'} px-3 py-1 rounded-full text-sm flex items-center gap-2`}>
+          <span className={`${darkMode ? 'bg-gray-700' : 'bg-amber-100'} px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm flex items-center gap-1 sm:gap-2`}>
             Language: {filters.language}
-            <X size={14} onClick={() => handleFilterChange('language', '')} className="cursor-pointer" />
+            <X size={12} className="sm:w-3.5 sm:h-3.5 cursor-pointer hover:text-red-500 transition-colors" onClick={() => handleFilterChange('language', '')} />
           </span>
         )}
       </div>
 
       {/* Pandits Grid */}
-      <section className="py-16 px-6 max-w-7xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {sortedPandits.map((p) => (
-          <div
-            key={p.id}
-            className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-2xl shadow-md p-6 flex flex-col hover:shadow-lg transition-all duration-300 transform hover:scale-105 relative`}
-          >
+      <section className="py-8 sm:py-12 md:py-16 px-3 sm:px-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+          {sortedPandits.map((p) => (
+            <div
+              key={p.id}
+              className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 flex flex-col hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02] relative group`}
+            >
             {/* Verified Badge */}
             {p.verified && (
-              <div className="absolute top-4 right-4 bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs flex items-center gap-1">
-                <CheckCircle size={12} /> Verified
+              <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs flex items-center gap-1 shadow-sm">
+                <CheckCircle size={10} className="sm:w-3 sm:h-3" /> 
+                <span className="hidden xs:inline">Verified</span>
               </div>
             )}
 
             {/* Favorite Heart */}
             <button 
               onClick={() => toggleFavorite(p.id)}
-              className={`absolute top-4 left-4 ${
+              className={`absolute top-3 sm:top-4 left-3 sm:left-4 p-1 rounded-full hover:bg-white/20 transition-all duration-200 ${
                 favorites.includes(p.id) ? 'text-red-500' : 'text-gray-400'
-              } hover:text-red-500 transition-colors`}
+              } hover:text-red-500`}
             >
-              <Heart size={22} fill={favorites.includes(p.id) ? 'currentColor' : 'none'} />
+              <Heart size={18} className="sm:w-5 sm:h-5" fill={favorites.includes(p.id) ? 'currentColor' : 'none'} />
             </button>
 
-            <div className="flex gap-4 items-center mb-4">
+            <div className="flex gap-3 sm:gap-4 items-center mb-3 sm:mb-4">
               <img
                 src={p.image}
                 alt={p.name}
-                className="w-20 h-20 rounded-full object-cover border"
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-amber-100 shadow-sm"
               />
-              <div>
-                <h3 className="text-lg font-bold">{p.name}</h3>
-                <p className="text-sm opacity-75">{p.experience}</p>
-                <p className="text-sm opacity-75">{p.languages.join(', ')}</p>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white truncate">{p.name}</h3>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">{p.experience}</p>
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">{p.languages.join(', ')}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 text-yellow-500 mb-3">
-              <Star size={18} fill="currentColor" /> {p.rating} ({p.reviews} reviews)
+            <div className="flex items-center gap-1 sm:gap-2 text-yellow-500 mb-2 sm:mb-3">
+              <Star size={14} className="sm:w-4 sm:h-4" fill="currentColor" /> 
+              <span className="text-sm sm:text-base font-semibold">{p.rating}</span>
+              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">({p.reviews} reviews)</span>
             </div>
 
-            <p className="flex items-center gap-2 opacity-75 mb-3">
-              <MapPin size={18} /> {p.location}
+            <p className="flex items-center gap-1 sm:gap-2 text-gray-600 dark:text-gray-300 mb-2 sm:mb-3">
+              <MapPin size={14} className="sm:w-4 sm:h-4" /> 
+              <span className="text-xs sm:text-sm">{p.location}</span>
             </p>
 
-            <div className="mb-3">
-              <div className="flex flex-wrap gap-2">
+            <div className="mb-3 sm:mb-4">
+              <div className="flex flex-wrap gap-1 sm:gap-2">
                 {p.services.slice(0, 2).map((s, idx) => (
-                  <span key={idx} className={`${darkMode ? 'bg-gray-700' : 'bg-amber-100'} px-2 py-1 rounded text-sm`}>
+                  <span key={idx} className={`${darkMode ? 'bg-gray-700 text-gray-200' : 'bg-amber-100 text-amber-800'} px-2 py-1 rounded-full text-xs sm:text-sm font-medium`}>
                     {s}
                   </span>
                 ))}
                 {p.services.length > 2 && (
-                  <span className="text-sm opacity-75">+{p.services.length - 2} more</span>
+                  <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">+{p.services.length - 2} more</span>
                 )}
               </div>
             </div>
 
-            <p className="font-semibold text-amber-600 mb-4">₹{p.price} / service</p>
+            <p className="font-bold text-amber-600 dark:text-amber-400 mb-3 sm:mb-4 text-lg sm:text-xl">₹{p.price} <span className="text-sm font-normal text-gray-500 dark:text-gray-400">/ service</span></p>
 
-            <div className="flex justify-between items-center mt-auto gap-2">
+            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center mt-auto gap-2 sm:gap-3">
               <button
                 onClick={() => handleBookNow(p)}
-                className="bg-amber-700 hover:bg-yellow-900 text-white px-4 py-2 rounded-lg transition"
+                className="bg-amber-700 hover:bg-amber-800 text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg transition-all duration-200 font-medium text-sm sm:text-base flex-1 sm:flex-none shadow-sm hover:shadow-md"
               >
                 Book Now
               </button>
 
-              <button
-                onClick={() => handleViewProfile(p)}
-                className="border border-amber-700 text-amber-700 hover:bg-amber-50 px-4 py-2 rounded-lg transition"
-              >
-                Profile
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleViewProfile(p)}
+                  className="border border-amber-700 text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/20 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg transition-all duration-200 font-medium text-sm sm:text-base flex-1 sm:flex-none"
+                >
+                  Profile
+                </button>
 
-              <button className="text-gray-500 hover:text-blue-500 transition">
-                <MessageCircle size={22} />
-              </button>
+                <button className="text-gray-500 hover:text-blue-500 transition-colors p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <MessageCircle size={16} className="sm:w-5 sm:h-5" />
+                </button>
+              </div>
             </div>
 
             {/* Expandable Section */}
             <button
               onClick={() => setExpandedCard(expandedCard === p.id ? null : p.id)}
-              className="mt-4 text-sm text-amber-700 flex items-center gap-1"
+              className="mt-3 sm:mt-4 text-xs sm:text-sm text-amber-700 dark:text-amber-400 flex items-center gap-1 hover:text-amber-800 dark:hover:text-amber-300 transition-colors"
             >
               {expandedCard === p.id ? (
                 <>
-                  <ChevronUp size={16} /> Show Less
+                  <ChevronUp size={14} className="sm:w-4 sm:h-4" /> 
+                  <span>Show Less</span>
                 </>
               ) : (
                 <>
-                  <ChevronDown size={16} /> Show More
+                  <ChevronDown size={14} className="sm:w-4 sm:h-4" /> 
+                  <span>Show More</span>
                 </>
               )}
             </button>
 
             {expandedCard === p.id && (
-              <div className="mt-4 space-y-3">
-                <h4 className="font-semibold">Recent Reviews</h4>
+              <div className="mt-3 sm:mt-4 space-y-2 sm:space-y-3 border-t border-gray-200 dark:border-gray-700 pt-3 sm:pt-4">
+                <h4 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white">Recent Reviews</h4>
                 {p.reviewsList.slice(0, 2).map((review, idx) => (
-                  <div key={idx} className="text-sm">
-                    <div className="flex items-center gap-2">
-                      <Star size={14} fill="currentColor" className="text-yellow-500" />
-                      <span className="font-medium">{review.rating}</span>
-                      <span>by {review.user}</span>
+                  <div key={idx} className="text-xs sm:text-sm">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <Star size={12} className="sm:w-3.5 sm:h-3.5 text-yellow-500" fill="currentColor" />
+                      <span className="font-medium text-gray-900 dark:text-white">{review.rating}</span>
+                      <span className="text-gray-600 dark:text-gray-300">by {review.user}</span>
                     </div>
-                    <p className="opacity-75">{review.comment}</p>
+                    <p className="text-gray-600 dark:text-gray-300 mt-1">{review.comment}</p>
                   </div>
                 ))}
-                <p className="text-sm opacity-75">Availability: {p.availability.join(', ')}</p>
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                  <span className="font-medium">Availability:</span> {p.availability.join(', ')}
+                </p>
               </div>
             )}
           </div>
-        ))}
+          ))}
+        </div>
       </section>
 
       {/* Booking Modal */}
       {selectedPandit && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto`}>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Book {selectedPandit.name}</h2>
-              <button onClick={() => setBookingStep(0)} className="text-gray-500">
-                <X size={24} />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl sm:rounded-2xl p-4 sm:p-6 max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto`}>
+            <div className="flex justify-between items-center mb-4 sm:mb-6">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Book {selectedPandit.name}</h2>
+              <button onClick={() => setBookingStep(0)} className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <X size={20} className="sm:w-6 sm:h-6" />
               </button>
             </div>
 
             {bookingStep === 1 && (
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Choose Service</h3>
-                <div className="grid gap-2">
+              <div className="space-y-3 sm:space-y-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Choose Service</h3>
+                <div className="grid gap-2 sm:gap-3">
                   {selectedPandit.services.map(service => (
                     <button
                       key={service}
@@ -766,12 +785,12 @@ export default function PanditBooking() {
                         setBookingData(prev => ({ ...prev, service }));
                         handleBookingNext();
                       }}
-                      className={`p-4 rounded-lg border text-left ${
-                        darkMode ? 'border-gray-700 hover:border-amber-600' : 'border-gray-300 hover:border-amber-500'
-                      } transition`}
+                      className={`p-3 sm:p-4 rounded-lg border text-left hover:shadow-md transition-all duration-200 ${
+                        darkMode ? 'border-gray-700 hover:border-amber-600 bg-gray-700 hover:bg-gray-600' : 'border-gray-300 hover:border-amber-500 bg-white hover:bg-amber-50'
+                      }`}
                     >
-                      <span className="font-medium">{service}</span>
-                      <p className="text-sm opacity-75">₹{selectedPandit.price}</p>
+                      <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">{service}</span>
+                      <p className="text-xs sm:text-sm text-amber-600 dark:text-amber-400 font-semibold mt-1">₹{selectedPandit.price}</p>
                     </button>
                   ))}
                 </div>
@@ -779,21 +798,21 @@ export default function PanditBooking() {
             )}
 
             {bookingStep === 2 && (
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Select Date & Time</h3>
-                <div className="grid gap-4">
+              <div className="space-y-3 sm:space-y-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Select Date & Time</h3>
+                <div className="grid gap-3 sm:gap-4">
                   <div>
-                    <label className="block mb-2">Date</label>
+                    <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Date</label>
                     <input
                       type="date"
-                      className="w-full p-3 border rounded-lg"
+                      className="w-full p-2 sm:p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm sm:text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                       onChange={(e) => setBookingData(prev => ({ ...prev, date: e.target.value }))}
                     />
                   </div>
                   <div>
-                    <label className="block mb-2">Time</label>
+                    <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Time</label>
                     <select
-                      className="w-full p-3 border rounded-lg"
+                      className="w-full p-2 sm:p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm sm:text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                       onChange={(e) => setBookingData(prev => ({ ...prev, time: e.target.value }))}
                     >
                       <option value="">Select Time</option>
@@ -804,11 +823,11 @@ export default function PanditBooking() {
                     </select>
                   </div>
                 </div>
-                <div className="flex justify-between mt-6">
-                  <button onClick={handleBookingBack} className="px-6 py-2 border rounded-lg">
+                <div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-4 mt-4 sm:mt-6">
+                  <button onClick={handleBookingBack} className="px-4 sm:px-6 py-2 sm:py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm sm:text-base font-medium">
                     Back
                   </button>
-                  <button onClick={handleBookingNext} className="px-6 py-2 bg-amber-700 text-white rounded-lg">
+                  <button onClick={handleBookingNext} className="px-4 sm:px-6 py-2 sm:py-2.5 bg-amber-700 hover:bg-amber-800 text-white rounded-lg transition-colors text-sm sm:text-base font-medium">
                     Next
                   </button>
                 </div>
@@ -816,19 +835,19 @@ export default function PanditBooking() {
             )}
 
             {bookingStep === 3 && (
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Enter Address</h3>
+              <div className="space-y-3 sm:space-y-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Enter Address</h3>
                 <textarea
                   placeholder="Enter your complete address"
                   rows={4}
-                  className="w-full p-3 border rounded-lg"
+                  className="w-full p-2 sm:p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm sm:text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
                   onChange={(e) => setBookingData(prev => ({ ...prev, address: e.target.value }))}
                 />
-                <div className="flex justify-between mt-6">
-                  <button onClick={handleBookingBack} className="px-6 py-2 border rounded-lg">
+                <div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-4 mt-4 sm:mt-6">
+                  <button onClick={handleBookingBack} className="px-4 sm:px-6 py-2 sm:py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm sm:text-base font-medium">
                     Back
                   </button>
-                  <button onClick={handleBookingNext} className="px-6 py-2 bg-amber-700 text-white rounded-lg">
+                  <button onClick={handleBookingNext} className="px-4 sm:px-6 py-2 sm:py-2.5 bg-amber-700 hover:bg-amber-800 text-white rounded-lg transition-colors text-sm sm:text-base font-medium">
                     Next
                   </button>
                 </div>
@@ -836,21 +855,41 @@ export default function PanditBooking() {
             )}
 
             {bookingStep === 4 && (
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Confirm Booking</h3>
-                <div className="space-y-2">
-                  <p><strong>Pandit:</strong> {selectedPandit.name}</p>
-                  <p><strong>Service:</strong> {bookingData.service}</p>
-                  <p><strong>Date:</strong> {bookingData.date}</p>
-                  <p><strong>Time:</strong> {bookingData.time}</p>
-                  <p><strong>Address:</strong> {bookingData.address}</p>
-                  <p><strong>Total:</strong> ₹{selectedPandit.price}</p>
+              <div className="space-y-3 sm:space-y-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Confirm Booking</h3>
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 sm:p-4 space-y-2 sm:space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Pandit:</span>
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{selectedPandit.name}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Service:</span>
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{bookingData.service}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Date:</span>
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{bookingData.date}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Time:</span>
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{bookingData.time}</span>
+                  </div>
+                  <div className="flex justify-between items-start">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Address:</span>
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white text-right max-w-[60%] break-words">{bookingData.address}</span>
+                  </div>
+                  <div className="border-t border-gray-200 dark:border-gray-600 pt-2 sm:pt-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-base font-bold text-gray-900 dark:text-white">Total:</span>
+                      <span className="text-lg font-bold text-amber-600 dark:text-amber-400">₹{selectedPandit.price}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex justify-between mt-6">
-                  <button onClick={handleBookingBack} className="px-6 py-2 border rounded-lg">
+                <div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-4 mt-4 sm:mt-6">
+                  <button onClick={handleBookingBack} className="px-4 sm:px-6 py-2 sm:py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm sm:text-base font-medium">
                     Back
                   </button>
-                  <button onClick={handleBookingComplete} className="px-6 py-2 bg-green-600 text-white rounded-lg">
+                  <button onClick={handleBookingComplete} className="px-4 sm:px-6 py-2 sm:py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm sm:text-base font-medium">
                     Confirm Booking
                   </button>
                 </div>
