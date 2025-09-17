@@ -1161,16 +1161,16 @@ export default function ServicesPage() {
                     <img src={s.images[0]} alt={s.title} className="w-full h-40 object-cover" />
                     
                     {/* Hover Overlay with CTA */}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 flex-col sm:flex-row">
+                    <div className="absolute inset-0 bg-black/60 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 flex-col sm:flex-row">
                       <button 
                         onClick={() => handleViewDetails(s)}
-                        className="px-3 py-1.5 rounded-xl text-sm bg-white text-amber-800 hover:bg-amber-100 mb-2 sm:mb-0"
+                        className="px-3 py-1.5 rounded-xl text-sm bg-white text-amber-800 hover:bg-amber-100 mb-2 sm:mb-0 w-40 text-center"
                       >
                         View Details
                       </button>
                       <button 
                         onClick={() => handleBook(s)}
-                        className="px-3 py-1.5 rounded-xl text-sm bg-amber-700 text-white hover:bg-amber-800"
+                        className="px-3 py-1.5 rounded-xl text-sm bg-amber-700 text-white hover:bg-amber-800 w-40 text-center"
                       >
                         Book Now
                       </button>
@@ -1504,13 +1504,13 @@ export default function ServicesPage() {
               initial={{ y: 80, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 80, opacity: 0 }}
-              className="fixed bottom-4 right-4 w-80 rounded-2xl border border-amber-200 bg-amber-50 shadow-xl overflow-hidden z-40"
+              className="fixed bottom-4 right-4 w-full sm:w-80 rounded-2xl border border-amber-200 bg-amber-50 shadow-xl overflow-hidden z-40"
               style={{ maxWidth: 'calc(100vw - 2rem)' }}
             >
               <div className="px-3 py-2 border-b border-amber-200 font-semibold flex items-center gap-2 text-amber-800">
                 <MessageSquare className="w-4 h-4"/> Instant Chat (demo)
               </div>
-              <div className="h-64 p-3 space-y-2 overflow-auto">
+              <div className="max-h-[50vh] sm:h-64 p-3 space-y-2 overflow-auto">
                 {chatLog.map((m, i) => (
                   <div key={i} className={`text-sm max-w-[80%] px-3 py-2 rounded-2xl ${m.from === "you" ? "bg-amber-700 text-white ml-auto" : "bg-amber-100"}`}>{m.text}</div>
                 ))}
