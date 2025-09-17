@@ -116,9 +116,9 @@ function DynamicGreeting() {
       transition={{ delay: 0.2 }}
       className="mt-12"
     >
-      <p className="text-gray-600 text-sm">{greeting},</p>
-      <h2 className="text-2xl sm:text-3xl font-bold text-[#800000]">Avinash Sharma</h2>
-      <p className="mt-2 text-sm text-amber-800 bg-amber-100 p-2 rounded-lg">{shloka}</p>
+      <p className="text-gray-600 text-sm sm:text-base">{greeting},</p>
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#800000]">Avinash Sharma</h2>
+      <p className="mt-2 text-sm sm:text-base text-amber-800 bg-amber-100 p-2 sm:p-3 rounded-lg">{shloka}</p>
     </motion.div>
   );
 }
@@ -137,10 +137,10 @@ function PanchangWidget() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
-      className="mt-4 bg-white rounded-xl p-3 shadow-md border border-orange-200"
+      className="mt-4 bg-white rounded-xl p-3 sm:p-4 shadow-md border border-orange-200"
     >
       <h3 className="font-semibold text-[#800000] text-center mb-2">Today's Panchang</h3>
-      <div className="grid grid-cols-2 gap-2 text-xs">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs sm:text-sm">
         <div>
           <span className="font-medium">Tithi:</span> {panchang.tithi}
         </div>
@@ -167,14 +167,14 @@ function AnimatedSearch({ onVoiceSearch }) {
       transition={{ duration: 0.6, delay: 0.2 }}
       className="mt-4"
     >
-      <div className="flex items-center bg-[#FFF7E0] rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-amber-400 transition-all shadow-sm">
+      <div className="flex items-center bg-[#FFF7E0] rounded-full px-3 sm:px-4 py-2 focus-within:ring-2 focus-within:ring-amber-400 transition-all shadow-sm">
         <Search className="w-5 h-5 text-orange-500" />
         <input
           type="text"
           placeholder="Search pujas, pandits..."
-          className="ml-2 bg-transparent outline-none text-gray-700 w-full placeholder-gray-400"
+          className="ml-2 bg-transparent outline-none text-gray-700 w-full placeholder-gray-400 text-sm sm:text-base"
         />
-        <button onClick={onVoiceSearch} className="p-1">
+        <button onClick={onVoiceSearch} className="p-1 sm:p-1.5">
           <Mic className="w-5 h-5 text-orange-500" />
         </button>
       </div>
@@ -233,16 +233,16 @@ function HeroBanner() {
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
         {slides.map((s) => (
-          <div key={s.id} className="w-full shrink-0 relative h-64 sm:h-72 md:h-80">
+          <div key={s.id} className="w-full shrink-0 relative h-56 sm:h-72 md:h-96">
             <img
               src={s.img}
               alt={s.title}
               className="absolute inset-0 h-full w-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-black/10 to-transparent" />
-            <div className="absolute left-5 bottom-5 text-white drop-shadow-md">
-              <p className="text-sm opacity-90">{s.subtitle}</p>
-              <h3 className="text-xl sm:text-2xl font-bold">{s.title}</h3>
+            <div className="absolute left-4 sm:left-5 bottom-4 sm:bottom-5 text-white drop-shadow-md max-w-[85%] sm:max-w-[60%]">
+              <p className="text-xs sm:text-sm opacity-90">{s.subtitle}</p>
+              <h3 className="text-lg sm:text-2xl md:text-3xl font-bold">{s.title}</h3>
             </div>
           </div>
         ))}
@@ -251,13 +251,13 @@ function HeroBanner() {
       {/* Controls */}
       <button
         onClick={prev}
-        className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 px-2 py-2 shadow-md hover:bg-white"
+        className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 sm:p-2.5 shadow-md hover:bg-white"
       >
         <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
       </button>
       <button
         onClick={next}
-        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 px-2 py-2 shadow-md hover:bg-white"
+        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 sm:p-2.5 shadow-md hover:bg-white"
       >
         <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
       </button>
@@ -290,7 +290,7 @@ function ServicesSection() {
   ];
 
   return (
-    <div className="mt-6 grid grid-cols-2 gap-4">
+    <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
       {services.map((service) => {
         const Icon = service.icon;
         return (
@@ -298,10 +298,10 @@ function ServicesSection() {
             whileTap={{ scale: 0.95 }}
             key={service.name}
             onClick={() => navigate(service.path)}
-            className="bg-[#FFF7E0] rounded-2xl p-4 text-center shadow hover:shadow-lg border border-orange-200 transition"
+            className="bg-[#FFF7E0] rounded-2xl p-4 sm:p-5 text-center shadow hover:shadow-lg border border-orange-200 transition"
           >
-            <Icon className="mx-auto w-7 h-7 text-orange-500" />
-            <p className="font-medium text-gray-800 mt-2">{service.name}</p>
+            <Icon className="mx-auto w-7 h-7 sm:w-8 sm:h-8 text-orange-500" />
+            <p className="font-medium text-gray-800 mt-2 text-sm sm:text-base">{service.name}</p>
           </motion.button>
         );
       })}
@@ -324,24 +324,24 @@ function UpcomingEvents() {
   return (
     <div className="mt-6">
       <div className="flex justify-between items-center mb-3">
-        <h3 className="text-lg font-semibold text-[#800000]">Upcoming Events</h3>
+        <h3 className="text-lg sm:text-xl font-semibold text-[#800000]">Upcoming Events</h3>
         <button 
           onClick={() => navigate('/bookings')}
-          className="text-sm text-orange-600 font-medium"
+          className="text-sm sm:text-base text-orange-600 font-medium"
         >
           View All
         </button>
       </div>
       
-      <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-4">
+      <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-4 -mx-6 px-6 sm:mx-0 sm:px-0">
         {upcomingEvents.map(event => (
           <div 
             key={event.id} 
-            className="inline-block w-64 bg-white rounded-2xl p-4 shadow-md border border-orange-200"
+            className="inline-block align-top w-56 sm:w-64 bg-white rounded-2xl p-4 shadow-md border border-orange-200"
           >
             <div className="flex justify-between items-start">
-              <div>
-                <h4 className="font-medium text-gray-800">{event.name}</h4>
+              <div className="min-w-0">
+                <h4 className="font-medium text-gray-800 truncate">{event.name}</h4>
                 <p className="text-sm text-gray-600 mt-1">
                   {new Date(event.date).toLocaleDateString('en-IN', {
                     day: 'numeric', month: 'short', year: 'numeric'
@@ -349,7 +349,7 @@ function UpcomingEvents() {
                 </p>
               </div>
               {event.type === 'festival' && (
-                <span className="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full">
+                <span className="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full shrink-0">
                   Festival
                 </span>
               )}
@@ -379,19 +379,19 @@ function GaneshPromo() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="mt-6 bg-gradient-to-r from-[#FFD700] to-[#FFA500] rounded-2xl p-5 flex items-center justify-between shadow-lg"
+      className="mt-6 bg-gradient-to-r from-[#FFD700] to-[#FFA500] rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 justify-between shadow-lg"
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4">
         <img
           src="src/assets/images/ganesh puja 1.jpeg"
           alt="Ganesh Ji"
-          className="w-14 h-14"
+          className="w-12 h-12 sm:w-14 sm:h-14 object-cover rounded-full"
         />
-        <h3 className="text-lg font-bold text-[#800000]">
+        <h3 className="text-base sm:text-lg font-bold text-[#800000]">
           Ganesh Chaturthi Puja
         </h3>
       </div>
-      <button className="bg-[#800000] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#A52A2A]">
+      <button className="self-start sm:self-auto bg-[#800000] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#A52A2A] text-sm sm:text-base">
         Book Now
       </button>
     </motion.div>
@@ -403,20 +403,20 @@ function PanditAvailability() {
   const [panditAvailable, setPanditAvailable] = useState(true);
   
   return (
-    <div className="mt-6 bg-white rounded-2xl p-4 shadow-md border border-orange-200">
-      <div className="flex justify-between items-center mb-3">
-        <h3 className="text-lg font-semibold text-[#800000]">Pandit Assistance</h3>
+    <div className="mt-6 bg-white rounded-2xl p-4 sm:p-5 shadow-md border border-orange-200">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
+        <h3 className="text-lg sm:text-xl font-semibold text-[#800000]">Pandit Assistance</h3>
         <div className="flex items-center">
           <div className={`w-3 h-3 rounded-full mr-2 ${panditAvailable ? 'bg-green-500' : 'bg-red-500'}`}></div>
           <span className="text-sm">{panditAvailable ? 'Available' : 'Busy'}</span>
         </div>
       </div>
       
-      <p className="text-sm text-gray-600 mb-4">
+      <p className="text-sm sm:text-base text-gray-600 mb-4">
         Connect with our expert pandits for guidance and booking assistance.
       </p>
       
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <button className="flex-1 flex items-center justify-center gap-2 bg-amber-100 text-amber-800 py-2 rounded-lg font-medium hover:bg-amber-200">
           <Phone size={16} />
           Call Now
@@ -436,9 +436,9 @@ function DashboardSection() {
 
   return (
     <div className="mt-6">
-      <h3 className="text-lg font-semibold text-[#800000] mb-3">Your Dashboard</h3>
+      <h3 className="text-lg sm:text-xl font-semibold text-[#800000] mb-3">Your Dashboard</h3>
       
-      <div className="bg-white rounded-2xl p-4 shadow-md border border-orange-200">
+      <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-md border border-orange-200">
         <div className="flex justify-between items-center mb-4">
           <h4 className="font-medium text-gray-800">Loyalty Points</h4>
           <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -446,7 +446,7 @@ function DashboardSection() {
           </span>
         </div>
         
-        <p className="text-sm text-gray-600 mb-4">
+        <p className="text-sm sm:text-base text-gray-600 mb-4">
           Earn 50 points for every booking. Redeem points for discounts on future pujas.
         </p>
         
@@ -484,8 +484,8 @@ function DashboardSection() {
 function PanditProfile() {
   return (
     <div className="mt-6">
-      <h3 className="text-lg font-semibold text-[#800000] mb-5">Pandit Ji Profile</h3>
-      <div className="bg-[#FFF7E0] rounded-2xl p-4 shadow-md border border-orange-200 space-y-4">
+      <h3 className="text-lg sm:text-xl font-semibold text-[#800000] mb-5">Pandit Ji Profile</h3>
+      <div className="bg-[#FFF7E0] rounded-2xl p-4 sm:p-5 shadow-md border border-orange-200 space-y-4">
         <div className="w-full overflow-hidden rounded-xl">
           <img
             src="src/assets/images/panditji 3.png"
@@ -493,15 +493,15 @@ function PanditProfile() {
             className="w-full h-auto object-cover"
           />
         </div>
-        <p className="text-base font-semibold text-gray-800">Pandit Ram Sharma</p>
-        <p className="text-sm text-gray-600">
+        <p className="text-base sm:text-lg font-semibold text-gray-800">Pandit Ram Sharma</p>
+        <p className="text-sm sm:text-base text-gray-600">
           Specializes in Satyanarayan, Griha Pravesh, Marriage
         </p>
-        <div className="flex justify-between">
-          <button className="border border-gray-400 px-4 py-1 rounded text-gray-700 hover:bg-gray-100">
+        <div className="flex gap-3 sm:gap-4 justify-between">
+          <button className="flex-1 border border-gray-400 px-4 py-2 rounded text-gray-700 hover:bg-gray-100 text-sm sm:text-base">
             Call
           </button>
-          <button className="bg-[#800000] text-white px-4 py-1 rounded hover:bg-[#A52A2A]">
+          <button className="flex-1 bg-[#800000] text-white px-4 py-2 rounded hover:bg-[#A52A2A] text-sm sm:text-base">
             Book
           </button>
         </div>
@@ -519,8 +519,8 @@ function PujaKits() {
 
   return (
     <div className="mt-6">
-      <h3 className="text-lg font-semibold text-[#800000] mb-2">Puja Kits</h3>
-      <div className="grid grid-cols-2 gap-4">
+      <h3 className="text-lg sm:text-xl font-semibold text-[#800000] mb-2">Puja Kits</h3>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {kits.map((kit) => (
           <motion.div
             key={kit.title}
@@ -529,7 +529,7 @@ function PujaKits() {
           >
             <h4 className="font-medium text-gray-800">{kit.title}</h4>
             <p className="text-sm text-gray-600">{kit.price}</p>
-            <button className="mt-3 w-full bg-[#800000] text-white py-2 rounded hover:bg-[#A52A2A]">
+            <button className="mt-3 w-full bg-[#800000] text-white py-2 rounded hover:bg-[#A52A2A] text-sm sm:text-base">
               Add to Cart
             </button>
           </motion.div>
@@ -543,23 +543,25 @@ function PujaKits() {
 function TestimonialsSection() {
   return (
     <div className="mt-6">
-      <h3 className="text-lg font-semibold text-[#800000] mb-3">Testimonials</h3>
+      <h3 className="text-lg sm:text-xl font-semibold text-[#800000] mb-3">Testimonials</h3>
       
-      <div className="overflow-x-auto whitespace-nowrap pb-6 space-x-8">
+      <div className="overflow-x-auto whitespace-nowrap pb-6 space-x-6 -mx-6 px-6 sm:mx-0 sm:px-0">
         {testimonials.map(testimonial => (
           <div 
             key={testimonial.id} 
-            className="inline-block w-64 bg-white rounded-2xl p-6 shadow-md border border-orange-200"
+            className="inline-block align-top w-72 sm:w-80 md:w-96 bg-white rounded-2xl p-5 sm:p-6 shadow-md border border-orange-200"
           >
-            <div className="flex items-center mb-5">
+            <div className="flex items-center mb-4 sm:mb-5">
               <img 
                 src={testimonial.image} 
                 alt={testimonial.name}
-                className="w-15 h-12 rounded-full object-cover mr-7"
+                className="w-12 h-12 rounded-full object-cover mr-4 sm:mr-6"
               />
-              <div>
-                <h4 className="font-medium text-gray-800">{testimonial.name}</h4>
-                <div className="flex">
+              <div className="min-w-0">
+                <h4 className="font-medium text-gray-800 truncate text-base sm:text-lg leading-tight">
+                  {testimonial.name}
+                </h4>
+                <div className="flex mt-0.5">
                   {[...Array(5)].map((_, i) => (
                     <Star 
                       key={i} 
@@ -571,7 +573,9 @@ function TestimonialsSection() {
               </div>
             </div>
             
-            <p className="text-sm text-gray-600">"{testimonial.review}"</p>
+            <div className="text-sm sm:text-[15px] md:text-base text-gray-700 leading-relaxed">
+              <p className="break-words whitespace-normal hyphens-auto">"{testimonial.review}"</p>
+            </div>
           </div>
         ))}
       </div>
@@ -597,9 +601,9 @@ function FestivalOffers() {
 
   return (
     <div className="mt-6">
-      <h3 className="text-lg font-semibold text-[#800000] mb-3">Special Offers</h3>
+      <h3 className="text-lg sm:text-xl font-semibold text-[#800000] mb-3">Special Offers</h3>
       
-      <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-4">
+      <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-4 -mx-6 px-6 sm:mx-0 sm:px-0">
         {specialOffers.map(offer => {
           const timeLeft = getTimeUntil(offer.expiry);
           const isExpired = timeLeft === "Expired";
@@ -607,24 +611,26 @@ function FestivalOffers() {
           return (
             <div 
               key={offer.id} 
-              className="inline-block w-56 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-4 shadow-md text-white"
+              className="inline-block align-top w-56 sm:w-60 md:w-64 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-4 sm:p-5 shadow-md text-white"
             >
-              <div className="flex justify-between items-start mb-3">
-                <h4 className="font-bold">{offer.title}</h4>
-                <span className="bg-white text-amber-700 text-xs font-bold px-2 py-1 rounded-full">
+              <div className="flex items-start mb-2.5 sm:mb-3">
+                <h4 className="font-bold text-base sm:text-lg leading-tight flex-1 pr-2 break-words">
+                  {offer.title}
+                </h4>
+                <span className="bg-white text-amber-700 text-[10px] sm:text-xs font-bold px-2 py-1 rounded-full shrink-0 max-w-[45%] text-center truncate">
                   {offer.discount}
                 </span>
               </div>
               
-              <p className="text-sm opacity-90 mb-3">Limited time offer</p>
+              <p className="text-xs sm:text-sm opacity-90 mb-3">Limited time offer</p>
               
               <div className="flex items-center justify-between">
-                <span className={`text-xs font-medium ${isExpired ? 'text-red-100' : 'text-white'}`}>
+                <span className={`text-[11px] sm:text-xs font-medium ${isExpired ? 'text-red-100' : 'text-white'}`}>
                   {timeLeft}
                 </span>
                 <button 
                   disabled={isExpired}
-                  className={`text-xs font-bold py-1 px-3 rounded-full ${isExpired ? 'bg-gray-300' : 'bg-white text-amber-700'}`}
+                  className={`text-[11px] sm:text-xs font-bold py-1 px-3 rounded-full ${isExpired ? 'bg-gray-300' : 'bg-white text-amber-700'}`}
                 >
                   {isExpired ? 'Expired' : 'Grab Now'}
                 </button>
@@ -654,16 +660,16 @@ function QuickActions() {
   };
 
   return (
-    <div className="fixed left-5 bottom-28 z-50 flex flex-col items-center gap-3">
+    <div className="fixed left-4 sm:left-5 bottom-28 sm:bottom-32 z-50 flex flex-col items-center gap-3">
       {expanded && actions.map((action, index) => (
         <motion.div
           key={index}
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: index * 0.1 }}
-          className="flex items-center gap-2 bg-white rounded-full shadow-lg pl-4 pr-5 py-2"
+          className="flex items-center gap-2 bg-white rounded-full shadow-lg pl-3 pr-4 sm:pl-4 sm:pr-5 py-2"
         >
-          <span className="text-xs font-medium whitespace-nowrap">{action.label}</span>
+          <span className="text-xs sm:text-sm font-medium whitespace-nowrap">{action.label}</span>
           <button 
             onClick={() => handleAction(index)}
             className={`${action.color} rounded-full p-2 text-white`}
@@ -676,9 +682,9 @@ function QuickActions() {
       <motion.button
         whileTap={{ scale: 0.9 }}
         onClick={() => setExpanded(!expanded)}
-        className="rounded-full p-3 bg-[#800000] text-white shadow-lg"
+        className="rounded-full p-3 sm:p-3.5 bg-[#800000] text-white shadow-lg"
       >
-        {expanded ? <X size={24} /> : <Sparkles size={24} />}
+        {expanded ? <X size={22} /> : <Sparkles size={22} />}
       </motion.button>
     </div>
   );
@@ -688,15 +694,16 @@ function QuickActions() {
 function FloatingCart({ itemCount }) {
   return (
     <motion.div
-      className="fixed bottom-20 right-5 z-50"
+      className="fixed bottom-20 sm:bottom-24 right-4 sm:right-5 z-50"
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.6 }}
     >
-      <button className="bg-[#800000] text-white rounded-full p-3 shadow-lg hover:bg-[#A52A2A] relative">
-        <ShoppingCart size={22} />
+      <button className="bg-[#800000] text-white rounded-full p-3 sm:p-3.5 shadow-lg hover:bg-[#A52A2A] relative">
+        <ShoppingCart size={20} className="sm:hidden" />
+        <ShoppingCart size={22} className="hidden sm:inline" />
         {itemCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] sm:text-xs rounded-full w-5 h-5 flex items-center justify-center">
             {itemCount}
           </span>
         )}
@@ -719,7 +726,7 @@ function BottomNavbar() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-[#FFF7E0] shadow-lg rounded-t-2xl px-6 py-3 z-50 border-t border-orange-200">
+    <div className="fixed bottom-0 left-0 right-0 bg-[#FFF7E0] shadow-lg rounded-t-2xl px-4 sm:px-6 py-2.5 sm:py-3 z-50 border-t border-orange-200">
       <div className="flex justify-between items-center">
         {navItems.map(item => {
           const Icon = item.icon;
@@ -732,10 +739,10 @@ function BottomNavbar() {
                 setActiveTab(item.id);
                 if (item.id === "bookings") navigate("/bookings");
               }}
-              className="flex flex-col items-center"
+              className="flex flex-col items-center min-w-[56px]"
             >
-              <Icon className={`w-6 h-6 ${isActive ? "text-[#800000]" : "text-gray-600"}`} />
-              <span className={`text-xs ${isActive ? "text-[#800000] font-medium" : "text-gray-600"}`}>
+              <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${isActive ? "text-[#800000]" : "text-gray-600"}`} />
+              <span className={`text-[11px] sm:text-xs ${isActive ? "text-[#800000] font-medium" : "text-gray-600"}`}>
                 {item.label}
               </span>
             </button>
@@ -780,7 +787,7 @@ function VoiceSearchModal({ isOpen, onClose, onResult }) {
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-2xl p-6 w-full max-w-md"
+        className="bg-white rounded-2xl p-5 sm:p-6 w-full max-w-sm sm:max-w-md"
       >
         <div className="text-center">
           <div className="flex justify-center mb-4">
@@ -790,13 +797,13 @@ function VoiceSearchModal({ isOpen, onClose, onResult }) {
           </div>
           
           <h3 className="text-lg font-semibold text-gray-800 mb-2">Voice Search</h3>
-          <p className="text-gray-600 mb-4">{transcript || "Click the mic and speak your command"}</p>
+          <p className="text-gray-600 mb-4 text-sm sm:text-base">{transcript || "Click the mic and speak your command"}</p>
           
           <div className="flex gap-3 justify-center">
             {!isListening ? (
               <button 
                 onClick={startListening}
-                className="bg-[#800000] text-white px-6 py-2 rounded-full font-medium flex items-center gap-2"
+                className="bg-[#800000] text-white px-5 sm:px-6 py-2 rounded-full font-medium flex items-center gap-2"
               >
                 <Mic size={18} /> Start Listening
               </button>
@@ -847,7 +854,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen pb-24 p-6 bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] font-sans text-gray-800 relative">
+    <main className="min-h-screen pb-24 p-4 sm:p-6 bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] font-sans text-gray-800 relative">
       <DynamicGreeting />
       <PanchangWidget />
       <AnimatedSearch onVoiceSearch={handleVoiceSearch} />
