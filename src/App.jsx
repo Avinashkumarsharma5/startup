@@ -18,7 +18,7 @@ import BookingsPage from "./pages/BookingsPage";
 import UserProfile from "./pages/UserProfile";
 import BookEvent from "./pages/BookEvents";
 import VoiceAssistant from "./pages/VoiceAssistant";
-
+import SearchPage from "./pages/SearchPage";
 export default function App() {
   const location = useLocation();
   const [micOpen, setMicOpen] = useState(false);
@@ -48,6 +48,7 @@ export default function App() {
           <Route path="/BookingsPage" element={<BookingsPage />} />
           <Route path="/UserProfile" element={<UserProfile />} />
           <Route path="/book" element={<BookEvent />} />
+        <Route path="/search" element={<SearchPage />} />
         </Routes>
 
         {/* VoiceAssistant Overlay */}
