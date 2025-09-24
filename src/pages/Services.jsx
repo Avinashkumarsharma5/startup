@@ -1,496 +1,537 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Search,
-  Mic,
-  Star,
-  StarHalf,
-  Bookmark,
-  BookmarkCheck,
-  PhoneCall,
-  CalendarDays,
-  MessageSquare,
-  PlayCircle,
-  Gift,
-  Sparkles,
-  ChevronLeft,
-  ChevronRight,
-  HeartHandshake,
-  PartyPopper,
-  Camera,
-  Tent,
-  Building2,
-  Lightbulb,
-  Utensils,
-  Filter,
-  X,
-  Share,
-  Award,
-  TrendingUp,
-  Zap,
-  MapPin,
-  Clock,
-  Loader,
-  ChevronDown,
-  Eye,
-  Crown,
-  ThumbsUp,
-  Menu,
-  User,
-  LogOut,
-  Bell,
-  CreditCard,
-  HelpCircle,
-  Settings,
-  Map,
-  Users,
-  FileText,
-  BarChart3,
-  Shield,
-  Globe,
-  Headphones,
-  Mail,
-  Facebook,
-  Instagram,
-  Twitter,
-  Youtube,
-  Linkedin,
-  Download,
-  Upload,
-  CheckCircle,
-  AlertCircle,
-  ArrowRight,
-  Plus,
-  Minus
+  Search, Calendar, User, Package, Flower2, BookOpen, Star,
+  MapPin, Filter, X, Clock, Mic, Loader, ChevronDown, Eye,
+  Heart, Share, Phone, MessageCircle, Bookmark, BookmarkCheck,
+  TrendingUp, Zap, Crown, ThumbsUp, Gift, Sparkles, Play,
+  ChevronLeft, ChevronRight, Plus, Minus, CheckCircle,
+  Award, Users, Camera, Tent, Building2, Lightbulb, Utensils
 } from "lucide-react";
 
-// Main Component
-export default function ServicesPage() {
-  // const navigate = useNavigate();
+// Mock data with enhanced structure
+const servicesData = {
+  decorations: [
+    { 
+      id: 1, 
+      name: "Traditional Mandap Decoration", 
+      img: "/images/decor1.jpg", 
+      rating: 4.7, 
+      price: 25000, 
+      reviews: 128, 
+      category: "Mandap", 
+      location: "Delhi", 
+      discount: 15,
+      trending: true,
+      tags: ["Popular", "Trending"],
+      vendors: [
+        { id: "d1", name: "Royal Decor Co.", rating: 4.8, available: true, responseTime: "15 min", completedEvents: 245 },
+        { id: "d2", name: "Floral Fantasy", rating: 4.6, available: false, responseTime: "30 min", completedEvents: 189 },
+      ],
+      customization: [
+        { id: "theme", name: "Theme", options: ["Traditional", "Modern", "Vintage", "Bohemian"], default: "Traditional" },
+        { id: "flowers", name: "Flower Type", options: ["Roses", "Marigolds", "Orchids", "Mixed"], default: "Mixed" }
+      ]
+    },
+    { 
+      id: 2, 
+      name: "Floral Stage Decoration", 
+      img: "/images/decor2.jpg", 
+      rating: 4.5, 
+      price: 18000, 
+      reviews: 89, 
+      category: "Floral", 
+      location: "Mumbai", 
+      trending: true
+    },
+  ],
+  lighting: [
+    { 
+      id: 3, 
+      name: "LED Wedding Lighting", 
+      img: "/images/light1.jpg", 
+      rating: 4.6, 
+      price: 12000, 
+      reviews: 67, 
+      category: "LED", 
+      location: "Bangalore", 
+      discount: 10
+    },
+  ],
+  catering: [
+    { 
+      id: 4, 
+      name: "Premium Vegetarian Catering", 
+      img: "/images/catering1.jpg", 
+      rating: 4.8, 
+      price: 499, 
+      unit: "/plate",
+      reviews: 245, 
+      category: "Vegetarian", 
+      location: "Delhi", 
+      tags: ["Best Value"],
+      vendors: [
+        { id: "c1", name: "Sharma Caterers", rating: 4.8, available: true, responseTime: "10 min", completedEvents: 421 },
+        { id: "c2", name: "Gupta Caterers", rating: 4.6, available: true, responseTime: "15 min", completedEvents: 356 },
+      ]
+    },
+  ],
+  tents: [
+    { 
+      id: 5, 
+      name: "Premium Wedding Tent", 
+      img: "/images/tent1.jpg", 
+      rating: 4.4, 
+      price: 35000, 
+      reviews: 72, 
+      category: "Premium", 
+      location: "Pune" 
+    },
+  ],
+  venues: [
+    { 
+      id: 6, 
+      name: "Luxury Wedding Hall", 
+      img: "/images/venue1.jpg", 
+      rating: 4.9, 
+      price: 150000, 
+      reviews: 156, 
+      category: "Luxury", 
+      location: "Delhi", 
+      trending: true
+    },
+  ]
+};
 
-  // State variables
-  const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true);
+const categories = [
+  { key: "all", label: "All Services", icon: Sparkles, color: "from-blue-500 to-blue-600" },
+  { key: "decorations", label: "Decorations", icon: Flower2, color: "from-green-500 to-green-600" },
+  { key: "lighting", label: "Lighting", icon: Lightbulb, color: "from-purple-500 to-purple-600" },
+  { key: "catering", label: "Catering", icon: Utensils, color: "from-orange-500 to-orange-600" },
+  { key: "tents", label: "Tents", icon: Tent, color: "from-pink-500 to-pink-600" },
+  { key: "venues", label: "Venues", icon: Building2, color: "from-red-500 to-red-600" },
+];
+
+// Skeleton Loader Component
+const SkeletonCard = () => (
+  <div className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse mt-10">
+    <div className="w-full h-48 bg-amber-200"></div>
+    <div className="p-4 space-y-3">
+      <div className="h-4 bg-amber-200 rounded w-3/4"></div>
+      <div className="h-3 bg-amber-200 rounded w-1/2"></div>
+      <div className="h-3 bg-amber-200 rounded w-1/4"></div>
+      <div className="h-10 bg-amber-200 rounded-xl"></div>
+    </div>
+  </div>
+);
+
+// Enhanced Card Component
+const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlist, isWishlisted }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const getCategoryIcon = () => {
+    switch(category) {
+      case "decorations": return Flower2;
+      case "lighting": return Lightbulb;
+      case "catering": return Utensils;
+      case "tents": return Tent;
+      case "venues": return Building2;
+      default: return Sparkles;
+    }
+  };
+
+  const Icon = getCategoryIcon();
+
+  const renderStars = (rating) => {
+    return (
+      <div className="flex items-center gap-1">
+        {[...Array(5)].map((_, i) => (
+          <Star
+            key={i}
+            className={`w-4 h-4 ${
+              i < Math.floor(rating) 
+                ? "fill-amber-400 text-amber-400" 
+                : i < rating 
+                ? "fill-amber-200 text-amber-400" 
+                : "text-amber-200"
+            }`}
+          />
+        ))}
+        <span className="text-sm text-amber-600 ml-1">{rating}</span>
+      </div>
+    );
+  };
+
+  return (
+    <motion.div 
+      layout
+      className="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300"
+      whileHover={{ y: -5 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="relative">
+        {!imageLoaded && <div className="w-full h-48 bg-amber-100 animate-pulse"></div>}
+        <img 
+          src={service.img} 
+          alt={service.name}
+          className={`w-full h-48 object-cover ${imageLoaded ? 'block' : 'hidden'}`}
+          onLoad={() => setImageLoaded(true)}
+          loading="lazy"
+        />
+        
+        {/* Badges */}
+        <div className="absolute top-3 left-3 flex flex-wrap gap-2 ">
+          <span className="bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
+            <Icon className="w-3 h-3" />
+            {category}
+          </span>
+          {service.discount && (
+            <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+              {service.discount}% OFF
+            </span>
+          )}
+          {service.trending && (
+            <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+              <TrendingUp className="w-3 h-3" />
+              Trending
+            </span>
+          )}
+        </div>
+        
+        {/* Wishlist Button */}
+        <button
+          onClick={() => onToggleWishlist(service.id)}
+          className="absolute top-3 right-3 p-2 rounded-full bg-white bg-opacity-90 hover:bg-opacity-100 shadow-lg transition-all duration-200"
+        >
+          {isWishlisted ? (
+            <BookmarkCheck className="w-5 h-5 text-amber-600" fill="currentColor" />
+          ) : (
+            <Bookmark className="w-5 h-5 text-amber-600" />
+          )}
+        </button>
+
+        {/* Hover Overlay */}
+        <AnimatePresence>
+          {isHovered && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center gap-3"
+            >
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => onViewDetails(service)}
+                className="px-4 py-2 bg-white text-amber-800 rounded-full font-medium hover:bg-amber-50 transition-colors"
+              >
+                Quick View
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => onBook(service)}
+                className="px-4 py-2 bg-amber-500 text-white rounded-full font-medium hover:bg-amber-600 transition-colors"
+              >
+                Book Now
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      
+      <div className="p-4">
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="font-semibold text-amber-900 text-lg line-clamp-2 flex-1">{service.name}</h3>
+          <button 
+            onClick={() => onToggleWishlist(service.id)}
+            className="p-1 hover:bg-amber-100 rounded-full transition-colors ml-2"
+          >
+            <Heart className={`w-5 h-5 ${isWishlisted ? "fill-red-500 text-red-500" : "text-amber-400"}`} />
+          </button>
+        </div>
+        
+        <div className="flex items-center justify-between mb-3">
+          {renderStars(service.rating)}
+          <span className="text-amber-600 text-sm">({service.reviews} reviews)</span>
+        </div>
+        
+        {service.location && (
+          <div className="flex items-center gap-1 text-amber-600 mb-3">
+            <MapPin className="w-4 h-4" />
+            <span className="text-sm">{service.location}</span>
+          </div>
+        )}
+        
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <span className="text-2xl font-bold text-amber-800">₹{service.price.toLocaleString()}</span>
+            {service.unit && <span className="text-amber-600 text-sm ml-1">{service.unit}</span>}
+            {service.discount && (
+              <span className="text-red-500 text-sm ml-2 line-through">
+                ₹{Math.round(service.price / (1 - service.discount/100)).toLocaleString()}
+              </span>
+            )}
+          </div>
+        </div>
+        
+        <div className="flex gap-2">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => onViewDetails(service)}
+            className="flex-1 px-4 py-2 border border-amber-300 text-amber-700 rounded-xl hover:bg-amber-50 transition-colors font-medium"
+          >
+            Details
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => onBook(service)}
+            className="flex-1 px-4 py-2 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors font-medium"
+          >
+            Book Now
+          </motion.button>
+        </div>
+
+        {/* Vendor Preview */}
+        {service.vendors && (
+          <div className="mt-3 pt-3 border-t border-amber-100">
+            <div className="text-xs text-amber-600 mb-2">Available Vendors:</div>
+            <div className="flex gap-2 overflow-x-auto">
+              {service.vendors.slice(0, 2).map(vendor => (
+                <div key={vendor.id} className="flex items-center gap-2 bg-amber-50 px-2 py-1 rounded-lg min-w-max">
+                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                  <span className="text-xs font-medium text-amber-800">{vendor.name}</span>
+                  <span className="text-xs text-amber-600">{vendor.rating}★</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+};
+
+// Hero Banner Component
+const HeroBanner = () => {
+  const banners = [
+    { 
+      id: 1, 
+      title: "Wedding Season Special", 
+      subtitle: "Get 20% off on all wedding services", 
+      image: "/images/wedding-banner.jpg", 
+      color: "from-amber-400 to-orange-500",
+      buttonText: "Book Now"
+    },
+    { 
+      id: 2, 
+      title: "Premium Catering Services", 
+      subtitle: "Delicious vegetarian meals for your events", 
+      image: "/images/catering-banner.jpg", 
+      color: "from-green-400 to-emerald-500",
+      buttonText: "Explore Catering"
+    },
+    { 
+      id: 3, 
+      title: "Luxury Venues", 
+      subtitle: "Find the perfect venue for your special day", 
+      image: "/images/venue-banner.jpg", 
+      color: "from-purple-400 to-pink-500",
+      buttonText: "View Venues"
+    },
+  ];
+
+  const [currentBanner, setCurrentBanner] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentBanner((prev) => (prev + 1) % banners.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="relative h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden mb-8">
+      {banners.map((banner, index) => (
+        <div
+          key={banner.id}
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            index === currentBanner ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <div className={`absolute inset-0 bg-gradient-to-r ${banner.color} bg-opacity-80`}></div>
+          <img 
+            src={banner.image} 
+            alt={banner.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 flex flex-col justify-center items-start p-8 text-white">
+            <motion.h2 
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3"
+            >
+              {banner.title}
+            </motion.h2>
+            <motion.p 
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-lg md:text-xl opacity-90 mb-6"
+            >
+              {banner.subtitle}
+            </motion.p>
+            <motion.button
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="px-8 py-3 bg-white text-amber-800 rounded-full font-semibold hover:bg-amber-50 transition-colors shadow-lg"
+            >
+              {banner.buttonText}
+            </motion.button>
+          </div>
+        </div>
+      ))}
+      
+      {/* Dots Indicator */}
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        {banners.map((_, index) => (
+          <button
+            key={index}
+            className={`w-3 h-3 rounded-full transition-all ${
+              index === currentBanner ? 'bg-white w-8' : 'bg-white bg-opacity-50'
+            }`}
+            onClick={() => setCurrentBanner(index)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default function EnhancedServicesPage() {
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState(null);
-  const [minRating, setMinRating] = useState(0);
-  const [sortBy, setSortBy] = useState("popularity");
-  const [wishlist, setWishlist] = useState({});
-  const [eventDate, setEventDate] = useState("");
-  const [city, setCity] = useState("Your City");
-  const [reviews, setReviews] = useState({});
-  const [chatOpen, setChatOpen] = useState(false);
-  const [chatMsg, setChatMsg] = useState("");
-  const [chatLog, setChatLog] = useState([]);
-  const [currentAd, setCurrentAd] = useState(0);
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [filters, setFilters] = useState({
+    minRating: 0,
+    maxPrice: 500000,
+    location: "",
+    vendorRating: 0,
+    availability: "all"
+  });
   const [showFilters, setShowFilters] = useState(false);
+  const [searchHistory, setSearchHistory] = useState([]);
+  const [isListening, setIsListening] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [visibleCounts, setVisibleCounts] = useState({});
+  const [wishlist, setWishlist] = useState(new Set());
   const [recentlyViewed, setRecentlyViewed] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [appliedCoupon, setAppliedCoupon] = useState("");
-  const [couponSuccess, setCouponSuccess] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [bookingFlow, setBookingFlow] = useState({
-    step: 0, // 0: not started, 1: service selection, 2: customization, 3: vendor selection, 4: date/time, 5: payment
-    selectedService: null,
-    selectedVendor: null,
-    selectedDate: null,
-    customization: {},
-    paymentMethod: 'card',
-  });
-  const [notifications, setNotifications] = useState([]);
-  const [userLocation, setUserLocation] = useState(null);
-  const [language, setLanguage] = useState('en');
-  const [showLanguageSelector, setShowLanguageSelector] = useState(false);
-  const [activeTab, setActiveTab] = useState('services'); // For profile section
+  const [sortBy, setSortBy] = useState("rating");
 
-  // Enhanced filters
-  const [filters, setFilters] = useState({
-    priceRange: [0, 100000],
-    location: "",
-    availability: "all",
-    eventType: "",
-    vendorRating: 0,
-  });
-
-  // Refs
-  const adRef = useRef(null);
-  const recognitionRef = useRef(null);
-  const filtersRef = useRef(null);
-
-  // Video ads (moved above effects to avoid TDZ)
-  const adsVideos = useMemo(
-    () => [
-      "https://player.vimeo.com/external/444435392.sd.mp4?s=57c5a9b1c4daea0b2b729e3d2e3d1b1b0c8b3b0a&profile_id=164&oauth2_token_id=57447761",
-      "https://player.vimeo.com/external/454194889.sd.mp4?s=7d80d18d5b9e57b386b5c5b5b5b5b5b5b5b5b5b5&profile_id=164&oauth2_token_id=57447761",
-    ],
-    []
-  );
-
-  // Check screen size and adjust layout
+  // Load data
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+    const loadData = async () => {
+      setLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setLoading(false);
     };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    loadData();
   }, []);
 
-  // Get user location
+  // Search history management
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          });
-          // Reverse geocode to get city name
-          setCity("Nearby");
-        },
-        (error) => {
-          console.log("Geolocation error:", error);
-        }
-      );
+    const savedHistory = localStorage.getItem('servicesSearchHistory');
+    if (savedHistory) {
+      setSearchHistory(JSON.parse(savedHistory));
     }
   }, []);
 
-  // Video ad controls
-  useEffect(() => {
-    const v = adRef.current;
-    if (!v) return;
-    const handleEnd = () => setCurrentAd((p) => (p + 1) % adsVideos.length);
-    v.addEventListener("ended", handleEnd);
-    return () => v.removeEventListener("ended", handleEnd);
-  }, [adsVideos.length]);
+  const saveToHistory = (searchQuery) => {
+    if (!searchQuery.trim()) return;
+    const updatedHistory = [searchQuery, ...searchHistory.filter(item => item !== searchQuery)].slice(0, 5);
+    setSearchHistory(updatedHistory);
+    localStorage.setItem('servicesSearchHistory', JSON.stringify(updatedHistory));
+  };
 
-  // Navigation functions (unused, replaced by global header)
-  // const handleLogin = () => navigate('/login');
-  // const handleSignup = () => navigate('/signup');
-  // const handleProfile = () => navigate('/profile');
+  // Voice search simulation
+  const startVoiceSearch = () => {
+    setIsListening(true);
+    setTimeout(() => {
+      const sampleQueries = ["Wedding decoration", "Catering services", "Venue booking", "Lighting solutions"];
+      const randomQuery = sampleQueries[Math.floor(Math.random() * sampleQueries.length)];
+      setQuery(randomQuery);
+      setIsListening(false);
+      saveToHistory(randomQuery);
+    }, 2000);
+  };
 
-  // Load services data
-  useEffect(() => {
-    const fetchServices = async () => {
-      setLoading(true);
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        const servicesData = [
-          {
-            id: 1,
-            title: "Decoration",
-            desc: "Traditional & theme-based decoration services.",
-            icon: <PartyPopper className="w-5 h-5" />,
-            basePrice: 4999,
-            category: "Wedding",
-            rating: 4.7,
-            reviewCount: 128,
-            popularity: 95,
-            tags: ["Popular", "Trending"],
-            images: [
-              "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2069&q=80",
-            ],
-            vendors: [
-              { id: "d1", name: "Royal Decor Co.", rating: 4.8, available: true, responseTime: "15 min", completedEvents: 245 },
-              { id: "d2", name: "Floral Fantasy", rating: 4.6, available: false, responseTime: "30 min", completedEvents: 189 },
-            ],
-            stock: 5,
-            customizationOptions: [
-              { id: "theme", name: "Theme", options: ["Traditional", "Modern", "Vintage", "Bohemian"], default: "Traditional" },
-              { id: "flowers", name: "Flower Type", options: ["Roses", "Marigolds", "Orchids", "Mixed"], default: "Mixed" }
-            ]
-          },
-          {
-            id: 2,
-            title: "Lighting",
-            desc: "Festive and wedding lighting solutions.",
-            icon: <Lightbulb className="w-5 h-5" />,
-            basePrice: 2999,
-            category: "Wedding",
-            rating: 4.5,
-            reviewCount: 86,
-            popularity: 88,
-            tags: ["Limited"],
-            images: [
-              "https://images.unsplash.com/photo-1519677100203-a0e668c92439?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
-            ],
-            vendors: [
-              { id: "l1", name: "Shine & Co.", rating: 4.5, available: true, responseTime: "20 min", completedEvents: 178 },
-              { id: "l2", name: "Glow Events", rating: 4.4, available: true, responseTime: "25 min", completedEvents: 132 },
-            ],
-            stock: 12,
-            customizationOptions: [
-              { id: "type", name: "Lighting Type", options: ["LED", "Fairy Lights", "Spotlights", "Traditional"], default: "LED" },
-              { id: "color", name: "Color Theme", options: ["Warm White", "Multicolor", "Gold", "Silver"], default: "Warm White" }
-            ]
-          },
-          {
-            id: 3,
-            title: "Catering",
-            desc: "Pure veg catering with regional specialities.",
-            icon: <Utensils className="w-5 h-5" />,
-            basePrice: 199,
-            unit: "/plate",
-            category: "Food",
-            rating: 4.8,
-            reviewCount: 245,
-            popularity: 97,
-            tags: ["Popular", "Best Value"],
-            images: [
-              "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
-            ],
-            vendors: [
-              { id: "c1", name: "Sharma Caterers", rating: 4.8, available: true, responseTime: "10 min", completedEvents: 421 },
-              { id: "c2", name: "Gupta Caterers", rating: 4.6, available: true, responseTime: "15 min", completedEvents: 356 },
-              { id: "c3", name: "Verma Caterers", rating: 4.7, available: false, responseTime: "30 min", completedEvents: 289 },
-            ],
-            stock: 3,
-            customizationOptions: [
-              { id: "cuisine", name: "Cuisine Type", options: ["North Indian", "South Indian", "Continental", "Chinese"], default: "North Indian" },
-              { id: "meal", name: "Meal Type", options: ["Lunch", "Dinner", "Both"], default: "Both" }
-            ]
-          },
-          {
-            id: 4,
-            title: "Tents",
-            desc: "Waterproof and stylish tent setups.",
-            icon: <Tent className="w-5 h-5" />,
-            basePrice: 8999,
-            category: "Wedding",
-            rating: 4.4,
-            reviewCount: 72,
-            popularity: 82,
-            tags: ["Recommended"],
-            images: [
-              "https://images.unsplash.com/photo-1563492065599-3520f775eeed?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2076&q=80",
-            ],
-            vendors: [
-              { id: "t1", name: "Deluxe Tent House", rating: 4.5, available: true, responseTime: "25 min", completedEvents: 198 },
-              { id: "t2", name: "Royal Tent Decor", rating: 4.4, available: true, responseTime: "30 min", completedEvents: 154 },
-            ],
-            stock: 8,
-            customizationOptions: [
-              { id: "size", name: "Tent Size", options: ["Small (50 people)", "Medium (100 people)", "Large (200 people)", "X-Large (300+ people)"], default: "Medium (100 people)" },
-              { id: "style", name: "Tent Style", options: ["Traditional", "Modern", "Premium", "Royal"], default: "Traditional" }
-            ]
-          },
-          {
-            id: 5,
-            title: "Videography",
-            desc: "Professional wedding & event videography.",
-            icon: <Camera className="w-5 h-5" />,
-            basePrice: 14999,
-            category: "Media",
-            rating: 4.9,
-            reviewCount: 156,
-            popularity: 91,
-            tags: ["Premium", "Trending"],
-            images: [
-              "https://images.unsplash.com/photo-1545235617-9465d2a55698?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2080&q=80",
-            ],
-            vendors: [
-              { id: "v1", name: "Pixel Studio", rating: 4.9, available: true, responseTime: "15 min", completedEvents: 267 },
-              { id: "v2", name: "Wedding Films", rating: 4.8, available: true, responseTime: "20 min", completedEvents: 201 },
-            ],
-            stock: 6,
-            customizationOptions: [
-              { id: "package", name: "Package", options: ["Basic (5 min video)", "Standard (15 min video + photos)", "Premium (30 min video + photos + drone)"], default: "Standard (15 min video + photos)" },
-              { id: "deliverables", name: "Deliverables", options: ["Digital copy only", "Digital + USB", "Digital + USB + Album"], default: "Digital copy only" }
-            ]
-          },
-          {
-            id: 6,
-            title: "Marriage Halls",
-            desc: "Spacious halls for events & weddings.",
-            icon: <Building2 className="w-5 h-5" />,
-            basePrice: 49999,
-            category: "Venue",
-            rating: 4.6,
-            reviewCount: 189,
-            popularity: 93,
-            tags: ["Popular"],
-            images: [
-              "https://images.unsplash.com/photo-1542320511-71a51b5d49c2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2080&q=80",
-            ],
-            vendors: [
-              { id: "h1", name: "Sanskaraa Palace", rating: 4.7, available: true, responseTime: "10 min", completedEvents: 325 },
-              { id: "h2", name: "Grand Royale Hall", rating: 4.6, available: true, responseTime: "15 min", completedEvents: 278 },
-            ],
-            stock: 4,
-            customizationOptions: [
-              { id: "capacity", name: "Hall Capacity", options: ["Up to 100 guests", "100-200 guests", "200-500 guests", "500+ guests"], default: "100-200 guests" },
-              { id: "amenities", name: "Amenities", options: ["Basic", "Standard", "Premium", "Luxury"], default: "Standard" }
-            ]
-          },
-        ];
-        
-        setServices(servicesData);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching services:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchServices();
+  // Combined services data
+  const allServices = useMemo(() => {
+    return Object.entries(servicesData).flatMap(([category, services]) =>
+      services.map(service => ({ ...service, serviceCategory: category }))
+    );
   }, []);
 
-  // Reels data
-  const reels = [
-    {
-      id: "r1",
-      src: "https://player.vimeo.com/external/444435392.sd.mp4?s=57c5a9b1c4daea0b2b729e3d2e3d1b1b0c8b3b0a&profile_id=164&oauth2_token_id=57447761",
-      title: "Wedding snippets",
-      views: "12.4K",
-    },
-    {
-      id: "r2",
-      src: "https://player.vimeo.com/external/454194889.sd.mp4?s=7d80d18d5b9e57b386b5c5b5b5b5b5b5b5b5b5&profile_id=164&oauth2_token_id=57447761",
-      title: "Lighting highlights",
-      views: "8.7K",
-    },
-  ];
-
-  // Seasonal tags
-  const seasonal = [
-    { id: "s1", tag: "Navratri", color: "bg-amber-200 text-amber-800" },
-    { id: "s2", tag: "Wedding Season", color: "bg-amber-200 text-amber-800" },
-    { id: "s3", tag: "Festive Offers", color: "bg-amber-200 text-amber-800" },
-  ];
-
-  // Packages data
-  const packages = [
-    {
-      id: "p1",
-      name: "Classic Wedding Pack",
-      includes: ["Decoration", "Lighting", "Catering"],
-      price: 89999,
-      savePercent: 14,
-    },
-    {
-      id: "p2",
-      name: "Royal Grand Pack",
-      includes: ["Decoration", "Lighting", "Catering", "Videography", "Tents"],
-      price: 199999,
-      savePercent: 18,
-    },
-  ];
-
-  // Filter and sort services
-  const filtered = useMemo(() => {
-    let result = services.filter((s) => {
-      const matchQ = `${s.title} ${s.desc}`
-        .toLowerCase()
-        .includes(query.toLowerCase());
-      const matchC = category ? s.category === category : true;
-      const matchR = s.rating >= minRating;
-      const matchPrice = s.basePrice >= filters.priceRange[0] && s.basePrice <= filters.priceRange[1];
-      const matchVendorRating = s.vendors.some(v => v.rating >= filters.vendorRating);
+  // Filter and search logic
+  const filteredResults = useMemo(() => {
+    let results = allServices.filter(service => {
+      const matchesQuery = service.name.toLowerCase().includes(query.toLowerCase()) ||
+                          service.category?.toLowerCase().includes(query.toLowerCase());
       
-      return matchQ && matchC && matchR && matchPrice && matchVendorRating;
+      const matchesCategory = activeCategory === "all" || activeCategory === service.serviceCategory;
+      const matchesRating = service.rating >= filters.minRating;
+      const matchesPrice = service.price <= filters.maxPrice;
+      const matchesLocation = !filters.location || 
+        service.location?.toLowerCase().includes(filters.location.toLowerCase());
+
+      return matchesQuery && matchesCategory && matchesRating && matchesPrice && matchesLocation;
     });
 
     // Apply sorting
     switch(sortBy) {
       case "price-low":
-        result.sort((a, b) => a.basePrice - b.basePrice);
+        results.sort((a, b) => a.price - b.price);
         break;
       case "price-high":
-        result.sort((a, b) => b.basePrice - a.basePrice);
+        results.sort((a, b) => b.price - a.price);
         break;
       case "rating":
-        result.sort((a, b) => b.rating - a.rating);
+        results.sort((a, b) => b.rating - a.rating);
         break;
       case "popularity":
-        result.sort((a, b) => b.popularity - a.popularity);
+        results.sort((a, b) => b.reviews - a.reviews);
         break;
       default:
-        // Default sorting (by popularity)
-        result.sort((a, b) => b.popularity - a.popularity);
+        results.sort((a, b) => b.rating - a.rating);
     }
 
-    return result;
-  }, [services, query, category, minRating, sortBy, filters]);
+    return results;
+  }, [allServices, query, activeCategory, filters, sortBy]);
 
-  // Recommended services (AI-powered)
-  const recommended = useMemo(() => {
-    // In a real app, this would come from an API based on user behavior
-    const picks = new Set();
-    
-    // Basic logic: if user is viewing wedding services, recommend related items
-    if (filtered.some((f) => f.category === "Wedding")) {
-      picks.add("Lighting");
-      picks.add("Tents");
-      picks.add("Catering");
-    }
-    
-    // If user is viewing venues, recommend catering and decoration
-    if (filtered.some((f) => f.title === "Marriage Halls")) {
-      picks.add("Catering");
-      picks.add("Decoration");
-      picks.add("Videography");
-    }
-    
-    return services.filter((s) => picks.has(s.title));
-  }, [filtered, services]);
-
-  // Voice recognition setup
-  const [listening, setListening] = useState(false);
-  const setupRecognition = () => {
-    const Sr = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!Sr) return null;
-    const rec = new Sr();
-    rec.lang = "en-IN";
-    rec.continuous = false;
-    rec.interimResults = false;
-    rec.onresult = (e) => {
-      const text = e.results?.[0]?.[0]?.transcript || "";
-      setQuery(text);
-      setListening(false);
-    };
-    rec.onend = () => setListening(false);
-    rec.onerror = () => setListening(false);
-    return rec;
-  };
-
-  const onVoice = () => {
-    if (!recognitionRef.current) recognitionRef.current = setupRecognition();
-    if (recognitionRef.current) {
-      setListening(true);
-      recognitionRef.current.start();
-    } else {
-      alert("Voice search not supported in this browser.");
-    }
-  };
-
-  // Navigation functions
-  const handleLogin = () => {
-    navigate('/login');
-  };
-
-  const handleSignup = () => {
-    navigate('/signup');
-  };
-
-  const handleProfile = () => {
-    navigate('/profile');
-  };
-
-  // Service interaction handlers
-  const handleBook = (s) => {
-    setBookingFlow({
-      step: 1,
-      selectedService: s,
-      selectedVendor: null,
-      selectedDate: null,
-      customization: {},
-      paymentMethod: 'card',
+  // Category-wise grouping for display
+  const categorizedResults = useMemo(() => {
+    const grouped = {};
+    filteredResults.forEach(service => {
+      const category = service.serviceCategory;
+      if (!grouped[category]) grouped[category] = [];
+      grouped[category].push(service);
     });
-    
-    showToast(`Starting booking for: ${s.title}`);
+    return grouped;
+  }, [filteredResults]);
+
+  // Handlers
+  const handleBook = (service) => {
+    showToast(`Starting booking process for ${service.name}`);
+    // Navigate to booking page or open booking modal
   };
 
   const handleViewDetails = (service) => {
@@ -505,1286 +546,548 @@ export default function ServicesPage() {
   };
 
   const toggleWishlist = (serviceId) => {
-    setWishlist(prev => ({
-      ...prev,
-      [serviceId]: !prev[serviceId]
-    }));
-    
-    showToast(wishlist[serviceId] ? "Removed from wishlist" : "Added to wishlist");
-  };
-
-  const addReview = (id, r) => {
-    setReviews((prev) => ({ ...prev, [id]: [...(prev[id] || []), r] }));
-    showToast("Review posted!");
-  };
-
-  const sendChat = () => {
-    if (!chatMsg.trim()) return;
-    const msg = chatMsg.trim();
-    setChatLog((l) => [...l, { from: "you", text: msg }, { from: "bot", text: "Thanks! A vendor will reply shortly." }]);
-    setChatMsg("");
-  };
-
-  const applyCoupon = () => {
-    if (appliedCoupon.toUpperCase() === "WEDDING20") {
-      setCouponSuccess(true);
-      showToast("Coupon applied! 20% discount on your booking");
-    } else {
-      showToast("Invalid coupon code", "error");
-    }
-  };
-
-  const shareService = (service) => {
-    if (navigator.share) {
-      navigator.share({
-        title: service.title,
-        text: `Check out this ${service.title} service on Sanskaraa`,
-        url: window.location.href,
-      })
-      .then(() => showToast("Shared successfully!"))
-      .catch((error) => console.log('Error sharing:', error));
-    } else {
-      // Fallback for browsers that don't support Web Share API
-      navigator.clipboard.writeText(window.location.href);
-      showToast("Link copied to clipboard!");
-    }
-  };
-
-  // Booking flow functions
-  const proceedToCustomization = (service) => {
-    setBookingFlow(prev => ({
-      ...prev,
-      step: 2,
-      selectedService: service,
-    }));
-    setShowDetailModal(false);
-  };
-
-  const proceedToVendorSelection = (customization) => {
-    setBookingFlow(prev => ({
-      ...prev,
-      step: 3,
-      customization,
-    }));
-  };
-
-  const proceedToDateTimeSelection = (vendor) => {
-    setBookingFlow(prev => ({
-      ...prev,
-      step: 4,
-      selectedVendor: vendor,
-    }));
-  };
-
-  const proceedToPayment = (dateTime) => {
-    setBookingFlow(prev => ({
-      ...prev,
-      step: 5,
-      selectedDate: dateTime,
-    }));
-  };
-
-  const completeBooking = (paymentData) => {
-    // Simulate booking completion
-    showToast("Booking confirmed! Thank you for your order.");
-    setBookingFlow({
-      step: 0,
-      selectedService: null,
-      selectedVendor: null,
-      selectedDate: null,
-      customization: {},
-      paymentMethod: 'card',
+    setWishlist(prev => {
+      const newWishlist = new Set(prev);
+      if (newWishlist.has(serviceId)) {
+        newWishlist.delete(serviceId);
+        showToast("Removed from wishlist");
+      } else {
+        newWishlist.add(serviceId);
+        showToast("Added to wishlist");
+      }
+      return newWishlist;
     });
   };
 
-  // Utility functions
-  const rupee = (n) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(n);
-  
-  const stars = (n) => {
-    const full = Math.floor(n);
-    const half = n - full >= 0.5;
-    return (
-      <div className="flex items-center gap-0.5">
-        {Array.from({ length: full }).map((_, i) => (
-          <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-        ))}
-        {half && <StarHalf className="w-4 h-4 fill-yellow-400 text-yellow-400" />}
-        {Array.from({ length: 5 - full - (half ? 1 : 0) }).map((_, i) => (
-          <Star key={i + full} className="w-4 h-4 text-gray-300" />
-        ))}
-      </div>
-    );
+  const resetFilters = () => {
+    setFilters({
+      minRating: 0,
+      maxPrice: 500000,
+      location: "",
+      vendorRating: 0,
+      availability: "all"
+    });
   };
 
-  const showToast = (message, type = "success") => {
-    // Create toast element
+  const showToast = (message) => {
+    // Toast implementation
     const toast = document.createElement("div");
-    toast.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg transition-all duration-300 transform translate-y-[-100px] ${
-      type === "success" ? "bg-amber-500 text-white" : "bg-red-500 text-white"
-    }`;
+    toast.className = "fixed top-4 right-4 bg-amber-500 text-white px-6 py-3 rounded-lg shadow-lg z-50";
     toast.textContent = message;
-    
-    // Add to DOM
     document.body.appendChild(toast);
-    
-    // Animate in
-    setTimeout(() => {
-      toast.classList.remove("translate-y-[-100px]");
-      toast.classList.add("translate-y-0");
-    }, 10);
-    
-    // Remove after delay
-    setTimeout(() => {
-      toast.classList.remove("translate-y-0");
-      toast.classList.add("translate-y-[-100px]");
-      setTimeout(() => {
-        if (document.body.contains(toast)) {
-          document.body.removeChild(toast);
-        }
-      }, 300);
-    }, 3000);
+    setTimeout(() => toast.remove(), 3000);
   };
-
-  // Skeleton loading component
-  const ServiceSkeleton = () => (
-    <div className="rounded-2xl overflow-hidden bg-amber-50 border border-amber-200 shadow-sm animate-pulse">
-      <div className="h-40 bg-amber-200"></div>
-      <div className="p-4">
-        <div className="h-6 bg-amber-200 rounded w-3/4 mb-2"></div>
-        <div className="h-4 bg-amber-200 rounded w-full mb-4"></div>
-        <div className="flex justify-between items-center">
-          <div className="h-6 bg-amber-200 rounded w-1/3"></div>
-          <div className="h-9 bg-amber-200 rounded-xl w-1/3"></div>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Language options
-  const languageOptions = [
-    { code: 'en', name: 'English' },
-    { code: 'hi', name: 'Hindi' },
-    { code: 'ta', name: 'Tamil' },
-    { code: 'te', name: 'Telugu' },
-    { code: 'bn', name: 'Bengali' },
-    { code: 'mr', name: 'Marathi' },
-  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-50 transition-colors duration-300 overflow-x-hidden">
-        {/* Toast container (for programmatic toasts) */}
-        <div id="toast-container" className="fixed top-4 right-4 z-50 space-y-2"></div>
-        
-        {/* Mobile Menu Button */}
-        {isMobile && (
-          <button 
-            className="fixed top-4 left-4 z-40 p-2 rounded-full bg-amber-100 border border-amber-200 shadow-md"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            <Menu className="w-5 h-5 text-amber-800" />
-          </button>
-        )}
-        
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {mobileMenuOpen && isMobile && (
-            <motion.div 
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'tween' }}
-              className="fixed inset-0 z-30 bg-amber-50 p-4 shadow-lg overflow-y-auto"
-            >
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="font-bold text-lg text-amber-800">Menu</h2>
-                <button onClick={() => setMobileMenuOpen(false)}>
-                  <X className="w-6 h-6 text-amber-800" />
-                </button>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto p-4">
+          {/* Search Bar */}
+          <div className="relative mb-4">
+            <div className="flex items-center bg-white rounded-2xl shadow-lg px-4 py-3 border border-amber-200">
+              <Search className="text-amber-600 w-5 h-5 mr-3 flex-shrink-0" />
+              <input
+                type="text"
+                placeholder="Search for wedding services, catering, venues..."
+                className="w-full outline-none text-amber-800 placeholder-amber-500 text-lg"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && saveToHistory(query)}
+              />
+              <div className="flex items-center space-x-2 ml-2">
+                {isListening ? (
+                  <div className="animate-pulse text-amber-600">
+                    <Loader className="w-5 h-5 animate-spin" />
+                  </div>
+                ) : (
+                  <button
+                    onClick={startVoiceSearch}
+                    className="p-2 hover:bg-amber-100 rounded-full transition"
+                    title="Voice Search"
+                  >
+                    <Mic className="w-5 h-5 text-amber-600" />
+                  </button>
+                )}
               </div>
-              
-              <div className="space-y-4">
-                <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-2">
-                  <FileText className="w-4 h-4" /> My Bookings
-                </button>
-                <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-2">
-                  <Bookmark className="w-4 h-4" /> Wishlist
-                </button>
-                <button className="w-full text-left py-2 px-4 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-2">
-                  <HelpCircle className="w-4 h-4" /> Help & Support
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Top Bar */}
-        <header className="sticky top-0 z-30 backdrop-blur bg-amber-100/70 border-b border-amber-200">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between mt-12">
-            <div className="flex items-center gap-2 mt-8">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
-              <h1 className="font-bold text-base sm:text-lg text-amber-800">Sanskaraa Services</h1>
             </div>
-            <div className="flex items-center gap-1 sm:gap-2">
-              {/* Language Selector */}
-              <div className="relative hidden sm:block">
-                <button 
-                  onClick={() => setShowLanguageSelector(!showLanguageSelector)}
-                  className="px-2 py-1.5 rounded-xl border border-amber-200 text-sm bg-white text-amber-800 flex items-center gap-1"
-                >
-                  <Globe className="w-4 h-4" />
-                  <span>{languageOptions.find(l => l.code === language)?.name || 'English'}</span>
-                  <ChevronDown className="w-4 h-4" />
-                </button>
-                
-                <AnimatePresence>
-                  {showLanguageSelector && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute top-full right-0 mt-1 w-40 bg-white rounded-xl shadow-lg border border-amber-200 z-40"
+
+            {/* Search History */}
+            {query && searchHistory.length > 0 && (
+              <div className="absolute top-full left-0 right-0 bg-white shadow-lg rounded-2xl mt-2 z-10 border border-amber-200">
+                <div className="p-2">
+                  <div className="flex items-center justify-between px-2 py-1 text-sm text-amber-600">
+                    <span>Recent Searches</span>
+                    <Clock className="w-4 h-4" />
+                  </div>
+                  {searchHistory.map((term, index) => (
+                    <button
+                      key={index}
+                      className="w-full text-left px-4 py-2 hover:bg-amber-50 rounded-lg flex items-center space-x-2"
+                      onClick={() => {
+                        setQuery(term);
+                        saveToHistory(term);
+                      }}
                     >
-                      {languageOptions.map((lang) => (
-                        <button
-                          key={lang.code}
-                          onClick={() => {
-                            setLanguage(lang.code);
-                            setShowLanguageSelector(false);
-                            showToast(`Language changed to ${lang.name}`);
-                          }}
-                          className={`w-full text-left px-4 py-2 text-sm ${language === lang.code ? 'bg-amber-100 text-amber-800' : 'text-amber-600 hover:bg-amber-50'}`}
-                        >
-                          {lang.name}
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      <Search className="w-4 h-4 text-amber-400" />
+                      <span className="text-amber-800">{term}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-              
-              <button className={`px-2 sm:px-3 py-1.5 rounded-xl border text-sm ${chatOpen ? "bg-amber-700 text-white" : "bg-white border-amber-200 text-amber-800"}`} onClick={() => setChatOpen((v) => !v)}>
-                <MessageSquare className="inline w-4 h-4 sm:mr-1" /> {!isMobile && 'Chat'}
-              </button>
-              <a href="tel:+911234567890" className="px-2 sm:px-3 py-1.5 rounded-xl border border-amber-200 text-sm bg-white text-amber-800">
-                <PhoneCall className="inline w-4 h-4 sm:mr-1" /> {!isMobile && 'Call'}
-              </a>
-            </div>
+            )}
           </div>
-        </header>
 
-        {/* Sticky Search & Filters */}
-        <div ref={filtersRef} className="sticky top-[64px] z-20 bg-amber-50 border-b border-amber-200 shadow-sm transition-colors duration-300">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-3">
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-start sm:items-center">
-              <div className="relative flex-1 w-full">
-                <input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search (e.g., hall, catering, lights)"
-                  className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-200 bg-white text-amber-800 text-sm sm:text-base"
-                />
-                <Search className="w-4 h-4 text-amber-500 absolute right-3 top-2.5 sm:top-3" />
-              </div>
-              
-              <div className="flex gap-2 w-full sm:w-auto">
-                <button onClick={onVoice} className={`px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl border ${listening ? "bg-amber-100 border-amber-300" : "bg-white border-amber-200"}`}>
-                  <Mic className={`w-4 h-4 ${listening ? "text-amber-600 animate-pulse" : "text-amber-600"}`} />
-                </button>
-                
-                <button 
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl border border-amber-200 bg-white text-amber-800 flex items-center gap-1 text-sm sm:text-base"
-                >
-                  <Filter className="w-4 h-4" /> <span className="hidden sm:inline">Filters</span>
-                  {showFilters ? <ChevronDown className="w-4 h-4 transform rotate-180" /> : <ChevronDown className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
+          {/* Category Tabs */}
+          <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide">
+            {categories.map(({ key, label, icon: Icon, color }) => (
+              <button
+                key={key}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex-shrink-0 ${
+                  activeCategory === key 
+                    ? `bg-gradient-to-r ${color} text-white shadow-lg transform scale-105`
+                    : "bg-white text-amber-700 border border-amber-200 hover:bg-amber-50"
+                }`}
+                onClick={() => setActiveCategory(key)}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto p-4">
+        {/* Hero Banner */}
+        <HeroBanner />
+
+        {/* Filters Bar */}
+        <div className="flex items-center justify-between mb-6">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center space-x-2 bg-white px-4 py-2 rounded-2xl shadow-lg border border-amber-200 hover:bg-amber-50 transition"
+          >
+            <Filter className="w-4 h-4 text-amber-600" />
+            <span className="font-medium text-amber-800">Filters</span>
+            {Object.values(filters).some(val => 
+              val !== 0 && val !== "" && val !== 500000 && val !== "all"
+            ) && (
+              <span className="bg-amber-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center">
+                !
+              </span>
+            )}
+          </button>
+
+          <div className="flex items-center space-x-4">
+            <span className="text-sm text-amber-600">
+              {filteredResults.length} services found
+            </span>
             
-            {/* Expanded Filters */}
-            <AnimatePresence>
-              {showFilters && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 overflow-hidden"
-                >
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs sm:text-sm font-medium text-amber-800">Category</label>
-                    <select value={category || ""} onChange={(e) => setCategory(e.target.value || null)} className="px-2 sm:px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm">
-                      <option value="">All Categories</option>
-                      {[...new Set(services.map((s) => s.category))].map((c) => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs sm:text-sm font-medium text-amber-800">Min Rating</label>
-                    <select value={minRating} onChange={(e) => setMinRating(Number(e.target.value))} className="px-2 sm:px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm">
-                      <option value={0}>Any rating</option>
-                      <option value={4}>4.0+</option>
-                      <option value={4.5}>4.5+</option>
-                      <option value={4.8}>4.8+</option>
-                    </select>
-                  </div>
-                  
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs sm:text-sm font-medium text-amber-800">Sort By</label>
-                    <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="px-2 sm:px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm">
-                      <option value="popularity">Popularity</option>
-                      <option value="price-low">Price: Low to High</option>
-                      <option value="price-high">Price: High to Low</option>
-                      <option value="rating">Rating</option>
-                    </select>
-                  </div>
-                  
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs sm:text-sm font-medium text-amber-800">Price Range</label>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-amber-600">₹{filters.priceRange[0]}</span>
-                      <input 
-                        type="range" 
-                        min="0" 
-                        max="100000" 
-                        step="1000"
-                        value={filters.priceRange[1]} 
-                        onChange={(e) => setFilters(prev => ({ ...prev, priceRange: [prev.priceRange[0], parseInt(e.target.value)] }))}
-                        className="flex-1"
-                      />
-                      <span className="text-xs text-amber-600">₹{filters.priceRange[1]}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs sm:text-sm font-medium text-amber-800">Vendor Rating</label>
-                    <select value={filters.vendorRating} onChange={(e) => setFilters(prev => ({ ...prev, vendorRating: Number(e.target.value) }))} className="px-2 sm:px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm">
-                      <option value={0}>Any rating</option>
-                      <option value={4}>4.0+</option>
-                      <option value={4.5}>4.5+</option>
-                    </select>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <select 
+              value={sortBy} 
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm"
+            >
+              <option value="rating">Sort by Rating</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="popularity">Sort by Popularity</option>
+            </select>
           </div>
         </div>
 
-        {/* Hero: Video Ads + Search */}
-        <section className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-5 grid lg:grid-cols-3 gap-4 sm:gap-6">
-          <motion.div layout className="lg:col-span-2 rounded-2xl overflow-hidden bg-black/90 relative shadow">
-            <video
-              ref={adRef}
-              key={currentAd}
-              src={adsVideos[currentAd]}
-              className="w-full h-40 sm:h-48 md:h-64 lg:h-[380px] object-cover"
-              autoPlay
-              muted
-              playsInline
-              controls={false}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-            <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3 right-2 sm:right-3 flex items-center justify-between">
-              <div className="text-white/90 text-xs sm:text-sm">Auto-playing ads • {currentAd + 1}/{adsVideos.length}</div>
-              <div className="flex gap-1 sm:gap-2">
-                <button
-                  className="p-1.5 sm:p-2 rounded-full bg-white/80 hover:bg-white"
-                  onClick={() => setCurrentAd((p) => (p - 1 + adsVideos.length) % adsVideos.length)}
-                  aria-label="Prev ad"
-                >
-                  <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-                </button>
-                <button
-                  className="p-1.5 sm:p-2 rounded-full bg-white/80 hover:bg-white"
-                  onClick={() => setCurrentAd((p) => (p + 1) % adsVideos.length)}
-                  aria-label="Next ad"
-                >
-                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-                </button>
-              </div>
+        {/* Filters Panel */}
+        {showFilters && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-amber-200"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-lg text-amber-800">Filters</h3>
+              <button
+                onClick={resetFilters}
+                className="text-amber-600 hover:text-amber-700 text-sm font-medium"
+              >
+                Reset All
+              </button>
             </div>
-          </motion.div>
 
-          <motion.div layout className="rounded-2xl p-3 sm:p-4 bg-amber-50 shadow border border-amber-200 transition-colors duration-300">
-            <div className="font-semibold flex items-center gap-2 mb-2 text-amber-800 text-sm sm:text-base">
-              <Search className="w-4 h-4" /> Find a service
-            </div>
-            
-            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div className="flex items-center gap-2">
-                <CalendarDays className="w-4 h-4 text-amber-600" />
-                <input 
-                  type="date" 
-                  className="flex-1 px-2 sm:px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm" 
-                  value={eventDate} 
-                  onChange={(e) => setEventDate(e.target.value)} 
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Rating Filter */}
+              <div>
+                <label className="block text-sm font-medium text-amber-700 mb-2">Minimum Rating</label>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-amber-600">{filters.minRating}+</span>
+                  <input
+                    type="range"
+                    min="0"
+                    max="5"
+                    step="0.5"
+                    value={filters.minRating}
+                    onChange={(e) => setFilters(f => ({ ...f, minRating: parseFloat(e.target.value) }))}
+                    className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
+                  />
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-amber-600" />
-                <input 
-                  className="px-2 sm:px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm" 
-                  value={city} 
-                  onChange={(e) => setCity(e.target.value)} 
-                />
-              </div>
-            </div>
-            
-            <div className="mt-4">
-              <div className="text-xs sm:text-sm font-medium text-amber-800 mb-2">Apply Coupon</div>
-              <div className="flex gap-2">
+
+              {/* Price Filter */}
+              <div>
+                <label className="block text-sm font-medium text-amber-700 mb-2">
+                  Max Price: ₹{filters.maxPrice.toLocaleString()}
+                </label>
                 <input
-                  value={appliedCoupon}
-                  onChange={(e) => {
-                    setAppliedCoupon(e.target.value);
-                    setCouponSuccess(false);
-                  }}
-                  placeholder="Enter coupon code"
-                  className="flex-1 px-2 sm:px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm"
+                  type="range"
+                  min="0"
+                  max="500000"
+                  step="10000"
+                  value={filters.maxPrice}
+                  onChange={(e) => setFilters(f => ({ ...f, maxPrice: parseInt(e.target.value) }))}
+                  className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
                 />
-                <button 
-                  onClick={applyCoupon}
-                  disabled={couponSuccess}
-                  className={`px-2 sm:px-3 py-2 rounded-xl text-xs sm:text-sm ${couponSuccess ? "bg-amber-600 text-white" : "bg-amber-700 text-white"}`}
+              </div>
+
+              {/* Location Filter */}
+              <div>
+                <label className="block text-sm font-medium text-amber-700 mb-2">Location</label>
+                <input
+                  type="text"
+                  placeholder="Enter city..."
+                  value={filters.location}
+                  onChange={(e) => setFilters(f => ({ ...f, location: e.target.value }))}
+                  className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-amber-800"
+                />
+              </div>
+
+              {/* Availability Filter */}
+              <div>
+                <label className="block text-sm font-medium text-amber-700 mb-2">Availability</label>
+                <select
+                  value={filters.availability}
+                  onChange={(e) => setFilters(f => ({ ...f, availability: e.target.value }))}
+                  className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-amber-800"
                 >
-                  {couponSuccess ? "Applied!" : "Apply"}
-                </button>
+                  <option value="all">All Services</option>
+                  <option value="available">Available Now</option>
+                  <option value="trending">Trending</option>
+                </select>
               </div>
             </div>
-            
-            <div className="mt-3 text-xs text-amber-600">Tip: Set date & city to check availability on vendor cards.</div>
           </motion.div>
-        </section>
-
-        {/* Seasonal / Trending chips */}
-        <section className="max-w-7xl mx-auto px-3 sm:px-4 mt-4 sm:mt-6 flex flex-wrap gap-2">
-          {seasonal.map((s) => (
-            <span key={s.id} className={`text-xs px-2 py-1 rounded-full ${s.color} border border-amber-300`}>{s.tag}</span>
-          ))}
-        </section>
+        )}
 
         {/* Services Grid */}
-        <section className="max-w-7xl mx-auto px-3 sm:px-4 mt-4 sm:mt-5">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-base sm:text-lg font-semibold text-amber-800">All Services</h2>
-            <span className="text-xs sm:text-sm text-amber-600">{filtered.length} results</span>
-          </div>
-
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="space-y-8"
+        >
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-              {[...Array(6)].map((_, i) => (
-                <ServiceSkeleton key={i} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {[...Array(8)].map((_, i) => (
+                <SkeletonCard key={i} />
               ))}
             </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-              {filtered.map((s) => (
-                <motion.div 
-                  key={s.id} 
-                  layout
-                  className="rounded-2xl overflow-hidden bg-amber-50 border border-amber-200 shadow-sm group hover:shadow-md transition-all duration-300 relative"
-                  whileHover={{ y: isMobile ? 0 : -5 }}
-                >
-                  {/* Service Tags */}
-                  <div className="absolute top-2 left-2 z-10 flex gap-1 flex-wrap max-w-[70%]">
-                    {s.tags.map((tag, i) => (
-                      <span key={i} className="text-xs px-2 py-1 rounded-full bg-amber-200 text-amber-800 flex items-center gap-1 mb-1">
-                        {tag === "Popular" && <TrendingUp className="w-3 h-3" />}
-                        {tag === "Limited" && <Zap className="w-3 h-3" />}
-                        {tag === "Recommended" && <ThumbsUp className="w-3 h-3" />}
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  
-                  {/* Low Stock Warning */}
-                  {s.stock < 5 && (
-                    <div className="absolute top-2 right-2 z-10">
-                      <span className="text-xs px-2 py-1 rounded-full bg-amber-200 text-amber-800 flex items-center gap-1">
-                        <Zap className="w-3 h-3" /> Only {s.stock} left
-                      </span>
-                    </div>
-                  )}
-                  
-                  <div className="relative">
-                    <img src={s.images[0]} alt={s.title} className="w-full h-40 object-cover" />
-                    
-                    {/* Hover Overlay with CTA */}
-                    <div className="absolute inset-0 bg-black/60 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 flex-col sm:flex-row">
-                      <button 
-                        onClick={() => handleViewDetails(s)}
-                        className="px-3 py-1.5 rounded-xl text-sm bg-white text-amber-800 hover:bg-amber-100 mb-2 sm:mb-0 w-40 text-center"
-                      >
-                        View Details
-                      </button>
-                      <button 
-                        onClick={() => handleBook(s)}
-                        className="px-3 py-1.5 rounded-xl text-sm bg-amber-700 text-white hover:bg-amber-800 w-40 text-center"
-                      >
-                        Book Now
-                      </button>
-                    </div>
-                    
-                    <button
-                      onClick={() => toggleWishlist(s.id)}
-                      className="absolute top-2 right-2 p-2 rounded-full bg-white/90 hover:bg-white shadow"
-                    >
-                      {wishlist[s.id] ? <BookmarkCheck className="w-5 h-5 text-amber-700" /> : <Bookmark className="w-5 h-5 text-amber-600" />}
-                    </button>
-                    
-                    <span className="absolute bottom-2 left-2 text-xs px-2 py-0.5 rounded bg-black/50 text-white flex items-center gap-1">
-                      {stars(s.rating)} <span className="ml-1">{s.rating.toFixed(1)}</span>
-                      <span className="ml-1">({s.reviewCount})</span>
-                    </span>
-                  </div>
-                  
-                  <div className="p-3 sm:p-4">
-                    <div className="flex items-center gap-2 font-semibold text-amber-800 text-sm sm:text-base">
-                      <span className="p-1 sm:p-1.5 rounded-xl bg-amber-100 text-amber-700">{s.icon}</span>
-                      {s.title}
-                    </div>
-                    <p className="text-xs sm:text-sm text-amber-600 mt-1 line-clamp-2">{s.desc}</p>
-                    <div className="mt-2 flex items-center justify-between flex-col sm:flex-row gap-2">
-                      <div className="text-xs sm:text-sm">
-                        <span className="font-bold text-amber-800">{rupee(s.basePrice)}</span>
-                        {s.unit && <span className="text-amber-600"> {s.unit}</span>}
+          ) : filteredResults.length > 0 ? (
+            <>
+              {/* Show categorized view when "All" is selected */}
+              {activeCategory === "all" ? (
+                Object.entries(categorizedResults).map(([category, services]) => (
+                  services.length > 0 && (
+                    <div key={category} className="fade-in">
+                      <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-semibold text-amber-800 capitalize">
+                          {category} Services
+                        </h2>
+                        <span className="text-amber-600 text-sm">
+                          {services.length} services
+                        </span>
                       </div>
-                      <button onClick={() => handleViewDetails(s)} className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl text-xs sm:text-sm bg-amber-100 text-amber-800 hover:bg-amber-200 w-full sm:w-auto text-center">
-                        Details
-                      </button>
-                    </div>
-
-                    {/* Vendor mini carousel */}
-                    <div className="mt-3">
-                      <div className="text-xs text-amber-600 mb-1">Vendors</div>
-                      <div className="flex gap-2 overflow-x-auto pb-1">
-                        {s.vendors.map((v) => (
-                          <div key={v.id} className="min-w-[160px] sm:min-w-[180px] p-2 rounded-xl border border-amber-200 bg-amber-100 flex-shrink-0">
-                            <div className="flex items-center justify-between text-xs sm:text-sm font-medium">
-                              <span className="text-amber-800 truncate max-w-[70px] sm:max-w-[80px]">{v.name}</span>
-                              <span className="flex items-center gap-1">{stars(v.rating)}<span>{v.rating}</span></span>
-                            </div>
-                            <div className="mt-2 flex items-center justify-between">
-                              <span className={`text-xs px-2 py-1 rounded-full ${v.available ? "bg-amber-200 text-amber-800" : "bg-amber-200 text-amber-800"}`}>
-                                {v.available ? "Available" : "Booked"}
-                              </span>
-                              <button className="px-2 py-1 text-xs rounded-lg bg-amber-700 text-white">Ask</button>
-                            </div>
-                            {eventDate && (
-                              <div className="mt-2 text-[10px] sm:text-[11px] text-amber-700 bg-amber-200 px-2 py-1 rounded">
-                                Likely available on {eventDate} in {city}
-                              </div>
-                            )}
-                          </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {services.slice(0, visibleCounts[category] || 4).map((service) => (
+                          <ServiceCard
+                            key={service.id}
+                            service={service}
+                            category={category}
+                            onBook={handleBook}
+                            onViewDetails={handleViewDetails}
+                            onToggleWishlist={toggleWishlist}
+                            isWishlisted={wishlist.has(service.id)}
+                          />
                         ))}
                       </div>
-                    </div>
-
-                    {/* Reviews */}
-                    <div className="mt-3">
-                      <details className="rounded-xl bg-amber-100 border border-amber-200 p-2">
-                        <summary className="text-sm font-medium cursor-pointer text-amber-800">Ratings & Reviews</summary>
-                        <div className="mt-2 space-y-2">
-                          {(reviews[s.id] || []).map((r, idx) => (
-                            <motion.div 
-                              key={idx} 
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ delay: idx * 0.1 }}
-                              className="text-sm p-2 rounded-lg bg-white border border-amber-200"
-                            >
-                              <div className="flex items-center justify-between">
-                                <span className="font-medium text-amber-800">{r.name}</span>
-                                <span className="flex items-center gap-1">{stars(r.stars)}<span>{r.stars.toFixed(1)}</span></span>
-                              </div>
-                              <p className="text-amber-600 text-sm mt-1">{r.msg}</p>
-                            </motion.div>
-                          ))}
-                          <ReviewForm onSubmit={(r) => addReview(s.id, r)} />
+                      {services.length > (visibleCounts[category] || 4) && (
+                        <div className="flex justify-center mt-6">
+                          <button
+                            onClick={() => setVisibleCounts(prev => ({
+                              ...prev,
+                              [category]: (prev[category] || 4) + 4
+                            }))}
+                            className="px-6 py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors"
+                          >
+                            Load More {category} Services
+                          </button>
                         </div>
-                      </details>
+                      )}
                     </div>
-                    
-                    {/* Share Button */}
-                    <div className="mt-3 flex justify-end">
-                      <button 
-                        onClick={() => shareService(s)}
-                        className="text-xs flex items-center gap-1 text-amber-600 hover:text-amber-800"
-                      >
-                        <Share className="w-3 h-3" /> Share
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
+                  )
+                ))
+              ) : (
+                // Show flat grid when specific category is selected
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {filteredResults.slice(0, visibleCounts[activeCategory] || 12).map((service) => (
+                    <ServiceCard
+                      key={service.id}
+                      service={service}
+                      category={activeCategory}
+                      onBook={handleBook}
+                      onViewDetails={handleViewDetails}
+                      onToggleWishlist={toggleWishlist}
+                      isWishlisted={wishlist.has(service.id)}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {activeCategory !== "all" && filteredResults.length > (visibleCounts[activeCategory] || 12) && (
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => setVisibleCounts(prev => ({
+                      ...prev,
+                      [activeCategory]: (prev[activeCategory] || 12) + 8
+                    }))}
+                    className="px-8 py-3 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors font-semibold"
+                  >
+                    Load More Services
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4">🔍</div>
+              <h3 className="text-xl font-semibold text-amber-700 mb-2">No services found</h3>
+              <p className="text-amber-600 mb-4">Try adjusting your search or filters</p>
+              <button
+                onClick={resetFilters}
+                className="px-6 py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors"
+              >
+                Reset Filters
+              </button>
             </div>
           )}
-        </section>
+        </motion.div>
 
         {/* Recently Viewed */}
         {recentlyViewed.length > 0 && (
-          <section className="max-w-7xl mx-auto px-3 sm:px-4 mt-6 sm:mt-8">
-            <h2 className="text-base sm:text-lg font-semibold mb-2 flex items-center gap-2 text-amber-800">
-              <Eye className="w-4 h-4 sm:w-5 sm:h-5" /> Recently Viewed
+          <section className="mt-12">
+            <h2 className="text-xl font-semibold text-amber-800 mb-6 flex items-center gap-2">
+              <Eye className="w-5 h-5" /> Recently Viewed Services
             </h2>
-            <div className="flex gap-3 overflow-x-auto pb-2">
-              {recentlyViewed.map((r) => (
-                <div key={r.id} className="min-w-[200px] sm:min-w-[240px] rounded-2xl border border-amber-200 bg-amber-50 p-3 flex-shrink-0">
-                  <div className="font-semibold flex items-center gap-2 text-amber-800 text-sm sm:text-base">
-                    <span className="p-1 sm:p-1.5 rounded-xl bg-amber-100 text-amber-700">{r.icon}</span>
-                    {r.title}
-                  </div>
-                  <p className="text-xs sm:text-sm text-amber-600 mt-1 line-clamp-2">{r.desc}</p>
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="font-bold text-xs sm:text-sm text-amber-800">{rupee(r.basePrice)}</span>
-                    <button onClick={() => handleViewDetails(r)} className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl text-xs sm:text-sm bg-amber-700 text-white hover:bg-amber-800">
-                      View Again
-                    </button>
-                  </div>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {recentlyViewed.map((service) => (
+                <ServiceCard
+                  key={service.id}
+                  service={service}
+                  category={service.serviceCategory}
+                  onBook={handleBook}
+                  onViewDetails={handleViewDetails}
+                  onToggleWishlist={toggleWishlist}
+                  isWishlisted={wishlist.has(service.id)}
+                />
               ))}
             </div>
           </section>
         )}
+      </div>
 
-        {/* Smart Packages */}
-        <section className="max-w-7xl mx-auto px-3 sm:px-4 mt-6 sm:mt-8">
-          <h2 className="text-base sm:text-lg font-semibold mb-3 flex items-center gap-2 text-amber-800">
-            <Gift className="w-4 h-4 sm:w-5 sm:h-5" /> Smart Packages
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            {packages.map((p) => (
-              <div key={p.id} className="rounded-2xl border border-amber-200 bg-amber-50 p-3 sm:p-4 shadow">
-                <div className="flex items-center justify-between">
+      {/* Service Detail Modal */}
+      <AnimatePresence>
+        {showDetailModal && selectedService && (
+          <ServiceDetailModal
+            service={selectedService}
+            onClose={() => setShowDetailModal(false)}
+            onBook={handleBook}
+            onToggleWishlist={toggleWishlist}
+            isWishlisted={wishlist.has(selectedService.id)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Floating Action Button */}
+      <div className="fixed bottom-6 right-6 z-40 md:hidden">
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="bg-gradient-to-r from-amber-400 to-amber-500 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition transform hover:scale-110"
+        >
+          <Filter className="w-6 h-6" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Service Detail Modal Component
+function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWishlisted }) {
+  const [selectedVendor, setSelectedVendor] = useState(null);
+  const [activeTab, setActiveTab] = useState("details");
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="relative">
+          <img 
+            src={service.img} 
+            alt={service.name}
+            className="w-full h-64 object-cover"
+          />
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 bg-white bg-opacity-90 rounded-full hover:bg-opacity-100 transition"
+          >
+            <X className="w-5 h-5 text-amber-800" />
+          </button>
+          <button
+            onClick={() => onToggleWishlist(service.id)}
+            className="absolute top-4 left-4 p-2 bg-white bg-opacity-90 rounded-full hover:bg-opacity-100 transition"
+          >
+            {isWishlisted ? (
+              <BookmarkCheck className="w-5 h-5 text-red-500" fill="currentColor" />
+            ) : (
+              <Bookmark className="w-5 h-5 text-amber-600" />
+            )}
+          </button>
+        </div>
+
+        <div className="p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h2 className="text-2xl font-bold text-amber-900">{service.name}</h2>
+              <div className="flex items-center gap-2 mt-2">
+                <div className="flex items-center gap-1">
+                  <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
+                  <span className="font-semibold text-amber-800">{service.rating}</span>
+                </div>
+                <span className="text-amber-600">({service.reviews} reviews)</span>
+                <span className="text-amber-600">•</span>
+                <MapPin className="w-4 h-4 text-amber-600" />
+                <span className="text-amber-600">{service.location}</span>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-3xl font-bold text-amber-800">₹{service.price.toLocaleString()}</div>
+              {service.unit && <div className="text-amber-600">{service.unit}</div>}
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div className="border-b border-amber-200 mb-4">
+            <div className="flex space-x-4">
+              {["details", "vendors", "reviews"].map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`pb-2 px-1 font-medium capitalize ${
+                    activeTab === tab 
+                      ? "text-amber-600 border-b-2 border-amber-600" 
+                      : "text-amber-400 hover:text-amber-600"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Tab Content */}
+          <div className="mb-6">
+            {activeTab === "details" && (
+              <div className="space-y-4">
+                <p className="text-amber-700">{service.description || "Premium service with excellent quality and customer satisfaction."}</p>
+                {service.customization && (
                   <div>
-                    <div className="font-semibold text-amber-800 text-sm sm:text-base">{p.name}</div>
-                    <div className="text-xs sm:text-sm text-amber-600">Includes: {p.includes.join(", ")}</div>
-                  </div>
-                  <span className="text-xs px-2 py-1 rounded-full bg-amber-200 text-amber-800">Save {p.savePercent}%</span>
-                </div>
-                <div className="mt-3 flex items-center justify-between">
-                  <div className="text-base sm:text-lg font-bold text-amber-800">{rupee(p.price)}</div>
-                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl text-xs sm:text-sm bg-amber-700 text-white hover:bg-amber-800">Book Package</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Recommendations */}
-        {recommended.length > 0 && (
-          <section className="max-w-7xl mx-auto px-3 sm:px-4 mt-6 sm:mt-8">
-            <h2 className="text-base sm:text-lg font-semibold mb-2 flex items-center gap-2 text-amber-800">
-              <HeartHandshake className="w-4 h-4 sm:w-5 sm:h-5" /> You may also need
-            </h2>
-            <div className="flex gap-3 overflow-x-auto pb-2">
-              {recommended.map((r) => (
-                <div key={r.id} className="min-w-[200px] sm:min-w-[240px] rounded-2xl border border-amber-200 bg-amber-50 p-3 flex-shrink-0">
-                  <div className="font-semibold flex items-center gap-2 text-amber-800 text-sm sm:text-base">
-                    <span className="p-1 sm:p-1.5 rounded-xl bg-amber-100 text-amber-700">{r.icon}</span>
-                    {r.title}
-                  </div>
-                  <p className="text-xs sm:text-sm text-amber-600 mt-1 line-clamp-2">{r.desc}</p>
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="font-bold text-xs sm:text-sm text-amber-800">{rupee(r.basePrice)}</span>
-                    <button onClick={() => handleBook(r)} className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl text-xs sm:text-sm bg-amber-700 text-white hover:bg-amber-800">Add</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Reels / Shorts */}
-        <section className="max-w-7xl mx-auto px-3 sm:px-4 mt-6 sm:mt-8">
-          <h2 className="text-base sm:text-lg font-semibold mb-3 flex items-center gap-2 text-amber-800">
-            <PlayCircle className="w-4 h-4 sm:w-5 sm:h-5" /> Reels & Highlights
-          </h2>
-          <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2">
-            {reels.map((r) => (
-              <div key={r.id} className="min-w-[180px] sm:min-w-[220px] rounded-2xl overflow-hidden border border-amber-200 bg-black/90 flex-shrink-0">
-                <video src={r.src} playsInline controls muted className="w-[180px] sm:w-[220px] h-[280px] sm:h-[360px] object-cover" />
-                <div className="p-2 flex justify-between items-center">
-                  <div className="text-white/90 text-xs sm:text-sm">{r.title}</div>
-                  <div className="text-xs text-white/70 flex items-center gap-1">
-                    <Eye className="w-3 h-3" /> {r.views}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Service Detail Modal */}
-        <AnimatePresence>
-          {showDetailModal && selectedService && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-              onClick={() => setShowDetailModal(false)}
-            >
-              <motion.div 
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-amber-50 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto mx-4"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="p-4 md:p-6">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h2 className="text-xl md:text-2xl font-bold text-amber-800">{selectedService.title}</h2>
-                      <p className="text-amber-600 mt-1">{selectedService.desc}</p>
-                    </div>
-                    <button 
-                      onClick={() => setShowDetailModal(false)}
-                      className="p-2 rounded-full bg-amber-100 text-amber-600"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                  </div>
-                  
-                  <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <img src={selectedService.images[0]} alt={selectedService.title} className="w-full h-48 md:h-60 object-cover rounded-xl" />
-                    </div>
-                    
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="font-semibold text-amber-800">Pricing</h3>
-                        <p className="text-xl md:text-2xl font-bold text-amber-800">{rupee(selectedService.basePrice)} {selectedService.unit && <span className="text-lg">{selectedService.unit}</span>}</p>
-                      </div>
-                      
-                      <div>
-                        <h3 className="font-semibold text-amber-800">Rating</h3>
-                        <div className="flex items-center gap-2">
-                          {stars(selectedService.rating)}
-                          <span className="text-amber-600">{selectedService.rating.toFixed(1)} ({selectedService.reviewCount} reviews)</span>
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <h3 className="font-semibold text-amber-800">Availability</h3>
-                        <p className="text-amber-600">{selectedService.stock > 5 ? "Good availability" : "Limited availability"}</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-6">
-                    <h3 className="font-semibold text-amber-800 mb-3">Vendors</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {selectedService.vendors.map((v) => (
-                        <div key={v.id} className="p-3 rounded-xl border border-amber-200">
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-amber-800">{v.name}</span>
-                            <span className="flex items-center gap-1">{stars(v.rating)}<span>{v.rating}</span></span>
-                          </div>
-                          <div className="mt-2 flex items-center justify-between">
-                            <span className={`text-xs px-2 py-1 rounded-full ${v.available ? "bg-amber-200 text-amber-800" : "bg-amber-200 text-amber-800"}`}>
-                              {v.available ? "Available" : "Booked"}
-                            </span>
-                            <button className="px-3 py-1 text-xs rounded-lg bg-amber-700 text-white">Contact</button>
-                          </div>
+                    <h4 className="font-semibold text-amber-800 mb-2">Customization Options</h4>
+                    <div className="space-y-2">
+                      {service.customization.map(option => (
+                        <div key={option.id} className="flex items-center justify-between">
+                          <span className="text-amber-600">{option.name}</span>
+                          <span className="text-amber-800 font-medium">{option.options.join(", ")}</span>
                         </div>
                       ))}
-                    </div>
-                  </div>
-                  
-                  <div className="mt-6 flex gap-3 flex-col sm:flex-row">
-                    <button 
-                      onClick={() => proceedToCustomization(selectedService)}
-                      className="flex-1 px-4 py-3 rounded-xl bg-amber-700 text-white hover:bg-amber-800 font-semibold"
-                    >
-                      Book Now
-                    </button>
-                    <button 
-                      onClick={() => toggleWishlist(selectedService.id)}
-                      className="px-4 py-3 rounded-xl border border-amber-200 text-amber-800 flex items-center justify-center"
-                    >
-                      {wishlist[selectedService.id] ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Booking Flow Modals */}
-        <AnimatePresence>
-          {bookingFlow.step > 0 && (
-            <BookingFlow 
-              bookingFlow={bookingFlow} 
-              setBookingFlow={setBookingFlow}
-              proceedToCustomization={proceedToCustomization}
-              proceedToVendorSelection={proceedToVendorSelection}
-              proceedToDateTimeSelection={proceedToDateTimeSelection}
-              proceedToPayment={proceedToPayment}
-              completeBooking={completeBooking}
-            />
-          )}
-        </AnimatePresence>
-
-
-        {/* Chat Drawer */}
-        <AnimatePresence>
-          {chatOpen && (
-            <motion.div
-              initial={{ y: 80, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 80, opacity: 0 }}
-              className="fixed bottom-4 right-4 w-full sm:w-80 rounded-2xl border border-amber-200 bg-amber-50 shadow-xl overflow-hidden z-40"
-              style={{ maxWidth: 'calc(100vw - 2rem)' }}
-            >
-              <div className="px-3 py-2 border-b border-amber-200 font-semibold flex items-center gap-2 text-amber-800">
-                <MessageSquare className="w-4 h-4"/> Instant Chat (demo)
-              </div>
-              <div className="max-h-[50vh] sm:h-64 p-3 space-y-2 overflow-auto">
-                {chatLog.map((m, i) => (
-                  <div key={i} className={`text-sm max-w-[80%] px-3 py-2 rounded-2xl ${m.from === "you" ? "bg-amber-700 text-white ml-auto" : "bg-amber-100"}`}>{m.text}</div>
-                ))}
-                {chatLog.length === 0 && (
-                  <div className="text-xs text-amber-600">
-                    <div className="font-medium mb-2">Suggested questions:</div>
-                    <div className="space-y-1">
-                      <button 
-                        onClick={() => setChatMsg("Check availability for Decoration on 20th Oct")}
-                        className="text-xs block w-full text-left p-2 rounded-lg bg-amber-100 hover:bg-amber-200"
-                      >
-                        Check availability for Decoration on 20th Oct
-                      </button>
-                      <button 
-                        onClick={() => setChatMsg("Get quote for Marriage Hall")}
-                        className="text-xs block w-full text-left p-2 rounded-lg bg-amber-100 hover:bg-amber-200"
-                      >
-                        Get quote for Marriage Hall
-                      </button>
                     </div>
                   </div>
                 )}
               </div>
-              <div className="p-2 border-t border-amber-200 flex gap-2">
-                <input 
-                  value={chatMsg} 
-                  onChange={(e) => setChatMsg(e.target.value)} 
-                  placeholder="Type message..." 
-                  className="flex-1 px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800"
-                />
-                <button onClick={sendChat} className="px-3 py-2 rounded-xl bg-amber-700 text-white hover:bg-amber-800">Send</button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            )}
 
-        {/* Footer CTA */}
-        <footer className="max-w-7xl mx-auto px-3 sm:px-4 my-8 sm:my-10">
-          <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-amber-200 to-amber-100 border border-amber-300 text-center">
-            <div className="font-semibold text-base sm:text-lg flex items-center justify-center gap-2 text-amber-800">
-              <Gift className="w-4 h-4 sm:w-5 sm:h-5" /> Sign up & get 200 Sanskaraa Coins
-            </div>
-            <p className="text-xs sm:text-sm text-amber-600 mt-1">Use coins for discounts on any service or package.</p>
-            <div className="mt-3 flex items-center justify-center gap-2 flex-col sm:flex-row">
-              <button 
-                onClick={handleSignup}
-                className="px-3 sm:px-4 py-2 rounded-xl bg-amber-700 text-white hover:bg-amber-800 mb-2 sm:mb-0 text-sm"
-              >
-                Create account
-              </button>
-              <button className="px-3 sm:px-4 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm">Know more</button>
-            </div>
-          </div>
-          
-          <div className="mt-6 sm:mt-8 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
-            <div>
-              <h3 className="font-semibold text-amber-800 mb-3 text-sm sm:text-base">Company</h3>
-              <ul className="space-y-2 text-xs sm:text-sm text-amber-600">
-                <li><a href="#" className="hover:text-amber-800">About Us</a></li>
-                <li><a href="#" className="hover:text-amber-800">Careers</a></li>
-                <li><a href="#" className="hover:text-amber-800">Blog</a></li>
-                <li><a href="#" className="hover:text-amber-800">Press</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-amber-800 mb-3 text-sm sm:text-base">Support</h3>
-              <ul className="space-y-2 text-xs sm:text-sm text-amber-600">
-                <li><a href="#" className="hover:text-amber-800">Help Center</a></li>
-                <li><a href="#" className="hover:text-amber-800">Contact Us</a></li>
-                <li><a href="#" className="hover:text-amber-800">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-amber-800">Terms of Service</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-amber-800 mb-3 text-sm sm:text-base">Services</h3>
-              <ul className="space-y-2 text-xs sm:text-sm text-amber-600">
-                <li><a href="#" className="hover:text-amber-800">Wedding</a></li>
-                <li><a href="#" className="hover:text-amber-800">Corporate</a></li>
-                <li><a href="#" className="hover:text-amber-800">Birthday</a></li>
-                <li><a href="#" className="hover:text-amber-800">Anniversary</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-amber-800 mb-3 text-sm sm:text-base">Connect</h3>
-              <div className="flex gap-2 sm:gap-3">
-                <a href="#" className="p-1.5 sm:p-2 rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200"><Facebook className="w-3 h-3 sm:w-4 sm:h-4" /></a>
-                <a href="#" className="p-1.5 sm:p-2 rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200"><Instagram className="w-3 h-3 sm:w-4 sm:h-4" /></a>
-                <a href="#" className="p-1.5 sm:p-2 rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200"><Twitter className="w-3 h-3 sm:w-4 sm:h-4" /></a>
-                <a href="#" className="p-1.5 sm:p-2 rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200"><Youtube className="w-3 h-3 sm:w-4 sm:h-4" /></a>
-              </div>
-              <div className="mt-3 sm:mt-4">
-                <p className="text-xs sm:text-sm text-amber-600">Download our app</p>
-                <div className="flex gap-2 mt-2">
-                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-800 text-white text-xs flex items-center gap-1">
-                    <Download className="w-3 h-3" /> Android
-                  </button>
-                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-800 text-white text-xs flex items-center gap-1">
-                    <Download className="w-3 h-3" /> iOS
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="text-xs text-amber-600 text-center mt-6 sm:mt-8">© {new Date().getFullYear()} Sanskaraa. All rights reserved.</div>
-        </footer>
-
-      </div>
-    );
-}
-
-
-// Booking Flow Component
-function BookingFlow({ 
-  bookingFlow, setBookingFlow, proceedToCustomization, proceedToVendorSelection, 
-  proceedToDateTimeSelection, proceedToPayment, completeBooking 
-}) {
-  const [customization, setCustomization] = useState({});
-  const [selectedVendor, setSelectedVendor] = useState(null);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('card');
-  const [cardDetails, setCardDetails] = useState({ number: '', expiry: '', cvv: '' });
-  
-  const handleCustomizationChange = (optionId, value) => {
-    setCustomization(prev => ({
-      ...prev,
-      [optionId]: value
-    }));
-  };
-  
-  const renderStep = () => {
-    switch(bookingFlow.step) {
-      case 1: // Service selection (already handled by main modal)
-        return null;
-        
-      case 2: // Customization
-        return (
-          <div className="p-6">
-            <h2 className="text-xl font-bold text-amber-800 mb-4">Customize your {bookingFlow.selectedService.title}</h2>
-            
-            <div className="space-y-4">
-              {bookingFlow.selectedService.customizationOptions.map(option => (
-                <div key={option.id}>
-                  <label className="block text-sm font-medium text-amber-800 mb-1">{option.name}</label>
-                  <select
-                    value={customization[option.id] || option.default}
-                    onChange={(e) => handleCustomizationChange(option.id, e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800"
-                  >
-                    {option.options.map(opt => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
-                  </select>
-                </div>
-              ))}
-            </div>
-            
-            <div className="mt-6 flex justify-between">
-              <button 
-                onClick={() => setBookingFlow(prev => ({ ...prev, step: 1 }))}
-                className="px-4 py-2 rounded-xl border border-amber-200 text-amber-800"
-              >
-                Back
-              </button>
-              <button 
-                onClick={() => proceedToVendorSelection(customization)}
-                className="px-4 py-2 rounded-xl bg-amber-700 text-white"
-              >
-                Next: Choose Vendor
-              </button>
-            </div>
-          </div>
-        );
-        
-      case 3: // Vendor selection
-        return (
-          <div className="p-6">
-            <h2 className="text-xl font-bold text-amber-800 mb-4">Choose a Vendor</h2>
-            
-            <div className="space-y-4">
-              {bookingFlow.selectedService.vendors.map(vendor => (
-                <div 
-                  key={vendor.id} 
-                  className={`p-4 rounded-xl border ${selectedVendor?.id === vendor.id ? 'border-amber-500 bg-amber-50' : 'border-amber-200'}`}
-                  onClick={() => setSelectedVendor(vendor)}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium text-amber-800">{vendor.name}</h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        {stars(vendor.rating)}
-                        <span className="text-amber-600 text-sm">{vendor.rating} • {vendor.completedEvents} events</span>
+            {activeTab === "vendors" && service.vendors && (
+              <div className="space-y-4">
+                {service.vendors.map(vendor => (
+                  <div key={vendor.id} className="p-4 border border-amber-200 rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-semibold text-amber-800">{vendor.name}</h4>
+                      <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                        <span>{vendor.rating}</span>
                       </div>
                     </div>
-                    <div className={`w-4 h-4 rounded-full border-2 ${selectedVendor?.id === vendor.id ? 'bg-amber-500 border-amber-500' : 'border-amber-300'}`}></div>
-                  </div>
-                  <div className="mt-2 text-sm text-amber-600">
-                    Avg. response time: {vendor.responseTime}
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="mt-6 flex justify-between">
-              <button 
-                onClick={() => setBookingFlow(prev => ({ ...prev, step: 2 }))}
-                className="px-4 py-2 rounded-xl border border-amber-200 text-amber-800"
-              >
-                Back
-              </button>
-              <button 
-                onClick={() => selectedVendor && proceedToDateTimeSelection(selectedVendor)}
-                disabled={!selectedVendor}
-                className="px-4 py-2 rounded-xl bg-amber-700 text-white disabled:opacity-50"
-              >
-                Next: Select Date & Time
-              </button>
-            </div>
-          </div>
-        );
-        
-      case 4: // Date & Time selection
-        return (
-          <div className="p-6">
-            <h2 className="text-xl font-bold text-amber-800 mb-4">Select Date & Time</h2>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-amber-800 mb-1">Date</label>
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
-                  className="w-full px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-amber-800 mb-1">Time</label>
-                <select
-                  value={selectedTime}
-                  onChange={(e) => setSelectedTime(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800"
-                >
-                  <option value="">Select time</option>
-                  <option value="09:00">9:00 AM</option>
-                  <option value="12:00">12:00 PM</option>
-                  <option value="15:00">3:00 PM</option>
-                  <option value="18:00">6:00 PM</option>
-                </select>
-              </div>
-            </div>
-            
-            <div className="mt-6 flex justify-between">
-              <button 
-                onClick={() => setBookingFlow(prev => ({ ...prev, step: 3 }))}
-                className="px-4 py-2 rounded-xl border border-amber-200 text-amber-800"
-              >
-                Back
-              </button>
-              <button 
-                onClick={() => selectedDate && selectedTime && proceedToPayment(`${selectedDate} ${selectedTime}`)}
-                disabled={!selectedDate || !selectedTime}
-                className="px-4 py-2 rounded-xl bg-amber-700 text-white disabled:opacity-50"
-              >
-                Next: Payment
-              </button>
-            </div>
-          </div>
-        );
-        
-      case 5: // Payment
-        return (
-          <div className="p-6">
-            <h2 className="text-xl font-bold text-amber-800 mb-4">Payment</h2>
-            
-            <div className="bg-amber-100 p-4 rounded-xl mb-4">
-              <h3 className="font-medium text-amber-800">Order Summary</h3>
-              <div className="mt-2 text-sm text-amber-600">
-                <div>{bookingFlow.selectedService.title} - {rupee(bookingFlow.selectedService.basePrice)}</div>
-                <div className="mt-1">Vendor: {bookingFlow.selectedVendor.name}</div>
-                <div className="mt-1">Date: {new Date(bookingFlow.selectedDate).toLocaleString()}</div>
-                <div className="mt-2 font-medium">Total: {rupee(bookingFlow.selectedService.basePrice)}</div>
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-amber-800 mb-1">Payment Method</label>
-                <select
-                  value={paymentMethod}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800"
-                >
-                  <option value="card">Credit/Debit Card</option>
-                  <option value="upi">UPI</option>
-                  <option value="wallet">Wallet</option>
-                  <option value="netbanking">Net Banking</option>
-                </select>
-              </div>
-              
-              {paymentMethod === 'card' && (
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm font-medium text-amber-800 mb-1">Card Number</label>
-                    <input
-                      type="text"
-                      value={cardDetails.number}
-                      onChange={(e) => setCardDetails(prev => ({ ...prev, number: e.target.value }))}
-                      placeholder="1234 5678 9012 3456"
-                      className="w-full px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800"
-                    />
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-sm font-medium text-amber-800 mb-1">Expiry Date</label>
-                      <input
-                        type="text"
-                        value={cardDetails.expiry}
-                        onChange={(e) => setCardDetails(prev => ({ ...prev, expiry: e.target.value }))}
-                        placeholder="MM/YY"
-                        className="w-full px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800"
-                      />
+                    <div className="flex items-center justify-between text-sm text-amber-600">
+                      <span>Response time: {vendor.responseTime}</span>
+                      <span>{vendor.completedEvents} events completed</span>
                     </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-amber-800 mb-1">CVV</label>
-                      <input
-                        type="text"
-                        value={cardDetails.cvv}
-                        onChange={(e) => setCardDetails(prev => ({ ...prev, cvv: e.target.value }))}
-                        placeholder="123"
-                        className="w-full px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800"
-                      />
+                    <div className="mt-3 flex gap-2">
+                      <button className="px-3 py-1 bg-amber-500 text-white rounded-lg text-sm hover:bg-amber-600">
+                        Contact
+                      </button>
+                      <button 
+                        onClick={() => setSelectedVendor(vendor)}
+                        className="px-3 py-1 border border-amber-300 text-amber-700 rounded-lg text-sm hover:bg-amber-50"
+                      >
+                        Select
+                      </button>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
-            
-            <div className="mt-6 flex justify-between">
-              <button 
-                onClick={() => setBookingFlow(prev => ({ ...prev, step: 4 }))}
-                className="px-4 py-2 rounded-xl border border-amber-200 text-amber-800"
-              >
-                Back
-              </button>
-              <button 
-                onClick={() => completeBooking({ paymentMethod, cardDetails })}
-                className="px-4 py-2 rounded-xl bg-amber-700 text-white"
-              >
-                Pay Now
-              </button>
-            </div>
+                ))}
+              </div>
+            )}
+
+            {activeTab === "reviews" && (
+              <div className="space-y-4">
+                {/* Reviews would go here */}
+                <p className="text-amber-600">Customer reviews will be displayed here.</p>
+              </div>
+            )}
           </div>
-        );
-        
-      default:
-        return null;
-    }
-  };
-  
-  return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-      onClick={() => setBookingFlow(prev => ({ ...prev, step: 0 }))}
-    >
-      <motion.div 
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-amber-50 rounded-2xl w-full max-w-md overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {renderStep()}
+
+          <div className="flex gap-3">
+            <button
+              onClick={() => onBook(service)}
+              className="flex-1 px-6 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors font-semibold"
+            >
+              Book Now
+            </button>
+            <button className="px-6 py-3 border border-amber-300 text-amber-700 rounded-xl hover:bg-amber-50 transition-colors">
+              <Share className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
       </motion.div>
     </motion.div>
-  );
-}
-
-// Review Form Component
-function ReviewForm({ onSubmit }) {
-  const [name, setName] = useState("");
-  const [msg, setMsg] = useState("");
-  const [stars, setStars] = useState(5);
-
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (!name.trim() || !msg.trim()) return;
-        onSubmit({ name: name.trim(), msg: msg.trim(), stars });
-        setName("");
-        setMsg("");
-        setStars(5);
-      }}
-      className="mt-2 p-2 rounded-lg bg-white border border-amber-200"
-    >
-      <div className="text-xs font-medium mb-1 text-amber-800">Add a review</div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Your name"
-          className="px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm"
-        />
-        <select
-          value={stars}
-          onChange={(e) => setStars(Number(e.target.value))}
-          className="px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm"
-        >
-          {[5, 4.5, 4, 3.5, 3].map((s) => (
-            <option key={s} value={s}>
-              {s} ★
-            </option>
-          ))}
-        </select>
-      </div>
-      <textarea
-        value={msg}
-        onChange={(e) => setMsg(e.target.value)}
-        placeholder="Share your experience..."
-        className="w-full mt-2 px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm"
-        rows={2}
-      />
-      <div className="mt-2 flex justify-end">
-        <button
-          type="submit"
-          className="px-3 py-1.5 rounded-xl bg-amber-700 text-white text-sm hover:bg-amber-800"
-        >
-          Post
-        </button>
-      </div>
-    </form>
   );
 }
