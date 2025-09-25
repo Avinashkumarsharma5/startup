@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Calendar, User, Package, Flower2, BookOpen, Star } from "lucide-react";
 
@@ -40,14 +40,10 @@ export default function SearchPage() {
   const [sortBy, setSortBy] = useState("rating");
   const [visibleCount, setVisibleCount] = useState(6);
   const [filters, setFilters] = useState({ minRating: 0, maxPrice: Infinity });
-  const containerRef = useRef(null);
 
   const lowerQuery = query.toLowerCase();
 
-  const allItems = useMemo(
-    () => Object.entries(data).flatMap(([cat, items]) => items.map(i => ({ ...i, category: cat }))),
-    []
-  );
+  // Note: suggestion UI not present on this page; avoid unused computations
 
   const filteredResults = useMemo(() => {
     let results = activeTab
@@ -69,6 +65,11 @@ export default function SearchPage() {
   }, [activeTab, lowerQuery, filters, sortBy]);
 
   const hasResults = Object.values(filteredResults).some(arr => arr.length > 0);
+
+  // Reset lazy-load count when query scope or filters change
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [query, activeTab, filters, sortBy]);
 
   const navigateCategory = (category) => {
     switch(category) {
