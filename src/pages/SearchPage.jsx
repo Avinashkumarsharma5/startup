@@ -40,6 +40,8 @@ export default function SearchPage() {
   const [sortBy, setSortBy] = useState("rating");
   const [visibleCount, setVisibleCount] = useState(6);
   const [filters, setFilters] = useState({ minRating: 0, maxPrice: Infinity });
+  const [suggestionsVisible, setSuggestionsVisible] = useState(false);
+  const [highlightIndex, setHighlightIndex] = useState(-1);
 
   const lowerQuery = query.toLowerCase();
 
@@ -71,6 +73,43 @@ export default function SearchPage() {
     setVisibleCount(6);
   }, [query, activeTab, filters, sortBy]);
 
+  // Reset highlighted suggestion when query changes
+  useEffect(() => {
+    setHighlightIndex(-1);
+  }, [query]);
+
+  // Build a flat suggestion list from filtered results with category context
+  const suggestionList = useMemo(() => {
+    return Object.entries(filteredResults).flatMap(([cat, items]) =>
+      items.map(item => ({ ...item, category: cat }))
+    );
+  }, [filteredResults]);
+
+  const handleKeyDown = (e) => {
+    if (!suggestionsVisible) return;
+
+    if (e.key === "Escape") {
+      setSuggestionsVisible(false);
+      return;
+    }
+
+    if (!suggestionList.length) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightIndex(prev => (prev + 1) % suggestionList.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightIndex(prev => (prev - 1 + suggestionList.length) % suggestionList.length);
+    } else if (e.key === "Enter" && highlightIndex >= 0) {
+      const selected = suggestionList[highlightIndex];
+      setQuery(selected.name);
+      setActiveTab(selected.category);
+      setSuggestionsVisible(false);
+      navigateCategory(selected.category);
+    }
+  };
+
   const navigateCategory = (category) => {
     switch(category) {
       case "events": navigate("/EventsPage"); break;
@@ -92,7 +131,10 @@ export default function SearchPage() {
           placeholder="Search for Puja, Pandit or Kits..."
           className="w-full outline-none text-gray-700"
           value={query}
-          onChange={e => setQuery(e.target.value)}
+          onChange={e => { setQuery(e.target.value); setSuggestionsVisible(true); }}
+          onFocus={() => setSuggestionsVisible(true)}
+          onBlur={() => setTimeout(() => setSuggestionsVisible(false), 200)}
+          onKeyDown={handleKeyDown}
         />
       </div>
 
