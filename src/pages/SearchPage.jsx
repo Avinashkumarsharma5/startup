@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // src/pages/SearchPage.jsx
 import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
@@ -18,6 +19,11 @@ import {
   User,
   Package
 } from "lucide-react";
+=======
+import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { Search, Calendar, User, Package, Flower2, BookOpen, Star } from "lucide-react";
+>>>>>>> f6f6f826078f8453c9bec60d3025163f67d25c44
 
 /* ---------------- Mock Data ---------------- */
 const searchData = {
@@ -48,6 +54,7 @@ const categories = [
   { key: "venues", label: "Venues", icon: Building2 },
 ];
 
+<<<<<<< HEAD
 /* ---------------- Skeleton Loader ---------------- */
 const SkeletonCard = () => (
   <div className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse">
@@ -60,6 +67,17 @@ const SkeletonCard = () => (
     </div>
   </div>
 );
+=======
+export default function SearchPage() {
+  const navigate = useNavigate();
+  const [query, setQuery] = useState("");
+  const [activeTab, setActiveTab] = useState(null);
+  const [sortBy, setSortBy] = useState("rating");
+  const [visibleCount, setVisibleCount] = useState(6);
+  const [filters, setFilters] = useState({ minRating: 0, maxPrice: Infinity });
+  const [suggestionsVisible, setSuggestionsVisible] = useState(false);
+  const [highlightIndex, setHighlightIndex] = useState(-1);
+>>>>>>> f6f6f826078f8453c9bec60d3025163f67d25c44
 
 /* ---------------- Result Card ---------------- */
 const ResultCard = ({ item, onBook, onToggleWishlist, isWishlisted }) => {
@@ -120,6 +138,7 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState(new Set());
 
+<<<<<<< HEAD
   const allItems = useMemo(
     () =>
       Object.entries(searchData).flatMap(([category, items]) =>
@@ -127,6 +146,9 @@ export default function SearchPage() {
       ),
     []
   );
+=======
+  // Note: suggestion UI not present on this page; avoid unused computations
+>>>>>>> f6f6f826078f8453c9bec60d3025163f67d25c44
 
   const filteredResults = useMemo(
     () =>
@@ -149,6 +171,7 @@ export default function SearchPage() {
       newSet.has(id) ? newSet.delete(id) : newSet.add(id);
       return newSet;
     });
+<<<<<<< HEAD
   };
 
   return (
@@ -173,6 +196,82 @@ export default function SearchPage() {
             <Mic className="w-5 h-5 text-amber-500" />
           </button>
         </div>
+=======
+    return results;
+  }, [activeTab, lowerQuery, filters, sortBy]);
+
+  const hasResults = Object.values(filteredResults).some(arr => arr.length > 0);
+
+  // Reset lazy-load count when query scope or filters change
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [query, activeTab, filters, sortBy]);
+
+  // Reset highlighted suggestion when query changes
+  useEffect(() => {
+    setHighlightIndex(-1);
+  }, [query]);
+
+  // Build a flat suggestion list from filtered results with category context
+  const suggestionList = useMemo(() => {
+    return Object.entries(filteredResults).flatMap(([cat, items]) =>
+      items.map(item => ({ ...item, category: cat }))
+    );
+  }, [filteredResults]);
+
+  const handleKeyDown = (e) => {
+    if (!suggestionsVisible) return;
+
+    if (e.key === "Escape") {
+      setSuggestionsVisible(false);
+      return;
+    }
+
+    if (!suggestionList.length) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightIndex(prev => (prev + 1) % suggestionList.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightIndex(prev => (prev - 1 + suggestionList.length) % suggestionList.length);
+    } else if (e.key === "Enter" && highlightIndex >= 0) {
+      const selected = suggestionList[highlightIndex];
+      setQuery(selected.name);
+      setActiveTab(selected.category);
+      setSuggestionsVisible(false);
+      navigateCategory(selected.category);
+    }
+  };
+
+  const navigateCategory = (category) => {
+    switch(category) {
+      case "events": navigate("/EventsPage"); break;
+      case "pandits": navigate("/PanditBooking"); break;
+      case "kits": navigate("/pujakits"); break;
+      case "decorations": navigate("/services"); break;
+      case "bookings": navigate("/BookingsPage"); break;
+      default: break;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FFF8E7] p-4 pt-6 relative mt-8">
+      {/* Search Bar */}
+      <div className="flex items-center bg-white rounded-full shadow-md px-4 py-2 mb-3">
+        <Search className="text-gray-500 w-5 h-5 mr-2" />
+        <input
+          type="text"
+          placeholder="Search for Puja, Pandit or Kits..."
+          className="w-full outline-none text-gray-700"
+          value={query}
+          onChange={e => { setQuery(e.target.value); setSuggestionsVisible(true); }}
+          onFocus={() => setSuggestionsVisible(true)}
+          onBlur={() => setTimeout(() => setSuggestionsVisible(false), 200)}
+          onKeyDown={handleKeyDown}
+        />
+      </div>
+>>>>>>> f6f6f826078f8453c9bec60d3025163f67d25c44
 
         {/* Category Tabs */}
         <div className="flex space-x-2 overflow-x-auto mt-4">
