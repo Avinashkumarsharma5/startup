@@ -1,165 +1,225 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { Search, Calendar, User, Package, Flower2, BookOpen, Star } from "lucide-react";
+// src/pages/SearchPage.jsx
+import React, { useState, useEffect, useMemo } from "react";
+import { motion } from "framer-motion";
+import {
+  Search,
+  Mic,
+  X,
+  Star,
+  Bookmark,
+  BookmarkCheck,
+  Sparkles,
+  Flower2,
+  Lightbulb,
+  Utensils,
+  Tent,
+  Building2,
+  BookOpen,
+  User,
+  Package
+} from "lucide-react";
 
-const data = {
+/* ---------------- Mock Data ---------------- */
+const searchData = {
   events: [
-    { id: 1, name: "Griha Pravesh Puja", img: "/images/event1.jpg", rating: 4.5, price: 2000, action: "Book Now" },
-    { id: 2, name: "Satyanarayan Katha", img: "/images/event2.jpg", rating: 4.0, price: 1500, action: "Book Now" },
+    { id: 1, name: "Griha Pravesh Puja", img: "/images/event1.jpg", rating: 4.6, price: 5100, reviews: 120, category: "events" },
+    { id: 2, name: "Satyanarayan Katha", img: "/images/event2.jpg", rating: 4.7, price: 3500, reviews: 90, category: "events" },
   ],
   pandits: [
-    { id: 3, name: "Pandit Sharma Ji", img: "/images/pandit1.jpg", rating: 4.8, price: 2500, action: "Hire Pandit" },
-    { id: 4, name: "Pandit Mishra Ji", img: "/images/pandit2.jpg", rating: 4.6, price: 2200, action: "Hire Pandit" },
+    { id: 3, name: "Pandit Rajesh Sharma", img: "/images/pandit1.jpg", rating: 4.9, price: 2100, reviews: 200, category: "pandits" },
   ],
   kits: [
-    { id: 5, name: "Ganesh Puja Kit", img: "/images/kit1.jpg", rating: 4.2, price: 800, action: "Buy Now" },
-    { id: 6, name: "Navratri Puja Kit", img: "/images/kit2.jpg", rating: 4.4, price: 1000, action: "Buy Now" },
+    { id: 4, name: "Satyanarayan Puja Kit", img: "/images/kit1.jpg", rating: 4.5, price: 1500, reviews: 140, category: "kits" },
   ],
   decorations: [
-    { id: 7, name: "Mandap Decoration", img: "/images/decor1.jpg", rating: 4.0, price: 5000, action: "Explore" },
-    { id: 8, name: "Flower Decoration", img: "/images/decor2.jpg", rating: 4.3, price: 3000, action: "Explore" },
-  ],
-  bookings: [
-    { id: 9, name: "Pandit Booking", img: "/images/booking1.jpg", rating: 4.5, price: 0, action: "View Booking" },
-    { id: 10, name: "Event Booking", img: "/images/booking2.jpg", rating: 4.6, price: 0, action: "View Booking" },
-  ],
+    { id: 5, name: "Mandap Decoration", img: "/images/decor1.jpg", rating: 4.8, price: 25000, reviews: 80, category: "decorations" },
+  ]
 };
 
 const categories = [
-  { key: "events", label: "Events", icon: Calendar },
-  { key: "kits", label: "Kits", icon: Package },
+  { key: "all", label: "All", icon: Sparkles },
+  { key: "events", label: "Events", icon: BookOpen },
   { key: "pandits", label: "Pandits", icon: User },
+  { key: "kits", label: "Puja Kits", icon: Package },
   { key: "decorations", label: "Decorations", icon: Flower2 },
-  { key: "bookings", label: "Bookings", icon: BookOpen },
+  { key: "lighting", label: "Lighting", icon: Lightbulb },
+  { key: "catering", label: "Catering", icon: Utensils },
+  { key: "tents", label: "Tents", icon: Tent },
+  { key: "venues", label: "Venues", icon: Building2 },
 ];
 
-export default function SearchPage() {
-  const navigate = useNavigate();
-  const [query, setQuery] = useState("");
-  const [activeTab, setActiveTab] = useState(null);
-  const [sortBy, setSortBy] = useState("rating");
-  const [visibleCount, setVisibleCount] = useState(6);
-  const [filters, setFilters] = useState({ minRating: 0, maxPrice: Infinity });
-  const containerRef = useRef(null);
+/* ---------------- Skeleton Loader ---------------- */
+const SkeletonCard = () => (
+  <div className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse">
+    <div className="w-full h-40 bg-amber-200"></div>
+    <div className="p-4 space-y-3">
+      <div className="h-4 bg-amber-200 rounded w-3/4"></div>
+      <div className="h-3 bg-amber-200 rounded w-1/2"></div>
+      <div className="h-3 bg-amber-200 rounded w-1/4"></div>
+      <div className="h-8 bg-amber-200 rounded-xl"></div>
+    </div>
+  </div>
+);
 
-  const lowerQuery = query.toLowerCase();
+/* ---------------- Result Card ---------------- */
+const ResultCard = ({ item, onBook, onToggleWishlist, isWishlisted }) => {
+  const renderStars = (rating) => (
+    <div className="flex items-center gap-1">
+      {[...Array(5)].map((_, i) => (
+        <Star key={i} className={`w-4 h-4 ${i < Math.floor(rating) ? "fill-amber-400 text-amber-400" : "text-amber-200"}`} />
+      ))}
+      <span className="text-sm text-amber-600 ml-1">{rating}</span>
+    </div>
+  );
+
+  return (
+    <motion.div
+      layout
+      className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"
+    >
+      <div className="relative">
+        <img src={item.img} alt={item.name} className="w-full h-40 object-cover" />
+        <button
+          onClick={() => onToggleWishlist(item.id)}
+          className="absolute top-3 right-3 p-2 rounded-full bg-white bg-opacity-90 shadow-lg"
+        >
+          {isWishlisted ? (
+            <BookmarkCheck className="w-5 h-5 text-amber-600" fill="currentColor" />
+          ) : (
+            <Bookmark className="w-5 h-5 text-amber-600" />
+          )}
+        </button>
+      </div>
+
+      <div className="p-4">
+        <h3 className="font-semibold text-amber-900 text-lg line-clamp-2">{item.name}</h3>
+        <div className="flex items-center justify-between mb-3">
+          {renderStars(item.rating)}
+          <span className="text-amber-600 text-sm">({item.reviews})</span>
+        </div>
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-xl font-bold text-amber-800">₹{item.price.toLocaleString()}</span>
+        </div>
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => onBook(item)}
+          className="w-full px-4 py-2 bg-amber-500 text-white rounded-xl"
+        >
+          Book Now
+        </motion.button>
+      </div>
+    </motion.div>
+  );
+};
+
+/* ---------------- Main Page ---------------- */
+export default function SearchPage() {
+  const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [wishlist, setWishlist] = useState(new Set());
 
   const allItems = useMemo(
-    () => Object.entries(data).flatMap(([cat, items]) => items.map(i => ({ ...i, category: cat }))),
+    () =>
+      Object.entries(searchData).flatMap(([category, items]) =>
+        items.map((item) => ({ ...item, searchCategory: category }))
+      ),
     []
   );
 
-  const filteredResults = useMemo(() => {
-    let results = activeTab
-      ? { [activeTab]: data[activeTab] }
-      : Object.fromEntries(Object.entries(data));
+  const filteredResults = useMemo(
+    () =>
+      allItems.filter(
+        (item) =>
+          (activeCategory === "all" || item.searchCategory === activeCategory) &&
+          item.name.toLowerCase().includes(query.toLowerCase())
+      ),
+    [allItems, query, activeCategory]
+  );
 
-    Object.keys(results).forEach(cat => {
-      results[cat] = results[cat]
-        .filter(item =>
-          item.name.toLowerCase().includes(lowerQuery) &&
-          item.rating >= filters.minRating &&
-          item.price <= filters.maxPrice
-        )
-        .sort((a, b) =>
-          sortBy === "rating" ? b.rating - a.rating : a.price - b.price
-        );
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const toggleWishlist = (id) => {
+    setWishlist((prev) => {
+      const newSet = new Set(prev);
+      newSet.has(id) ? newSet.delete(id) : newSet.add(id);
+      return newSet;
     });
-    return results;
-  }, [activeTab, lowerQuery, filters, sortBy]);
-
-  const hasResults = Object.values(filteredResults).some(arr => arr.length > 0);
-
-  const navigateCategory = (category) => {
-    switch(category) {
-      case "events": navigate("/EventsPage"); break;
-      case "pandits": navigate("/PanditBooking"); break;
-      case "kits": navigate("/pujakits"); break;
-      case "decorations": navigate("/services"); break;
-      case "bookings": navigate("/BookingsPage"); break;
-      default: break;
-    }
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF8E7] p-4 pt-6 relative mt-8">
-      {/* Search Bar */}
-      <div className="flex items-center bg-white rounded-full shadow-md px-4 py-2 mb-3">
-        <Search className="text-gray-500 w-5 h-5 mr-2" />
-        <input
-          type="text"
-          placeholder="Search for Puja, Pandit or Kits..."
-          className="w-full outline-none text-gray-700"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-        />
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
+      {/* Search Header (starts below your navbar) */}
+      <div className="bg-white shadow-sm sticky top-0 z-40 p-4 mt-16 ">
+        <div className="relative flex items-center bg-white rounded-2xl shadow px-4 py-3 border border-amber-200">
+          <Search className="text-amber-600 w-5 h-5 mr-3" />
+          <input
+            type="text"
+            placeholder="Search rituals, pandits, kits..."
+            className="w-full outline-none text-amber-800"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          {query && (
+            <button onClick={() => setQuery("")} className="ml-3">
+              <X className="w-5 h-5 text-amber-500" />
+            </button>
+          )}
+          <button className="ml-2">
+            <Mic className="w-5 h-5 text-amber-500" />
+          </button>
+        </div>
 
-      {/* Sticky Category + Filters */}
-      <div className="sticky top-0 bg-[#FFF8E7] z-20 py-2 flex justify-between items-center">
-        <div className="flex space-x-3 overflow-x-auto">
+        {/* Category Tabs */}
+        <div className="flex space-x-2 overflow-x-auto mt-4">
           {categories.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
-              className={`flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium border transition ${
-                activeTab === key ? "bg-[#FFD700] text-[#5C3A21] border-[#FFD700]" : "bg-white text-gray-700 border-gray-300 hover:bg-[#FFF3CD]"
+              className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium ${
+                activeCategory === key
+                  ? "bg-amber-500 text-white"
+                  : "bg-white border border-amber-200"
               }`}
-              onClick={() => setActiveTab(activeTab === key ? null : key)}
+              onClick={() => setActiveCategory(key)}
             >
               <Icon className="w-4 h-4" />
               <span>{label}</span>
             </button>
           ))}
         </div>
-        <div className="flex items-center space-x-2">
-          <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="border rounded px-2 py-1 bg-white text-sm">
-            <option value="rating">Sort by Rating</option>
-            <option value="price">Sort by Price</option>
-          </select>
-          <input type="number" placeholder="Min Rating" className="border rounded px-2 py-1 w-20" 
-            onChange={e => setFilters(f => ({ ...f, minRating: Number(e.target.value) || 0 }))} />
-          <input type="number" placeholder="Max Price" className="border rounded px-2 py-1 w-24" 
-            onChange={e => setFilters(f => ({ ...f, maxPrice: Number(e.target.value) || Infinity }))} />
-        </div>
       </div>
 
-      {/* Featured Sections (Carousel style) */}
-      <div className="mt-4 space-y-6">
-        {hasResults ? Object.entries(filteredResults).map(([cat, items]) => (
-          items.length > 0 && (
-            <div key={cat}>
-              <h2 className="text-lg font-semibold text-[#5C3A21] mb-2 capitalize">{cat}</h2>
-              <div className="flex space-x-4 overflow-x-auto pb-2">
-                {items.slice(0, visibleCount).map(item => (
-                  <div key={item.id} className="min-w-[160px] bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition transform hover:scale-105">
-                    <img src={item.img} alt={item.name} className="w-full h-32 object-cover" />
-                    <div className="p-3 flex flex-col items-center">
-                      <span className="font-semibold text-gray-800 text-center">{item.name}</span>
-                      <div className="flex items-center space-x-1 mt-1">
-                        <Star className="w-4 h-4 text-yellow-400" />
-                        <span className="text-sm text-gray-700">{item.rating}</span>
-                      </div>
-                      {item.price > 0 && <span className="text-sm text-gray-500 mt-1">₹{item.price}</span>}
-                      <button
-                        className="mt-2 bg-gradient-to-r from-[#FFD700] to-[#FFC107] text-[#5C3A21] px-3 py-1 text-sm rounded-full shadow hover:scale-105 transition"
-                        onClick={() => navigateCategory(item.category)}
-                      >
-                        {item.action}
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {items.length > visibleCount && (
-                <button className="mt-2 text-[#5C3A21] font-semibold hover:text-[#FFD700]"
-                  onClick={() => setVisibleCount(prev => prev + 4)}>
-                  Load More
-                </button>
-              )}
-            </div>
-          )
-        )) : <p className="text-center text-gray-500 mt-10">No results found 😔</p>}
+      {/* Content */}
+      <div className="max-w-7xl mx-auto p-4">
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : filteredResults.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredResults.map((item) => (
+              <ResultCard
+                key={item.id}
+                item={item}
+                onBook={() => alert("Booking...")}
+                onToggleWishlist={toggleWishlist}
+                isWishlisted={wishlist.has(item.id)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 text-amber-700">
+            <p className="text-lg font-medium">No results found 🔍</p>
+            <p className="text-sm opacity-75">Try a different keyword or category</p>
+          </div>
+        )}
       </div>
     </div>
-  )
+  );
 }
