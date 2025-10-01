@@ -16,45 +16,57 @@ export default function BottomNavbar() {
   ];
 
   // Registration Form Component
-  const RegistrationForm = ({ type }) => (
-    <div className="bg-white p-6 rounded-xl shadow-lg">
-      <h2 className="text-lg font-bold text-[#5C3A21] mb-4">
-        Register as {type === "pandit" ? "Pandit Ji" : type === "shopkeeper" ? "Shopkeeper" : vendorType}
-      </h2>
-      <form className="flex flex-col gap-3">
-        <input type="text" placeholder="Full Name" className="border p-2 rounded-lg" required />
-        <input type="tel" placeholder="Phone Number" className="border p-2 rounded-lg" required />
-        <input type="email" placeholder="Email Address" className="border p-2 rounded-lg" required />
-        <input type="text" placeholder="Location/City" className="border p-2 rounded-lg" required />
+  const RegistrationForm = ({ type }) => {
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      // 🚀 yaha aap backend API call karke data save karoge
+      localStorage.setItem("isServiceProvider", "true");
+      alert("🎉 Registration successful!");
+      setRole(null);
+      setVendorType(null);
+      setShowMore(false); // modal close
+    };
 
-        {type === "pandit" && (
-          <textarea placeholder="Specialized Pujas (e.g. Satyanarayan, Grih Pravesh)" className="border p-2 rounded-lg" />
-        )}
+    return (
+      <div className="bg-white p-6 rounded-xl shadow-lg">
+        <h2 className="text-lg font-bold text-[#5C3A21] mb-4">
+          Register as {type === "pandit" ? "Pandit Ji" : type === "shopkeeper" ? "Shopkeeper" : vendorType}
+        </h2>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <input type="text" placeholder="Full Name" className="border p-2 rounded-lg" required />
+          <input type="tel" placeholder="Phone Number" className="border p-2 rounded-lg" required />
+          <input type="email" placeholder="Email Address" className="border p-2 rounded-lg" required />
+          <input type="text" placeholder="Location/City" className="border p-2 rounded-lg" required />
 
-        {type === "shopkeeper" && (
-          <textarea placeholder="Products (e.g. Puja Kits, Flowers, Samagri)" className="border p-2 rounded-lg" />
-        )}
+          {type === "pandit" && (
+            <textarea placeholder="Specialized Pujas (e.g. Satyanarayan, Grih Pravesh)" className="border p-2 rounded-lg" />
+          )}
 
-        {type === "vendor" && vendorType && (
-          <textarea placeholder={`Services offered as ${vendorType}`} className="border p-2 rounded-lg" />
-        )}
+          {type === "shopkeeper" && (
+            <textarea placeholder="Products (e.g. Puja Kits, Flowers, Samagri)" className="border p-2 rounded-lg" />
+          )}
 
-        <button type="submit" className="bg-[#FFD700] text-[#5C3A21] font-bold py-2 rounded-lg hover:bg-[#FFC107]">
-          Submit Registration
+          {type === "vendor" && vendorType && (
+            <textarea placeholder={`Services offered as ${vendorType}`} className="border p-2 rounded-lg" />
+          )}
+
+          <button type="submit" className="bg-[#FFD700] text-[#5C3A21] font-bold py-2 rounded-lg hover:bg-[#FFC107]">
+            Submit Registration
+          </button>
+        </form>
+
+        <button
+          onClick={() => {
+            setRole(null);
+            setVendorType(null);
+          }}
+          className="mt-4 text-gray-600 underline"
+        >
+          Back
         </button>
-      </form>
-
-      <button
-        onClick={() => {
-          setRole(null);
-          setVendorType(null);
-        }}
-        className="mt-4 text-gray-600 underline"
-      >
-        Back
-      </button>
-    </div>
-  );
+      </div>
+    );
+  };
 
   return (
     <>
@@ -120,6 +132,17 @@ export default function BottomNavbar() {
                   >
                     Journey as Shopkeeper
                   </button>
+
+                  {/* ✅ My Profile button only if registered */}
+                  {localStorage.getItem("isServiceProvider") === "true" && (
+                    <Link
+                      to="/service-provider/profile"
+                      onClick={() => setShowMore(false)}
+                      className="w-full bg-green-600 text-white font-semibold py-2 px-4 rounded-xl text-center hover:bg-green-700"
+                    >
+                      My Profile
+                    </Link>
+                  )}
                 </div>
               </>
             ) : role === "vendor" && !vendorType ? (
