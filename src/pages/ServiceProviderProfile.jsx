@@ -24,7 +24,7 @@ export default function ServiceProviderProfile() {
   };
 
   return (
-    <div className="p-6 max-w-3xl mx-auto space-y-6">
+    <div className="p-6 max-w-3xl mx-auto space-y-6 mt-12">
       {/* Profile Header */}
       <div className="bg-gradient-to-r from-[#5C3A21] to-[#8B4513] text-white p-6 rounded-2xl shadow-lg">
         <div className="flex items-center gap-4">
