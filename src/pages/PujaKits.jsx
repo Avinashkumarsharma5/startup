@@ -104,13 +104,13 @@ export default function EventKitsPage() {
   const [coupon, setCoupon] = useState("");
   const [couponApplied, setCouponApplied] = useState(null);
 
-  // Simulate loading for skeletons
+  // Simulate loading
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 800);
     return () => clearTimeout(t);
   }, []);
 
-  // persist cart & wishlist
+  // Persist cart & wishlist
   useEffect(() => saveToLocal("ska_cart", cart), [cart]);
   useEffect(() => saveToLocal("ska_wishlist", wishlist), [wishlist]);
 
@@ -119,17 +119,13 @@ export default function EventKitsPage() {
     let list = kits.filter((k) => {
       const matchCat = selectedCategory === "All" || k.category === selectedCategory;
       const q = search.trim().toLowerCase();
-      const matchSearch =
-        q === "" ||
-        k.name.toLowerCase().includes(q) ||
-        k.category.toLowerCase().includes(q);
+      const matchSearch = q === "" || k.name.toLowerCase().includes(q) || k.category.toLowerCase().includes(q);
       return matchCat && matchSearch;
     });
 
     if (sortBy === "price-low") list = list.sort((a, b) => a.price - b.price);
     if (sortBy === "price-high") list = list.sort((a, b) => b.price - a.price);
     if (sortBy === "newest") list = list.sort((a, b) => b.id - a.id);
-    // popular is default - keep order
     return list;
   }, [search, selectedCategory, sortBy]);
 
@@ -138,25 +134,15 @@ export default function EventKitsPage() {
     const existingIdx = cart.findIndex((c) => c.id === kit.id);
     let newCart = [...cart];
     if (existingIdx === -1) newCart.push({ ...kit, qty });
-    else {
-      newCart[existingIdx].qty += qty;
-    }
+    else newCart[existingIdx].qty += qty;
     setCart(newCart);
     setShowCart(true);
   };
+  const updateQty = (id, qty) => { if (qty < 1) return; setCart(c => c.map(it => it.id === id ? { ...it, qty } : it)); };
+  const removeFromCart = (id) => setCart(c => c.filter(it => it.id !== id));
+  const toggleWishlist = (id) => setWishlist(w => w.includes(id) ? w.filter(x => x !== id) : [...w, id]);
 
-  const updateQty = (id, qty) => {
-    if (qty < 1) return;
-    setCart((c) => c.map((it) => (it.id === id ? { ...it, qty } : it)));
-  };
-
-  const removeFromCart = (id) => setCart((c) => c.filter((it) => it.id !== id));
-
-  const toggleWishlist = (id) => {
-    setWishlist((w) => (w.includes(id) ? w.filter((x) => x !== id) : [...w, id]));
-  };
-
-  // Pricing: subtotal, coupon, GST(18%), delivery
+  // Pricing
   const subtotal = cart.reduce((s, it) => s + it.price * it.qty, 0);
   const couponDiscount = couponApplied === "FESTIVE10" ? subtotal * 0.1 : 0;
   const gst = (subtotal - couponDiscount) * 0.18;
@@ -164,123 +150,53 @@ export default function EventKitsPage() {
   const total = Math.round(subtotal - couponDiscount + gst + delivery);
 
   const applyCoupon = () => {
-    if (coupon.trim().toUpperCase() === "FESTIVE10") {
-      setCouponApplied("FESTIVE10");
-      alert("Coupon FESTIVE10 applied — 10% off!");
-    } else {
-      setCouponApplied(null);
-      alert("Invalid coupon");
-    }
+    if (coupon.trim().toUpperCase() === "FESTIVE10") { setCouponApplied("FESTIVE10"); alert("Coupon applied — 10% off!"); }
+    else { setCouponApplied(null); alert("Invalid coupon"); }
   };
 
   const proceedPaymentMock = () => {
     if (cart.length === 0) return alert("Cart is empty");
-    // Demo payment success
     alert(`Payment successful! Amount: ₹${total}`);
-    // Optionally add calendar link for first item
-    const item = cart[0];
-    const title = encodeURIComponent(`Puja: ${item.name}`);
-    const details = encodeURIComponent(
-      `Puja kit purchased from Sanskaraa. Items: ${item.items?.join(", ") || "-"}`
-    );
-    const start = new Date();
-    const end = new Date(Date.now() + 60 * 60 * 1000);
-    const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&dates=${start
-      .toISOString()
-      .replace(/-|:|\.\d+/g, "")}/${end.toISOString().replace(/-|:|\.\d+/g, "")}`;
-    if (window.confirm("Add a reminder to Google Calendar for your puja?"))
-      window.open(calendarUrl, "_blank");
-
-    // Clear cart for demo
-    setCart([]);
-    setCoupon("");
-    setCouponApplied(null);
-    setShowCart(false);
+    setCart([]); setCoupon(""); setCouponApplied(null); setShowCart(false);
   };
 
-  // Share function
   const handleShare = async (kit) => {
-    const data = {
-      title: kit.name,
-      text: `Check this Puja Kit: ${kit.name} — ₹${kit.price} from Sanskaraa`,
-      url: window.location.href,
-    };
-    try {
-      if (navigator.share) await navigator.share(data);
-      else {
-        // fallback copy
-        await navigator.clipboard.writeText(`${data.text} - ${data.url}`);
-        alert("Link copied to clipboard. Share it with your friends!");
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    const data = { title: kit.name, text: `Check this Puja Kit: ${kit.name} — ₹${kit.price} from Sanskaraa`, url: window.location.href };
+    try { if (navigator.share) await navigator.share(data); else { await navigator.clipboard.writeText(`${data.text} - ${data.url}`); alert("Link copied!"); } } 
+    catch (e) { console.log(e); }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 p-4 md:p-6">
       <div className="max-w-7xl mx-auto mt-6 md:mt-10">
-        {/* 🔝 Topbar */}
+        {/* Topbar */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mt-14">
           <div>
-            <h1 className="text-xl md:text-4xl font-bold text-orange-700">
-              Sanskaraa Puja Kits
-            </h1>
-            <p className="text-xs md:text-sm text-gray-600">
-              Traditional kits, delivered with love. Book Pandit Ji along with kits
-              (coming soon).
-            </p>
+            <h1 className="text-xl md:text-4xl font-bold text-orange-700">Sanskaraa Puja Kits</h1>
+            <p className="text-xs md:text-sm text-gray-600">Traditional kits, delivered with love. Book Pandit Ji along with kits (coming soon).</p>
           </div>
-
           <div className="flex items-center gap-2 w-full md:w-auto">
             <div className="relative flex-1 md:flex-none">
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 pr-4 py-2 w-full md:w-72 rounded-full border shadow-sm"
-                placeholder="Search puja kits..."
-              />
+              <input value={search} onChange={e => setSearch(e.target.value)} className="pl-9 pr-4 py-2 w-full md:w-72 rounded-full border shadow-sm" placeholder="Search puja kits..." />
               <FiSearch className="absolute left-3 top-2.5 text-gray-400" />
             </div>
-            <button
-              onClick={() => setShowCart((s) => !s)}
-              className="relative bg-yellow-500 text-white p-2.5 md:p-3 rounded-full shadow hover:scale-105 transition"
-            >
+            <button onClick={() => setShowCart(s => !s)} className="relative bg-yellow-500 text-white p-2.5 md:p-3 rounded-full shadow hover:scale-105 transition">
               <FiShoppingCart size={20} />
-              {cart.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-                  {cart.length}
-                </span>
-              )}
+              {cart.length > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{cart.length}</span>}
             </button>
           </div>
         </div>
 
-        {/* 🔖 Category + Sort */}
+        {/* Category + Sort */}
         <div className="sticky top-16 md:top-20 z-20 bg-orange-50 py-2 mt-4 rounded-xl px-2 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-              {categories.map((c) => (
-                <button
-                  key={c}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap ${
-                    selectedCategory === c
-                      ? "bg-yellow-200 border border-yellow-600"
-                      : "bg-white"
-                  }`}
-                  onClick={() => setSelectedCategory(c)}
-                >
-                  {c}
-                </button>
+            <div className="flex gap-2 overflow-x-auto">
+              {categories.map(c => (
+                <button key={c} className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap ${selectedCategory === c ? "bg-yellow-200 border border-yellow-600" : "bg-white"}`} onClick={() => setSelectedCategory(c)}>{c}</button>
               ))}
             </div>
-
             <div className="flex items-center">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-1.5 rounded-lg border text-sm"
-              >
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="px-3 py-1.5 rounded-lg border text-sm">
                 <option value="popular">Popular</option>
                 <option value="price-low">Price: Low → High</option>
                 <option value="price-high">Price: High → Low</option>
@@ -290,260 +206,84 @@ export default function EventKitsPage() {
           </div>
         </div>
 
-        {/* 🛍 Product Grid */}
+        {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mt-4">
-          {loading
-            ? Array.from({ length: 6 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-white rounded-xl p-4 shadow animate-pulse h-60"
-                />
-              ))
-            : filtered.map((kit) => (
-                <motion.div
-                  key={kit.id}
-                  layout
-                  whileHover={{ scale: 1.02 }}
-                  className="bg-white rounded-xl shadow p-3 md:p-4 flex flex-col"
-                >
-                  <div className="h-36 md:h-40 w-full mb-3 bg-gray-100 flex items-center justify-center rounded-lg overflow-hidden">
-                    <img
-                      src={kit.img}
-                      alt={kit.name}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-
-                  <h3 className="text-sm md:text-lg font-semibold text-gray-800">
-                    {kit.name}
-                  </h3>
-                  <p className="text-xs md:text-sm text-gray-500 mb-1">
-                    {kit.category}
-                  </p>
-
-                  <div className="flex items-center justify-between mt-auto">
-                    <p className="text-base font-bold">₹{kit.price}</p>
-                    <div className="flex gap-1.5 md:gap-2">
-                      <button
-                        onClick={() => toggleWishlist(kit.id)}
-                        className={`p-1.5 rounded-md border ${
-                          wishlist.includes(kit.id)
-                            ? "bg-red-50 text-red-600"
-                            : "bg-white"
-                        }`}
-                      >
-                        <FiHeart size={16} />
-                      </button>
-                      <button
-                        onClick={() => addToCart(kit)}
-                        className="px-2 md:px-3 py-1.5 rounded-lg bg-yellow-500 text-white text-xs md:text-sm font-medium"
-                      >
-                        Add
-                      </button>
-                      <button
-                        onClick={() => setDetailKit(kit)}
-                        className="px-2 md:px-3 py-1.5 rounded-lg border text-xs md:text-sm"
-                      >
-                        Details
-                      </button>
-                  </div>
+          {loading ? Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="animate-pulse h-48 bg-gray-200 rounded-xl"></div>
+          )) : filtered.map(kit => (
+            <motion.div layout key={kit.id} className="bg-white rounded-xl shadow hover:shadow-lg cursor-pointer relative overflow-hidden" whileHover={{ scale: 1.03 }}>
+              <img src={kit.img} alt={kit.name} className="h-40 w-full object-cover rounded-t-xl" />
+              <div className="p-3 flex flex-col gap-1">
+                <h2 className="font-semibold text-sm md:text-base">{kit.name}</h2>
+                <p className="text-orange-600 font-bold">₹{kit.price}</p>
+                <div className="flex gap-2 mt-2">
+                  <button onClick={() => addToCart(kit)} className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-1 rounded-full text-sm">Add</button>
+                  <button onClick={() => toggleWishlist(kit.id)} className="p-1 rounded-full hover:bg-gray-100">{wishlist.includes(kit.id) ? <FiHeart className="text-red-500" /> : <FiHeart />}</button>
+                  <button onClick={() => handleShare(kit)} className="p-1 rounded-full hover:bg-gray-100">🔗</button>
                 </div>
-              </motion.div>
-            ))}
+              </div>
+              <button onClick={() => setDetailKit(kit)} className="absolute top-2 right-2 bg-white p-1 rounded-full shadow-sm">👁️</button>
+            </motion.div>
+          ))}
         </div>
 
-        {/* 🛒 Cart Sidebar / Drawer */}
+        {/* Detail Modal */}
         <AnimatePresence>
-          {showCart && (
-            <motion.aside
-              initial={{ x: 300 }}
-              animate={{ x: 0 }}
-              exit={{ x: 300 }}
-              className="fixed md:right-4 top-0 md:top-24 w-full md:w-96 h-full md:h-auto bg-white rounded-t-xl md:rounded-xl shadow-lg p-4 z-50 overflow-y-auto"
-            >
-              <div className="flex justify-between items-center mb-3">
-                <h2 className="text-lg font-bold">Your Cart</h2>
-                <button
-                  onClick={() => setShowCart(false)}
-                  className="text-gray-500 hover:text-red-600"
-                >
-                  ✕
-                </button>
-              </div>
-
-              {cart.length === 0 ? (
-                <p className="text-gray-500 text-sm">Your cart is empty.</p>
-              ) : (
-                <div className="space-y-4">
-                  {cart.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center gap-3 bg-gray-50 p-2 rounded-lg"
-                    >
-                      <img
-                        src={item.img}
-                        alt={item.name}
-                        className="w-16 h-16 rounded object-cover"
-                      />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">{item.name}</p>
-                        <p className="text-xs text-gray-500">₹{item.price}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <button
-                            onClick={() => updateQty(item.id, item.qty - 1)}
-                            className="px-2 bg-gray-200 rounded"
-                          >
-                            -
-                          </button>
-                          <span>{item.qty}</span>
-                          <button
-                            onClick={() => updateQty(item.id, item.qty + 1)}
-                            className="px-2 bg-gray-200 rounded"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => removeFromCart(item.id)}
-                        className="text-red-500 text-sm"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ))}
-
-                  {/* 🧾 Summary */}
-                  <div className="border-t pt-3 space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Subtotal</span>
-                      <span>₹{subtotal}</span>
-                    </div>
-                    {couponApplied && (
-                      <div className="flex justify-between text-sm text-green-600">
-                        <span>Coupon ({couponApplied})</span>
-                        <span>-₹{couponDiscount}</span>
-                      </div>
-                    )}
-                    <div className="flex justify-between text-sm">
-                      <span>GST (18%)</span>
-                      <span>₹{gst.toFixed(0)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Delivery</span>
-                      <span>₹{delivery}</span>
-                    </div>
-                    <div className="flex justify-between font-bold text-base">
-                      <span>Total</span>
-                      <span>₹{total}</span>
-                    </div>
-                  </div>
-
-                  {/* 🎟 Coupon */}
-                  <div className="flex gap-2 mt-2">
-                    <input
-                      value={coupon}
-                      onChange={(e) => setCoupon(e.target.value)}
-                      placeholder="Enter coupon"
-                      className="flex-1 border rounded px-3 py-1.5 text-sm"
-                    />
-                    <button
-                      onClick={applyCoupon}
-                      className="px-3 py-1.5 bg-yellow-500 text-white rounded text-sm"
-                    >
-                      Apply
-                    </button>
-                  </div>
-
-                  {/* ✅ Checkout */}
-                  <button
-                    onClick={proceedPaymentMock}
-                    className="w-full py-2 mt-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700"
-                  >
-                    Proceed to Pay
-                  </button>
+          {detailKit && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }} className="bg-white rounded-2xl p-4 w-11/12 md:w-2/3 lg:w-1/3">
+                <div className="flex justify-between items-start">
+                  <h2 className="text-lg font-bold">{detailKit.name}</h2>
+                  <button onClick={() => setDetailKit(null)} className="text-gray-500 font-bold text-xl">✕</button>
                 </div>
-              )}
-            </motion.aside>
+                <img src={detailKit.img} alt={detailKit.name} className="h-48 w-full object-cover mt-3 rounded-xl" />
+                <p className="mt-3 text-orange-600 font-bold text-lg">₹{detailKit.price}</p>
+                <div className="flex gap-2 mt-4">
+                  <button onClick={() => addToCart(detailKit)} className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-full">Add to Cart</button>
+                  <button onClick={() => toggleWishlist(detailKit.id)} className="p-2 rounded-full border">{wishlist.includes(detailKit.id) ? <FiHeart className="text-red-500" /> : <FiHeart />}</button>
+                </div>
+              </motion.div>
+            </motion.div>
           )}
         </AnimatePresence>
 
-        {/* 📑 Detail Modal */}
+        {/* Cart Sidebar */}
         <AnimatePresence>
-          {detailKit && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-            >
-              <motion.div
-                initial={{ y: 40 }}
-                animate={{ y: 0 }}
-                exit={{ y: 40 }}
-                className="bg-white rounded-t-xl md:rounded-xl p-4 md:p-6 w-full md:max-w-2xl max-h-[90vh] overflow-y-auto relative"
-              >
-                <button
-                  onClick={() => setDetailKit(null)}
-                  className="absolute top-2 right-2 text-gray-500 hover:text-red-600"
-                >
-                  ✕
-                </button>
-
-                <div className="flex flex-col md:flex-row gap-4">
-                  <img
-                    src={detailKit.img}
-                    alt={detailKit.name}
-                    className="w-full md:w-1/2 h-56 md:h-72 object-cover rounded-lg"
-                  />
+          {showCart && (
+            <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} className="fixed right-0 top-0 h-full w-full md:w-96 bg-white shadow-lg z-50 overflow-y-auto p-4">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="font-bold text-lg">Your Cart</h2>
+                <button onClick={() => setShowCart(false)} className="text-gray-500 font-bold text-xl">✕</button>
+              </div>
+              {cart.length === 0 ? <p>Cart is empty</p> : cart.map(it => (
+                <div key={it.id} className="flex gap-2 items-center mb-3">
+                  <img src={it.img} alt={it.name} className="h-14 w-14 object-cover rounded-lg" />
                   <div className="flex-1">
-                    <h2 className="text-xl font-bold text-gray-800">{detailKit.name}</h2>
-                    <p className="text-sm text-gray-500 mb-2">{detailKit.category}</p>
-                    <p className="text-lg font-semibold text-orange-700 mb-3">
-                      ₹{detailKit.price}
-                    </p>
-
-                    <div className="flex gap-2 mb-3">
-                      <button
-                        onClick={() => toggleWishlist(detailKit.id)}
-                        className={`px-3 py-1.5 rounded border text-sm ${
-                          wishlist.includes(detailKit.id)
-                            ? "bg-red-50 text-red-600"
-                            : "bg-gray-100"
-                        }`}
-                      >
-                        ❤️ Wishlist
-                      </button>
-                      <button
-                        onClick={() => handleShare(detailKit)}
-                        className="px-3 py-1.5 rounded border text-sm bg-gray-100"
-                      >
-                        📤 Share
-                      </button>
+                    <p className="font-semibold">{it.name}</p>
+                    <p>₹{it.price} × {it.qty}</p>
+                    <div className="flex gap-2 mt-1">
+                      <button onClick={() => updateQty(it.id, it.qty - 1)} className="px-2 bg-gray-200 rounded">-</button>
+                      <span>{it.qty}</span>
+                      <button onClick={() => updateQty(it.id, it.qty + 1)} className="px-2 bg-gray-200 rounded">+</button>
+                      <button onClick={() => removeFromCart(it.id)} className="ml-auto text-red-500 font-bold">✕</button>
                     </div>
-
-                    <button
-                      onClick={() => {
-                        addToCart(detailKit);
-                        setDetailKit(null);
-                      }}
-                      className="px-4 py-2 bg-yellow-500 text-white rounded-lg font-medium hover:bg-yellow-600"
-                    >
-                      Add to Cart
-                    </button>
                   </div>
                 </div>
-
-                <div className="mt-4">
-                  <h3 className="font-semibold text-gray-700">About this Puja</h3>
-                  <p className="text-sm text-gray-600 mt-1">
-                    This is a traditional {detailKit.category} kit offered by Sanskaraa. 
-                    All essential samagri and items are included for the puja. 
-                    You can also book a Pandit Ji separately (coming soon).
-                  </p>
+              ))}
+              {cart.length > 0 && (
+                <div className="mt-4 border-t pt-4 space-y-2">
+                  <div className="flex justify-between"><span>Subtotal</span><span>₹{subtotal}</span></div>
+                  {couponApplied && <div className="flex justify-between text-green-600"><span>Coupon ({couponApplied})</span><span>-₹{Math.round(couponDiscount)}</span></div>}
+                  <div className="flex justify-between"><span>GST 18%</span><span>₹{Math.round(gst)}</span></div>
+                  <div className="flex justify-between"><span>Delivery</span><span>₹{delivery}</span></div>
+                  <div className="flex justify-between font-bold text-lg">Total <span>₹{total}</span></div>
+                  <div className="flex gap-2">
+                    <input value={coupon} onChange={e => setCoupon(e.target.value)} placeholder="Coupon" className="flex-1 border rounded px-2 py-1" />
+                    <button onClick={applyCoupon} className="bg-green-500 text-white px-3 rounded">Apply</button>
+                  </div>
+                  <button onClick={proceedPaymentMock} className="w-full bg-yellow-500 text-white py-2 rounded-full mt-2">Proceed to Pay</button>
                 </div>
-              </motion.div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
