@@ -244,7 +244,7 @@ export default function EventKitsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-rose-50 p-4 md:p-6 relative">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-rose-50 p-4 md:p-6 relative mt-12">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div className="absolute top-10 left-10 w-32 h-32 bg-rose-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-bounce"></div>
