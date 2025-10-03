@@ -20,6 +20,8 @@ import BookEvent from "./pages/BookEvents";
 import VoiceAssistant from "./pages/VoiceAssistant";
 import SearchPage from "./pages/SearchPage";
 import ServiceProviderProfile from "./pages/ServiceProviderProfile";
+import VendorRegistration from "./components/layout/VendorRegistration";
+
 
 export default function App() {
   const location = useLocation();
@@ -52,6 +54,7 @@ export default function App() {
           <Route path="/book" element={<BookEvent />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/service-provider/profile" element={<ServiceProviderProfile />} />
+        <Route path="/vendor-registration" element={<VendorRegistration />} />
         </Routes>
 
         {/* VoiceAssistant Overlay */}

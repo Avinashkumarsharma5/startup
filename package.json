@@ -7,6 +7,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "formik": "^2.4.6",
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.540.0",
     "react": "^18.2.0",
@@ -15,7 +16,8 @@
     "react-hook-form": "^7.62.0",
     "react-icons": "^5.5.0",
     "react-router-dom": "^6.22.3",
-    "recharts": "^3.2.1"
+    "recharts": "^3.2.1",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.0.1",
