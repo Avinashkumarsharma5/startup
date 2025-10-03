@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Calendar,
   Clock,
@@ -13,35 +13,18 @@ import {
 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-export default function ServiceProviderProfile() {
+export default function ServiceProviderProfile({ role, vendorData }) {
+  const [activeTab, setActiveTab] = useState("upcoming");
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState("");
-  const [activeTab, setActiveTab] = useState("upcoming");
-  const [images, setImages] = useState([]);
   const [availability, setAvailability] = useState([]);
+  const [images, setImages] = useState([]);
 
-  // Dummy data
-  const upcomingBookings = [
-    { id: 1, customer: "Ravi Kumar", service: "Satyanarayan Puja", date: "2025-10-10", time: "10:00 AM", status: "Pending" },
-    { id: 2, customer: "Priya Sharma", service: "Wedding Decoration", date: "2025-10-15", time: "6:00 PM", status: "Pending" },
-  ];
-
-  const bookingHistory = [
-    { id: 1, customer: "Amit Singh", service: "Griha Pravesh Puja", date: "2025-09-20", status: "Completed" },
-    { id: 2, customer: "Anjali Verma", service: "Catering", date: "2025-09-10", status: "Completed" },
-  ];
-
-  const reviews = [
-    { id: 1, customer: "Ramesh Kumar", rating: 5, comment: "Excellent service!" },
-    { id: 2, customer: "Sita Devi", rating: 4, comment: "Very professional." },
-  ];
-
-  const earningsData = [
-    { month: "Jan", earnings: 2000 },
-    { month: "Feb", earnings: 2500 },
-    { month: "Mar", earnings: 1800 },
-    { month: "Apr", earnings: 3000 },
-  ];
+  // Mock bookings / reviews / earnings
+  const upcomingBookings = vendorData?.upcomingBookings || [];
+  const bookingHistory = vendorData?.bookingHistory || [];
+  const reviews = vendorData?.reviews || [];
+  const earningsData = vendorData?.earningsData || [];
 
   const handlePost = () => {
     if (newPost.trim()) {
@@ -56,12 +39,14 @@ export default function ServiceProviderProfile() {
       <div className="bg-gradient-to-r from-[#5C3A21] to-[#8B4513] text-white p-6 rounded-2xl shadow-lg">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 bg-[#FFD700] rounded-full flex items-center justify-center text-[#5C3A21] font-bold text-xl">
-            SP
+            {vendorData?.name?.[0] || "SP"}
           </div>
           <div>
-            <h2 className="text-xl font-bold">Pandit Ji / Vendor / Shopkeeper</h2>
-            <p className="text-sm">Location: Ranchi, Jharkhand</p>
-            <p className="text-sm">Phone: +91 9876543210</p>
+            <h2 className="text-xl font-bold">{vendorData?.name || "Service Provider"}</h2>
+            <p className="text-sm">Type: {vendorData?.vendorType || role}</p>
+            <p className="text-sm">Location: {vendorData?.location}</p>
+            <p className="text-sm">Phone: {vendorData?.phone}</p>
+            <p className="text-sm">Email: {vendorData?.email}</p>
           </div>
         </div>
       </div>
@@ -92,9 +77,9 @@ export default function ServiceProviderProfile() {
 
       {/* Tab Content */}
       <div className="space-y-4 mt-4">
-        {/* Upcoming Bookings */}
         {activeTab === "upcoming" && (
           <div className="bg-white p-4 rounded-2xl shadow-md">
+            {upcomingBookings.length === 0 && <p className="text-gray-500">No upcoming bookings.</p>}
             {upcomingBookings.map((b) => (
               <div key={b.id} className="p-3 bg-gray-100 rounded-lg flex justify-between items-center mb-2">
                 <div>
@@ -102,16 +87,11 @@ export default function ServiceProviderProfile() {
                   <p className="text-sm">{b.service}</p>
                   <p className="text-xs text-gray-500">{b.date} • {b.time}</p>
                 </div>
-                <div className="flex gap-2">
-                  <button className="bg-green-600 text-white px-2 py-1 rounded">Accept</button>
-                  <button className="bg-red-600 text-white px-2 py-1 rounded">Reject</button>
-                </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* Booking History */}
         {activeTab === "history" && (
           <div className="bg-white p-4 rounded-2xl shadow-md">
             {bookingHistory.map((b) => (
@@ -127,29 +107,17 @@ export default function ServiceProviderProfile() {
           </div>
         )}
 
-        {/* Posts */}
         {activeTab === "posts" && (
           <div className="bg-white p-4 rounded-2xl shadow-md">
             <textarea
               className="w-full border p-2 rounded-lg mt-2"
               rows={3}
-              placeholder="Write something about your service, festival offers, or share your event..."
+              placeholder="Share an update..."
               value={newPost}
               onChange={(e) => setNewPost(e.target.value)}
             ></textarea>
             <div className="flex gap-3 mt-2">
-              <button
-                onClick={handlePost}
-                className="bg-[#FFD700] text-[#5C3A21] px-4 py-2 rounded-lg font-bold hover:bg-[#FFC107]"
-              >
-                Post
-              </button>
-              <button className="bg-gray-200 flex items-center gap-2 px-3 py-2 rounded-lg">
-                <Image className="w-4 h-4" /> Upload Banner
-              </button>
-              <button className="bg-gray-200 flex items-center gap-2 px-3 py-2 rounded-lg">
-                <Video className="w-4 h-4" /> Upload Reel
-              </button>
+              <button onClick={handlePost} className="bg-[#FFD700] text-[#5C3A21] px-4 py-2 rounded-lg font-bold hover:bg-[#FFC107]">Post</button>
             </div>
             <div className="mt-4 space-y-3">
               {posts.map((p) => (
@@ -159,7 +127,6 @@ export default function ServiceProviderProfile() {
           </div>
         )}
 
-        {/* Earnings */}
         {activeTab === "earnings" && (
           <div className="bg-white p-4 rounded-2xl shadow-md">
             <h3 className="font-semibold mb-3 flex items-center gap-2"><DollarSign className="w-5 h-5 text-[#5C3A21]" /> Earnings Overview</h3>
@@ -176,7 +143,6 @@ export default function ServiceProviderProfile() {
           </div>
         )}
 
-        {/* Reviews */}
         {activeTab === "reviews" && (
           <div className="bg-white p-4 rounded-2xl shadow-md">
             {reviews.map((r) => (
@@ -193,7 +159,6 @@ export default function ServiceProviderProfile() {
           </div>
         )}
 
-        {/* Media Gallery */}
         {activeTab === "gallery" && (
           <div className="bg-white p-4 rounded-2xl shadow-md flex overflow-x-auto gap-2">
             {images.length === 0 && <p className="text-gray-500">No media uploaded yet.</p>}
@@ -203,22 +168,13 @@ export default function ServiceProviderProfile() {
           </div>
         )}
 
-        {/* Availability */}
         {activeTab === "availability" && (
           <div className="bg-white p-4 rounded-2xl shadow-md">
             <h3 className="font-semibold flex items-center gap-2 mb-2"><Calendar className="w-5 h-5 text-[#5C3A21]" /> Set Availability</h3>
-            <p className="text-sm text-gray-500 mb-2">Select dates and time slots when you are available for bookings.</p>
             <div className="flex flex-col gap-2">
               {["10:00 AM - 12:00 PM","12:00 PM - 02:00 PM","02:00 PM - 04:00 PM","04:00 PM - 06:00 PM"].map((slot) => (
                 <label key={slot} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={availability.includes(slot)}
-                    onChange={(e) => {
-                      if (e.target.checked) setAvailability([...availability, slot]);
-                      else setAvailability(availability.filter((s) => s !== slot));
-                    }}
-                  />
+                  <input type="checkbox" checked={availability.includes(slot)} onChange={(e) => e.target.checked ? setAvailability([...availability, slot]) : setAvailability(availability.filter(s => s !== slot))} />
                   <span>{slot}</span>
                 </label>
               ))}
@@ -226,16 +182,12 @@ export default function ServiceProviderProfile() {
           </div>
         )}
 
-        {/* Chat */}
         {activeTab === "chat" && (
           <div className="bg-white p-4 rounded-2xl shadow-md flex flex-col gap-3">
-            <h3 className="font-semibold flex items-center gap-2 mb-2">
-              <MessageCircle className="w-5 h-5 text-[#5C3A21]" /> Customer Messages
-            </h3>
+            <h3 className="font-semibold flex items-center gap-2 mb-2"><MessageCircle className="w-5 h-5 text-[#5C3A21]" /> Customer Messages</h3>
             <div className="flex flex-col gap-2 max-h-64 overflow-y-auto border rounded-lg p-2">
-              <div className="bg-gray-100 p-2 rounded self-start">Ravi Kumar: Hello, I want to book Satyanarayan Puja.</div>
-              <div className="bg-[#FFD700]/20 p-2 rounded self-end">You: Sure! Available on 10th Oct at 10 AM.</div>
-              <div className="bg-gray-100 p-2 rounded self-start">Priya Sharma: Need decoration for wedding.</div>
+              <div className="bg-gray-100 p-2 rounded self-start">Ravi Kumar: Hello!</div>
+              <div className="bg-[#FFD700]/20 p-2 rounded self-end">You: Hi! Available for booking.</div>
             </div>
             <div className="flex gap-2 mt-2">
               <input type="text" placeholder="Type your message..." className="flex-1 border p-2 rounded-lg"/>

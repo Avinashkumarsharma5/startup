@@ -1,23 +1,29 @@
 import React, { useState } from "react";
-import { Home as HomeIcon, Search, Package, Bookmark, Menu } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-import VendorRegistration from "./VendorRegistration";
+import { Home as HomeIcon, Search, Package, Bookmark, Menu, User } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 export default function BottomNavbar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [showMore, setShowMore] = useState(false);
   const [role, setRole] = useState(null);
-  const [vendorType, setVendorType] = useState(null);
+  const [serviceProviderType, setServiceProviderType] = useState(null);
 
   const navItems = [
     { name: "Home", path: "/", icon: HomeIcon },
     { name: "Search", path: "/search", icon: Search },
     { name: "Kits", path: "/pujakits", icon: Package },
-    { name: "Bookings", path: "/bookings", icon: Bookmark },
+    { name: "Bookings", path: "/BookingsPage", icon: Bookmark },
   ];
+
+  const openVendorProfile = () => {
+    setShowMore(false);
+    navigate("/service-provider/profile");
+  };
 
   return (
     <>
+      {/* Bottom Navbar */}
       <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-[#5C3A21] to-[#8B4513] shadow-lg rounded-t-2xl px-6 py-3 z-50 border-t-2 border-[#FFD700]">
         <div className="flex justify-around items-center max-w-4xl mx-auto">
           {navItems.map((item) => {
@@ -27,7 +33,11 @@ export default function BottomNavbar() {
               <Link
                 key={item.name}
                 to={item.path}
-                className={`flex flex-col items-center transition-all duration-200 ${isActive ? "text-[#FFD700] scale-110" : "text-[#FFD700]/80 hover:text-[#FFC107] hover:scale-105"}`}
+                className={`flex flex-col items-center transition-all duration-200 ${
+                  isActive
+                    ? "text-[#FFD700] scale-110"
+                    : "text-[#FFD700]/80 hover:text-[#FFC107] hover:scale-105"
+                }`}
               >
                 <Icon className="w-6 h-6" />
                 <span className="text-xs">{item.name}</span>
@@ -35,7 +45,11 @@ export default function BottomNavbar() {
             );
           })}
 
-          <button onClick={() => setShowMore(!showMore)} className="flex flex-col items-center text-[#FFD700]/80 hover:text-[#FFC107] transition-all duration-200">
+          {/* More Button */}
+          <button
+            onClick={() => setShowMore(!showMore)}
+            className="flex flex-col items-center text-[#FFD700]/80 hover:text-[#FFC107] transition-all duration-200"
+          >
             <Menu className="w-6 h-6" />
             <span className="text-xs">More</span>
           </button>
@@ -48,33 +62,48 @@ export default function BottomNavbar() {
           <div className="bg-white rounded-t-2xl w-full max-w-md p-6 shadow-lg">
             {!role ? (
               <>
-                <h2 className="text-lg font-semibold text-center text-[#5C3A21] mb-4">Explore Sanskaraa</h2>
+                <h2 className="text-lg font-semibold text-center text-[#5C3A21] mb-4">
+                  Explore Sanskaraa
+                </h2>
                 <div className="flex flex-col gap-3">
-                  <button onClick={() => setRole("vendor")} className="w-full bg-[#FFD700] text-[#5C3A21] font-semibold py-2 px-4 rounded-xl hover:bg-[#FFC107]" title="Register as vendor to sell services">
-                    Continue as a Vendor
+                  {/* Vendor Registration */}
+                  <button
+                    onClick={() => setRole("vendor")}
+                    className="w-full bg-[#FFD700] text-[#5C3A21] py-2 px-4 rounded-xl font-semibold hover:bg-[#FFC107]"
+                  >
+                    Continue as Vendor
                   </button>
-                  <button onClick={() => setRole("pandit")} className="w-full bg-[#5C3A21] text-white font-semibold py-2 px-4 rounded-xl hover:bg-[#70442A]">
-                    Journey as Pandit Ji
-                  </button>
-                  <button onClick={() => setRole("shopkeeper")} className="w-full bg-[#8B4513] text-white font-semibold py-2 px-4 rounded-xl hover:bg-[#A0522D]">
-                    Journey as Shopkeeper
-                  </button>
-                  {localStorage.getItem("isServiceProvider") === "true" && (
-                    <Link to="/service-provider/profile" onClick={() => setShowMore(false)} className="w-full bg-green-600 text-white font-semibold py-2 px-4 rounded-xl text-center hover:bg-green-700">
-                      My Profile
-                    </Link>
-                  )}
-                </div>
 
-                <div className="flex flex-col gap-3 mt-4">
-                  <button className="w-full bg-gray-100 text-black py-2 rounded-xl hover:bg-gray-200">Events</button>
-                  <button className="w-full bg-gray-100 text-black py-2 rounded-xl hover:bg-gray-200">Offers</button>
-                  <button className="w-full bg-gray-100 text-black py-2 rounded-xl hover:bg-gray-200">Help & Support</button>
-                  <button className="w-full bg-gray-100 text-black py-2 rounded-xl hover:bg-gray-200">Feedback</button>
+                  {/* Vendor Profile */}
+                  <button
+                    onClick={openVendorProfile}
+                    className="w-full bg-[#5C3A21] text-white py-2 px-4 rounded-xl font-semibold hover:bg-[#70442A] flex items-center justify-center gap-2"
+                  >
+                    <User className="w-4 h-4" /> Vendor Profile
+                  </button>
                 </div>
               </>
+            ) : !serviceProviderType ? (
+              <>
+                <h3 className="text-center font-semibold mb-3">Select Service Provider Type</h3>
+                {["Pandit Ji","Shopkeeper","Decorator","Caterer","Astrologer"].map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setServiceProviderType(type)}
+                    className="w-full bg-[#FFD700]/70 text-[#5C3A21] py-2 px-4 rounded-xl font-semibold hover:bg-[#FFC107]"
+                  >
+                    {type}
+                  </button>
+                ))}
+              </>
             ) : (
-              <VendorRegistration role={role} vendorType={vendorType} setRole={setRole} setVendorType={setVendorType} setShowMore={setShowMore} />
+              <Link
+                to="/vendor-registration"
+                className="w-full bg-[#FFD700] text-[#5C3A21] py-2 px-4 rounded-xl font-semibold hover:bg-[#FFC107] block text-center"
+                onClick={() => setShowMore(false)}
+              >
+                Fill Registration Form
+              </Link>
             )}
           </div>
         </div>
