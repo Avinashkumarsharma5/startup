@@ -579,10 +579,10 @@ export default function EnhancedServicesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 mt-12">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 mt-16">
       {/* Header */}
-      <div className="bg-white shadow-sm sticky top-0 z-50 mt-8">
-        <div className="max-w-7xl mx-auto p-4 ">
+      <div className="bg-white shadow-sm sticky top-0 z-50 ">
+        <div className="max-w-7xl mx-auto p-4  ">
           {/* Search Bar */}
           <div className="relative mb-4  ">
             <div className="flex items-center bg-white rounded-2xl shadow-lg px-4 py-3 border border-amber-200">
@@ -614,9 +614,9 @@ export default function EnhancedServicesPage() {
 
             {/* Search History */}
             {query && searchHistory.length > 0 && (
-              <div className="absolute top-full left-0 right-0 bg-white shadow-lg rounded-2xl mt-2 z-10 border border-amber-200">
-                <div className="p-2">
-                  <div className="flex items-center justify-between px-2 py-1 text-sm text-amber-600">
+              <div className="absolute top-full left-0 right-0 bg-white shadow-lg rounded-2xl mt-2 z-10 border border-amber-200 mt-12">
+                <div className="p-2 mt-8">
+                  <div className="flex items-center justify-between px-2 py-1 text-sm text-amber-600 mt-8">
                     <span>Recent Searches</span>
                     <Clock className="w-4 h-4" />
                   </div>
@@ -639,7 +639,7 @@ export default function EnhancedServicesPage() {
           </div>
 
           {/* Category Tabs */}
-          <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide mt-8">
             {categories.map(({ key, label, icon: Icon, color }) => (
               <button
                 key={key}
@@ -659,7 +659,7 @@ export default function EnhancedServicesPage() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto p-4">
+      <div className="max-w-7xl mx-auto p-4 mt-8">
         {/* Hero Banner */}
         <HeroBanner />
 
