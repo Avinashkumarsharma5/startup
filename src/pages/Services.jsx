@@ -16,7 +16,7 @@ const servicesData = {
     { 
       id: 1, 
       name: "Traditional Mandap Decoration", 
-      img: "/images/decor1.jpg", 
+      img: "src/assets/images/decor2.png", 
       rating: 4.7, 
       price: 25000, 
       reviews: 128, 
@@ -37,7 +37,7 @@ const servicesData = {
     { 
       id: 2, 
       name: "Floral Stage Decoration", 
-      img: "/images/decor2.jpg", 
+      img: "src/assets/images/decor3.png", 
       rating: 4.5, 
       price: 18000, 
       reviews: 89, 
@@ -50,7 +50,7 @@ const servicesData = {
     { 
       id: 3, 
       name: "LED Wedding Lighting", 
-      img: "/images/light1.jpg", 
+      img: "src/assets/images/ganesh puja 1.jpeg", 
       rating: 4.6, 
       price: 12000, 
       reviews: 67, 
@@ -63,7 +63,7 @@ const servicesData = {
     { 
       id: 4, 
       name: "Premium Vegetarian Catering", 
-      img: "/images/catering1.jpg", 
+      img: "src/assets/images/catering1.jpg", 
       rating: 4.8, 
       price: 499, 
       unit: "/plate",
@@ -81,7 +81,7 @@ const servicesData = {
     { 
       id: 5, 
       name: "Premium Wedding Tent", 
-      img: "/images/tent1.jpg", 
+      img: "src/assets/images/grrih prews 1.png", 
       rating: 4.4, 
       price: 35000, 
       reviews: 72, 
@@ -93,7 +93,7 @@ const servicesData = {
     { 
       id: 6, 
       name: "Luxury Wedding Hall", 
-      img: "/images/venue1.jpg", 
+      img: "src/assets/images/havan.jpg", 
       rating: 4.9, 
       price: 150000, 
       reviews: 156, 
