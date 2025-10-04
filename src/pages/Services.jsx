@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -10,18 +10,18 @@ import {
   Award, Users, Camera, Tent, Building2, Lightbulb, Utensils
 } from "lucide-react";
 
-// Mock data with enhanced structure
+// --------------------------- Mock data ---------------------------
 const servicesData = {
   decorations: [
-    { 
-      id: 1, 
-      name: "Traditional Mandap Decoration", 
-      img: "src/assets/images/decor2.png", 
-      rating: 4.7, 
-      price: 25000, 
-      reviews: 128, 
-      category: "Mandap", 
-      location: "Delhi", 
+    {
+      id: 1,
+      name: "Traditional Mandap Decoration",
+      img: "src/assets/images/decor2.png",
+      rating: 4.7,
+      price: 25000,
+      reviews: 128,
+      category: "Mandap",
+      location: "Delhi",
       discount: 15,
       trending: true,
       tags: ["Popular", "Trending"],
@@ -34,42 +34,42 @@ const servicesData = {
         { id: "flowers", name: "Flower Type", options: ["Roses", "Marigolds", "Orchids", "Mixed"], default: "Mixed" }
       ]
     },
-    { 
-      id: 2, 
-      name: "Floral Stage Decoration", 
-      img: "src/assets/images/decor3.png", 
-      rating: 4.5, 
-      price: 18000, 
-      reviews: 89, 
-      category: "Floral", 
-      location: "Mumbai", 
+    {
+      id: 2,
+      name: "Floral Stage Decoration",
+      img: "src/assets/images/decor3.png",
+      rating: 4.5,
+      price: 18000,
+      reviews: 89,
+      category: "Floral",
+      location: "Mumbai",
       trending: true
     },
   ],
   lighting: [
-    { 
-      id: 3, 
-      name: "LED Wedding Lighting", 
-      img: "src/assets/images/ganesh puja 1.jpeg", 
-      rating: 4.6, 
-      price: 12000, 
-      reviews: 67, 
-      category: "LED", 
-      location: "Bangalore", 
+    {
+      id: 3,
+      name: "LED Wedding Lighting",
+      img: "src/assets/images/ganesh puja 1.jpeg",
+      rating: 4.6,
+      price: 12000,
+      reviews: 67,
+      category: "LED",
+      location: "Bangalore",
       discount: 10
     },
   ],
   catering: [
-    { 
-      id: 4, 
-      name: "Premium Vegetarian Catering", 
-      img: "src/assets/images/catering1.jpg", 
-      rating: 4.8, 
-      price: 499, 
+    {
+      id: 4,
+      name: "Premium Vegetarian Catering",
+      img: "src/assets/images/catering1.jpg",
+      rating: 4.8,
+      price: 499,
       unit: "/plate",
-      reviews: 245, 
-      category: "Vegetarian", 
-      location: "Delhi", 
+      reviews: 245,
+      category: "Vegetarian",
+      location: "Delhi",
       tags: ["Best Value"],
       vendors: [
         { id: "c1", name: "Sharma Caterers", rating: 4.8, available: true, responseTime: "10 min", completedEvents: 421 },
@@ -78,27 +78,27 @@ const servicesData = {
     },
   ],
   tents: [
-    { 
-      id: 5, 
-      name: "Premium Wedding Tent", 
-      img: "src/assets/images/grrih prews 1.png", 
-      rating: 4.4, 
-      price: 35000, 
-      reviews: 72, 
-      category: "Premium", 
-      location: "Pune" 
+    {
+      id: 5,
+      name: "Premium Wedding Tent",
+      img: "src/assets/images/grrih prews 1.png",
+      rating: 4.4,
+      price: 35000,
+      reviews: 72,
+      category: "Premium",
+      location: "Pune"
     },
   ],
   venues: [
-    { 
-      id: 6, 
-      name: "Luxury Wedding Hall", 
-      img: "src/assets/images/havan.jpg", 
-      rating: 4.9, 
-      price: 150000, 
-      reviews: 156, 
-      category: "Luxury", 
-      location: "Delhi", 
+    {
+      id: 6,
+      name: "Luxury Wedding Hall",
+      img: "src/assets/images/havan.jpg",
+      rating: 4.9,
+      price: 150000,
+      reviews: 156,
+      category: "Luxury",
+      location: "Delhi",
       trending: true
     },
   ]
@@ -113,7 +113,8 @@ const categories = [
   { key: "venues", label: "Venues", icon: Building2, color: "from-red-500 to-red-600" },
 ];
 
-// Skeleton Loader Component
+// --------------------------- Small components ---------------------------
+
 const SkeletonCard = () => (
   <div className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse mt-10">
     <div className="w-full h-48 bg-amber-200"></div>
@@ -126,7 +127,6 @@ const SkeletonCard = () => (
   </div>
 );
 
-// Enhanced Card Component
 const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlist, isWishlisted }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -151,10 +151,10 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
           <Star
             key={i}
             className={`w-4 h-4 ${
-              i < Math.floor(rating) 
-                ? "fill-amber-400 text-amber-400" 
-                : i < rating 
-                ? "fill-amber-200 text-amber-400" 
+              i < Math.floor(rating)
+                ? "fill-amber-400 text-amber-400"
+                : i < rating
+                ? "fill-amber-200 text-amber-400"
                 : "text-amber-200"
             }`}
           />
@@ -165,7 +165,7 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
   };
 
   return (
-    <motion.div 
+    <motion.div
       layout
       className="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300"
       whileHover={{ y: -5 }}
@@ -174,15 +174,14 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
     >
       <div className="relative">
         {!imageLoaded && <div className="w-full h-48 bg-amber-100 animate-pulse"></div>}
-        <img 
-          src={service.img} 
+        <img
+          src={service.img}
           alt={service.name}
           className={`w-full h-48 object-cover ${imageLoaded ? 'block' : 'hidden'}`}
           onLoad={() => setImageLoaded(true)}
           loading="lazy"
         />
-        
-        {/* Badges */}
+
         <div className="absolute top-3 left-3 flex flex-wrap gap-2 ">
           <span className="bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
             <Icon className="w-3 h-3" />
@@ -200,8 +199,7 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
             </span>
           )}
         </div>
-        
-        {/* Wishlist Button */}
+
         <button
           onClick={() => onToggleWishlist(service.id)}
           className="absolute top-3 right-3 p-2 rounded-full bg-white bg-opacity-90 hover:bg-opacity-100 shadow-lg transition-all duration-200"
@@ -213,7 +211,6 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
           )}
         </button>
 
-        {/* Hover Overlay */}
         <AnimatePresence>
           {isHovered && (
             <motion.div
@@ -242,30 +239,30 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
           )}
         </AnimatePresence>
       </div>
-      
+
       <div className="p-4">
         <div className="flex items-start justify-between mb-2">
           <h3 className="font-semibold text-amber-900 text-lg line-clamp-2 flex-1">{service.name}</h3>
-          <button 
+          <button
             onClick={() => onToggleWishlist(service.id)}
             className="p-1 hover:bg-amber-100 rounded-full transition-colors ml-2"
           >
             <Heart className={`w-5 h-5 ${isWishlisted ? "fill-red-500 text-red-500" : "text-amber-400"}`} />
           </button>
         </div>
-        
+
         <div className="flex items-center justify-between mb-3">
           {renderStars(service.rating)}
           <span className="text-amber-600 text-sm">({service.reviews} reviews)</span>
         </div>
-        
+
         {service.location && (
           <div className="flex items-center gap-1 text-amber-600 mb-3">
             <MapPin className="w-4 h-4" />
             <span className="text-sm">{service.location}</span>
           </div>
         )}
-        
+
         <div className="flex items-center justify-between mb-4">
           <div>
             <span className="text-2xl font-bold text-amber-800">₹{service.price.toLocaleString()}</span>
@@ -277,7 +274,7 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
             )}
           </div>
         </div>
-        
+
         <div className="flex gap-2">
           <motion.button
             whileHover={{ scale: 1.02 }}
@@ -297,14 +294,13 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
           </motion.button>
         </div>
 
-        {/* Vendor Preview */}
         {service.vendors && (
           <div className="mt-3 pt-3 border-t border-amber-100">
             <div className="text-xs text-amber-600 mb-2">Available Vendors:</div>
             <div className="flex gap-2 overflow-x-auto">
               {service.vendors.slice(0, 2).map(vendor => (
                 <div key={vendor.id} className="flex items-center gap-2 bg-amber-50 px-2 py-1 rounded-lg min-w-max">
-                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                  <div className={`w-2 h-2 rounded-full ${vendor.available ? 'bg-green-500' : 'bg-gray-300'}`}></div>
                   <span className="text-xs font-medium text-amber-800">{vendor.name}</span>
                   <span className="text-xs text-amber-600">{vendor.rating}★</span>
                 </div>
@@ -317,30 +313,30 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
   );
 };
 
-// Hero Banner Component
+// --------------------------- Hero Banner ---------------------------
 const HeroBanner = () => {
   const banners = [
-    { 
-      id: 1, 
-      title: "Wedding Season Special", 
-      subtitle: "Get 20% off on all wedding services", 
-      image: "/images/wedding-banner.jpg", 
+    {
+      id: 1,
+      title: "Wedding Season Special",
+      subtitle: "Get 20% off on all wedding services",
+      image: "/images/wedding-banner.jpg",
       color: "from-amber-400 to-orange-500",
       buttonText: "Book Now"
     },
-    { 
-      id: 2, 
-      title: "Premium Catering Services", 
-      subtitle: "Delicious vegetarian meals for your events", 
-      image: "/images/catering-banner.jpg", 
+    {
+      id: 2,
+      title: "Premium Catering Services",
+      subtitle: "Delicious vegetarian meals for your events",
+      image: "/images/catering-banner.jpg",
       color: "from-green-400 to-emerald-500",
       buttonText: "Explore Catering"
     },
-    { 
-      id: 3, 
-      title: "Luxury Venues", 
-      subtitle: "Find the perfect venue for your special day", 
-      image: "/images/venue-banner.jpg", 
+    {
+      id: 3,
+      title: "Luxury Venues",
+      subtitle: "Find the perfect venue for your special day",
+      image: "/images/venue-banner.jpg",
       color: "from-purple-400 to-pink-500",
       buttonText: "View Venues"
     },
@@ -360,18 +356,16 @@ const HeroBanner = () => {
       {banners.map((banner, index) => (
         <div
           key={banner.id}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
-            index === currentBanner ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`absolute inset-0 transition-opacity duration-1000 ${index === currentBanner ? 'opacity-100' : 'opacity-0'}`}
         >
           <div className={`absolute inset-0 bg-gradient-to-r ${banner.color} bg-opacity-80`}></div>
-          <img 
-            src={banner.image} 
+          <img
+            src={banner.image}
             alt={banner.title}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 flex flex-col justify-center items-start p-8 text-white">
-            <motion.h2 
+            <motion.h2
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -379,7 +373,7 @@ const HeroBanner = () => {
             >
               {banner.title}
             </motion.h2>
-            <motion.p 
+            <motion.p
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
@@ -398,15 +392,12 @@ const HeroBanner = () => {
           </div>
         </div>
       ))}
-      
-      {/* Dots Indicator */}
+
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
         {banners.map((_, index) => (
           <button
             key={index}
-            className={`w-3 h-3 rounded-full transition-all ${
-              index === currentBanner ? 'bg-white w-8' : 'bg-white bg-opacity-50'
-            }`}
+            className={`w-3 h-3 rounded-full transition-all ${index === currentBanner ? 'bg-white w-8' : 'bg-white bg-opacity-50'}`}
             onClick={() => setCurrentBanner(index)}
           />
         ))}
@@ -415,6 +406,7 @@ const HeroBanner = () => {
   );
 };
 
+// --------------------------- Main Page ---------------------------
 export default function EnhancedServicesPage() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
@@ -437,32 +429,35 @@ export default function EnhancedServicesPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [sortBy, setSortBy] = useState("rating");
 
-  // Load data
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 1200));
       setLoading(false);
     };
     loadData();
   }, []);
 
-  // Search history management
   useEffect(() => {
     const savedHistory = localStorage.getItem('servicesSearchHistory');
     if (savedHistory) {
-      setSearchHistory(JSON.parse(savedHistory));
+      try {
+        setSearchHistory(JSON.parse(savedHistory));
+      } catch (e) {
+        setSearchHistory([]);
+      }
     }
   }, []);
 
   const saveToHistory = (searchQuery) => {
     if (!searchQuery.trim()) return;
-    const updatedHistory = [searchQuery, ...searchHistory.filter(item => item !== searchQuery)].slice(0, 5);
-    setSearchHistory(updatedHistory);
-    localStorage.setItem('servicesSearchHistory', JSON.stringify(updatedHistory));
+    setSearchHistory(prev => {
+      const updatedHistory = [searchQuery, ...prev.filter(item => item !== searchQuery)].slice(0, 5);
+      localStorage.setItem('servicesSearchHistory', JSON.stringify(updatedHistory));
+      return updatedHistory;
+    });
   };
 
-  // Voice search simulation
   const startVoiceSearch = () => {
     setIsListening(true);
     setTimeout(() => {
@@ -471,77 +466,76 @@ export default function EnhancedServicesPage() {
       setQuery(randomQuery);
       setIsListening(false);
       saveToHistory(randomQuery);
-    }, 2000);
+    }, 1200);
   };
 
-  // Combined services data
   const allServices = useMemo(() => {
     return Object.entries(servicesData).flatMap(([category, services]) =>
       services.map(service => ({ ...service, serviceCategory: category }))
     );
   }, []);
 
-  // Filter and search logic
   const filteredResults = useMemo(() => {
     let results = allServices.filter(service => {
-      const matchesQuery = service.name.toLowerCase().includes(query.toLowerCase()) ||
-                          service.category?.toLowerCase().includes(query.toLowerCase());
-      
-      const matchesCategory = activeCategory === "all" || activeCategory === service.serviceCategory;
-      const matchesRating = service.rating >= filters.minRating;
-      const matchesPrice = service.price <= filters.maxPrice;
-      const matchesLocation = !filters.location || 
-        service.location?.toLowerCase().includes(filters.location.toLowerCase());
+      const q = query.trim().toLowerCase();
+      const matchesQuery = !q || service.name.toLowerCase().includes(q) ||
+                          (service.category && service.category.toLowerCase().includes(q)) ||
+                          (service.serviceCategory && service.serviceCategory.toLowerCase().includes(q));
 
-      return matchesQuery && matchesCategory && matchesRating && matchesPrice && matchesLocation;
+      const matchesCategory = activeCategory === "all" || activeCategory === service.serviceCategory;
+      const matchesRating = (service.rating || 0) >= (filters.minRating || 0);
+      const matchesPrice = (service.price || 0) <= (filters.maxPrice || Infinity);
+      const matchesLocation = !filters.location || (service.location && service.location.toLowerCase().includes(filters.location.toLowerCase()));
+
+      const matchesAvailability = filters.availability === "all" ||
+                                   (filters.availability === "available" && service.vendors?.some(v => v.available)) ||
+                                   (filters.availability === "trending" && service.trending);
+
+      return matchesQuery && matchesCategory && matchesRating && matchesPrice && matchesLocation && matchesAvailability;
     });
 
-    // Apply sorting
     switch(sortBy) {
       case "price-low":
-        results.sort((a, b) => a.price - b.price);
+        results.sort((a, b) => (a.price || 0) - (b.price || 0));
         break;
       case "price-high":
-        results.sort((a, b) => b.price - a.price);
+        results.sort((a, b) => (b.price || 0) - (a.price || 0));
         break;
       case "rating":
-        results.sort((a, b) => b.rating - a.rating);
+        results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         break;
       case "popularity":
-        results.sort((a, b) => b.reviews - a.reviews);
+        results.sort((a, b) => (b.reviews || 0) - (a.reviews || 0));
         break;
       default:
-        results.sort((a, b) => b.rating - a.rating);
+        results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     }
 
     return results;
   }, [allServices, query, activeCategory, filters, sortBy]);
 
-  // Category-wise grouping for display
   const categorizedResults = useMemo(() => {
     const grouped = {};
     filteredResults.forEach(service => {
-      const category = service.serviceCategory;
-      if (!grouped[category]) grouped[category] = [];
-      grouped[category].push(service);
+      const cat = service.serviceCategory;
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push(service);
     });
     return grouped;
   }, [filteredResults]);
 
-  // Handlers
   const handleBook = (service) => {
     showToast(`Starting booking process for ${service.name}`);
-    // Navigate to booking page or open booking modal
+    // TODO: navigate to booking page or open booking modal
   };
 
   const handleViewDetails = (service) => {
     setSelectedService(service);
     setShowDetailModal(true);
-    
-    // Add to recently viewed
+
     setRecentlyViewed(prev => {
       const filtered = prev.filter(item => item.id !== service.id);
-      return [service, ...filtered.slice(0, 4)];
+      return [service, ...filtered].slice(0, 8);
     });
   };
 
@@ -570,7 +564,6 @@ export default function EnhancedServicesPage() {
   };
 
   const showToast = (message) => {
-    // Toast implementation
     const toast = document.createElement("div");
     toast.className = "fixed top-4 right-4 bg-amber-500 text-white px-6 py-3 rounded-lg shadow-lg z-50";
     toast.textContent = message;
@@ -580,11 +573,9 @@ export default function EnhancedServicesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 mt-16">
-      {/* Header */}
       <div className="bg-white shadow-sm sticky top-0 z-50 ">
-        <div className="max-w-7xl mx-auto p-4  ">
-          {/* Search Bar */}
-          <div className="relative mb-4  ">
+        <div className="max-w-7xl mx-auto p-4">
+          <div className="relative mb-4">
             <div className="flex items-center bg-white rounded-2xl shadow-lg px-4 py-3 border border-amber-200">
               <Search className="text-amber-600 w-5 h-5 mr-3 flex-shrink-0" />
               <input
@@ -612,39 +603,39 @@ export default function EnhancedServicesPage() {
               </div>
             </div>
 
-            {/* Search History */}
             {query && searchHistory.length > 0 && (
-              <div className="absolute top-full left-0 right-0 bg-white shadow-lg rounded-2xl mt-2 z-10 border border-amber-200 mt-12">
-                <div className="p-2 mt-8">
-                  <div className="flex items-center justify-between px-2 py-1 text-sm text-amber-600 mt-8">
-                    <span>Recent Searches</span>
-                    <Clock className="w-4 h-4" />
+              <div className="absolute top-full left-0 right-0 z-10">
+                <div className="bg-white shadow-lg rounded-2xl mt-3 border border-amber-200">
+                  <div className="p-2">
+                    <div className="flex items-center justify-between px-2 py-1 text-sm text-amber-600 border-b">
+                      <span>Recent Searches</span>
+                      <Clock className="w-4 h-4" />
+                    </div>
+                    {searchHistory.map((term, index) => (
+                      <button
+                        key={index}
+                        className="w-full text-left px-4 py-2 hover:bg-amber-50 rounded-lg flex items-center space-x-2"
+                        onClick={() => {
+                          setQuery(term);
+                          saveToHistory(term);
+                        }}
+                      >
+                        <Search className="w-4 h-4 text-amber-400" />
+                        <span className="text-amber-800">{term}</span>
+                      </button>
+                    ))}
                   </div>
-                  {searchHistory.map((term, index) => (
-                    <button
-                      key={index}
-                      className="w-full text-left px-4 py-2 hover:bg-amber-50 rounded-lg flex items-center space-x-2"
-                      onClick={() => {
-                        setQuery(term);
-                        saveToHistory(term);
-                      }}
-                    >
-                      <Search className="w-4 h-4 text-amber-400" />
-                      <span className="text-amber-800">{term}</span>
-                    </button>
-                  ))}
                 </div>
               </div>
             )}
           </div>
 
-          {/* Category Tabs */}
           <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide mt-8">
             {categories.map(({ key, label, icon: Icon, color }) => (
               <button
                 key={key}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex-shrink-0 ${
-                  activeCategory === key 
+                  activeCategory === key
                     ? `bg-gradient-to-r ${color} text-white shadow-lg transform scale-105`
                     : "bg-white text-amber-700 border border-amber-200 hover:bg-amber-50"
                 }`}
@@ -658,12 +649,9 @@ export default function EnhancedServicesPage() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="max-w-7xl mx-auto p-4 mt-8">
-        {/* Hero Banner */}
         <HeroBanner />
 
-        {/* Filters Bar */}
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -671,7 +659,7 @@ export default function EnhancedServicesPage() {
           >
             <Filter className="w-4 h-4 text-amber-600" />
             <span className="font-medium text-amber-800">Filters</span>
-            {Object.values(filters).some(val => 
+            {Object.values(filters).some(val =>
               val !== 0 && val !== "" && val !== 500000 && val !== "all"
             ) && (
               <span className="bg-amber-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center">
@@ -684,9 +672,9 @@ export default function EnhancedServicesPage() {
             <span className="text-sm text-amber-600">
               {filteredResults.length} services found
             </span>
-            
-            <select 
-              value={sortBy} 
+
+            <select
+              value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               className="px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm"
             >
@@ -698,9 +686,8 @@ export default function EnhancedServicesPage() {
           </div>
         </div>
 
-        {/* Filters Panel */}
         {showFilters && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
@@ -717,7 +704,6 @@ export default function EnhancedServicesPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {/* Rating Filter */}
               <div>
                 <label className="block text-sm font-medium text-amber-700 mb-2">Minimum Rating</label>
                 <div className="flex items-center space-x-2">
@@ -734,7 +720,6 @@ export default function EnhancedServicesPage() {
                 </div>
               </div>
 
-              {/* Price Filter */}
               <div>
                 <label className="block text-sm font-medium text-amber-700 mb-2">
                   Max Price: ₹{filters.maxPrice.toLocaleString()}
@@ -750,7 +735,6 @@ export default function EnhancedServicesPage() {
                 />
               </div>
 
-              {/* Location Filter */}
               <div>
                 <label className="block text-sm font-medium text-amber-700 mb-2">Location</label>
                 <input
@@ -762,7 +746,6 @@ export default function EnhancedServicesPage() {
                 />
               </div>
 
-              {/* Availability Filter */}
               <div>
                 <label className="block text-sm font-medium text-amber-700 mb-2">Availability</label>
                 <select
@@ -779,8 +762,7 @@ export default function EnhancedServicesPage() {
           </motion.div>
         )}
 
-        {/* Services Grid */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -794,7 +776,6 @@ export default function EnhancedServicesPage() {
             </div>
           ) : filteredResults.length > 0 ? (
             <>
-              {/* Show categorized view when "All" is selected */}
               {activeCategory === "all" ? (
                 Object.entries(categorizedResults).map(([category, services]) => (
                   services.length > 0 && (
@@ -837,7 +818,6 @@ export default function EnhancedServicesPage() {
                   )
                 ))
               ) : (
-                // Show flat grid when specific category is selected
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {filteredResults.slice(0, visibleCounts[activeCategory] || 12).map((service) => (
                     <ServiceCard
@@ -882,7 +862,6 @@ export default function EnhancedServicesPage() {
           )}
         </motion.div>
 
-        {/* Recently Viewed */}
         {recentlyViewed.length > 0 && (
           <section className="mt-12">
             <h2 className="text-xl font-semibold text-amber-800 mb-6 flex items-center gap-2">
@@ -905,7 +884,6 @@ export default function EnhancedServicesPage() {
         )}
       </div>
 
-      {/* Service Detail Modal */}
       <AnimatePresence>
         {showDetailModal && selectedService && (
           <ServiceDetailModal
@@ -918,7 +896,6 @@ export default function EnhancedServicesPage() {
         )}
       </AnimatePresence>
 
-      {/* Mobile Floating Action Button */}
       <div className="fixed bottom-6 right-6 z-40 md:hidden">
         <button
           onClick={() => setShowFilters(!showFilters)}
@@ -931,7 +908,7 @@ export default function EnhancedServicesPage() {
   );
 }
 
-// Service Detail Modal Component
+// --------------------------- Service Detail Modal (keeps inside same file) ---------------------------
 function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWishlisted }) {
   const [selectedVendor, setSelectedVendor] = useState(null);
   const [activeTab, setActiveTab] = useState("details");
@@ -952,8 +929,8 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative">
-          <img 
-            src={service.img} 
+          <img
+            src={service.img}
             alt={service.name}
             className="w-full h-64 object-cover"
           />
@@ -996,7 +973,6 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
             </div>
           </div>
 
-          {/* Tabs */}
           <div className="border-b border-amber-200 mb-4">
             <div className="flex space-x-4">
               {["details", "vendors", "reviews"].map(tab => (
@@ -1004,8 +980,8 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`pb-2 px-1 font-medium capitalize ${
-                    activeTab === tab 
-                      ? "text-amber-600 border-b-2 border-amber-600" 
+                    activeTab === tab
+                      ? "text-amber-600 border-b-2 border-amber-600"
                       : "text-amber-400 hover:text-amber-600"
                   }`}
                 >
@@ -1015,7 +991,6 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
             </div>
           </div>
 
-          {/* Tab Content */}
           <div className="mb-6">
             {activeTab === "details" && (
               <div className="space-y-4">
@@ -1055,7 +1030,7 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
                       <button className="px-3 py-1 bg-amber-500 text-white rounded-lg text-sm hover:bg-amber-600">
                         Contact
                       </button>
-                      <button 
+                      <button
                         onClick={() => setSelectedVendor(vendor)}
                         className="px-3 py-1 border border-amber-300 text-amber-700 rounded-lg text-sm hover:bg-amber-50"
                       >
@@ -1069,7 +1044,6 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
 
             {activeTab === "reviews" && (
               <div className="space-y-4">
-                {/* Reviews would go here */}
                 <p className="text-amber-600">Customer reviews will be displayed here.</p>
               </div>
             )}
