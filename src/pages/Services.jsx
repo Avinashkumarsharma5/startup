@@ -248,25 +248,25 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
   return (
     <motion.div
       layout
-      className="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300"
+      className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300"
       whileHover={{ y: -5 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative">
-        {!imageLoaded && <div className="w-full h-48 bg-amber-100 animate-pulse"></div>}
+        {!imageLoaded && <div className="w-full h-40 sm:h-48 bg-amber-100 animate-pulse"></div>}
         <img
           src={service.img}
           alt={service.name}
-          className={`w-full h-48 object-cover ${imageLoaded ? 'block' : 'hidden'}`}
+          className={`w-full h-40 sm:h-48 object-cover ${imageLoaded ? 'block' : 'hidden'}`}
           onLoad={() => setImageLoaded(true)}
           loading="lazy"
         />
 
-        <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-          <span className="bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
+        <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex flex-wrap gap-1 sm:gap-2">
+          <span className="bg-black bg-opacity-70 text-white px-2 sm:px-3 py-1 rounded-full text-xs flex items-center gap-1">
             <Icon className="w-3 h-3" />
-            {category}
+            <span className="hidden sm:inline">{category}</span>
           </span>
           {service.discount && (
             <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
@@ -276,19 +276,19 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
           {service.trending && (
             <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
-              Trending
+              <span className="hidden sm:inline">Trending</span>
             </span>
           )}
         </div>
 
         <button
           onClick={() => onToggleWishlist(service.id)}
-          className="absolute top-3 right-3 p-2 rounded-full bg-white bg-opacity-90 hover:bg-opacity-100 shadow-lg transition-all duration-200"
+          className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-full bg-white bg-opacity-90 hover:bg-opacity-100 shadow-lg transition-all duration-200"
         >
           {isWishlisted ? (
-            <BookmarkCheck className="w-5 h-5 text-amber-600" fill="currentColor" />
+            <BookmarkCheck className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" fill="currentColor" />
           ) : (
-            <Bookmark className="w-5 h-5 text-amber-600" />
+            <Bookmark className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
           )}
         </button>
 
@@ -321,35 +321,35 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
         </AnimatePresence>
       </div>
 
-      <div className="p-4">
+      <div className="p-3 sm:p-4">
         <div className="flex items-start justify-between mb-2">
-          <h3 className="font-semibold text-amber-900 text-lg line-clamp-2 flex-1">{service.name}</h3>
+          <h3 className="font-semibold text-amber-900 text-sm sm:text-base lg:text-lg line-clamp-2 flex-1">{service.name}</h3>
           <button
             onClick={() => onToggleWishlist(service.id)}
-            className="p-1 hover:bg-amber-100 rounded-full transition-colors ml-2"
+            className="p-1 hover:bg-amber-100 rounded-full transition-colors ml-2 flex-shrink-0"
           >
-            <Heart className={`w-5 h-5 ${isWishlisted ? "fill-red-500 text-red-500" : "text-amber-400"}`} />
+            <Heart className={`w-4 h-4 sm:w-5 sm:h-5 ${isWishlisted ? "fill-red-500 text-red-500" : "text-amber-400"}`} />
           </button>
         </div>
 
         <div className="flex items-center justify-between mb-3">
           {renderStars(service.rating)}
-          <span className="text-amber-600 text-sm">({service.reviews} reviews)</span>
+          <span className="text-amber-600 text-xs sm:text-sm">({service.reviews} reviews)</span>
         </div>
 
         {service.location && (
           <div className="flex items-center gap-1 text-amber-600 mb-3">
-            <MapPin className="w-4 h-4" />
-            <span className="text-sm">{service.location}</span>
+            <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="text-xs sm:text-sm">{service.location}</span>
           </div>
         )}
 
         <div className="flex items-center justify-between mb-4">
           <div>
-            <span className="text-2xl font-bold text-amber-800">₹{service.price.toLocaleString()}</span>
-            {service.unit && <span className="text-amber-600 text-sm ml-1">{service.unit}</span>}
+            <span className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800">₹{service.price.toLocaleString()}</span>
+            {service.unit && <span className="text-amber-600 text-xs sm:text-sm ml-1">{service.unit}</span>}
             {service.discount && (
-              <span className="text-red-500 text-sm ml-2 line-through">
+              <span className="text-red-500 text-xs sm:text-sm ml-2 line-through">
                 ₹{Math.round(service.price / (1 - service.discount/100)).toLocaleString()}
               </span>
             )}
@@ -361,7 +361,7 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => onViewDetails(service)}
-            className="flex-1 px-4 py-2 border border-amber-300 text-amber-700 rounded-xl hover:bg-amber-50 transition-colors font-medium"
+            className="flex-1 px-3 sm:px-4 py-2 border border-amber-300 text-amber-700 rounded-lg sm:rounded-xl hover:bg-amber-50 transition-colors font-medium text-xs sm:text-sm"
           >
             Details
           </motion.button>
@@ -369,7 +369,7 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => onBook(service)}
-            className="flex-1 px-4 py-2 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors font-medium"
+            className="flex-1 px-3 sm:px-4 py-2 bg-amber-500 text-white rounded-lg sm:rounded-xl hover:bg-amber-600 transition-colors font-medium text-xs sm:text-sm"
           >
             Book Now
           </motion.button>
@@ -399,7 +399,7 @@ const PackageCard = ({ pkg, onBook }) => {
 
   return (
     <motion.div
-      className="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300"
+      className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300"
       whileHover={{ y: -5 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -408,39 +408,39 @@ const PackageCard = ({ pkg, onBook }) => {
         <img
           src={pkg.image}
           alt={pkg.name}
-          className="w-full h-48 object-cover"
+          className="w-full h-40 sm:h-48 object-cover"
         />
-        <div className="absolute top-3 left-3">
-          <span className="bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+        <div className="absolute top-2 left-2 sm:top-3 sm:left-3">
+          <span className="bg-amber-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
             Package Deal
           </span>
         </div>
-        <div className="absolute top-3 right-3 flex items-center gap-1 bg-black bg-opacity-70 text-white px-2 py-1 rounded-full text-xs">
+        <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex items-center gap-1 bg-black bg-opacity-70 text-white px-2 py-1 rounded-full text-xs">
           <Star className="w-3 h-3 fill-white" />
           <span>{pkg.rating}</span>
           <span>({pkg.reviews})</span>
         </div>
       </div>
 
-      <div className="p-4">
-        <h3 className="font-semibold text-amber-900 text-lg mb-2">{pkg.name}</h3>
+      <div className="p-3 sm:p-4">
+        <h3 className="font-semibold text-amber-900 text-base sm:text-lg mb-2">{pkg.name}</h3>
         
         <div className="space-y-2 mb-4">
           {pkg.services.map((service, index) => (
-            <div key={index} className="flex items-center gap-2 text-sm text-amber-700">
-              <CheckCircle className="w-4 h-4 text-green-500" />
-              {service}
+            <div key={index} className="flex items-center gap-2 text-xs sm:text-sm text-amber-700">
+              <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" />
+              <span className="line-clamp-1">{service}</span>
             </div>
           ))}
         </div>
 
         <div className="flex items-center justify-between mb-4">
           <div>
-            <span className="text-2xl font-bold text-amber-800">₹{pkg.price.toLocaleString()}</span>
-            <span className="text-red-500 text-sm ml-2 line-through">
+            <span className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800">₹{pkg.price.toLocaleString()}</span>
+            <span className="text-red-500 text-xs sm:text-sm ml-2 line-through">
               ₹{pkg.originalPrice.toLocaleString()}
             </span>
-            <div className="text-green-600 text-sm font-medium">
+            <div className="text-green-600 text-xs sm:text-sm font-medium">
               Save ₹{pkg.savings.toLocaleString()}
             </div>
           </div>
@@ -450,7 +450,7 @@ const PackageCard = ({ pkg, onBook }) => {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => onBook(pkg)}
-          className="w-full px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:from-amber-600 hover:to-orange-600 transition-colors font-semibold"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg sm:rounded-xl hover:from-amber-600 hover:to-orange-600 transition-colors font-semibold text-xs sm:text-sm"
         >
           View Package Details
         </motion.button>
@@ -498,7 +498,7 @@ const HeroBanner = () => {
   }, []);
 
   return (
-    <div className="relative h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden mb-8">
+    <div className="relative h-48 sm:h-64 md:h-80 lg:h-96 rounded-xl sm:rounded-2xl overflow-hidden mb-6 sm:mb-8">
       {banners.map((banner, index) => (
         <div
           key={banner.id}
@@ -510,12 +510,12 @@ const HeroBanner = () => {
             alt={banner.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 flex flex-col justify-center items-start p-8 text-white">
+          <div className="absolute inset-0 flex flex-col justify-center items-start p-4 sm:p-6 md:p-8 text-white">
             <motion.h2
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3"
+              className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-3 leading-tight"
             >
               {banner.title}
             </motion.h2>
@@ -523,7 +523,7 @@ const HeroBanner = () => {
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="text-lg md:text-xl opacity-90 mb-6"
+              className="text-sm sm:text-base md:text-lg lg:text-xl opacity-90 mb-4 sm:mb-6 max-w-md sm:max-w-lg"
             >
               {banner.subtitle}
             </motion.p>
@@ -531,7 +531,7 @@ const HeroBanner = () => {
               initial={{ y: 50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.6 }}
-              className="px-8 py-3 bg-white text-amber-800 rounded-full font-semibold hover:bg-amber-50 transition-colors shadow-lg"
+              className="px-4 sm:px-6 md:px-8 py-2 sm:py-3 bg-white text-amber-800 rounded-full font-semibold hover:bg-amber-50 transition-colors shadow-lg text-sm sm:text-base"
             >
               {banner.buttonText}
             </motion.button>
@@ -539,11 +539,11 @@ const HeroBanner = () => {
         </div>
       ))}
 
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
+      <div className="absolute bottom-3 sm:bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
         {banners.map((_, index) => (
           <button
             key={index}
-            className={`w-3 h-3 rounded-full transition-all ${index === currentBanner ? 'bg-white w-8' : 'bg-white bg-opacity-50'}`}
+            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all ${index === currentBanner ? 'bg-white w-6 sm:w-8' : 'bg-white bg-opacity-50'}`}
             onClick={() => setCurrentBanner(index)}
           />
         ))}
@@ -554,33 +554,33 @@ const HeroBanner = () => {
 
 // --------------------------- Trust Badges ---------------------------
 const TrustBadges = () => (
-  <div className="flex flex-wrap gap-6 justify-center py-8 border-t border-amber-200 mt-12">
-    <div className="flex items-center gap-3 text-sm text-amber-700">
-      <Shield className="w-5 h-5 text-green-500" />
-      <div>
-        <div className="font-semibold">100% Secure Booking</div>
-        <div className="text-amber-600 text-xs">Safe & protected payments</div>
+  <div className="flex flex-wrap gap-4 sm:gap-6 justify-center py-6 sm:py-8 border-t border-amber-200 mt-8 sm:mt-12">
+    <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-amber-700 min-w-0 flex-1 sm:flex-none">
+      <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
+      <div className="min-w-0">
+        <div className="font-semibold text-xs sm:text-sm">100% Secure Booking</div>
+        <div className="text-amber-600 text-xs hidden sm:block">Safe & protected payments</div>
       </div>
     </div>
-    <div className="flex items-center gap-3 text-sm text-amber-700">
-      <PhoneCall className="w-5 h-5 text-blue-500" />
-      <div>
-        <div className="font-semibold">24/7 Support</div>
-        <div className="text-amber-600 text-xs">Always here to help</div>
+    <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-amber-700 min-w-0 flex-1 sm:flex-none">
+      <PhoneCall className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 flex-shrink-0" />
+      <div className="min-w-0">
+        <div className="font-semibold text-xs sm:text-sm">24/7 Support</div>
+        <div className="text-amber-600 text-xs hidden sm:block">Always here to help</div>
       </div>
     </div>
-    <div className="flex items-center gap-3 text-sm text-amber-700">
-      <Award className="w-5 h-5 text-amber-500" />
-      <div>
-        <div className="font-semibold">Verified Vendors</div>
-        <div className="text-amber-600 text-xs">Quality assured services</div>
+    <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-amber-700 min-w-0 flex-1 sm:flex-none">
+      <Award className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 flex-shrink-0" />
+      <div className="min-w-0">
+        <div className="font-semibold text-xs sm:text-sm">Verified Vendors</div>
+        <div className="text-amber-600 text-xs hidden sm:block">Quality assured services</div>
       </div>
     </div>
-    <div className="flex items-center gap-3 text-sm text-amber-700">
-      <CheckCircle className="w-5 h-5 text-purple-500" />
-      <div>
-        <div className="font-semibold">Easy Cancellation</div>
-        <div className="text-amber-600 text-xs">Flexible booking options</div>
+    <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-amber-700 min-w-0 flex-1 sm:flex-none">
+      <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 flex-shrink-0" />
+      <div className="min-w-0">
+        <div className="font-semibold text-xs sm:text-sm">Easy Cancellation</div>
+        <div className="text-amber-600 text-xs hidden sm:block">Flexible booking options</div>
       </div>
     </div>
   </div>
@@ -753,35 +753,35 @@ export default function ServicesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 pt-16">
-      {/* Main Content starts below navbar (pt-16 for fixed navbar) */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
+      {/* Main Content starts below navbar (pt-20 for fixed navbar) */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-6">
         
         {/* Search and Categories Section */}
-        <div className="bg-white shadow-sm rounded-2xl p-6 mb-8 border border-amber-100">
-          <div className="relative mb-6">
-            <div className="flex items-center bg-white rounded-2xl shadow-lg px-4 py-3 border border-amber-200">
-              <Search className="text-amber-600 w-5 h-5 mr-3 flex-shrink-0" />
+        <div className="bg-white shadow-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 border border-amber-100">
+          <div className="relative mb-4 sm:mb-6">
+            <div className="flex items-center bg-white rounded-xl sm:rounded-2xl shadow-lg px-3 sm:px-4 py-2 sm:py-3 border border-amber-200">
+              <Search className="text-amber-600 w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Search for wedding services, catering, venues..."
-                className="w-full outline-none text-amber-800 placeholder-amber-500 text-lg"
+                className="w-full outline-none text-amber-800 placeholder-amber-500 text-sm sm:text-base md:text-lg"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && saveToHistory(query)}
               />
-              <div className="flex items-center space-x-2 ml-2">
+              <div className="flex items-center space-x-1 sm:space-x-2 ml-1 sm:ml-2">
                 {isListening ? (
                   <div className="animate-pulse text-amber-600">
-                    <Loader className="w-5 h-5 animate-spin" />
+                    <Loader className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                   </div>
                 ) : (
                   <button
                     onClick={startVoiceSearch}
-                    className="p-2 hover:bg-amber-100 rounded-full transition"
+                    className="p-1 sm:p-2 hover:bg-amber-100 rounded-full transition"
                     title="Voice Search"
                   >
-                    <Mic className="w-5 h-5 text-amber-600" />
+                    <Mic className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
                   </button>
                 )}
               </div>
@@ -818,15 +818,15 @@ export default function ServicesPage() {
             {categories.map(({ key, label, icon: Icon, color }) => (
               <button
                 key={key}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex-shrink-0 ${
+                className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 flex-shrink-0 ${
                   activeCategory === key
                     ? `bg-gradient-to-r ${color} text-white shadow-lg transform scale-105`
                     : "bg-white text-amber-700 border border-amber-200 hover:bg-amber-50"
                 }`}
                 onClick={() => setActiveCategory(key)}
               >
-                <Icon className="w-4 h-4" />
-                <span>{label}</span>
+                <Icon className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="whitespace-nowrap">{label}</span>
               </button>
             ))}
           </div>
@@ -836,15 +836,15 @@ export default function ServicesPage() {
         <HeroBanner />
 
         {/* Packages Section */}
-        <section className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-amber-800">Popular Packages</h2>
-            <button className="text-amber-600 hover:text-amber-700 font-medium flex items-center gap-2">
+        <section className="mb-8 sm:mb-12">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2 sm:gap-0">
+            <h2 className="text-xl sm:text-2xl font-bold text-amber-800">Popular Packages</h2>
+            <button className="text-amber-600 hover:text-amber-700 font-medium flex items-center gap-2 text-sm sm:text-base self-start sm:self-auto">
               View All Packages
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {packagesData.map(pkg => (
               <PackageCard key={pkg.id} pkg={pkg} onBook={handleBook} />
             ))}
@@ -852,31 +852,31 @@ export default function ServicesPage() {
         </section>
 
         {/* Filters and Results Section */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-4 sm:gap-0">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center space-x-2 bg-white px-4 py-2 rounded-2xl shadow-lg border border-amber-200 hover:bg-amber-50 transition"
+            className="flex items-center space-x-2 bg-white px-3 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-lg border border-amber-200 hover:bg-amber-50 transition self-start sm:self-auto"
           >
             <Filter className="w-4 h-4 text-amber-600" />
-            <span className="font-medium text-amber-800">Filters</span>
+            <span className="font-medium text-amber-800 text-sm sm:text-base">Filters</span>
             {Object.values(filters).some(val =>
               val !== 0 && val !== "" && val !== 500000 && val !== "all"
             ) && (
-              <span className="bg-amber-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center">
+              <span className="bg-amber-500 text-white w-4 h-4 sm:w-5 sm:h-5 rounded-full text-xs flex items-center justify-center">
                 !
               </span>
             )}
           </button>
 
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-amber-600">
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+            <span className="text-xs sm:text-sm text-amber-600">
               {filteredResults.length} services found
             </span>
 
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-sm"
+              className="px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-xs sm:text-sm w-full sm:w-auto"
             >
               <option value="rating">Sort by Rating</option>
               <option value="price-low">Price: Low to High</option>
@@ -891,23 +891,23 @@ export default function ServicesPage() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-amber-200"
+            className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-amber-200"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-lg text-amber-800">Filters</h3>
+              <h3 className="font-semibold text-base sm:text-lg text-amber-800">Filters</h3>
               <button
                 onClick={resetFilters}
-                className="text-amber-600 hover:text-amber-700 text-sm font-medium"
+                className="text-amber-600 hover:text-amber-700 text-xs sm:text-sm font-medium"
               >
                 Reset All
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               <div>
-                <label className="block text-sm font-medium text-amber-700 mb-2">Minimum Rating</label>
+                <label className="block text-xs sm:text-sm font-medium text-amber-700 mb-2">Minimum Rating</label>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-amber-600">{filters.minRating}+</span>
+                  <span className="text-xs sm:text-sm text-amber-600">{filters.minRating}+</span>
                   <input
                     type="range"
                     min="0"
@@ -921,7 +921,7 @@ export default function ServicesPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-amber-700 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-amber-700 mb-2">
                   Max Price: ₹{filters.maxPrice.toLocaleString()}
                 </label>
                 <input
@@ -936,22 +936,22 @@ export default function ServicesPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-amber-700 mb-2">Location</label>
+                <label className="block text-xs sm:text-sm font-medium text-amber-700 mb-2">Location</label>
                 <input
                   type="text"
                   placeholder="Enter city..."
                   value={filters.location}
                   onChange={(e) => setFilters(f => ({ ...f, location: e.target.value }))}
-                  className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-amber-800"
+                  className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-amber-800 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-amber-700 mb-2">Availability</label>
+                <label className="block text-xs sm:text-sm font-medium text-amber-700 mb-2">Availability</label>
                 <select
                   value={filters.availability}
                   onChange={(e) => setFilters(f => ({ ...f, availability: e.target.value }))}
-                  className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-amber-800"
+                  className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-amber-800 text-sm"
                 >
                   <option value="all">All Services</option>
                   <option value="available">Available Now</option>
@@ -970,7 +970,7 @@ export default function ServicesPage() {
           className="space-y-8"
         >
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
               {[...Array(8)].map((_, i) => (
                 <SkeletonCard key={i} />
               ))}
@@ -989,7 +989,7 @@ export default function ServicesPage() {
                           {services.length} services
                         </span>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                         {services.slice(0, visibleCounts[category] || 4).map((service) => (
                           <ServiceCard
                             key={service.id}
@@ -1019,7 +1019,7 @@ export default function ServicesPage() {
                   )
                 ))
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                   {filteredResults.slice(0, visibleCounts[activeCategory] || 12).map((service) => (
                     <ServiceCard
                       key={service.id}
@@ -1065,11 +1065,11 @@ export default function ServicesPage() {
 
         {/* Recently Viewed Section */}
         {recentlyViewed.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-xl font-semibold text-amber-800 mb-6 flex items-center gap-2">
-              <Eye className="w-5 h-5" /> Recently Viewed Services
+          <section className="mt-8 sm:mt-12">
+            <h2 className="text-lg sm:text-xl font-semibold text-amber-800 mb-4 sm:mb-6 flex items-center gap-2">
+              <Eye className="w-4 h-4 sm:w-5 sm:h-5" /> Recently Viewed Services
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {recentlyViewed.map((service) => (
                 <ServiceCard
                   key={service.id}
@@ -1103,12 +1103,12 @@ export default function ServicesPage() {
       </AnimatePresence>
 
       {/* Mobile Filter Button */}
-      <div className="fixed bottom-6 right-6 z-40 md:hidden">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 md:hidden">
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="bg-gradient-to-r from-amber-400 to-amber-500 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition transform hover:scale-110"
+          className="bg-gradient-to-r from-amber-400 to-amber-500 text-white p-3 sm:p-4 rounded-full shadow-lg hover:shadow-xl transition transform hover:scale-110"
         >
-          <Filter className="w-6 h-6" />
+          <Filter className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
       </div>
     </div>
@@ -1136,66 +1136,66 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 sm:p-4"
       onClick={onClose}
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
+        className="bg-white rounded-xl sm:rounded-2xl w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative flex-shrink-0">
           <img
             src={service.img}
             alt={service.name}
-            className="w-full h-64 object-cover"
+            className="w-full h-48 sm:h-64 object-cover"
           />
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 bg-white bg-opacity-90 rounded-full hover:bg-opacity-100 transition"
+            className="absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2 bg-white bg-opacity-90 rounded-full hover:bg-opacity-100 transition"
           >
-            <X className="w-5 h-5 text-amber-800" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5 text-amber-800" />
           </button>
           <button
             onClick={() => onToggleWishlist(service.id)}
-            className="absolute top-4 left-4 p-2 bg-white bg-opacity-90 rounded-full hover:bg-opacity-100 transition"
+            className="absolute top-2 left-2 sm:top-4 sm:left-4 p-1.5 sm:p-2 bg-white bg-opacity-90 rounded-full hover:bg-opacity-100 transition"
           >
             {isWishlisted ? (
-              <BookmarkCheck className="w-5 h-5 text-red-500" fill="currentColor" />
+              <BookmarkCheck className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" fill="currentColor" />
             ) : (
-              <Bookmark className="w-5 h-5 text-amber-600" />
+              <Bookmark className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
             )}
           </button>
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          <div className="p-6">
-            <div className="flex items-start justify-between mb-4">
+          <div className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-3 sm:gap-0">
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-amber-900 mb-2">{service.name}</h2>
-                <div className="flex items-center gap-4 text-sm text-amber-600">
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-900 mb-2">{service.name}</h2>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-amber-600">
                   <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-amber-400 text-amber-400" />
                     <span className="font-semibold text-amber-800">{service.rating}</span>
                     <span>({service.reviews} reviews)</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <MapPin className="w-4 h-4" />
+                    <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
                     <span>{service.location}</span>
                   </div>
                   {service.trending && (
                     <div className="flex items-center gap-1 text-green-600">
-                      <TrendingUp className="w-4 h-4" />
+                      <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
                       <span>Trending</span>
                     </div>
                   )}
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-3xl font-bold text-amber-800">₹{service.price.toLocaleString()}</div>
-                {service.unit && <div className="text-amber-600">{service.unit}</div>}
+              <div className="text-left sm:text-right">
+                <div className="text-2xl sm:text-3xl font-bold text-amber-800">₹{service.price.toLocaleString()}</div>
+                {service.unit && <div className="text-amber-600 text-sm">{service.unit}</div>}
                 {service.discount && (
                   <div className="text-red-500 text-sm line-through">
                     ₹{Math.round(service.price / (1 - service.discount/100)).toLocaleString()}
@@ -1205,21 +1205,21 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
             </div>
 
             {/* Tab Navigation */}
-            <div className="border-b border-amber-200 mb-6">
-              <div className="flex space-x-4 overflow-x-auto">
+            <div className="border-b border-amber-200 mb-4 sm:mb-6">
+              <div className="flex space-x-2 sm:space-x-4 overflow-x-auto">
                 {modalTabs.map(tab => {
                   const Icon = tab.icon;
                   return (
                     <button
                       key={tab.key}
                       onClick={() => setActiveTab(tab.key)}
-                      className={`flex items-center gap-2 pb-3 px-1 font-medium capitalize whitespace-nowrap ${
+                      className={`flex items-center gap-1 sm:gap-2 pb-3 px-1 font-medium capitalize whitespace-nowrap text-xs sm:text-sm ${
                         activeTab === tab.key
                           ? "text-amber-600 border-b-2 border-amber-600"
                           : "text-amber-400 hover:text-amber-600"
                       }`}
                     >
-                      <Icon className="w-4 h-4" />
+                      <Icon className="w-3 h-3 sm:w-4 sm:h-4" />
                       <span>{tab.label}</span>
                     </button>
                   );
@@ -1351,36 +1351,36 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
         </div>
 
         {/* Sticky Bottom Action Bar */}
-        <div className="border-t border-amber-200 bg-white p-4 flex-shrink-0">
-          <div className="flex items-center justify-between gap-4">
+        <div className="border-t border-amber-200 bg-white p-3 sm:p-4 flex-shrink-0">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
             {service.unit && (
-              <div className="flex items-center gap-3">
-                <span className="text-amber-700 font-medium">Quantity:</span>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <span className="text-amber-700 font-medium text-sm sm:text-base">Quantity:</span>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                    className="w-8 h-8 rounded-full border border-amber-300 flex items-center justify-center hover:bg-amber-50"
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-amber-300 flex items-center justify-center hover:bg-amber-50"
                   >
-                    <Minus className="w-4 h-4 text-amber-600" />
+                    <Minus className="w-3 h-3 sm:w-4 sm:h-4 text-amber-600" />
                   </button>
-                  <span className="w-8 text-center font-medium text-amber-800">{quantity}</span>
+                  <span className="w-7 sm:w-8 text-center font-medium text-amber-800 text-sm sm:text-base">{quantity}</span>
                   <button
                     onClick={() => setQuantity(q => q + 1)}
-                    className="w-8 h-8 rounded-full border border-amber-300 flex items-center justify-center hover:bg-amber-50"
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-amber-300 flex items-center justify-center hover:bg-amber-50"
                   >
-                    <Plus className="w-4 h-4 text-amber-600" />
+                    <Plus className="w-3 h-3 sm:w-4 sm:h-4 text-amber-600" />
                   </button>
                 </div>
               </div>
             )}
-            <div className="flex gap-3 flex-1 justify-end">
-              <button className="px-6 py-3 border border-amber-300 text-amber-700 rounded-xl hover:bg-amber-50 transition-colors font-medium flex items-center gap-2">
+            <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
+              <button className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 border border-amber-300 text-amber-700 rounded-lg sm:rounded-xl hover:bg-amber-50 transition-colors font-medium flex items-center justify-center gap-2 text-sm sm:text-base">
                 <Share className="w-4 h-4" />
                 Share
               </button>
               <button
                 onClick={() => onBook(service)}
-                className="px-8 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors font-semibold flex items-center gap-2"
+                className="flex-1 sm:flex-none px-6 sm:px-8 py-2 sm:py-3 bg-amber-500 text-white rounded-lg sm:rounded-xl hover:bg-amber-600 transition-colors font-semibold flex items-center justify-center gap-2 text-sm sm:text-base"
               >
                 <BookOpen className="w-4 h-4" />
                 Book Now

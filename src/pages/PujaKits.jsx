@@ -244,43 +244,43 @@ export default function EventKitsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-rose-50 p-4 md:p-6 relative mt-12">
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] pt-20 pb-6 px-2 sm:px-4 lg:px-6 relative">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div className="absolute top-10 left-10 w-32 h-32 bg-rose-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-bounce"></div>
-        <div className="absolute top-40 right-20 w-24 h-24 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
-        <div className="absolute bottom-20 left-20 w-28 h-28 bg-amber-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-bounce"></div>
+        <div className="absolute top-10 left-10 w-24 sm:w-32 h-24 sm:h-32 bg-orange-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-bounce"></div>
+        <div className="absolute top-40 right-20 w-20 sm:w-24 h-20 sm:h-24 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
+        <div className="absolute bottom-20 left-20 w-24 sm:w-28 h-24 sm:h-28 bg-amber-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-bounce"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto mt-6 md:mt-10 relative z-10">
+      <div className="max-w-7xl mx-auto mt-4 sm:mt-6 lg:mt-10 relative z-10">
         {/* Trust Badges */}
-        <div className="flex flex-wrap justify-center gap-4 mb-6">
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-4 sm:mb-6">
           {trustBadges.map((badge, index) => (
             <motion.div 
               key={index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="flex items-center gap-2 bg-white px-3 py-2 rounded-full shadow-sm border"
+              className="flex items-center gap-1 sm:gap-2 bg-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-full shadow-sm border"
             >
-              <span>{badge.icon}</span>
-              <span className="text-xs font-medium text-rose-800">{badge.text}</span>
+              <span className="text-sm sm:text-base">{badge.icon}</span>
+              <span className="text-xs sm:text-xs font-medium text-[#800000]">{badge.text}</span>
             </motion.div>
           ))}
         </div>
 
         {/* Topbar */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mt-14">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-8 sm:mt-14">
           <div>
-            <h1 className="text-3xl md:text-5xl font-bold text-rose-800 font-serif">Sanskaraa</h1>
-            <p className="text-sm md:text-base text-rose-600 mt-1">Traditional puja kits, delivered with divine blessings</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#800000] font-serif">Sanskaraa</h1>
+            <p className="text-xs sm:text-sm md:text-base text-[#800000] mt-1">Traditional puja kits, delivered with divine blessings</p>
           </div>
           
-          <div className="flex items-center gap-2 w-full md:w-auto">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
             {/* Festival Calendar Widget */}
             <motion.div 
               whileHover={{ scale: 1.05 }}
-              className="hidden md:flex items-center gap-2 bg-gradient-to-r from-rose-700 to-amber-700 text-white px-4 py-2 rounded-full cursor-pointer"
+              className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-orange-700 to-amber-700 text-white px-3 sm:px-4 py-2 rounded-full cursor-pointer"
               onClick={() => setSelectedFestival(nextFestival.name)}
             >
               <FiCalendar className="text-yellow-200" />
@@ -290,23 +290,23 @@ export default function EventKitsPage() {
               </div>
             </motion.div>
 
-            <div className="relative flex-1 md:flex-none">
+            <div className="relative flex-1 sm:flex-none">
               <input 
                 value={search} 
                 onChange={e => setSearch(e.target.value)} 
-                className="pl-10 pr-4 py-3 w-full md:w-80 rounded-full border-2 border-rose-200 shadow-sm focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all" 
+                className="pl-8 sm:pl-10 pr-4 py-2 sm:py-3 w-full sm:w-64 md:w-80 rounded-full border-2 border-orange-200 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition-all text-sm sm:text-base" 
                 placeholder="Search puja kits..." 
               />
-              <FiSearch className="absolute left-3 top-3.5 text-rose-400" />
+              <FiSearch className="absolute left-2 sm:left-3 top-2.5 sm:top-3.5 text-orange-400" />
             </div>
             
-            <button onClick={() => setShowCart(s => !s)} className="relative bg-amber-600 text-white p-3 rounded-full shadow-lg hover:scale-105 transition-transform">
-              <FiShoppingCart size={20} />
+            <button onClick={() => setShowCart(s => !s)} className="relative bg-orange-600 text-white p-2.5 sm:p-3 rounded-full shadow-lg hover:scale-105 transition-transform">
+              <FiShoppingCart size={18} className="sm:w-5 sm:h-5" />
               {cart.length > 0 && (
                 <motion.span 
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute -top-1 -right-1 bg-rose-600 text-white text-xs font-bold px-2 py-1 rounded-full"
+                  className="absolute -top-1 -right-1 bg-orange-600 text-white text-xs font-bold px-1.5 sm:px-2 py-1 rounded-full"
                 >
                   {cart.length}
                 </motion.span>
@@ -316,17 +316,17 @@ export default function EventKitsPage() {
         </div>
 
         {/* Category + Festival + Sort Tabs */}
-        <div className="sticky top-16 md:top-20 z-20 bg-white/80 backdrop-blur-sm py-4 mt-6 rounded-2xl px-4 shadow-sm border border-rose-100">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="sticky top-16 sm:top-20 z-20 bg-white/80 backdrop-blur-sm py-3 sm:py-4 mt-4 sm:mt-6 rounded-xl sm:rounded-2xl px-3 sm:px-4 shadow-sm border border-orange-100">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
             {/* Tab Navigation */}
             <div className="flex gap-2 border-b lg:border-none overflow-x-auto">
               {["kits", "combos", "subscription"].map(tab => (
                 <button 
                   key={tab}
-                  className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap capitalize ${
+                  className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap capitalize ${
                     activeTab === tab 
-                    ? "bg-amber-100 text-amber-800 border border-amber-300" 
-                    : "bg-white text-gray-600 hover:bg-rose-50"
+                    ? "bg-orange-100 text-orange-800 border border-orange-300" 
+                    : "bg-white text-gray-600 hover:bg-orange-50"
                   }`}
                   onClick={() => setActiveTab(tab)}
                 >
