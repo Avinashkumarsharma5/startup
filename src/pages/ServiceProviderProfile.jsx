@@ -212,8 +212,8 @@ export default function ServiceProviderProfile({ role, vendorData }) {
       <div className="max-w-7xl mx-auto p-4 lg:p-6">
         
         {/* Header Controls (Mobile/Desktop Adjusted) */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex gap-3 sm:gap-4">
+        <div className="flex justify-between items-center mb-6 mt-12">
+          <div className="flex gap-3 sm:gap-4 mt-8">
             <button
               onClick={() => setDarkMode(!darkMode)}
               className={`p-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-white shadow-lg'}`}
