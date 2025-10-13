@@ -451,10 +451,10 @@ export default function EventsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 p-4 md:p-8 space-y-6 md:space-y-8 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 p-4 md:p-8 space-y-6 md:space-y-8 max-w-7xl mx-auto mt-10">
       
       {/* Language Selector (Fixed position for accessibility) */}
-      <div className="fixed top-2 right-4 md:top-4 md:right-8 z-50">
+      <div className="fixed top-2 right-4 md:top-4 md:right-8 z-50 mt-12">
         <select 
           value={selectedLanguage} 
           onChange={(e) => setSelectedLanguage(e.target.value)}
