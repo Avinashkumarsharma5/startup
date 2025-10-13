@@ -453,10 +453,10 @@ export default function PanditBooking() {
   };
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-orange-100'} transition-colors duration-300`}>
+    <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-orange-100'} transition-colors duration-300 mt-12`}>
       {/* Header Section */}
-      <section className={`relative ${darkMode ? 'bg-gray-800' : 'bg-gradient-to-r from-amber-800 to-yellow-900'} text-white py-12 sm:py-16 md:py-20 px-4 sm:px-6 text-center`}>
-        <div className="max-w-6xl mx-auto">
+      <section className={`relative ${darkMode ? 'bg-gray-800' : 'bg-gradient-to-r from-amber-800 to-yellow-900'} text-white py-12 sm:py-16 md:py-20 px-4 sm:px-6 text-center `}>
+        <div className="max-w-6xl mx-auto mt-12">
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 leading-tight">
             Rooted in Dharma, Guided by Devotion
           </h1>
@@ -464,7 +464,7 @@ export default function PanditBooking() {
             Find Verified Pandits for Every Ritual and Ceremony
           </p>
 
-          <div className="bg-white shadow-xl rounded-xl p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+          <div className="bg-white shadow-xl rounded-xl p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mt-8">
             <div className="flex-1 w-full">
               <input
                 type="text"
