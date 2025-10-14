@@ -1,5 +1,8 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
+// Mock useNavigate for a standalone environment. In a real project, this would be uncommented.
+// import { useNavigate } from "react-router-dom"; 
+const useNavigate = () => (path) => console.log(`Navigating to: ${path}`);
+
 import { 
   Search, Star, MapPin, Filter, ChevronDown, Clock, 
   Heart, Share, Phone, Calendar, User, Package, 
@@ -245,13 +248,275 @@ const filtersList = {
 
 const popularTags = ["Diwali", "Wedding", "Housewarming", "Ganpati", "Navratri", "Satyanarayan", "Griha Pravesh", "Mundan", "Engagement"];
 
+// Utility to combine all data and add metadata for filtering
+const allItemsData = Object.entries(data).flatMap(([mainCategory, items]) =>
+  items.map(item => ({
+    ...item,
+    mainCategory,
+    originalCategory: item.category,
+    type: mainCategory
+  }))
+);
+
+// Helper function for safe delivery time parsing
+const parseDeliveryTime = (timeString) => {
+  if (!timeString) return 999;
+  const parts = timeString.split(' ');
+  const number = parseInt(parts[1]) || 999;
+  const unit = parts[2] || '';
+  if (unit.toLowerCase().startsWith('day')) return number * 24 * 60;
+  if (unit.toLowerCase().startsWith('hour')) return number * 60;
+  return number; // Assume minutes if unit is missing or small
+};
+
+// =================================================================
+// 1. Custom Hook: useSanskaraaSearch
+// =================================================================
+
+const useSanskaraaSearch = (showToast) => {
+  const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [filters, setFilters] = useState(() => ({
+    sort: "rating",
+    rating: null,
+    price: null,
+    features: []
+  }));
+  const [searchHistory, setSearchHistory] = useState([]);
+  const [wishlist, setWishlist] = useState(new Set());
+  const [location, setLocation] = useState("Detecting location...");
+  const [isListening, setIsListening] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [visibleItems, setVisibleItems] = useState(9);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const loadMoreRef = useRef(null);
+
+  // Save to search history
+  const saveToHistory = useCallback((searchQuery) => {
+    if (!searchQuery.trim()) return;
+    const updatedHistory = [searchQuery, ...searchHistory.filter(item => item !== searchQuery)].slice(0, 5);
+    setSearchHistory(updatedHistory);
+    localStorage.setItem('searchHistory', JSON.stringify(updatedHistory));
+  }, [searchHistory]);
+
+  // Toggle Wishlist
+  const toggleWishlist = useCallback((itemId) => {
+    setWishlist(prev => {
+      const newWishlist = new Set(prev);
+      if (newWishlist.has(itemId)) {
+        newWishlist.delete(itemId);
+        showToast("Removed from wishlist", "info");
+      } else {
+        newWishlist.add(itemId);
+        showToast("Added to wishlist", "success");
+      }
+      return newWishlist;
+    });
+  }, [showToast]);
+
+  // Voice Search Mock (Web API cannot be guaranteed or run in this environment)
+  const startVoiceSearch = () => {
+    if (!isOnline) {
+      showToast("Voice search requires internet connection.", "warning");
+      return;
+    }
+    
+    setIsListening(true);
+    setLoading(true);
+    showToast("Listening...", "info");
+    
+    // Simulate speech recognition result after a short delay
+    setTimeout(() => {
+        const mockTranscript = "Diwali Puja"; // Example result
+        setQuery(mockTranscript);
+        saveToHistory(mockTranscript);
+        setIsListening(false);
+        setLoading(false);
+        showToast(`Searching for: ${mockTranscript}`, "success");
+    }, 1500);
+  };
+  
+  // Enhanced Geolocation Mock
+  const detectLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      setLocation("Location access not supported");
+      showToast("Location access not supported.", "error");
+      return;
+    }
+    setLoading(true);
+    
+    // Using a fallback mechanism for the single-file environment
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        // In a real app, this would be a geocoding API call
+        setTimeout(() => {
+          setLocation("Mumbai, Maharashtra (Precise)");
+          setLoading(false);
+          showToast("Location detected successfully!", "success");
+        }, 1000);
+      },
+      (error) => {
+        setLocation("Connaught Place, Delhi (Default)"); 
+        setLoading(false);
+        showToast("Location access denied. Using default.", "warning");
+      },
+      { timeout: 5000 }
+    );
+  }, [showToast]);
+
+  // Filter and sort items (The heavy logic)
+  const filteredItems = useMemo(() => {
+    let results = allItemsData.filter(item => {
+      // Category filter
+      const matchesCategory = activeCategory === "all" || item.mainCategory === activeCategory;
+        
+      // Search query
+      const matchesQuery = !query || 
+        item.name.toLowerCase().includes(query.toLowerCase()) ||
+        item.originalCategory?.toLowerCase().includes(query.toLowerCase()) ||
+        item.tags?.some(tag => tag.toLowerCase().includes(query.toLowerCase()));
+        
+      // Rating filter
+      const matchesRating = !filters.rating || item.rating >= parseFloat(filters.rating);
+        
+      // Price filter
+      let matchesPrice = true;
+      if (filters.price) {
+        const priceRange = filters.price.split('-');
+        const min = parseInt(priceRange[0]);
+        const max = priceRange[1] === '+' ? Infinity : parseInt(priceRange[1]);
+        matchesPrice = item.price >= min && (max ? item.price <= max : true);
+      }
+        
+      // Features filter
+      let matchesFeatures = true;
+      if (filters.features.length > 0) {
+        if (filters.features.includes('verified') && !item.vendor?.verified) matchesFeatures = false;
+        if (filters.features.includes('discount') && !item.originalPrice) matchesFeatures = false;
+        if (filters.features.includes('popular') && !item.tags?.includes('Popular')) matchesFeatures = false;
+        if (filters.features.includes('trending') && (item.trendingScore || 0) < 85) matchesFeatures = false;
+        if (filters.features.includes('fast_delivery') && parseDeliveryTime(item.deliveryTime) > 60) matchesFeatures = false;
+      }
+
+      return matchesCategory && matchesQuery && matchesRating && matchesPrice && matchesFeatures;
+    });
+
+    // Apply sorting
+    switch(filters.sort) {
+      case "rating": results.sort((a, b) => b.rating - a.rating); break;
+      case "price_low": results.sort((a, b) => a.price - b.price); break;
+      case "price_high": results.sort((a, b) => b.price - a.price); break;
+      case "delivery": results.sort((a, b) => parseDeliveryTime(a.deliveryTime) - parseDeliveryTime(b.deliveryTime)); break;
+      case "distance": results.sort((a, b) => (parseFloat(a.distance) || 999) - (parseFloat(b.distance) || 999)); break;
+      case "trending": results.sort((a, b) => (b.trendingScore || 0) - (a.trendingScore || 0)); break;
+      default: results.sort((a, b) => b.rating - a.rating);
+    }
+
+    return results;
+  }, [query, activeCategory, filters]);
+  
+  // Filter/Sort change effect: reset visible items
+  useEffect(() => {
+    setVisibleItems(9);
+  }, [query, activeCategory, filters]);
+
+  // Initial Load (History, Wishlist, Location, Online status)
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('searchHistory');
+    const savedWishlist = localStorage.getItem('wishlist');
+    
+    if (savedHistory) setSearchHistory(JSON.parse(savedHistory));
+    if (savedWishlist) setWishlist(new Set(JSON.parse(savedWishlist)));
+    
+    detectLocation();
+
+    // Online/Offline detection setup
+    const handleOnline = () => { setIsOnline(true); showToast("You're back online!", "success"); };
+    const handleOffline = () => { setIsOnline(false); showToast("You're offline. Some features may not work.", "warning"); };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [detectLocation, showToast]); 
+
+  // Save wishlist to localStorage
+  useEffect(() => {
+    localStorage.setItem('wishlist', JSON.stringify([...wishlist]));
+  }, [wishlist]);
+  
+  // Infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loading && visibleItems < filteredItems.length) {
+          setLoading(true);
+          setTimeout(() => {
+            setVisibleItems(prev => Math.min(prev + 6, filteredItems.length));
+            setLoading(false);
+          }, 800);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [visibleItems, filteredItems.length, loading]);
+
+  // Filter handlers
+  const handleFilterChange = useCallback((filterType, value) => {
+    setFilters(prev => ({ ...prev, [filterType]: value }));
+  }, []);
+
+  const clearFilters = useCallback(() => {
+    setFilters({ sort: "rating", rating: null, price: null, features: [] });
+    showToast("Filters cleared", "info");
+  }, [showToast]);
+
+  return {
+    query,
+    setQuery,
+    activeCategory,
+    setActiveCategory,
+    filters,
+    handleFilterChange,
+    clearFilters,
+    searchHistory,
+    location,
+    isListening,
+    loading,
+    wishlist,
+    isOnline,
+    filteredItems,
+    displayedItems: filteredItems.slice(0, visibleItems),
+    loadMoreRef,
+    startVoiceSearch,
+    saveToHistory,
+    toggleWishlist,
+    detectLocation,
+    allItemCount: allItemsData.length,
+  };
+};
+
+
+// =================================================================
+// 2. Helper Components (Toast, Shimmer, Card, Filter, Modal)
+// =================================================================
+
 // Toast Container Component
 const ToastContainer = ({ toasts }) => (
-  <div className="fixed top-4 right-4 z-50 space-y-2">
+  <div className="fixed top-4 right-4 z-[9999] space-y-2 max-w-[90vw] sm:max-w-xs">
     {toasts.map((toast) => (
       <div
         key={toast.id}
-        className={`px-6 py-3 rounded-lg shadow-lg text-white font-medium transform transition-all duration-300 animate-in slide-in-from-right ${
+        className={`px-6 py-3 rounded-lg shadow-xl text-white font-medium transform transition-all duration-300 animate-in slide-in-from-right ${
           toast.type === "success" ? "bg-green-500" :
           toast.type === "error" ? "bg-red-500" :
           toast.type === "warning" ? "bg-yellow-500" : "bg-gray-900"
@@ -282,18 +547,16 @@ const ShimmerCard = () => (
 );
 
 // Enhanced Card Component
-const ServiceCard = ({ item, category, onBook, onViewDetails, isWishlisted, onToggleWishlist }) => {
+const ServiceCard = ({ item, onBook, onViewDetails, isWishlisted, onToggleWishlist }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
-  const renderStars = (rating) => {
-    return (
-      <div className="flex items-center gap-1">
-        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-        <span className="text-sm font-semibold text-gray-900">{rating}</span>
-      </div>
-    );
-  };
+  const renderStars = (rating) => (
+    <div className="flex items-center gap-1">
+      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+      <span className="text-sm font-semibold text-gray-900">{rating}</span>
+    </div>
+  );
 
   const renderDeliveryInfo = () => {
     if (item.deliveryTime) {
@@ -308,26 +571,24 @@ const ServiceCard = ({ item, category, onBook, onViewDetails, isWishlisted, onTo
     return null;
   };
 
-  const renderPrice = () => {
-    return (
-      <div className="flex items-center gap-2">
-        <span className="text-lg font-bold text-gray-900">₹{item.price}</span>
-        {item.originalPrice && (
-          <span className="text-sm text-gray-500 line-through">₹{item.originalPrice}</span>
-        )}
-        {item.originalPrice && (
-          <span className="text-xs font-semibold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
-            {Math.round((1 - item.price/item.originalPrice) * 100)}% OFF
-          </span>
-        )}
-      </div>
-    );
-  };
+  const renderPrice = () => (
+    <div className="flex items-center gap-2">
+      <span className="text-lg font-bold text-gray-900">₹{item.price}</span>
+      {item.originalPrice && (
+        <span className="text-sm text-gray-500 line-through">₹{item.originalPrice}</span>
+      )}
+      {item.originalPrice && (
+        <span className="text-xs font-semibold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
+          {Math.round((1 - item.price/item.originalPrice) * 100)}% OFF
+        </span>
+      )}
+    </div>
+  );
 
   const renderTags = () => {
     if (!item.tags) return null;
     return (
-      <div className="flex gap-1 flex-wrap">
+      <div className="flex gap-1 flex-wrap mb-2">
         {item.tags.map((tag, index) => (
           <span key={index} className="text-xs font-medium bg-blue-50 text-blue-600 px-2 py-1 rounded-full">
             {tag}
@@ -340,7 +601,7 @@ const ServiceCard = ({ item, category, onBook, onViewDetails, isWishlisted, onTo
   const renderSocialProof = () => {
     if (item.bookedToday > 5) {
       return (
-        <div className="flex items-center gap-1 text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-full">
+        <div className="flex items-center gap-1 text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-full w-fit">
           <Zap className="w-3 h-3" />
           <span>🔥 {item.bookedToday} booked today</span>
         </div>
@@ -352,35 +613,36 @@ const ServiceCard = ({ item, category, onBook, onViewDetails, isWishlisted, onTo
   return (
     <div 
       className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 hover:border-gray-200 group cursor-pointer"
-      onMouseEnter={() => setIsFlipped(true)}
-      onMouseLeave={() => setIsFlipped(false)}
+      onClick={() => onViewDetails(item)} // Make the whole card clickable for details
     >
       <div className="relative">
         {/* Image */}
-        {!imageLoaded && <div className="h-48 bg-gray-100 rounded-t-2xl animate-pulse"></div>}
-        <img 
-          src={item.img} 
-          alt={item.name}
-          className={`h-48 w-full object-cover rounded-t-2xl ${imageLoaded ? 'block' : 'hidden'}`}
-          onLoad={() => setImageLoaded(true)}
-          loading="lazy"
-        />
+        {!imageLoaded && !imageError && <div className="h-48 bg-gray-100 rounded-t-2xl animate-pulse"></div>}
+        {imageError ? (
+          <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-2xl flex items-center justify-center">
+            <Package className="w-12 h-12 text-gray-400" />
+          </div>
+        ) : (
+          <img 
+            src={item.img} 
+            alt={item.name}
+            className={`h-48 w-full object-cover rounded-t-2xl ${imageLoaded ? 'block' : 'hidden'}`}
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageError(true)}
+            loading="lazy"
+          />
+        )}
         
         {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
+        <div className="absolute top-3 left-3 flex flex-col gap-1">
           {item.featured && (
             <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
               <Crown className="w-3 h-3" />
               Featured
             </span>
           )}
-          {item.offers && item.offers.length > 0 && (
-            <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-              {item.offers.length} Offers
-            </span>
-          )}
           {item.trendingScore > 90 && (
-            <span className="bg-purple-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+            <span className="bg-purple-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1 w-fit">
               <TrendingUp className="w-3 h-3" />
               Trending
             </span>
@@ -394,6 +656,7 @@ const ServiceCard = ({ item, category, onBook, onViewDetails, isWishlisted, onTo
             onToggleWishlist(item.id);
           }}
           className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-lg hover:scale-110 transition-transform"
+          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
           {isWishlisted ? (
             <BookmarkCheck className="w-4 h-4 text-red-500 fill-current" />
@@ -417,13 +680,6 @@ const ServiceCard = ({ item, category, onBook, onViewDetails, isWishlisted, onTo
             </div>
           </div>
         )}
-
-        {/* Social Proof */}
-        {item.bookedToday > 5 && (
-          <div className="absolute bottom-3 left-3 right-3">
-            {renderSocialProof()}
-          </div>
-        )}
       </div>
 
       <div className="p-4">
@@ -443,14 +699,15 @@ const ServiceCard = ({ item, category, onBook, onViewDetails, isWishlisted, onTo
           {item.time && ` • ${item.time}`}
         </div>
 
-        {/* Tags */}
+        {/* Tags & Proof */}
         {renderTags()}
+        {renderSocialProof()}
 
         {/* Delivery Info */}
         {renderDeliveryInfo()}
 
         {/* Price and CTA */}
-        <div className="flex items-center justify-between mt-3">
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
           {renderPrice()}
           <div className="flex gap-2">
             <button 
@@ -458,7 +715,7 @@ const ServiceCard = ({ item, category, onBook, onViewDetails, isWishlisted, onTo
                 e.stopPropagation();
                 onViewDetails(item);
               }}
-              className="px-3 py-2 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 text-sm font-medium"
+              className="px-3 py-2 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 text-sm font-medium hidden sm:block"
             >
               View
             </button>
@@ -493,7 +750,7 @@ const ServiceCard = ({ item, category, onBook, onViewDetails, isWishlisted, onTo
 
 // Filter Section Component
 const FilterSection = ({ filters, onFilterChange, onClearFilters }) => {
-  const [expandedSection, setExpandedSection] = useState(null);
+  const [expandedSection, setExpandedSection] = useState('sort');
 
   const toggleSection = (section) => {
     setExpandedSection(expandedSection === section ? null : section);
@@ -506,7 +763,7 @@ const FilterSection = ({ filters, onFilterChange, onClearFilters }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-gray-900 text-lg">Filters</h3>
         {isFilterActive() && (
@@ -521,7 +778,7 @@ const FilterSection = ({ filters, onFilterChange, onClearFilters }) => {
 
       <div className="space-y-4">
         {Object.entries(filtersList).map(([section, options]) => (
-          <div key={section}>
+          <div key={section} className="border-b border-gray-100 pb-4 last:border-b-0 last:pb-0">
             <button 
               onClick={() => toggleSection(section)}
               className="flex items-center justify-between w-full text-left"
@@ -532,18 +789,18 @@ const FilterSection = ({ filters, onFilterChange, onClearFilters }) => {
               <ChevronDown className={`w-4 h-4 transition-transform ${expandedSection === section ? 'rotate-180' : ''}`} />
             </button>
             {expandedSection === section && (
-              <div className="mt-2 space-y-2">
+              <div className="mt-2 space-y-2 max-h-60 overflow-y-auto pr-2">
                 {options.map(option => (
                   <label key={option.id} className="flex items-center gap-3 cursor-pointer">
-                    {section === 'features' ? (
+                    {section === 'features' || section === 'price' ? (
                       <input
                         type="checkbox"
                         checked={filters[section]?.includes(option.id) || false}
                         onChange={(e) => {
-                          const newFeatures = e.target.checked
+                          const newOptions = e.target.checked
                             ? [...(filters[section] || []), option.id]
                             : (filters[section] || []).filter(f => f !== option.id);
-                          onFilterChange(section, newFeatures);
+                          onFilterChange(section, newOptions);
                         }}
                         className="text-blue-600 focus:ring-blue-500 rounded"
                       />
@@ -580,11 +837,11 @@ const TrendingSection = ({ items, onBook, onViewDetails, onToggleWishlist, wishl
   if (trendingItems.length === 0) return null;
 
   return (
-    <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-6 mb-8 border border-orange-100">
+    <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-4 sm:p-6 mb-8 border border-orange-100">
       <div className="flex items-center gap-2 mb-4">
         <Zap className="w-5 h-5 text-orange-500" />
         <h3 className="text-lg font-bold text-gray-900">🔥 Trending Now</h3>
-        <span className="bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+        <span className="bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-semibold hidden sm:inline-block">
           Hot
         </span>
       </div>
@@ -603,6 +860,7 @@ const TrendingSection = ({ items, onBook, onViewDetails, onToggleWishlist, wishl
               <button
                 onClick={() => onToggleWishlist(item.id)}
                 className="p-1 hover:bg-gray-100 rounded"
+                aria-label={wishlist.has(item.id) ? "Remove from wishlist" : "Add to wishlist"}
               >
                 {wishlist.has(item.id) ? (
                   <BookmarkCheck className="w-4 h-4 text-red-500 fill-current" />
@@ -624,12 +882,6 @@ const TrendingSection = ({ items, onBook, onViewDetails, onToggleWishlist, wishl
                   <span className="text-sm text-gray-500 line-through">₹{item.originalPrice}</span>
                 )}
               </div>
-              <button 
-                onClick={() => onBook(item)}
-                className="px-3 py-1 bg-orange-500 text-white rounded-lg text-sm font-semibold hover:bg-orange-600"
-              >
-                Book
-              </button>
             </div>
             {item.bookedToday > 0 && (
               <div className="mt-2 text-xs text-orange-600">
@@ -656,7 +908,7 @@ const RecommendedSection = ({ items, onBook, onViewDetails, onToggleWishlist, wi
   if (recommendedItems.length === 0) return null;
 
   return (
-    <div className="mt-12">
+    <div className="mt-8 sm:mt-12">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-purple-500" />
@@ -671,7 +923,6 @@ const RecommendedSection = ({ items, onBook, onViewDetails, onToggleWishlist, wi
           <ServiceCard
             key={item.id}
             item={item}
-            category={item.category}
             onBook={onBook}
             onViewDetails={onViewDetails}
             onToggleWishlist={onToggleWishlist}
@@ -688,6 +939,16 @@ const QuickBookModal = ({ item, isOpen, onClose, onConfirm }) => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
 
+  useEffect(() => {
+    if (isOpen) {
+      // Set default date to tomorrow
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      setSelectedDate(tomorrow.toISOString().split('T')[0]);
+      setSelectedTime('10:00 AM');
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const timeSlots = [
@@ -696,8 +957,8 @@ const QuickBookModal = ({ item, isOpen, onClose, onConfirm }) => {
   ];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-md">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-[9000] flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl w-full max-w-md animate-in slide-in-from-bottom sm:slide-in-from-top-10 duration-300" onClick={(e) => e.stopPropagation()}>
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900">Quick Book</h3>
@@ -731,14 +992,14 @@ const QuickBookModal = ({ item, isOpen, onClose, onConfirm }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Select Time</label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                 {timeSlots.map(slot => (
                   <button
                     key={slot}
                     onClick={() => setSelectedTime(slot)}
                     className={`p-2 border rounded-lg text-sm ${
                       selectedTime === slot 
-                        ? 'border-blue-500 bg-blue-50 text-blue-700' 
+                        ? 'border-blue-500 bg-blue-50 text-blue-700 font-semibold' 
                         : 'border-gray-300 text-gray-700 hover:border-gray-400'
                     }`}
                   >
@@ -775,328 +1036,72 @@ const QuickBookModal = ({ item, isOpen, onClose, onConfirm }) => {
   );
 };
 
-// Main Component
+
+// =================================================================
+// 3. Main Component: ZomatoStyleSearchPage
+// =================================================================
+
 export default function ZomatoStyleSearchPage() {
   const navigate = useNavigate();
-  const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
-  const [filters, setFilters] = useState({
-    sort: "rating",
-    rating: null,
-    price: null,
-    features: []
-  });
   const [showFilters, setShowFilters] = useState(false);
-  const [searchHistory, setSearchHistory] = useState([]);
-  const [isListening, setIsListening] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [wishlist, setWishlist] = useState(new Set());
-  const [location, setLocation] = useState("Detecting location...");
+  const [quickBookItem, setQuickBookItem] = useState(null);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [toasts, setToasts] = useState([]);
-  const [visibleItems, setVisibleItems] = useState(9);
-  const [quickBookItem, setQuickBookItem] = useState(null);
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const loadMoreRef = useRef(null);
 
-  // Combined all items
-  const allItems = useMemo(() => {
-    return Object.entries(data).flatMap(([category, items]) =>
-      items.map(item => ({ ...item, category, type: category }))
-    );
-  }, []);
-
-  // Filter and sort items - MOVED BEFORE useEffect THAT USES IT
-  const filteredItems = useMemo(() => {
-    let results = allItems.filter(item => {
-      // Category filter
-      const matchesCategory = activeCategory === "all" || item.category === activeCategory;
-      
-      // Search query
-      const matchesQuery = !query || 
-        item.name.toLowerCase().includes(query.toLowerCase()) ||
-        item.category?.toLowerCase().includes(query.toLowerCase()) ||
-        item.tags?.some(tag => tag.toLowerCase().includes(query.toLowerCase()));
-      
-      // Rating filter
-      const matchesRating = !filters.rating || item.rating >= parseFloat(filters.rating);
-      
-      // Price filter
-      let matchesPrice = true;
-      if (filters.price) {
-        const [min, max] = filters.price.split('-').map(p => p === '+' ? Infinity : parseInt(p));
-        matchesPrice = item.price >= min && (max ? item.price <= max : true);
-      }
-      
-      // Features filter
-      let matchesFeatures = true;
-      if (filters.features.length > 0) {
-        if (filters.features.includes('verified') && !item.vendor?.verified) matchesFeatures = false;
-        if (filters.features.includes('discount') && !item.originalPrice) matchesFeatures = false;
-        if (filters.features.includes('popular') && !item.tags?.includes('Popular')) matchesFeatures = false;
-        if (filters.features.includes('trending') && item.trendingScore < 85) matchesFeatures = false;
-        if (filters.features.includes('fast_delivery')) {
-          const deliveryTime = parseInt(item.deliveryTime);
-          if (isNaN(deliveryTime) || deliveryTime > 60) matchesFeatures = false;
-        }
-      }
-
-      return matchesCategory && matchesQuery && matchesRating && matchesPrice && matchesFeatures;
-    });
-
-    // Apply sorting
-    switch(filters.sort) {
-      case "rating":
-        results.sort((a, b) => b.rating - a.rating);
-        break;
-      case "price_low":
-        results.sort((a, b) => a.price - b.price);
-        break;
-      case "price_high":
-        results.sort((a, b) => b.price - a.price);
-        break;
-      case "delivery":
-        results.sort((a, b) => {
-          const aTime = parseInt(a.deliveryTime) || 999;
-          const bTime = parseInt(b.deliveryTime) || 999;
-          return aTime - bTime;
-        });
-        break;
-      case "distance":
-        results.sort((a, b) => {
-          const aDist = parseFloat(a.distance) || 999;
-          const bDist = parseFloat(b.distance) || 999;
-          return aDist - bDist;
-        });
-        break;
-      case "trending":
-        results.sort((a, b) => (b.trendingScore || 0) - (a.trendingScore || 0));
-        break;
-    }
-
-    return results;
-  }, [allItems, query, activeCategory, filters]);
-
-  const displayedItems = filteredItems.slice(0, visibleItems);
-
-  // Toast system
-  const showToast = (message, type = "info") => {
+  // Toast system (kept here as it manages the local UI state of toasts)
+  const showToast = useCallback((message, type = "info") => {
     const id = Date.now();
     const toast = { id, message, type };
     setToasts(prev => [...prev, toast]);
-    
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));
     }, 3000);
-  };
-
-  // Online/Offline detection
-  useEffect(() => {
-    const handleOnline = () => {
-      setIsOnline(true);
-      showToast("You're back online!", "success");
-    };
-    
-    const handleOffline = () => {
-      setIsOnline(false);
-      showToast("You're offline. Some features may not work.", "warning");
-    };
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
   }, []);
 
-  // Load search history and wishlist from localStorage
-  useEffect(() => {
-    const savedHistory = localStorage.getItem('searchHistory');
-    const savedWishlist = localStorage.getItem('wishlist');
-    
-    if (savedHistory) setSearchHistory(JSON.parse(savedHistory));
-    if (savedWishlist) setWishlist(new Set(JSON.parse(savedWishlist)));
-    
-    // Auto-detect location
-    detectLocation();
-  }, []);
+  // Use the custom hook for all core logic
+  const {
+    query,
+    setQuery,
+    activeCategory,
+    setActiveCategory,
+    filters,
+    handleFilterChange,
+    clearFilters,
+    searchHistory,
+    location,
+    isListening,
+    loading,
+    wishlist,
+    isOnline,
+    filteredItems,
+    displayedItems,
+    loadMoreRef,
+    startVoiceSearch,
+    saveToHistory,
+    toggleWishlist,
+    detectLocation,
+    allItemCount,
+  } = useSanskaraaSearch(showToast); 
 
-  // Save wishlist to localStorage
-  useEffect(() => {
-    localStorage.setItem('wishlist', JSON.stringify([...wishlist]));
-  }, [wishlist]);
-
-  // Infinite scroll - FIXED: Now filteredItems is defined before this useEffect
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loading && visibleItems < filteredItems.length) {
-          setLoading(true);
-          setTimeout(() => {
-            setVisibleItems(prev => Math.min(prev + 6, filteredItems.length));
-            setLoading(false);
-          }, 800);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [visibleItems, filteredItems.length, loading]);
-
-  // Save to search history
-  const saveToHistory = (searchQuery) => {
-    if (!searchQuery.trim()) return;
-    const updatedHistory = [searchQuery, ...searchHistory.filter(item => item !== searchQuery)].slice(0, 5);
-    setSearchHistory(updatedHistory);
-    localStorage.setItem('searchHistory', JSON.stringify(updatedHistory));
-  };
-
-  // Real Web Speech API for voice search
-  const startVoiceSearch = () => {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      showToast("Voice search not supported in this browser", "error");
-      return;
-    }
-
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = 'en-US,hi-IN'; // English and Hindi support
-
-    setIsListening(true);
-    setLoading(true);
-    
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      setQuery(transcript);
-      saveToHistory(transcript);
-      setIsListening(false);
-      setLoading(false);
-      showToast(`Searching for: ${transcript}`, "success");
-    };
-
-    recognition.onerror = (event) => {
-      console.error('Speech recognition error', event.error);
-      setIsListening(false);
-      setLoading(false);
-      showToast("Voice search failed. Please try again.", "error");
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-      setLoading(false);
-    };
-
-    recognition.start();
-  };
-
-  // Enhanced Geolocation
-  const detectLocation = () => {
-    if (!navigator.geolocation) {
-      setLocation("Location access not supported");
-      return;
-    }
-
-    setLoading(true);
-    
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        try {
-          const { latitude, longitude } = position.coords;
-          // Using a free geocoding service
-          const response = await fetch(
-            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
-          );
-          const data = await response.json();
-          setLocation(data.city || data.locality || "Your Location");
-          showToast("Location detected successfully!", "success");
-        } catch (error) {
-          setLocation("Connaught Place, Delhi"); // Fallback
-          showToast("Using default location", "info");
-        } finally {
-          setLoading(false);
-        }
-      },
-      (error) => {
-        setLocation("Connaught Place, Delhi"); // Fallback
-        setLoading(false);
-        showToast("Location access denied. Using default.", "warning");
-      },
-      { timeout: 10000 }
-    );
-  };
-
-  // Handlers
+  // Handlers (remain in the component for presentation/modals)
   const handleBook = (item) => {
     setQuickBookItem(item);
   };
 
   const handleQuickBookConfirm = (item, date, time) => {
     showToast(`Booking confirmed for ${item.name} on ${date} at ${time}`, "success");
-    // Here you would typically make an API call to confirm the booking
   };
 
   const handleViewDetails = (item) => {
     showToast(`Viewing details for ${item.name}`, "info");
-    // Navigate to detail page or open detail modal
-  };
-
-  const toggleWishlist = (itemId) => {
-    setWishlist(prev => {
-      const newWishlist = new Set(prev);
-      if (newWishlist.has(itemId)) {
-        newWishlist.delete(itemId);
-        showToast("Removed from wishlist", "info");
-      } else {
-        newWishlist.add(itemId);
-        showToast("Added to wishlist", "success");
-      }
-      return newWishlist;
-    });
-  };
-
-  const handleFilterChange = (filterType, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [filterType]: value
-    }));
-  };
-
-  const clearFilters = () => {
-    setFilters({
-      sort: "rating",
-      rating: null,
-      price: null,
-      features: []
-    });
-    showToast("Filters cleared", "info");
-  };
-
-  const navigateCategory = (category) => {
-    switch(category) {
-      case "events": navigate("/EventsPage"); break;
-      case "pandits": navigate("/PanditBooking"); break;
-      case "kits": navigate("/pujakits"); break;
-      case "decorations": navigate("/services"); break;
-      case "bookings": navigate("/BookingsPage"); break;
-      default: break;
-    }
+    // navigate('/details/' + item.id);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 mt-12">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40 mt-8">
-        <div className="max-w-7xl mx-auto px-4 py-4 mt-8 ">
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           {/* Online Status */}
           {!isOnline && (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 flex items-center gap-2">
@@ -1106,7 +1111,8 @@ export default function ZomatoStyleSearchPage() {
           )}
 
           {/* Top Bar */}
-          <div className="flex items-center justify-between mb-4 mt-8">
+          <div className="flex items-center justify-between mb-4">
+            {/* Logo */}
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
@@ -1114,17 +1120,19 @@ export default function ZomatoStyleSearchPage() {
               <span className="text-xl font-bold text-gray-900">Sanskaraa</span>
             </div>
             
-            <div className="flex items-center gap-4">
+            {/* Location & Profile */}
+            <div className="flex items-center gap-2 sm:gap-4">
               <button 
                 onClick={() => setShowLocationModal(true)}
-                className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
+                className="flex items-center gap-1 sm:gap-2 text-gray-700 hover:text-gray-900 max-w-[120px] sm:max-w-xs"
+                aria-label="Change location"
               >
-                <MapPin className="w-4 h-4" />
-                <span className="text-sm font-medium max-w-32 truncate">{location}</span>
-                <ChevronDown className="w-4 h-4" />
+                <MapPin className="w-4 h-4 flex-shrink-0" />
+                <span className="text-sm font-medium truncate">{location}</span>
+                <ChevronDown className="w-4 h-4 flex-shrink-0" />
               </button>
               
-              <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+              <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200" aria-label="User profile">
                 <User className="w-5 h-5 text-gray-600" />
               </button>
             </div>
@@ -1132,27 +1140,29 @@ export default function ZomatoStyleSearchPage() {
 
           {/* Search Bar */}
           <div className="relative">
-            <div className="flex items-center bg-white rounded-xl shadow-sm border border-gray-200 px-4 py-3 hover:border-gray-300 transition-colors">
+            <div className="flex items-center bg-white rounded-xl shadow-md border border-gray-200 px-4 py-2 sm:py-3 hover:border-gray-300 transition-colors">
               <Search className="text-gray-400 w-5 h-5 mr-3" />
               <input
                 type="text"
                 placeholder="Search for puja, pandits, kits, decorations..."
-                className="flex-1 outline-none text-gray-900 placeholder-gray-500 text-lg"
+                className="flex-1 outline-none text-gray-900 placeholder-gray-500 text-base sm:text-lg"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && saveToHistory(query)}
+                aria-label="Search services"
               />
               <div className="flex items-center gap-2 ml-2">
                 {isListening ? (
-                  <div className="animate-pulse text-red-500 flex items-center gap-2">
-                    <Loader className="w-5 h-5 animate-spin" />
-                    <span className="text-sm">Listening...</span>
+                  <div className="animate-pulse text-red-500 flex items-center gap-1 sm:gap-2">
+                    <Loader className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                    <span className="text-xs sm:text-sm">Listening...</span>
                   </div>
                 ) : (
                   <button
                     onClick={startVoiceSearch}
-                    className="p-2 hover:bg-gray-100 rounded-full transition"
+                    className="p-1 sm:p-2 hover:bg-gray-100 rounded-full transition"
                     title="Voice Search"
+                    aria-label="Start voice search"
                   >
                     <Mic className="w-5 h-5 text-gray-600" />
                   </button>
@@ -1160,9 +1170,9 @@ export default function ZomatoStyleSearchPage() {
               </div>
             </div>
 
-            {/* Auto-complete Tags */}
-            <div className="flex flex-wrap gap-2 mt-3">
-              <span className="text-sm text-gray-500 flex items-center gap-1">
+            {/* Popular Tags */}
+            <div className="flex flex-wrap gap-2 mt-3 overflow-x-auto pb-2 scrollbar-hide">
+              <span className="text-sm text-gray-500 flex items-center gap-1 flex-shrink-0">
                 <TrendingUp className="w-4 h-4" />
                 Popular:
               </span>
@@ -1173,22 +1183,18 @@ export default function ZomatoStyleSearchPage() {
                     setQuery(tag);
                     saveToHistory(tag);
                   }}
-                  className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-full transition-colors border border-transparent hover:border-gray-300"
+                  className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-full transition-colors border border-transparent hover:border-gray-300 flex-shrink-0"
                 >
                   {tag}
                 </button>
               ))}
             </div>
 
-            {/* Search Suggestions */}
+            {/* Search Suggestions (conditional rendering based on query) */}
             {query && searchHistory.length > 0 && (
-              <div className="absolute top-full left-0 right-0 bg-white shadow-lg rounded-xl mt-2 z-10 border border-gray-200">
+              <div className="absolute top-full left-0 right-0 bg-white shadow-lg rounded-xl mt-2 z-30 border border-gray-200">
                 <div className="p-2">
-                  <div className="flex items-center justify-between px-2 py-1 text-sm text-gray-500">
-                    <span>Recent searches</span>
-                    <Clock className="w-4 h-4" />
-                  </div>
-                  {searchHistory.map((term, index) => (
+                  {searchHistory.filter(term => term.toLowerCase().includes(query.toLowerCase())).map((term, index) => (
                     <button
                       key={index}
                       className="w-full text-left px-4 py-2 hover:bg-gray-50 rounded-lg flex items-center gap-3"
@@ -1209,11 +1215,12 @@ export default function ZomatoStyleSearchPage() {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        {/* Category Tabs */}
-        <div className="flex items-center gap-4 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Category Tabs - Scrollable for mobile */}
+        <div className="flex items-center gap-3 sm:gap-4 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+          {/* All Services Tab */}
           <button
-            className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all ${
+            className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0 ${
               activeCategory === "all" 
                 ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg" 
                 : "bg-white text-gray-700 border border-gray-200 hover:border-gray-300"
@@ -1221,21 +1228,25 @@ export default function ZomatoStyleSearchPage() {
             onClick={() => setActiveCategory("all")}
           >
             <Sparkles className="w-4 h-4" />
-            All Services
-            <span className="bg-white bg-opacity-20 px-1.5 py-0.5 rounded-full text-xs ml-1">
-              {allItems.length}
+            All
+            <span className="hidden sm:inline-block">Services</span>
+            <span className={`px-1.5 py-0.5 rounded-full text-xs ml-1 ${
+              activeCategory === "all" ? "bg-white bg-opacity-20" : "bg-gray-100"
+            }`}>
+              {allItemCount}
             </span>
           </button>
           
+          {/* Other Categories */}
           {categories.map(({ key, label, icon: Icon, color, count }) => (
             <button
               key={key}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all ${
+              className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0 ${
                 activeCategory === key 
                   ? `bg-gradient-to-r ${color} text-white shadow-lg` 
                   : "bg-white text-gray-700 border border-gray-200 hover:border-gray-300"
               }`}
-              onClick={() => navigateCategory(key)}
+              onClick={() => setActiveCategory(key)}
             >
               <Icon className="w-4 h-4" />
               {label}
@@ -1249,8 +1260,8 @@ export default function ZomatoStyleSearchPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Filters Sidebar */}
-          <div className="lg:col-span-1">
+          {/* Filters Sidebar (Hidden on small screens) */}
+          <div className="hidden lg:block lg:col-span-1">
             <FilterSection 
               filters={filters}
               onFilterChange={handleFilterChange}
@@ -1286,24 +1297,26 @@ export default function ZomatoStyleSearchPage() {
             {/* Results Header */}
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                   {activeCategory === "all" ? "All Services" : categories.find(c => c.key === activeCategory)?.label}
                 </h2>
-                <p className="text-gray-600">
+                <p className="text-sm sm:text-base text-gray-600">
                   {filteredItems.length} services found {query && `for "${query}"`}
                 </p>
               </div>
               
               <div className="flex items-center gap-3">
+                {/* Mobile Filter Button */}
                 <button 
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="lg:hidden flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50"
+                  onClick={() => setShowFilters(true)}
+                  className="lg:hidden flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 text-sm font-medium"
                 >
                   <Filter className="w-4 h-4" />
                   Filters
                 </button>
                 
-                <div className="text-sm text-gray-600">
+                {/* Sort Info */}
+                <div className="text-sm text-gray-600 hidden sm:block">
                   Sorted by: <span className="font-semibold">
                     {filtersList.sort.find(s => s.id === filters.sort)?.label}
                   </span>
@@ -1313,7 +1326,7 @@ export default function ZomatoStyleSearchPage() {
 
             {/* Trending Section */}
             <TrendingSection 
-              items={allItems}
+              items={filteredItems}
               onBook={handleBook}
               onViewDetails={handleViewDetails}
               onToggleWishlist={toggleWishlist}
@@ -1321,7 +1334,7 @@ export default function ZomatoStyleSearchPage() {
             />
 
             {/* Services Grid */}
-            {loading ? (
+            {loading && displayedItems.length === 0 ? ( 
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {[...Array(6)].map((_, i) => (
                   <ShimmerCard key={i} />
@@ -1334,7 +1347,6 @@ export default function ZomatoStyleSearchPage() {
                     <ServiceCard
                       key={item.id}
                       item={item}
-                      category={item.category}
                       onBook={handleBook}
                       onViewDetails={handleViewDetails}
                       onToggleWishlist={toggleWishlist}
@@ -1343,12 +1355,12 @@ export default function ZomatoStyleSearchPage() {
                   ))}
                 </div>
                 
-                {/* Load More Trigger */}
-                {visibleItems < filteredItems.length && (
+                {/* Load More Trigger (visible only when there are more items to load) */}
+                {filteredItems.length > displayedItems.length && (
                   <div ref={loadMoreRef} className="flex justify-center mt-8">
-                    <div className="animate-pulse text-gray-500 flex items-center gap-2">
-                      <Loader className="w-5 h-5 animate-spin" />
-                      Loading more services...
+                    <div className={`text-gray-500 flex items-center gap-2 ${loading ? 'animate-pulse' : ''}`}>
+                      <Loader className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+                      {loading ? 'Loading more services...' : 'Scroll down to load more'}
                     </div>
                   </div>
                 )}
@@ -1369,7 +1381,7 @@ export default function ZomatoStyleSearchPage() {
 
             {/* Recommendations Section */}
             <RecommendedSection 
-              items={allItems}
+              items={filteredItems}
               onBook={handleBook}
               onViewDetails={handleViewDetails}
               onToggleWishlist={toggleWishlist}
@@ -1381,12 +1393,12 @@ export default function ZomatoStyleSearchPage() {
 
       {/* Mobile Filters Modal */}
       {showFilters && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden">
-          <div className="absolute right-0 top-0 h-full w-80 bg-white overflow-y-auto">
-            <div className="p-4 border-b border-gray-200">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[8000] lg:hidden animate-in fade-in" onClick={() => setShowFilters(false)}>
+          <div className="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-white overflow-y-auto shadow-2xl animate-in slide-in-from-right duration-300" onClick={(e) => e.stopPropagation()}>
+            <div className="p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-lg">Filters</h3>
-                <button onClick={() => setShowFilters(false)}>
+                <button onClick={() => setShowFilters(false)} aria-label="Close filters">
                   <X className="w-6 h-6" />
                 </button>
               </div>
@@ -1398,14 +1410,23 @@ export default function ZomatoStyleSearchPage() {
                 onClearFilters={clearFilters}
               />
             </div>
+            {/* Action button for mobile filter */}
+            <div className="p-4 sticky bottom-0 bg-white shadow-lg border-t border-gray-200">
+                <button
+                    onClick={() => setShowFilters(false)}
+                    className="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl hover:from-blue-600 hover:to-indigo-600 font-semibold"
+                >
+                    Show {filteredItems.length} Results
+                </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Location Modal */}
       {showLocationModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[8000] flex items-center justify-center p-4" onClick={() => setShowLocationModal(false)}>
+          <div className="bg-white rounded-2xl w-full max-w-md animate-in slide-in-from-bottom sm:slide-in-from-top-10 duration-300" onClick={(e) => e.stopPropagation()}>
             <div className="p-6 border-b border-gray-200">
               <h3 className="font-semibold text-lg">Choose Location</h3>
             </div>
@@ -1413,16 +1434,21 @@ export default function ZomatoStyleSearchPage() {
               <input
                 type="text"
                 placeholder="Enter your location..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-xl mb-4"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl mb-4 focus:ring-blue-500 focus:border-blue-500"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               />
               <div className="space-y-2 mb-4">
                 <button
                   onClick={detectLocation}
-                  className="w-full flex items-center gap-2 px-4 py-3 hover:bg-gray-50 rounded-lg border border-gray-200"
+                  className="w-full flex items-center gap-2 px-4 py-3 hover:bg-gray-50 rounded-lg border border-gray-200 text-left"
+                  disabled={loading}
                 >
-                  <Navigation className="w-5 h-5 text-blue-500" />
+                  {loading ? (
+                    <Loader className="w-5 h-5 text-blue-500 animate-spin" />
+                  ) : (
+                    <Navigation className="w-5 h-5 text-blue-500" />
+                  )}
                   <span>Use Current Location</span>
                 </button>
                 {["Connaught Place, Delhi", "Karol Bagh, Delhi", "Noida", "Gurgaon"].map(loc => (
@@ -1431,6 +1457,7 @@ export default function ZomatoStyleSearchPage() {
                     onClick={() => {
                       setLocation(loc);
                       setShowLocationModal(false);
+                      showToast(`Location set to ${loc}`, "info");
                     }}
                     className="w-full text-left px-4 py-3 hover:bg-gray-50 rounded-lg border border-gray-200"
                   >
