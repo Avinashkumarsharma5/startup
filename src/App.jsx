@@ -23,7 +23,7 @@ import ServiceProviderProfile from "./pages/ServiceProviderProfile";
 import VendorRegistration from "./components/layout/VendorRegistration";
 import SanskaraaNotifications from "./pages/Notification";
 import CartPage from "./components/layout/CartPage";
-
+import ForgetPassword from "./pages/ForgetPassword";
 
 
 export default function App() {
@@ -60,7 +60,8 @@ export default function App() {
         <Route path="/vendor-registration" element={<VendorRegistration />} />
           <Route path="/notifications" element={<SanskaraaNotifications />} /> 
           <Route path="/cart" element={<CartPage />} />
-
+          <Route path="/forget-password" element={<ForgetPassword />} />
+    
 
         </Routes>
 
