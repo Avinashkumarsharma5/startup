@@ -62,7 +62,9 @@ export default function Navbar({ onMicClick }) {
 
         {/* Right Side Actions */}
         <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-          <Bell className="w-5 h-5 sm:w-6 sm:h-6 text-white cursor-pointer hover:scale-110 transition-transform" />
+          <Link to="/notifications">
+        <Bell className="w-5 h-5 sm:w-6 sm:h-6 text-white cursor-pointer hover:scale-110 transition-transform" />
+          </Link>
 
           {/* Voice Assistant Button */}
           <button
