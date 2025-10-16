@@ -1092,7 +1092,7 @@ export default function ZomatoStyleSearchPage() {
   return (
     <div className={`min-h-screen bg-[${THEME_COLORS.background}]`}>
       {/* Header - Themed */}
-      <header className={`bg-white shadow-sm border-b border-[${THEME_COLORS.border}] sticky top-0 z-40`}>
+      <header className={`bg-white shadow-sm border-b border-[${THEME_COLORS.border}] sticky top-0 z-40 mt-12`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           {/* Online Status */}
           {!isOnline && (
@@ -1103,9 +1103,9 @@ export default function ZomatoStyleSearchPage() {
           )}
 
           {/* Search Bar (Themed to match Home) */}
-          <div className="relative">
-            <div className={`flex items-center bg-[${THEME_COLORS.background}] rounded-xl shadow-md border border-orange-200 px-4 py-2 sm:py-3 hover:border-amber-500 transition-colors`}>
-              <Search className={`text-orange-500 w-5 h-5 mr-3`} />
+          <div className="relative mt-12">
+            <div className={`flex items-center bg-[${THEME_COLORS.background}] rounded-xl shadow-md border border-orange-200 px-4 py-2 sm:py-3 hover:border-amber-500 transition-colors `}>
+              <Search className={`text-orange-500 w-6 h-9 mr-7`} />
               <input
                 type="text"
                 placeholder="Search pujas, pandits, kits, decorations..."
