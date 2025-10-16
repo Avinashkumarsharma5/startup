@@ -22,6 +22,8 @@ import SearchPage from "./pages/SearchPage";
 import ServiceProviderProfile from "./pages/ServiceProviderProfile";
 import VendorRegistration from "./components/layout/VendorRegistration";
 import SanskaraaNotifications from "./pages/Notification";
+import CartPage from "./components/layout/CartPage";
+
 
 
 export default function App() {
@@ -57,7 +59,9 @@ export default function App() {
         <Route path="/service-provider/profile" element={<ServiceProviderProfile />} />
         <Route path="/vendor-registration" element={<VendorRegistration />} />
           <Route path="/notifications" element={<SanskaraaNotifications />} /> 
-    
+          <Route path="/cart" element={<CartPage />} />
+
+
         </Routes>
 
         {/* VoiceAssistant Overlay */}
