@@ -21,6 +21,7 @@ import VoiceAssistant from "./pages/VoiceAssistant";
 import SearchPage from "./pages/SearchPage";
 import ServiceProviderProfile from "./pages/ServiceProviderProfile";
 import VendorRegistration from "./components/layout/VendorRegistration";
+import SanskaraaNotifications from "./pages/Notification";
 
 
 export default function App() {
@@ -55,6 +56,8 @@ export default function App() {
         <Route path="/search" element={<SearchPage />} />
         <Route path="/service-provider/profile" element={<ServiceProviderProfile />} />
         <Route path="/vendor-registration" element={<VendorRegistration />} />
+          <Route path="/notifications" element={<SanskaraaNotifications />} /> 
+    
         </Routes>
 
         {/* VoiceAssistant Overlay */}
