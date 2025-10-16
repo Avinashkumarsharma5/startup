@@ -4,8 +4,8 @@ import { Facebook, Instagram, Twitter } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-r from-[#5C3A21] to-[#8B4513] text-[#FFD700] py-6 px-8 mt- border-t-2 border-[#FFD700]">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+    <footer className="bg-gradient-to-r from-[#5C3A21] to-[#8B4513] text-[#FFD700] py-6 px-8 mt- border-t-2 border-[#FFD700] ">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-5">
         {/* Branding */}
         <div className="flex items-center gap-3">
           <img

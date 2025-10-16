@@ -692,6 +692,8 @@ function QuickActions() {
 
 // ----------------- Floating Cart with Badge -----------------
 function FloatingCart({ itemCount }) {
+  const navigate = useNavigate();
+
   return (
     <motion.div
       className="fixed bottom-20 sm:bottom-24 right-4 sm:right-5 z-50"
@@ -699,7 +701,10 @@ function FloatingCart({ itemCount }) {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.6 }}
     >
-      <button className="bg-[#800000] text-white rounded-full p-3 sm:p-3.5 shadow-lg hover:bg-[#A52A2A] relative">
+      <button
+        onClick={() => navigate("/cart")} // Navigate to CartPage
+        className="bg-[#800000] text-white rounded-full p-3 sm:p-3.5 shadow-lg hover:bg-[#A52A2A] relative"
+      >
         <ShoppingCart size={20} className="sm:hidden" />
         <ShoppingCart size={22} className="hidden sm:inline" />
         {itemCount > 0 && (
