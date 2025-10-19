@@ -64,9 +64,9 @@ const testimonials = [
 
 // Sample offers
 const specialOffers = [
-  { id: 1, title: "Ganesh Puja Kits", discount: "20% off", expiry: "2025-09-10", image: "https://images.unsplash.com/photo-1566618432041-6f0e1438dffd?w=300&h=200&fit=crop" },
-  { id: 2, title: "Navratri Special", discount: "15% off", expiry: "2025-09-25", image: "https://images.unsplash.com/photo-1601909088872-8EC58DC3E59B?w=300&h=200&fit=crop" },
-  { id: 3, title: "Wedding Puja Package", discount: "25% off", expiry: "2025-10-15", image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=300&h=200&fit=crop" }
+  { id: 1, title: "Ganesh Puja Kits", discount: "20% off", expiry: "2025-09-10", image: "src/assets/images/ganesh puja 1.jpeg" },
+  { id: 2, title: "Navratri Special", discount: "15% off", expiry: "2025-09-25", image: "src/assets/images/sanskaraa1.png" },
+  { id: 3, title: "Wedding Puja Package", discount: "25% off", expiry: "2025-10-15", image: "src/assets/images/sadi1.jpg" }
 ];
 
 // Sample past bookings
@@ -398,19 +398,19 @@ function HeroBanner() {
   const slides = [
     {
       id: 1,
-      img: "https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=800&h=400&fit=crop",
+      img: "src/assets/images/grrih prews 1.png",
       title: "Griha Pravesh Puja",
       subtitle: "Sacred beginnings with blessings",
     },
     {
       id: 2,
-      img: "https://images.unsplash.com/photo-1601909088872-8EC58DC3E59B?w=800&h=400&fit=crop",
+      img: "src/assets/images/havan.jpg",
       title: "Satyanarayan Puja",
       subtitle: "Invoke prosperity & harmony",
     },
     {
       id: 3,
-      img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&h=400&fit=crop",
+      img: "src/assets/images/decor2.png",
       title: "Wedding Rituals",
       subtitle: "Memorable sacred unions",
     },
