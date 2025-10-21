@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -8,10 +8,110 @@ import {
   TrendingUp, Zap, Crown, ThumbsUp, Gift, Sparkles, Play,
   ChevronLeft, ChevronRight, Plus, Minus, CheckCircle,
   Award, Users, Camera, Tent, Building2, Lightbulb, Utensils,
-  Shield, PhoneCall, Video, Music, Car, Palette
+  Shield, PhoneCall, Video, Music, Car, Palette, Home
 } from "lucide-react";
 
-// --------------------------- Mock data ---------------------------
+// --------------------------- Toast Context ---------------------------
+const ToastContext = createContext();
+
+export const ToastProvider = ({ children }) => {
+  const [toasts, setToasts] = useState([]);
+
+  const addToast = (message, type = 'info', duration = 3000) => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type, duration }]);
+  };
+
+  const removeToast = (id) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id));
+  };
+
+  return (
+    <ToastContext.Provider value={{ addToast }}>
+      {children}
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
+    </ToastContext.Provider>
+  );
+};
+
+export const useToast = () => {
+  const context = useContext(ToastContext);
+  if (!context) {
+    throw new Error('useToast must be used within a ToastProvider');
+  }
+  return context;
+};
+
+const ToastContainer = ({ toasts, removeToast }) => {
+  return (
+    <div className="fixed top-20 right-4 z-50 space-y-2 max-w-sm">
+      <AnimatePresence>
+        {toasts.map(toast => (
+          <Toast
+            key={toast.id}
+            toast={toast}
+            onClose={() => removeToast(toast.id)}
+          />
+        ))}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+const Toast = ({ toast, onClose }) => {
+  const { message, type, duration } = toast;
+
+  useEffect(() => {
+    const timer = setTimeout(onClose, duration);
+    return () => clearTimeout(timer);
+  }, [onClose, duration]);
+
+  const getToastStyles = () => {
+    switch (type) {
+      case 'success':
+        return 'bg-green-500 text-white border-green-600';
+      case 'error':
+        return 'bg-red-500 text-white border-red-600';
+      case 'warning':
+        return 'bg-amber-500 text-white border-amber-600';
+      default:
+        return 'bg-amber-500 text-white border-amber-600';
+    }
+  };
+
+  const getIcon = () => {
+    switch (type) {
+      case 'success':
+        return <CheckCircle className="w-5 h-5" />;
+      case 'error':
+        return <X className="w-5 h-5" />;
+      case 'warning':
+        return <Zap className="w-5 h-5" />;
+      default:
+        return <CheckCircle className="w-5 h-5" />;
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ x: 300, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: 300, opacity: 0 }}
+      className={`p-4 rounded-xl shadow-lg border ${getToastStyles()} flex items-center gap-3`}
+    >
+      {getIcon()}
+      <span className="flex-1 text-sm font-medium">{message}</span>
+      <button
+        onClick={onClose}
+        className="ml-2 hover:opacity-70 transition-opacity"
+      >
+        <X className="w-4 h-4" />
+      </button>
+    </motion.div>
+  );
+};
+
+// --------------------------- Mock Data ---------------------------
 const servicesData = {
   decorations: [
     {
@@ -35,7 +135,12 @@ const servicesData = {
         { id: "flowers", name: "Flower Type", options: ["Roses", "Marigolds", "Orchids", "Mixed"], default: "Mixed" }
       ],
       description: "Beautiful traditional mandap decoration with fresh flowers and traditional elements for your special day.",
-      inclusions: ["Fresh Flower Decoration", "Traditional Fabric Draping", "Lighting Setup", "On-site Support"]
+      inclusions: ["Fresh Flower Decoration", "Traditional Fabric Draping", "Lighting Setup", "On-site Support"],
+      images: [
+        "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop"
+      ]
     },
     {
       id: 2,
@@ -48,7 +153,11 @@ const servicesData = {
       location: "Mumbai",
       trending: true,
       description: "Elegant floral stage decoration perfect for weddings and corporate events.",
-      inclusions: ["Fresh Flower Arrangements", "Stage Backdrop", "Floral Garlands", "Setup & Teardown"]
+      inclusions: ["Fresh Flower Arrangements", "Stage Backdrop", "Floral Garlands", "Setup & Teardown"],
+      images: [
+        "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop"
+      ]
     },
   ],
   lighting: [
@@ -63,7 +172,10 @@ const servicesData = {
       location: "Bangalore",
       discount: 10,
       description: "Professional LED lighting setup to create the perfect ambiance for your event.",
-      inclusions: ["LED Spotlights", "Color Lighting", "DMX Control", "Technical Support"]
+      inclusions: ["LED Spotlights", "Color Lighting", "DMX Control", "Technical Support"],
+      images: [
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop"
+      ]
     },
   ],
   catering: [
@@ -83,7 +195,11 @@ const servicesData = {
         { id: "c2", name: "Gupta Caterers", rating: 4.6, available: true, responseTime: "15 min", completedEvents: 356 },
       ],
       description: "Delicious vegetarian catering with traditional and contemporary dishes for all your guests.",
-      inclusions: ["5 Main Courses", "3 Appetizers", "Desserts", "Serving Staff", "Utensils"]
+      inclusions: ["5 Main Courses", "3 Appetizers", "Desserts", "Serving Staff", "Utensils"],
+      images: [
+        "https://images.unsplash.com/photo-1555244162-803834f70033?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop"
+      ]
     },
   ],
   tents: [
@@ -97,7 +213,10 @@ const servicesData = {
       category: "Premium",
       location: "Pune",
       description: "Spacious and elegant wedding tents with climate control and beautiful interiors.",
-      inclusions: ["Weather-proof Tent", "AC Setup", "Flooring", "Lighting", "Setup & Removal"]
+      inclusions: ["Weather-proof Tent", "AC Setup", "Flooring", "Lighting", "Setup & Removal"],
+      images: [
+        "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop"
+      ]
     },
   ],
   venues: [
@@ -112,7 +231,11 @@ const servicesData = {
       location: "Delhi",
       trending: true,
       description: "Grand luxury wedding hall with modern amenities and traditional architecture.",
-      inclusions: ["Main Hall", "Parking Space", "Dressing Rooms", "Basic Sound System", "Security"]
+      inclusions: ["Main Hall", "Parking Space", "Dressing Rooms", "Basic Sound System", "Security"],
+      images: [
+        "https://images.unsplash.com/photo-1519677100203-0f0c8da7f8c1?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=400&h=300&fit=crop"
+      ]
     },
   ],
   photography: [
@@ -126,7 +249,11 @@ const servicesData = {
       category: "Premium",
       location: "Mumbai",
       description: "Capture your special moments with our professional photography and videography team.",
-      inclusions: ["8 Hours Coverage", "2 Photographers", "1 Videographer", "100+ Edited Photos", "5 Min Highlight Video"]
+      inclusions: ["8 Hours Coverage", "2 Photographers", "1 Videographer", "100+ Edited Photos", "5 Min Highlight Video"],
+      images: [
+        "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop"
+      ]
     },
   ],
   entertainment: [
@@ -140,7 +267,10 @@ const servicesData = {
       category: "DJ",
       location: "Bangalore",
       description: "Professional DJ services with latest sound equipment and vast music library.",
-      inclusions: ["5 Hours Performance", "Sound System", "Light Effects", "Music Requests", "MC Services"]
+      inclusions: ["5 Hours Performance", "Sound System", "Light Effects", "Music Requests", "MC Services"],
+      images: [
+        "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=300&fit=crop"
+      ]
     },
   ]
 };
@@ -192,8 +322,59 @@ const packagesData = [
   }
 ];
 
-// --------------------------- Small components ---------------------------
+// --------------------------- Navigation Component ---------------------------
+const Navigation = ({ activePage, onPageChange }) => {
+  const { addToast } = useToast();
+  
+  const navItems = [
+    { key: 'services', label: 'Services', icon: Sparkles },
+    { key: 'wishlist', label: 'Wishlist', icon: Bookmark },
+    { key: 'home', label: 'Home', icon: Home },
+  ];
 
+  return (
+    <nav className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md border-b border-amber-200 z-40">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center gap-2">
+            <Flower2 className="w-8 h-8 text-amber-600" />
+            <span className="text-xl font-bold text-amber-800">WeddingPlanner</span>
+          </div>
+          
+          <div className="flex items-center gap-1 bg-amber-50 rounded-2xl p-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activePage === item.key;
+              
+              return (
+                <button
+                  key={item.key}
+                  onClick={() => onPageChange(item.key)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
+                    isActive
+                      ? 'bg-white text-amber-700 shadow-lg'
+                      : 'text-amber-600 hover:text-amber-700'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="text-sm font-medium">{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <button className="p-2 hover:bg-amber-100 rounded-full transition">
+              <User className="w-5 h-5 text-amber-600" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+// --------------------------- Small Components ---------------------------
 const SkeletonCard = () => (
   <div className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse">
     <div className="w-full h-48 bg-amber-200"></div>
@@ -205,6 +386,61 @@ const SkeletonCard = () => (
     </div>
   </div>
 );
+
+const CategorySkeleton = ({ category }) => {
+  const getSkeletonCount = () => {
+    switch(category) {
+      case 'all': return 8;
+      case 'decorations': return 6;
+      case 'catering': return 4;
+      default: return 4;
+    }
+  };
+
+  return (
+    <div className="fade-in">
+      <div className="flex items-center justify-between mb-4">
+        <div className="h-6 bg-amber-200 rounded w-32 animate-pulse"></div>
+        <div className="h-4 bg-amber-200 rounded w-16 animate-pulse"></div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {[...Array(getSkeletonCount())].map((_, i) => (
+          <SkeletonCard key={i} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const EmptyState = ({ category, searchQuery, onReset }) => {
+  const getEmptyStateMessage = () => {
+    if (searchQuery && category !== 'all') {
+      return `No ${category} services found for "${searchQuery}"`;
+    } else if (searchQuery) {
+      return `No services found for "${searchQuery}"`;
+    } else if (category !== 'all') {
+      return `No ${category} services available`;
+    } else {
+      return "No services found";
+    }
+  };
+
+  return (
+    <div className="text-center py-12">
+      <div className="text-6xl mb-4">🔍</div>
+      <h3 className="text-xl font-semibold text-amber-700 mb-2">
+        {getEmptyStateMessage()}
+      </h3>
+      <p className="text-amber-600 mb-4">Try adjusting your search or filters</p>
+      <button
+        onClick={onReset}
+        className="px-6 py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors"
+      >
+        Reset Filters
+      </button>
+    </div>
+  );
+};
 
 const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlist, isWishlisted }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -304,7 +540,7 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => onViewDetails(service)}
-                className="px-4 py-2 bg-white text-amber-800 rounded-full font-medium hover:bg-amber-50 transition-colors"
+                className="px-4 py-2 bg-white text-amber-800 rounded-full font-medium hover:bg-amber-50 transition-colors text-sm"
               >
                 Quick View
               </motion.button>
@@ -312,7 +548,7 @@ const ServiceCard = ({ service, category, onBook, onViewDetails, onToggleWishlis
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => onBook(service)}
-                className="px-4 py-2 bg-amber-500 text-white rounded-full font-medium hover:bg-amber-600 transition-colors"
+                className="px-4 py-2 bg-amber-500 text-white rounded-full font-medium hover:bg-amber-600 transition-colors text-sm"
               >
                 Book Now
               </motion.button>
@@ -586,540 +822,169 @@ const TrustBadges = () => (
   </div>
 );
 
-// --------------------------- Main Services Page ---------------------------
-export default function ServicesPage() {
-  const navigate = useNavigate();
-  const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
-  const [filters, setFilters] = useState({
-    minRating: 0,
-    maxPrice: 500000,
-    location: "",
-    vendorRating: 0,
-    availability: "all"
-  });
-  const [showFilters, setShowFilters] = useState(false);
-  const [searchHistory, setSearchHistory] = useState([]);
-  const [isListening, setIsListening] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [visibleCounts, setVisibleCounts] = useState({});
-  const [wishlist, setWishlist] = useState(new Set());
-  const [recentlyViewed, setRecentlyViewed] = useState([]);
-  const [selectedService, setSelectedService] = useState(null);
-  const [showDetailModal, setShowDetailModal] = useState(false);
-  const [sortBy, setSortBy] = useState("rating");
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      setLoading(false);
-    };
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    const savedHistory = localStorage.getItem('servicesSearchHistory');
-    if (savedHistory) {
-      try {
-        setSearchHistory(JSON.parse(savedHistory));
-      } catch (e) {
-        setSearchHistory([]);
-      }
-    }
-  }, []);
-
-  const saveToHistory = (searchQuery) => {
-    if (!searchQuery.trim()) return;
-    setSearchHistory(prev => {
-      const updatedHistory = [searchQuery, ...prev.filter(item => item !== searchQuery)].slice(0, 5);
-      localStorage.setItem('servicesSearchHistory', JSON.stringify(updatedHistory));
-      return updatedHistory;
-    });
-  };
-
-  const startVoiceSearch = () => {
-    setIsListening(true);
-    setTimeout(() => {
-      const sampleQueries = ["Wedding decoration", "Catering services", "Venue booking", "Lighting solutions"];
-      const randomQuery = sampleQueries[Math.floor(Math.random() * sampleQueries.length)];
-      setQuery(randomQuery);
-      setIsListening(false);
-      saveToHistory(randomQuery);
-    }, 1200);
-  };
-
-  const allServices = useMemo(() => {
-    return Object.entries(servicesData).flatMap(([category, services]) =>
-      services.map(service => ({ ...service, serviceCategory: category }))
-    );
-  }, []);
-
-  const filteredResults = useMemo(() => {
-    let results = allServices.filter(service => {
-      const q = query.trim().toLowerCase();
-      const matchesQuery = !q || service.name.toLowerCase().includes(q) ||
-                          (service.category && service.category.toLowerCase().includes(q)) ||
-                          (service.serviceCategory && service.serviceCategory.toLowerCase().includes(q));
-
-      const matchesCategory = activeCategory === "all" || activeCategory === service.serviceCategory;
-      const matchesRating = (service.rating || 0) >= (filters.minRating || 0);
-      const matchesPrice = (service.price || 0) <= (filters.maxPrice || Infinity);
-      const matchesLocation = !filters.location || (service.location && service.location.toLowerCase().includes(filters.location.toLowerCase()));
-
-      const matchesAvailability = filters.availability === "all" ||
-                                   (filters.availability === "available" && service.vendors?.some(v => v.available)) ||
-                                   (filters.availability === "trending" && service.trending);
-
-      return matchesQuery && matchesCategory && matchesRating && matchesPrice && matchesLocation && matchesAvailability;
-    });
-
-    switch(sortBy) {
-      case "price-low":
-        results.sort((a, b) => (a.price || 0) - (b.price || 0));
-        break;
-      case "price-high":
-        results.sort((a, b) => (b.price || 0) - (a.price || 0));
-        break;
-      case "rating":
-        results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-        break;
-      case "popularity":
-        results.sort((a, b) => (b.reviews || 0) - (a.reviews || 0));
-        break;
-      default:
-        results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    }
-
-    return results;
-  }, [allServices, query, activeCategory, filters, sortBy]);
-
-  const categorizedResults = useMemo(() => {
-    const grouped = {};
-    filteredResults.forEach(service => {
-      const cat = service.serviceCategory;
-      if (!grouped[cat]) grouped[cat] = [];
-      grouped[cat].push(service);
-    });
-    return grouped;
-  }, [filteredResults]);
-
-  const handleBook = (service) => {
-    showToast(`Starting booking process for ${service.name}`);
-    // TODO: navigate to booking page or open booking modal
-  };
-
-  const handleViewDetails = (service) => {
-    setSelectedService(service);
-    setShowDetailModal(true);
-
-    setRecentlyViewed(prev => {
-      const filtered = prev.filter(item => item.id !== service.id);
-      return [service, ...filtered].slice(0, 8);
-    });
-  };
-
-  const toggleWishlist = (serviceId) => {
-    setWishlist(prev => {
-      const newWishlist = new Set(prev);
-      if (newWishlist.has(serviceId)) {
-        newWishlist.delete(serviceId);
-        showToast("Removed from wishlist");
-      } else {
-        newWishlist.add(serviceId);
-        showToast("Added to wishlist");
-      }
-      return newWishlist;
-    });
-  };
-
-  const resetFilters = () => {
-    setFilters({
-      minRating: 0,
-      maxPrice: 500000,
-      location: "",
-      vendorRating: 0,
-      availability: "all"
-    });
-  };
-
-  const showToast = (message) => {
-    // Simple toast implementation
-    const toast = document.createElement("div");
-    toast.className = "fixed top-20 right-4 bg-amber-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-in slide-in-from-right";
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-  };
+// --------------------------- Mobile Filter Modal ---------------------------
+const MobileFilterModal = ({ isOpen, onClose, filters, setFilters, resetFilters, uniqueLocations }) => {
+  if (!isOpen) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
-      {/* Main Content starts below navbar (pt-20 for fixed navbar) */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-6">
-        
-        {/* Search and Categories Section */}
-        <div className="bg-white shadow-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 border border-amber-100">
-          <div className="relative mb-4 sm:mb-6">
-            <div className="flex items-center bg-white rounded-xl sm:rounded-2xl shadow-lg px-3 sm:px-4 py-2 sm:py-3 border border-amber-200">
-              <Search className="text-amber-600 w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 flex-shrink-0" />
-              <input
-                type="text"
-                placeholder="Search for wedding services, catering, venues..."
-                className="w-full outline-none text-amber-800 placeholder-amber-500 text-sm sm:text-base md:text-lg"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && saveToHistory(query)}
-              />
-              <div className="flex items-center space-x-1 sm:space-x-2 ml-1 sm:ml-2">
-                {isListening ? (
-                  <div className="animate-pulse text-amber-600">
-                    <Loader className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                  </div>
-                ) : (
-                  <button
-                    onClick={startVoiceSearch}
-                    className="p-1 sm:p-2 hover:bg-amber-100 rounded-full transition"
-                    title="Voice Search"
-                  >
-                    <Mic className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {query && searchHistory.length > 0 && (
-              <div className="absolute top-full left-0 right-0 z-10">
-                <div className="bg-white shadow-lg rounded-2xl mt-3 border border-amber-200">
-                  <div className="p-2">
-                    <div className="flex items-center justify-between px-2 py-1 text-sm text-amber-600 border-b">
-                      <span>Recent Searches</span>
-                      <Clock className="w-4 h-4" />
-                    </div>
-                    {searchHistory.map((term, index) => (
-                      <button
-                        key={index}
-                        className="w-full text-left px-4 py-2 hover:bg-amber-50 rounded-lg flex items-center space-x-2"
-                        onClick={() => {
-                          setQuery(term);
-                          saveToHistory(term);
-                        }}
-                      >
-                        <Search className="w-4 h-4 text-amber-400" />
-                        <span className="text-amber-800">{term}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide">
-            {categories.map(({ key, label, icon: Icon, color }) => (
-              <button
-                key={key}
-                className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 flex-shrink-0 ${
-                  activeCategory === key
-                    ? `bg-gradient-to-r ${color} text-white shadow-lg transform scale-105`
-                    : "bg-white text-amber-700 border border-amber-200 hover:bg-amber-50"
-                }`}
-                onClick={() => setActiveCategory(key)}
-              >
-                <Icon className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="whitespace-nowrap">{label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Hero Banner */}
-        <HeroBanner />
-
-        {/* Packages Section */}
-        <section className="mb-8 sm:mb-12">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2 sm:gap-0">
-            <h2 className="text-xl sm:text-2xl font-bold text-amber-800">Popular Packages</h2>
-            <button className="text-amber-600 hover:text-amber-700 font-medium flex items-center gap-2 text-sm sm:text-base self-start sm:self-auto">
-              View All Packages
-              <ChevronRight className="w-4 h-4" />
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end sm:items-center justify-center p-2"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 100, opacity: 0 }}
+        className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sticky top-0 bg-white border-b border-amber-200 p-4 flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-amber-800">Filters</h3>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={resetFilters}
+              className="text-amber-600 hover:text-amber-700 text-sm font-medium"
+            >
+              Reset
+            </button>
+            <button
+              onClick={onClose}
+              className="p-1 hover:bg-amber-50 rounded-full"
+            >
+              <X className="w-5 h-5 text-amber-600" />
             </button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {packagesData.map(pkg => (
-              <PackageCard key={pkg.id} pkg={pkg} onBook={handleBook} />
-            ))}
-          </div>
-        </section>
-
-        {/* Filters and Results Section */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-4 sm:gap-0">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center space-x-2 bg-white px-3 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-lg border border-amber-200 hover:bg-amber-50 transition self-start sm:self-auto"
-          >
-            <Filter className="w-4 h-4 text-amber-600" />
-            <span className="font-medium text-amber-800 text-sm sm:text-base">Filters</span>
-            {Object.values(filters).some(val =>
-              val !== 0 && val !== "" && val !== 500000 && val !== "all"
-            ) && (
-              <span className="bg-amber-500 text-white w-4 h-4 sm:w-5 sm:h-5 rounded-full text-xs flex items-center justify-center">
-                !
-              </span>
-            )}
-          </button>
-
-          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-            <span className="text-xs sm:text-sm text-amber-600">
-              {filteredResults.length} services found
-            </span>
-
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-xs sm:text-sm w-full sm:w-auto"
-            >
-              <option value="rating">Sort by Rating</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="popularity">Sort by Popularity</option>
-            </select>
-          </div>
         </div>
-
-        {showFilters && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-amber-200"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-base sm:text-lg text-amber-800">Filters</h3>
-              <button
-                onClick={resetFilters}
-                className="text-amber-600 hover:text-amber-700 text-xs sm:text-sm font-medium"
-              >
-                Reset All
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        
+        <div className="p-4 space-y-6">
+          {/* Price Range */}
+          <div>
+            <label className="block text-sm font-medium text-amber-700 mb-3">
+              Price Range: ₹{filters.minPrice.toLocaleString()} - ₹{filters.maxPrice.toLocaleString()}
+            </label>
+            <div className="space-y-4">
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-amber-700 mb-2">Minimum Rating</label>
-                <div className="flex items-center space-x-2">
-                  <span className="text-xs sm:text-sm text-amber-600">{filters.minRating}+</span>
-                  <input
-                    type="range"
-                    min="0"
-                    max="5"
-                    step="0.5"
-                    value={filters.minRating}
-                    onChange={(e) => setFilters(f => ({ ...f, minRating: parseFloat(e.target.value) }))}
-                    className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
-                  />
+                <div className="flex justify-between text-xs text-amber-600 mb-1">
+                  <span>Min: ₹{filters.minPrice.toLocaleString()}</span>
+                  <span>Max: ₹{filters.maxPrice.toLocaleString()}</span>
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-amber-700 mb-2">
-                  Max Price: ₹{filters.maxPrice.toLocaleString()}
-                </label>
                 <input
                   type="range"
                   min="0"
                   max="500000"
                   step="10000"
-                  value={filters.maxPrice}
-                  onChange={(e) => setFilters(f => ({ ...f, maxPrice: parseInt(e.target.value) }))}
+                  value={filters.minPrice}
+                  onChange={(e) => setFilters(f => ({ ...f, minPrice: parseInt(e.target.value) }))}
                   className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
                 />
               </div>
-
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-amber-700 mb-2">Location</label>
-                <input
-                  type="text"
-                  placeholder="Enter city..."
-                  value={filters.location}
-                  onChange={(e) => setFilters(f => ({ ...f, location: e.target.value }))}
-                  className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-amber-800 text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-amber-700 mb-2">Availability</label>
-                <select
-                  value={filters.availability}
-                  onChange={(e) => setFilters(f => ({ ...f, availability: e.target.value }))}
-                  className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-amber-800 text-sm"
-                >
-                  <option value="all">All Services</option>
-                  <option value="available">Available Now</option>
-                  <option value="trending">Trending</option>
-                </select>
-              </div>
+              <input
+                type="range"
+                min="0"
+                max="500000"
+                step="10000"
+                value={filters.maxPrice}
+                onChange={(e) => setFilters(f => ({ ...f, maxPrice: parseInt(e.target.value) }))}
+                className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
+              />
             </div>
-          </motion.div>
-        )}
+          </div>
 
-        {/* Services Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-8"
-        >
-          {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-              {[...Array(8)].map((_, i) => (
-                <SkeletonCard key={i} />
+          {/* Locations */}
+          <div>
+            <label className="block text-sm font-medium text-amber-700 mb-2">Locations</label>
+            <div className="max-h-40 overflow-y-auto space-y-2 border border-amber-200 rounded-lg p-3">
+              {uniqueLocations.map(location => (
+                <label key={location} className="flex items-center space-x-3 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={filters.locations.includes(location)}
+                    onChange={(e) => {
+                      setFilters(f => ({
+                        ...f,
+                        locations: e.target.checked
+                          ? [...f.locations, location]
+                          : f.locations.filter(l => l !== location)
+                      }));
+                    }}
+                    className="rounded border-amber-300 text-amber-600 focus:ring-amber-500"
+                  />
+                  <span className="text-amber-700">{location}</span>
+                </label>
               ))}
             </div>
-          ) : filteredResults.length > 0 ? (
-            <>
-              {activeCategory === "all" ? (
-                Object.entries(categorizedResults).map(([category, services]) => (
-                  services.length > 0 && (
-                    <div key={category} className="fade-in">
-                      <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-semibold text-amber-800 capitalize">
-                          {category} Services
-                        </h2>
-                        <span className="text-amber-600 text-sm">
-                          {services.length} services
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-                        {services.slice(0, visibleCounts[category] || 4).map((service) => (
-                          <ServiceCard
-                            key={service.id}
-                            service={service}
-                            category={category}
-                            onBook={handleBook}
-                            onViewDetails={handleViewDetails}
-                            onToggleWishlist={toggleWishlist}
-                            isWishlisted={wishlist.has(service.id)}
-                          />
-                        ))}
-                      </div>
-                      {services.length > (visibleCounts[category] || 4) && (
-                        <div className="flex justify-center mt-6">
-                          <button
-                            onClick={() => setVisibleCounts(prev => ({
-                              ...prev,
-                              [category]: (prev[category] || 4) + 4
-                            }))}
-                            className="px-6 py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors"
-                          >
-                            Load More {category} Services
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  )
-                ))
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-                  {filteredResults.slice(0, visibleCounts[activeCategory] || 12).map((service) => (
-                    <ServiceCard
-                      key={service.id}
-                      service={service}
-                      category={activeCategory}
-                      onBook={handleBook}
-                      onViewDetails={handleViewDetails}
-                      onToggleWishlist={toggleWishlist}
-                      isWishlisted={wishlist.has(service.id)}
-                    />
-                  ))}
-                </div>
-              )}
+          </div>
 
-              {activeCategory !== "all" && filteredResults.length > (visibleCounts[activeCategory] || 12) && (
-                <div className="flex justify-center">
-                  <button
-                    onClick={() => setVisibleCounts(prev => ({
-                      ...prev,
-                      [activeCategory]: (prev[activeCategory] || 12) + 8
-                    }))}
-                    className="px-8 py-3 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors font-semibold"
-                  >
-                    Load More Services
-                  </button>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-xl font-semibold text-amber-700 mb-2">No services found</h3>
-              <p className="text-amber-600 mb-4">Try adjusting your search or filters</p>
-              <button
-                onClick={resetFilters}
-                className="px-6 py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors"
-              >
-                Reset Filters
-              </button>
-            </div>
-          )}
-        </motion.div>
+          {/* Vendor Rating */}
+          <div>
+            <label className="block text-sm font-medium text-amber-700 mb-2">
+              Min Vendor Rating: {filters.vendorRating}+
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="5"
+              step="0.5"
+              value={filters.vendorRating}
+              onChange={(e) => setFilters(f => ({ ...f, vendorRating: parseFloat(e.target.value) }))}
+              className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
+            />
+          </div>
 
-        {/* Recently Viewed Section */}
-        {recentlyViewed.length > 0 && (
-          <section className="mt-8 sm:mt-12">
-            <h2 className="text-lg sm:text-xl font-semibold text-amber-800 mb-4 sm:mb-6 flex items-center gap-2">
-              <Eye className="w-4 h-4 sm:w-5 sm:h-5" /> Recently Viewed Services
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {recentlyViewed.map((service) => (
-                <ServiceCard
-                  key={service.id}
-                  service={service}
-                  category={service.serviceCategory}
-                  onBook={handleBook}
-                  onViewDetails={handleViewDetails}
-                  onToggleWishlist={toggleWishlist}
-                  isWishlisted={wishlist.has(service.id)}
-                />
-              ))}
-            </div>
-          </section>
-        )}
+          {/* Service Rating */}
+          <div>
+            <label className="block text-sm font-medium text-amber-700 mb-2">
+              Minimum Rating: {filters.minRating}+
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="5"
+              step="0.5"
+              value={filters.minRating}
+              onChange={(e) => setFilters(f => ({ ...f, minRating: parseFloat(e.target.value) }))}
+              className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
+            />
+          </div>
 
-        {/* Trust Badges */}
-        <TrustBadges />
-      </div>
-
-      {/* Service Detail Modal */}
-      <AnimatePresence>
-        {showDetailModal && selectedService && (
-          <ServiceDetailModal
-            service={selectedService}
-            onClose={() => setShowDetailModal(false)}
-            onBook={handleBook}
-            onToggleWishlist={toggleWishlist}
-            isWishlisted={wishlist.has(selectedService.id)}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Mobile Filter Button */}
-      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 md:hidden">
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="bg-gradient-to-r from-amber-400 to-amber-500 text-white p-3 sm:p-4 rounded-full shadow-lg hover:shadow-xl transition transform hover:scale-110"
-        >
-          <Filter className="w-5 h-5 sm:w-6 sm:h-6" />
-        </button>
-      </div>
-    </div>
+          {/* Availability */}
+          <div>
+            <label className="block text-sm font-medium text-amber-700 mb-2">Availability</label>
+            <select
+              value={filters.availability}
+              onChange={(e) => setFilters(f => ({ ...f, availability: e.target.value }))}
+              className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-amber-800 text-sm"
+            >
+              <option value="all">All Services</option>
+              <option value="available">Available Now</option>
+              <option value="trending">Trending</option>
+            </select>
+          </div>
+        </div>
+        
+        <div className="sticky bottom-0 bg-white border-t border-amber-200 p-4">
+          <button
+            onClick={onClose}
+            className="w-full py-3 bg-amber-500 text-white rounded-xl font-semibold hover:bg-amber-600 transition-colors"
+          >
+            Apply Filters
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
   );
-}
+};
 
 // --------------------------- Service Detail Modal ---------------------------
 function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWishlisted }) {
+  const { addToast } = useToast();
   const [selectedVendor, setSelectedVendor] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [quantity, setQuantity] = useState(1);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const modalTabs = [
     { key: "overview", label: "Overview", icon: Eye },
@@ -1129,7 +994,30 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
     { key: "policies", label: "Policies", icon: BookOpen }
   ];
 
+  const images = service.images || [service.img];
   const TabIcon = modalTabs.find(tab => tab.key === activeTab)?.icon || Eye;
+
+  const handleVendorSelect = (vendor) => {
+    setSelectedVendor(vendor);
+    addToast(`Selected vendor: ${vendor.name}`, 'success');
+  };
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const handleBookWithVendor = () => {
+    if (selectedVendor) {
+      addToast(`Booking ${service.name} with ${selectedVendor.name}`, 'success');
+    } else {
+      addToast(`Starting booking process for ${service.name}`, 'success');
+    }
+    onBook(service);
+  };
 
   return (
     <motion.div
@@ -1147,11 +1035,45 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative flex-shrink-0">
-          <img
-            src={service.img}
-            alt={service.name}
-            className="w-full h-48 sm:h-64 object-cover"
-          />
+          <div className="relative h-48 sm:h-64">
+            <img
+              src={images[currentImageIndex]}
+              alt={service.name}
+              className="w-full h-full object-cover"
+            />
+            
+            {/* Image Navigation */}
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={prevImage}
+                  className="absolute left-2 top-1/2 transform -translate-y-1/2 p-2 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-70 transition"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={nextImage}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-70 transition"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+                
+                {/* Image Indicators */}
+                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                  {images.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`w-2 h-2 rounded-full transition-all ${
+                        index === currentImageIndex ? 'bg-white' : 'bg-white bg-opacity-50'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
           <button
             onClick={onClose}
             className="absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2 bg-white bg-opacity-90 rounded-full hover:bg-opacity-100 transition"
@@ -1267,8 +1189,38 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
               {activeTab === "vendors" && service.vendors && (
                 <div className="space-y-4">
                   <h4 className="font-semibold text-amber-800 mb-3">Available Vendors</h4>
+                  
+                  {selectedVendor && (
+                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg mb-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500" />
+                          <div>
+                            <h5 className="font-semibold text-green-800">Selected Vendor</h5>
+                            <p className="text-green-700 text-sm">{selectedVendor.name} • {selectedVendor.rating}★</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setSelectedVendor(null)}
+                          className="text-red-500 hover:text-red-700 text-sm font-medium"
+                        >
+                          Change
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
                   {service.vendors.map(vendor => (
-                    <div key={vendor.id} className="p-4 border border-amber-200 rounded-lg hover:border-amber-300 transition-colors">
+                    <div 
+                      key={vendor.id} 
+                      className={`p-4 border rounded-lg transition-all ${
+                        selectedVendor?.id === vendor.id 
+                          ? 'border-green-500 bg-green-50 ring-2 ring-green-200' 
+                          : selectedVendor 
+                            ? 'border-amber-200 opacity-60 bg-amber-50'
+                            : 'border-amber-200 hover:border-amber-300'
+                      }`}
+                    >
                       <div className="flex items-center justify-between mb-3">
                         <div>
                           <h5 className="font-semibold text-amber-800 text-lg">{vendor.name}</h5>
@@ -1293,10 +1245,17 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
                           Contact Vendor
                         </button>
                         <button
-                          onClick={() => setSelectedVendor(vendor)}
-                          className="flex-1 px-4 py-2 border border-amber-300 text-amber-700 rounded-lg hover:bg-amber-50 transition-colors font-medium"
+                          onClick={() => handleVendorSelect(vendor)}
+                          disabled={!!selectedVendor && selectedVendor.id !== vendor.id}
+                          className={`flex-1 px-4 py-2 border rounded-lg transition-colors font-medium ${
+                            selectedVendor?.id === vendor.id
+                              ? 'bg-green-500 text-white border-green-500'
+                              : selectedVendor
+                                ? 'border-gray-300 text-gray-400 cursor-not-allowed'
+                                : 'border-amber-300 text-amber-700 hover:bg-amber-50'
+                          }`}
                         >
-                          Select Vendor
+                          {selectedVendor?.id === vendor.id ? 'Selected' : 'Select Vendor'}
                         </button>
                       </div>
                     </div>
@@ -1326,6 +1285,35 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
                     <div className="flex-1">
                       <p className="text-amber-700">Customer reviews and ratings will be displayed here. Real photos from previous events can help you make better decisions.</p>
                     </div>
+                  </div>
+                  
+                  {/* Mock Reviews */}
+                  <div className="space-y-4">
+                    {[1, 2, 3].map(review => (
+                      <div key={review} className="p-4 border border-amber-200 rounded-lg">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+                            <User className="w-4 h-4 text-amber-600" />
+                          </div>
+                          <div>
+                            <div className="font-semibold text-amber-800">Customer {review}</div>
+                            <div className="flex items-center gap-1">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`w-3 h-3 ${
+                                    i < 5 ? "fill-amber-400 text-amber-400" : "text-amber-200"
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-amber-700 text-sm">
+                          Excellent service! The team was professional and delivered beyond expectations.
+                        </p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
@@ -1379,16 +1367,721 @@ function ServiceDetailModal({ service, onClose, onBook, onToggleWishlist, isWish
                 Share
               </button>
               <button
-                onClick={() => onBook(service)}
+                onClick={handleBookWithVendor}
                 className="flex-1 sm:flex-none px-6 sm:px-8 py-2 sm:py-3 bg-amber-500 text-white rounded-lg sm:rounded-xl hover:bg-amber-600 transition-colors font-semibold flex items-center justify-center gap-2 text-sm sm:text-base"
               >
                 <BookOpen className="w-4 h-4" />
-                Book Now
+                {selectedVendor ? `Book with ${selectedVendor.name}` : 'Book Now'}
               </button>
             </div>
           </div>
         </div>
       </motion.div>
     </motion.div>
+  );
+}
+
+// --------------------------- Wishlist Page ---------------------------
+const WishlistPage = ({ services, onBook, onViewDetails, onToggleWishlist, wishlist }) => {
+  const wishlistServices = services.filter(service => wishlist.has(service.id));
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 pt-20 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-2xl shadow-sm p-6 mb-6 border border-amber-100">
+          <div className="flex items-center gap-3 mb-2">
+            <BookmarkCheck className="w-8 h-8 text-amber-600" />
+            <h1 className="text-2xl font-bold text-amber-800">My Wishlist</h1>
+          </div>
+          <p className="text-amber-600">
+            {wishlistServices.length} {wishlistServices.length === 1 ? 'service' : 'services'} saved
+          </p>
+        </div>
+
+        {wishlistServices.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {wishlistServices.map(service => (
+              <ServiceCard
+                key={service.id}
+                service={service}
+                category={service.serviceCategory}
+                onBook={onBook}
+                onViewDetails={onViewDetails}
+                onToggleWishlist={onToggleWishlist}
+                isWishlisted={true}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <Bookmark className="w-16 h-16 text-amber-300 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-amber-700 mb-2">Your wishlist is empty</h3>
+            <p className="text-amber-600 mb-4">Save services you like by clicking the heart icon</p>
+            <button
+              onClick={() => window.location.href = '#services'}
+              className="px-6 py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors"
+            >
+              Browse Services
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// --------------------------- Main Services Page ---------------------------
+const ServicesPage = () => {
+  const { addToast } = useToast();
+  const [activePage, setActivePage] = useState('services');
+  const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [filters, setFilters] = useState({
+    minRating: 0,
+    minPrice: 0,
+    maxPrice: 500000,
+    locations: [],
+    vendorRating: 0,
+    availability: "all"
+  });
+  const [showFilters, setShowFilters] = useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [searchHistory, setSearchHistory] = useState([]);
+  const [isListening, setIsListening] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [visibleCounts, setVisibleCounts] = useState({});
+  const [wishlist, setWishlist] = useState(new Set());
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
+  const [selectedService, setSelectedService] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [sortBy, setSortBy] = useState("rating");
+  const [isSticky, setIsSticky] = useState(false);
+
+  // Load data from localStorage
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      
+      // Load wishlist
+      const savedWishlist = localStorage.getItem('servicesWishlist');
+      if (savedWishlist) {
+        try {
+          const wishlistArray = JSON.parse(savedWishlist);
+          setWishlist(new Set(wishlistArray));
+        } catch (e) {
+          console.error('Failed to load wishlist:', e);
+        }
+      }
+      
+      // Load search history
+      const savedHistory = localStorage.getItem('servicesSearchHistory');
+      if (savedHistory) {
+        try {
+          setSearchHistory(JSON.parse(savedHistory));
+        } catch (e) {
+          setSearchHistory([]);
+        }
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      setLoading(false);
+    };
+    loadData();
+  }, []);
+
+  // Save wishlist to localStorage
+  useEffect(() => {
+    localStorage.setItem('servicesWishlist', JSON.stringify([...wishlist]));
+  }, [wishlist]);
+
+  // Sticky header effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsSticky(window.scrollY > 100);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const saveToHistory = (searchQuery) => {
+    if (!searchQuery.trim()) return;
+    setSearchHistory(prev => {
+      const updatedHistory = [searchQuery, ...prev.filter(item => item !== searchQuery)].slice(0, 5);
+      localStorage.setItem('servicesSearchHistory', JSON.stringify(updatedHistory));
+      return updatedHistory;
+    });
+  };
+
+  const startVoiceSearch = () => {
+    setIsListening(true);
+    setTimeout(() => {
+      const sampleQueries = ["Wedding decoration", "Catering services", "Venue booking", "Lighting solutions"];
+      const randomQuery = sampleQueries[Math.floor(Math.random() * sampleQueries.length)];
+      setQuery(randomQuery);
+      setIsListening(false);
+      saveToHistory(randomQuery);
+      addToast(`Voice search: "${randomQuery}"`, 'success');
+    }, 1200);
+  };
+
+  const allServices = useMemo(() => {
+    return Object.entries(servicesData).flatMap(([category, services]) =>
+      services.map(service => ({ ...service, serviceCategory: category }))
+    );
+  }, []);
+
+  const uniqueLocations = useMemo(() => {
+    const locations = new Set();
+    allServices.forEach(service => {
+      if (service.location) locations.add(service.location);
+    });
+    return Array.from(locations).sort();
+  }, [allServices]);
+
+  const filteredResults = useMemo(() => {
+    let results = allServices.filter(service => {
+      const q = query.trim().toLowerCase();
+      const matchesQuery = !q || service.name.toLowerCase().includes(q) ||
+                          (service.category && service.category.toLowerCase().includes(q)) ||
+                          (service.serviceCategory && service.serviceCategory.toLowerCase().includes(q));
+
+      const matchesCategory = activeCategory === "all" || activeCategory === service.serviceCategory;
+      const matchesRating = (service.rating || 0) >= (filters.minRating || 0);
+      const matchesPriceRange = (service.price || 0) >= (filters.minPrice || 0) && 
+                               (service.price || 0) <= (filters.maxPrice || Infinity);
+      const matchesLocation = filters.locations.length === 0 || 
+                             (service.location && filters.locations.includes(service.location));
+      const matchesVendorRating = !service.vendors || service.vendors.some(v => v.rating >= filters.vendorRating);
+
+      const matchesAvailability = filters.availability === "all" ||
+                                 (filters.availability === "available" && service.vendors?.some(v => v.available)) ||
+                                 (filters.availability === "trending" && service.trending);
+
+      return matchesQuery && matchesCategory && matchesRating && matchesPriceRange && 
+             matchesLocation && matchesVendorRating && matchesAvailability;
+    });
+
+    switch(sortBy) {
+      case "price-low":
+        results.sort((a, b) => (a.price || 0) - (b.price || 0));
+        break;
+      case "price-high":
+        results.sort((a, b) => (b.price || 0) - (a.price || 0));
+        break;
+      case "rating":
+        results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        break;
+      case "popularity":
+        results.sort((a, b) => (b.reviews || 0) - (a.reviews || 0));
+        break;
+      default:
+        results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    }
+
+    return results;
+  }, [allServices, query, activeCategory, filters, sortBy]);
+
+  const categorizedResults = useMemo(() => {
+    const grouped = {};
+    filteredResults.forEach(service => {
+      const cat = service.serviceCategory;
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push(service);
+    });
+    return grouped;
+  }, [filteredResults]);
+
+  const handleBook = (service) => {
+    addToast(`Starting booking process for ${service.name}`, 'success');
+  };
+
+  const handleViewDetails = (service) => {
+    setSelectedService(service);
+    setShowDetailModal(true);
+
+    setRecentlyViewed(prev => {
+      const filtered = prev.filter(item => item.id !== service.id);
+      return [service, ...filtered].slice(0, 8);
+    });
+  };
+
+  const toggleWishlist = (serviceId) => {
+    setWishlist(prev => {
+      const newWishlist = new Set(prev);
+      if (newWishlist.has(serviceId)) {
+        newWishlist.delete(serviceId);
+        addToast("Removed from wishlist", 'success');
+      } else {
+        newWishlist.add(serviceId);
+        addToast("Added to wishlist", 'success');
+      }
+      return newWishlist;
+    });
+  };
+
+  const resetFilters = () => {
+    setFilters({
+      minRating: 0,
+      minPrice: 0,
+      maxPrice: 500000,
+      locations: [],
+      vendorRating: 0,
+      availability: "all"
+    });
+    addToast("Filters reset", 'success');
+  };
+
+  if (activePage === 'wishlist') {
+    return (
+      <>
+        <Navigation activePage={activePage} onPageChange={setActivePage} />
+        <WishlistPage
+          services={allServices}
+          onBook={handleBook}
+          onViewDetails={handleViewDetails}
+          onToggleWishlist={toggleWishlist}
+          wishlist={wishlist}
+        />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Navigation activePage={activePage} onPageChange={setActivePage} />
+      
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-6">
+          
+          {/* Sticky Search and Categories */}
+          <div className={`bg-white shadow-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 border border-amber-100 transition-all duration-300 ${
+            isSticky ? 'sticky top-16 z-30 shadow-lg' : ''
+          }`}>
+            <div className="relative mb-4 sm:mb-6">
+              <div className="flex items-center bg-white rounded-xl sm:rounded-2xl shadow-lg px-3 sm:px-4 py-2 sm:py-3 border border-amber-200">
+                <Search className="text-amber-600 w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 flex-shrink-0" />
+                <input
+                  type="text"
+                  placeholder="Search for wedding services, catering, venues..."
+                  className="w-full outline-none text-amber-800 placeholder-amber-500 text-sm sm:text-base md:text-lg"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && saveToHistory(query)}
+                />
+                <div className="flex items-center space-x-1 sm:space-x-2 ml-1 sm:ml-2">
+                  {isListening ? (
+                    <div className="animate-pulse text-amber-600">
+                      <Loader className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                    </div>
+                  ) : (
+                    <button
+                      onClick={startVoiceSearch}
+                      className="p-1 sm:p-2 hover:bg-amber-100 rounded-full transition"
+                      title="Voice Search"
+                    >
+                      <Mic className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {query && searchHistory.length > 0 && (
+                <div className="absolute top-full left-0 right-0 z-10">
+                  <div className="bg-white shadow-lg rounded-2xl mt-3 border border-amber-200">
+                    <div className="p-2">
+                      <div className="flex items-center justify-between px-2 py-1 text-sm text-amber-600 border-b">
+                        <span>Recent Searches</span>
+                        <Clock className="w-4 h-4" />
+                      </div>
+                      {searchHistory.map((term, index) => (
+                        <button
+                          key={index}
+                          className="w-full text-left px-4 py-2 hover:bg-amber-50 rounded-lg flex items-center space-x-2"
+                          onClick={() => {
+                            setQuery(term);
+                            saveToHistory(term);
+                          }}
+                        >
+                          <Search className="w-4 h-4 text-amber-400" />
+                          <span className="text-amber-800">{term}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide">
+              {categories.map(({ key, label, icon: Icon, color }) => (
+                <button
+                  key={key}
+                  className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 flex-shrink-0 ${
+                    activeCategory === key
+                      ? `bg-gradient-to-r ${color} text-white shadow-lg transform scale-105`
+                      : "bg-white text-amber-700 border border-amber-200 hover:bg-amber-50"
+                  }`}
+                  onClick={() => setActiveCategory(key)}
+                >
+                  <Icon className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="whitespace-nowrap">{label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Hero Banner */}
+          <HeroBanner />
+
+          {/* Packages Section */}
+          <section className="mb-8 sm:mb-12">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2 sm:gap-0">
+              <h2 className="text-xl sm:text-2xl font-bold text-amber-800">Popular Packages</h2>
+              <button className="text-amber-600 hover:text-amber-700 font-medium flex items-center gap-2 text-sm sm:text-base self-start sm:self-auto">
+                View All Packages
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {packagesData.map(pkg => (
+                <PackageCard key={pkg.id} pkg={pkg} onBook={handleBook} />
+              ))}
+            </div>
+          </section>
+
+          {/* Filters and Results Section */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-4 sm:gap-0">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="hidden md:flex items-center space-x-2 bg-white px-3 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-lg border border-amber-200 hover:bg-amber-50 transition"
+              >
+                <Filter className="w-4 h-4 text-amber-600" />
+                <span className="font-medium text-amber-800 text-sm sm:text-base">Filters</span>
+                {Object.values(filters).some(val =>
+                  val !== 0 && val !== "" && val !== 500000 && val !== "all" && (!Array.isArray(val) || val.length > 0)
+                ) && (
+                  <span className="bg-amber-500 text-white w-4 h-4 sm:w-5 sm:h-5 rounded-full text-xs flex items-center justify-center">
+                    !
+                  </span>
+                )}
+              </button>
+
+              <button
+                onClick={() => setShowMobileFilters(true)}
+                className="md:hidden flex items-center space-x-2 bg-white px-4 py-2 rounded-xl shadow-lg border border-amber-200 hover:bg-amber-50 transition"
+              >
+                <Filter className="w-4 h-4 text-amber-600" />
+                <span className="font-medium text-amber-800 text-sm">Filters</span>
+              </button>
+
+              <span className="text-xs sm:text-sm text-amber-600">
+                {filteredResults.length} services found
+              </span>
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-3 py-2 rounded-xl border border-amber-200 bg-white text-amber-800 text-xs sm:text-sm w-full sm:w-auto"
+              >
+                <option value="rating">Sort by Rating</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="popularity">Sort by Popularity</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Desktop Filters */}
+          {showFilters && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="hidden md:block bg-white rounded-2xl shadow-lg p-6 mb-6 border border-amber-200"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-lg text-amber-800">Filters</h3>
+                <button
+                  onClick={resetFilters}
+                  className="text-amber-600 hover:text-amber-700 text-sm font-medium"
+                >
+                  Reset All
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                {/* Price Range Filter */}
+                <div className="lg:col-span-2">
+                  <label className="block text-sm font-medium text-amber-700 mb-2">
+                    Price Range: ₹{filters.minPrice.toLocaleString()} - ₹{filters.maxPrice.toLocaleString()}
+                  </label>
+                  <div className="space-y-2">
+                    <input
+                      type="range"
+                      min="0"
+                      max="500000"
+                      step="10000"
+                      value={filters.minPrice}
+                      onChange={(e) => setFilters(f => ({ ...f, minPrice: parseInt(e.target.value) }))}
+                      className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                    <input
+                      type="range"
+                      min="0"
+                      max="500000"
+                      step="10000"
+                      value={filters.maxPrice}
+                      onChange={(e) => setFilters(f => ({ ...f, maxPrice: parseInt(e.target.value) }))}
+                      className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                {/* Location Multi-select */}
+                <div>
+                  <label className="block text-sm font-medium text-amber-700 mb-2">Locations</label>
+                  <div className="max-h-32 overflow-y-auto space-y-1 border border-amber-200 rounded-lg p-2">
+                    {uniqueLocations.map(location => (
+                      <label key={location} className="flex items-center space-x-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={filters.locations.includes(location)}
+                          onChange={(e) => {
+                            setFilters(f => ({
+                              ...f,
+                              locations: e.target.checked
+                                ? [...f.locations, location]
+                                : f.locations.filter(l => l !== location)
+                            }));
+                          }}
+                          className="rounded border-amber-300 text-amber-600 focus:ring-amber-500"
+                        />
+                        <span className="text-amber-700">{location}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Vendor Rating Filter */}
+                <div>
+                  <label className="block text-sm font-medium text-amber-700 mb-2">
+                    Min Vendor Rating: {filters.vendorRating}+
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="5"
+                    step="0.5"
+                    value={filters.vendorRating}
+                    onChange={(e) => setFilters(f => ({ ...f, vendorRating: parseFloat(e.target.value) }))}
+                    className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+                <div>
+                  <label className="block text-sm font-medium text-amber-700 mb-2">Minimum Rating</label>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm text-amber-600">{filters.minRating}+</span>
+                    <input
+                      type="range"
+                      min="0"
+                      max="5"
+                      step="0.5"
+                      value={filters.minRating}
+                      onChange={(e) => setFilters(f => ({ ...f, minRating: parseFloat(e.target.value) }))}
+                      className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-amber-700 mb-2">Availability</label>
+                  <select
+                    value={filters.availability}
+                    onChange={(e) => setFilters(f => ({ ...f, availability: e.target.value }))}
+                    className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-amber-800 text-sm"
+                  >
+                    <option value="all">All Services</option>
+                    <option value="available">Available Now</option>
+                    <option value="trending">Trending</option>
+                  </select>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Services Grid */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-8"
+          >
+            {loading ? (
+              activeCategory === "all" ? (
+                Object.keys(servicesData).map(category => (
+                  <CategorySkeleton key={category} category={category} />
+                ))
+              ) : (
+                <CategorySkeleton category={activeCategory} />
+              )
+            ) : filteredResults.length > 0 ? (
+              <>
+                {activeCategory === "all" ? (
+                  Object.entries(categorizedResults).map(([category, services]) => (
+                    services.length > 0 && (
+                      <div key={category} className="fade-in">
+                        <div className="flex items-center justify-between mb-4">
+                          <h2 className="text-xl font-semibold text-amber-800 capitalize">
+                            {category} Services
+                          </h2>
+                          <span className="text-amber-600 text-sm">
+                            {services.length} services
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                          {services.slice(0, visibleCounts[category] || 4).map((service) => (
+                            <ServiceCard
+                              key={service.id}
+                              service={service}
+                              category={category}
+                              onBook={handleBook}
+                              onViewDetails={handleViewDetails}
+                              onToggleWishlist={toggleWishlist}
+                              isWishlisted={wishlist.has(service.id)}
+                            />
+                          ))}
+                        </div>
+                        {services.length > (visibleCounts[category] || 4) && (
+                          <div className="flex justify-center mt-6">
+                            <button
+                              onClick={() => setVisibleCounts(prev => ({
+                                ...prev,
+                                [category]: (prev[category] || 4) + 4
+                              }))}
+                              className="px-6 py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors"
+                            >
+                              Load More {category} Services
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  ))
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                    {filteredResults.slice(0, visibleCounts[activeCategory] || 12).map((service) => (
+                      <ServiceCard
+                        key={service.id}
+                        service={service}
+                        category={activeCategory}
+                        onBook={handleBook}
+                        onViewDetails={handleViewDetails}
+                        onToggleWishlist={toggleWishlist}
+                        isWishlisted={wishlist.has(service.id)}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {activeCategory !== "all" && filteredResults.length > (visibleCounts[activeCategory] || 12) && (
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => setVisibleCounts(prev => ({
+                        ...prev,
+                        [activeCategory]: (prev[activeCategory] || 12) + 8
+                      }))}
+                      className="px-8 py-3 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors font-semibold"
+                    >
+                      Load More Services
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <EmptyState 
+                category={activeCategory} 
+                searchQuery={query}
+                onReset={resetFilters}
+              />
+            )}
+          </motion.div>
+
+          {/* Recently Viewed Section */}
+          {recentlyViewed.length > 0 && (
+            <section className="mt-8 sm:mt-12">
+              <h2 className="text-lg sm:text-xl font-semibold text-amber-800 mb-4 sm:mb-6 flex items-center gap-2">
+                <Eye className="w-4 h-4 sm:w-5 sm:h-5" /> Recently Viewed Services
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                {recentlyViewed.map((service) => (
+                  <ServiceCard
+                    key={service.id}
+                    service={service}
+                    category={service.serviceCategory}
+                    onBook={handleBook}
+                    onViewDetails={handleViewDetails}
+                    onToggleWishlist={toggleWishlist}
+                    isWishlisted={wishlist.has(service.id)}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Trust Badges */}
+          <TrustBadges />
+        </div>
+
+        {/* Service Detail Modal */}
+        <AnimatePresence>
+          {showDetailModal && selectedService && (
+            <ServiceDetailModal
+              service={selectedService}
+              onClose={() => setShowDetailModal(false)}
+              onBook={handleBook}
+              onToggleWishlist={toggleWishlist}
+              isWishlisted={wishlist.has(selectedService.id)}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Mobile Filter Modal */}
+        <MobileFilterModal
+          isOpen={showMobileFilters}
+          onClose={() => setShowMobileFilters(false)}
+          filters={filters}
+          setFilters={setFilters}
+          resetFilters={resetFilters}
+          uniqueLocations={uniqueLocations}
+        />
+
+        {/* Mobile Filter Button */}
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 md:hidden">
+          <button
+            onClick={() => setShowMobileFilters(true)}
+            className="bg-gradient-to-r from-amber-400 to-amber-500 text-white p-3 sm:p-4 rounded-full shadow-lg hover:shadow-xl transition transform hover:scale-110"
+          >
+            <Filter className="w-5 h-5 sm:w-6 sm:h-6" />
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
+
+// --------------------------- Main App Component ---------------------------
+export default function App() {
+  return (
+    <ToastProvider>
+      <ServicesPage />
+    </ToastProvider>
   );
 }
