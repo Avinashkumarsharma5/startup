@@ -1312,7 +1312,7 @@ function VoiceSearchModal({ isOpen, onClose, onResult }) {
   );
 }
 
-// ----------------- Main Enhanced Home Component -----------------
+// ----------------- Main Enhanced Home Component ---------------
 export default function EnhancedHome() {
   const navigate = useNavigate();
   const [cartItems] = useState(2);
