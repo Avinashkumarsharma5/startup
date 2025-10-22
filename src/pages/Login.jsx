@@ -4,7 +4,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import toast, { Toaster } from "react-hot-toast";
-import { Eye, EyeOff, Lock, Mail, Calendar, Heart, Sun, Moon, Volume2, Mic } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Eye, EyeOff, Lock, Mail, Calendar, Heart, Sun, Moon, Volume2, Mic, Loader2 } from "lucide-react";
 
 // Validation schema
 const loginSchema = yup.object({
@@ -64,12 +65,6 @@ export default function Login() {
 
   // Check for remembered user and preferences
   useEffect(() => {
-    // Language persistency
-    const savedLanguage = localStorage.getItem("sanskaraa-language");
-    if (savedLanguage) {
-      // Set language state if you have one
-    }
-
     // Dark mode
     const savedDarkMode = localStorage.getItem("sanskaraa-darkMode") === "true";
     setDarkMode(savedDarkMode);
@@ -118,38 +113,6 @@ export default function Login() {
     }
     localStorage.setItem("sanskaraa-darkMode", darkMode.toString());
   }, [darkMode]);
-
-  // Inactivity timer with JWT expiry check
-  useEffect(() => {
-    let inactivityTimer;
-
-    const resetTimer = () => {
-      clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(() => {
-        // Check token expiry if using JWT
-        const user = localStorage.getItem("loggedInUser");
-        if (user) {
-          const userData = JSON.parse(user);
-          if (userData.tokenExpiry && new Date() > new Date(userData.tokenExpiry)) {
-            handleLogout();
-          } else {
-            // Regular inactivity logout
-            handleLogout();
-          }
-        }
-      }, 1800000); // 30 minutes
-    };
-
-    const events = ["mousedown", "keypress", "scroll", "touchstart"];
-    events.forEach((event) => document.addEventListener(event, resetTimer));
-
-    resetTimer();
-
-    return () => {
-      clearTimeout(inactivityTimer);
-      events.forEach((event) => document.removeEventListener(event, resetTimer));
-    };
-  }, [navigate]);
 
   const handleLogin = async (data) => {
     setIsLoading(true);
@@ -221,21 +184,12 @@ export default function Login() {
     });
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("loggedInUser");
-    toast.success("Logged out due to inactivity");
-    navigate("/login");
-  };
-
   const handleForgotPassword = () => {
     const email = watch("email");
     if (!email) {
       toast.error("Please enter your email to reset password");
       return;
     }
-
-    // Simulate password reset flow
-    toast.success(`Password reset link sent to ${email}`);
     navigate("/forget-password");
   };
 
@@ -297,301 +251,408 @@ export default function Login() {
     return "bg-green-500";
   };
 
-  const quotes = {
-    English: [
-      "Start your day with a prayer ✨ Book your puja with Sanskaraa.",
-      "Connect with divine energy through traditional rituals.",
-      "Your spiritual journey begins with a single prayer."
-    ],
-    Hindi: [
-      "अपने दिन की शुरुआत एक प्रार्थना के साथ करें ✨ संस्कारा के साथ अपनी पूजा बुक करें।",
-      "पारंपरिक rituals के माध्यम से दिव्य ऊर्जा से जुड़ें।",
-      "आपकी आध्यात्मिक यात्रा एक प्रार्थना से शुरू होती है।"
-    ]
-  };
+  const quotes = [
+    "Start your day with a prayer ✨ Book your puja with Sanskaraa.",
+    "Connect with divine energy through traditional rituals.",
+    "Your spiritual journey begins with a single prayer.",
+    "Embrace the divine within you every day.",
+    "Traditional rituals for modern spiritual seekers."
+  ];
 
-  const randomQuote = quotes["English"][Math.floor(Math.random() * quotes["English"].length)];
+  const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
   return (
-    <div className={`min-h-screen flex items-center justify-center px-2 sm:px-4 py-4 sm:py-6 relative overflow-hidden transition-colors duration-300 ${
-      darkMode 
-        ? "bg-gradient-to-br from-gray-900 to-gray-800" 
-        : "bg-gradient-to-br from-orange-50 to-amber-100"
-    }`}>
-      <Toaster 
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FFF8E1] via-[#FFE4B5] to-[#FFD580] overflow-hidden p-4">
+      {/* Mandala Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <img
+          src="/src/assets/images/mandala-bg.png"
+          alt=""
+          className="absolute opacity-10 w-[600px] h-[600px] top-10 right-10 animate-spin-slow"
+        />
+        <img
+          src="/src/assets/images/mandala-bg.png"
+          alt=""
+          className="absolute opacity-5 w-[500px] h-[500px] -bottom-20 -left-20 animate-spin-slow"
+          style={{ animationDirection: 'reverse', animationDuration: '100s' }}
+        />
+      </div>
+
+      {/* Toast Notifications */}
+      <Toaster
         position="top-right"
         toastOptions={{
           duration: 4000,
           style: {
-            background: darkMode ? '#374151' : '#fff',
-            color: darkMode ? '#fff' : '#374151',
+            background: '#5C3A21',
+            color: '#fff',
           },
         }}
       />
-      
-      {/* Background elements without Lottie */}
-      <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-r from-orange-200 to-yellow-200 opacity-30 dark:opacity-10"></div>
-      <div className="absolute bottom-0 right-0 w-32 h-32 sm:w-40 sm:h-40 bg-orange-200 rounded-full blur-2xl opacity-30 dark:opacity-20"></div>
 
-      <div className={`max-w-4xl w-full flex flex-col md:flex-row rounded-xl sm:rounded-2xl shadow-xl overflow-hidden z-10 transition-colors duration-300 ${
-        darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-      }`}>
-        {/* Left side */}
-        <div className="w-full md:w-2/5 bg-gradient-to-br from-orange-500 to-amber-500 p-8 text-white flex flex-col justify-between relative hidden md:flex">
-          <div>
-            <div className="flex items-center mb-8">
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mr-3">
-                <Heart className="w-6 h-6 text-orange-500" fill="currentColor" />
-              </div>
-              <h1 className="text-2xl font-bold">Sanskaraa</h1>
-            </div>
-            <h2 className="text-xl font-semibold mb-4">
-              Your Spiritual Companion
-            </h2>
-            <p className="text-orange-100 mb-6">{randomQuote}</p>
-          </div>
-
-          <div className="flex items-center text-orange-100 text-sm">
-            <Calendar className="w-4 h-4 mr-2" />
-            <span>
-              {new Date().toLocaleDateString("en-IN", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-              })}
-            </span>
-          </div>
-        </div>
-
-        {/* Right side */}
-        <div className={`w-full md:w-3/5 p-4 sm:p-6 lg:p-8 transition-colors duration-300 ${
-          darkMode ? "bg-gray-800" : "bg-white"
-        }`}>
-          <div className="flex justify-between items-center mb-4 sm:mb-6">
-            <div className="flex items-center md:hidden">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-orange-500 rounded-full flex items-center justify-center mr-2">
-                <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" />
-              </div>
-              <h1 className="text-lg sm:text-xl font-bold">Sanskaraa</h1>
-            </div>
-
-            <div className="flex items-center gap-2">
-              {/* Voice Input Toggle */}
-              <button
-                onClick={() => {
-                  const current = localStorage.getItem("sanskaraa-tts") !== "true";
-                  localStorage.setItem("sanskaraa-tts", current.toString());
-                  toast.success(`Text-to-speech ${current ? "enabled" : "disabled"}`);
-                }}
-                className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-                title="Toggle text-to-speech"
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-4xl"
+      >
+        <div className="flex flex-col md:flex-row rounded-2xl shadow-2xl overflow-hidden">
+          {/* Left Side - Branding & Quote */}
+          <div className="w-full md:w-2/5 bg-gradient-to-br from-[#8B4513] to-[#5C3A21] p-8 text-white flex flex-col justify-between relative hidden md:flex">
+            <div className="relative z-10">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="flex flex-col items-center mb-8"
               >
-                <Volume2 className="w-4 h-4" />
-              </button>
-
-              {/* Dark Mode Toggle */}
-              <button
-                onClick={toggleDarkMode}
-                className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-                title="Toggle dark mode"
-              >
-                {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-
-          <h2 className="text-xl sm:text-2xl font-bold mb-2">
-            Login to your account
-          </h2>
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6">
-            Continue your spiritual journey
-          </p>
-
-          <form onSubmit={handleSubmit(handleLogin)} className="space-y-3 sm:space-y-4">
-            {/* Email Field with Voice Input */}
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-              </div>
-              <input
-                {...register("email")}
-                type="email"
-                placeholder="Email address"
-                className={`w-full pl-9 sm:pl-10 pr-12 py-2.5 sm:py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition text-sm sm:text-base ${
-                  darkMode 
-                    ? "bg-gray-700 border-gray-600 text-white" 
-                    : "border-gray-300 text-gray-900"
-                } ${errors.email ? "border-red-500" : ""}`}
-              />
-              <button
-                type="button"
-                onClick={startVoiceInput}
-                disabled={isListening}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-orange-500 transition"
-              >
-                <Mic className={`h-4 w-4 ${isListening ? "text-orange-500 animate-pulse" : ""}`} />
-              </button>
-            </div>
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
-            )}
-
-            {/* Password Field with Strength Meter */}
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-              </div>
-              <input
-                {...register("password")}
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                className={`w-full pl-9 sm:pl-10 pr-10 sm:pr-12 py-2.5 sm:py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition text-sm sm:text-base ${
-                  darkMode 
-                    ? "bg-gray-700 border-gray-600 text-white" 
-                    : "border-gray-300 text-gray-900"
-                } ${errors.password ? "border-red-500" : ""}`}
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-                ) : (
-                  <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-                )}
-              </button>
-            </div>
-            {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password.message}</p>
-            )}
-
-            {/* Password Strength Meter */}
-            {watchedPassword && (
-              <div className="space-y-2">
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                  <div 
-                    className={`h-2 rounded-full transition-all duration-300 ${getPasswordStrengthColor()}`}
-                    style={{ width: `${passwordStrength}%` }}
-                  ></div>
-                </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Password strength: {passwordStrength < 50 ? "Weak" : passwordStrength < 75 ? "Medium" : "Strong"}
-                </p>
-              </div>
-            )}
-
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
-              <label className="flex items-center">
-                <input
-                  {...register("rememberMe")}
-                  type="checkbox"
-                  className="h-4 w-4 text-orange-500 focus:ring-orange-400 border-gray-300 rounded"
+                <motion.img
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                  src="/src/assets/images/sanskaraa-logo.png"
+                  alt="Sanskaraa"
+                  className="w-16 h-16 object-contain mb-3"
                 />
-                <span className="ml-2 text-xs sm:text-sm">Remember me</span>
-              </label>
+                <h1 className="text-3xl font-bold text-white">Sanskaraa</h1>
+                <p className="text-sm italic text-yellow-100 mt-1">"Preserving Traditions. Celebrating Culture."</p>
+              </motion.div>
 
-              <button 
-                type="button" 
-                onClick={handleForgotPassword}
-                className="text-orange-500 hover:text-orange-600 text-xs sm:text-sm font-medium"
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="text-center"
               >
-                Forgot password?
-              </button>
+                <h2 className="text-xl font-semibold mb-4 flex items-center justify-center gap-2">
+                  <img 
+                    src="/src/assets/icons/diya.png" 
+                    alt="Diya" 
+                    className="w-6 h-6" 
+                  />
+                  Your Spiritual Companion
+                </h2>
+                <p className="text-yellow-100 text-lg leading-relaxed">{randomQuote}</p>
+              </motion.div>
             </div>
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2.5 sm:py-3 rounded-lg transition flex items-center justify-center disabled:opacity-75 text-sm sm:text-base"
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="flex items-center justify-center text-yellow-100 text-sm"
             >
-              {isLoading ? (
-                <>
-                  <svg
-                    className="animate-spin -ml-1 mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Logging in...
-                </>
-              ) : (
-                "Login"
-              )}
-            </button>
-          </form>
-
-          {/* Social login */}
-          <div className="mt-4 sm:mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className={`w-full border-t ${
-                  darkMode ? "border-gray-600" : "border-gray-300"
-                }`}></div>
-              </div>
-              <div className="relative flex justify-center text-xs sm:text-sm">
-                <span className={`px-2 ${
-                  darkMode ? "bg-gray-800 text-gray-400" : "bg-white text-gray-500"
-                }`}>
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-3 sm:mt-4 grid grid-cols-3 gap-2 sm:gap-3">
-              {["Google", "Facebook", "Apple"].map((provider) => (
-                <button
-                  key={provider}
-                  onClick={() => handleSocialLogin(provider)}
-                  className={`w-full inline-flex justify-center py-1.5 sm:py-2 px-2 sm:px-4 border rounded-md shadow-sm text-xs sm:text-sm font-medium transition ${
-                    darkMode 
-                      ? "bg-gray-700 border-gray-600 text-white hover:bg-gray-600" 
-                      : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  {provider}
-                </button>
-              ))}
-            </div>
+              <Calendar className="w-4 h-4 mr-2" />
+              <span>
+                {new Date().toLocaleDateString("en-IN", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric"
+                })}
+              </span>
+            </motion.div>
           </div>
 
-          <p className={`mt-4 sm:mt-6 text-center text-xs sm:text-sm ${
-            darkMode ? "text-gray-400" : "text-gray-700"
-          }`}>
-            Don't have an account?{" "}
-            <Link to="/signup" className="text-orange-500 font-medium hover:underline">
-              Sign Up
-            </Link>
-          </p>
-        </div>
-      </div>
+          {/* Right Side - Login Form */}
+          <div className="w-full md:w-3/5 bg-white/80 backdrop-blur-md border border-yellow-200 p-6 sm:p-8">
+            {/* Mobile Branding */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="flex flex-col items-center mb-6 md:hidden"
+            >
+              <motion.img
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                src="/src/assets/images/sanskaraa-logo.png"
+                alt="Sanskaraa"
+                className="w-12 h-12 object-contain mb-2"
+              />
+              <h1 className="text-xl font-bold text-[#5C3A21]">Sanskaraa</h1>
+              <p className="text-xs italic text-[#8B4513]/70">"Preserving Traditions. Celebrating Culture."</p>
+            </motion.div>
 
-      {/* AI Chatbot Integration (Corner) */}
-      <div className="fixed bottom-4 right-4 z-20">
-        <button
+            {/* Header Controls */}
+            <div className="flex justify-between items-center mb-6">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <h2 className="text-2xl font-bold text-[#5C3A21] flex items-center gap-2">
+                  <img 
+                    src="/src/assets/icons/diya.png" 
+                    alt="Diya" 
+                    className="w-5 h-5" 
+                  />
+                  Welcome Back
+                </h2>
+                <p className="text-sm text-[#8B4513]/70">
+                  Continue your spiritual journey
+                </p>
+              </motion.div>
+
+              <div className="flex items-center gap-2">
+                {/* Voice Input Toggle */}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    const current = localStorage.getItem("sanskaraa-tts") !== "true";
+                    localStorage.setItem("sanskaraa-tts", current.toString());
+                    toast.success(`Text-to-speech ${current ? "enabled" : "disabled"}`);
+                  }}
+                  className="p-2 rounded-full bg-yellow-50 text-[#8B4513] hover:bg-yellow-100 transition"
+                  title="Toggle text-to-speech"
+                >
+                  <Volume2 className="w-4 h-4" />
+                </motion.button>
+
+                {/* Dark Mode Toggle */}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={toggleDarkMode}
+                  className="p-2 rounded-full bg-yellow-50 text-[#8B4513] hover:bg-yellow-100 transition"
+                  title="Toggle dark mode"
+                >
+                  {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                </motion.button>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit(handleLogin)} className="space-y-4">
+              {/* Email Field */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                  <input
+                    {...register("email")}
+                    type="email"
+                    placeholder="Enter your email"
+                    className="pl-10 pr-10 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFD700]/60 focus:border-[#FFD700] py-2.5 transition-all duration-200"
+                  />
+                  <motion.button
+                    type="button"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={startVoiceInput}
+                    disabled={isListening}
+                    className="absolute right-3 top-3 text-gray-400 hover:text-[#8B4513] transition"
+                  >
+                    <Mic className={`w-4 h-4 ${isListening ? "text-[#8B4513] animate-pulse" : ""}`} />
+                  </motion.button>
+                </div>
+                <AnimatePresence>
+                  {errors.email && (
+                    <motion.p 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="text-red-600 text-sm bg-red-50 p-2 rounded border border-red-200 mt-1"
+                    >
+                      {errors.email.message}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+
+              {/* Password Field */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                  <input
+                    {...register("password")}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    className="pl-10 pr-10 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFD700]/60 focus:border-[#FFD700] py-2.5 transition-all duration-200"
+                  />
+                  <motion.button
+                    type="button"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-gray-400 hover:text-[#8B4513] transition"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </motion.button>
+                </div>
+                <AnimatePresence>
+                  {errors.password && (
+                    <motion.p 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="text-red-600 text-sm bg-red-50 p-2 rounded border border-red-200 mt-1"
+                    >
+                      {errors.password.message}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+
+              {/* Password Strength Meter */}
+              <AnimatePresence>
+                {watchedPassword && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="space-y-2"
+                  >
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-300 ${getPasswordStrengthColor()}`}
+                        style={{ width: `${passwordStrength}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      Password strength: {passwordStrength < 50 ? "Weak" : passwordStrength < 75 ? "Medium" : "Strong"}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Remember Me & Forgot Password */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+              >
+                <label className="flex items-center">
+                  <input
+                    {...register("rememberMe")}
+                    type="checkbox"
+                    className="h-4 w-4 text-[#8B4513] focus:ring-[#8B4513] border-gray-300 rounded"
+                  />
+                  <span className="ml-2 text-sm text-gray-700">Remember me</span>
+                </label>
+
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.05 }}
+                  onClick={handleForgotPassword}
+                  className="text-[#8B4513] hover:text-[#5C3A21] text-sm font-medium transition-colors"
+                >
+                  Forgot password?
+                </motion.button>
+              </motion.div>
+
+              {/* Login Button */}
+              <motion.button
+                type="submit"
+                disabled={isLoading}
+                whileHover={!isLoading ? { scale: 1.02 } : {}}
+                whileTap={!isLoading ? { scale: 0.98 } : {}}
+                className={`w-full py-3 px-4 bg-gradient-to-r from-[#8B4513] to-[#5C3A21] hover:from-[#5C3A21] hover:to-[#8B4513] text-white rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2 shadow-lg ${
+                  isLoading ? 'opacity-70 cursor-not-allowed' : ''
+                }`}
+              >
+                {isLoading ? (
+                  <>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    >
+                      <Loader2 className="w-4 h-4" />
+                    </motion.div>
+                    Logging in...
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-4 h-4" />
+                    Login to Your Account
+                  </>
+                )}
+              </motion.button>
+            </form>
+
+            {/* Social Login Divider */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="mt-6"
+            >
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white text-gray-500">
+                    Or continue with
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-3 gap-3">
+                {["Google", "Facebook", "Apple"].map((provider) => (
+                  <motion.button
+                    key={provider}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleSocialLogin(provider)}
+                    className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all"
+                  >
+                    {provider}
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Sign Up Link */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.9 }}
+              className="mt-6 text-center text-sm text-gray-600"
+            >
+              <p>
+                Don't have an account?{" "}
+                <Link to="/signup" className="text-[#8B4513] font-semibold hover:underline transition-colors">
+                  Create Account
+                </Link>
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* AI Chatbot Integration */}
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 1, type: "spring" }}
+        className="fixed bottom-6 right-6 z-20"
+      >
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
           onClick={() => toast.success("Om Sanskaraa assistant activated!")}
-          className="bg-orange-500 hover:bg-orange-600 text-white p-3 rounded-full shadow-lg transition-all hover:scale-110"
+          className="bg-gradient-to-r from-[#8B4513] to-[#5C3A21] text-white p-3 rounded-full shadow-lg transition-all"
           title="Om Sanskaraa Assistant"
         >
           <span className="text-sm font-semibold">🪷 Om</span>
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     </div>
   );
 }
