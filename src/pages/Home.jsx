@@ -736,11 +736,11 @@ function PanditAvailability() {
       </p>
       
       <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-        <button className="flex-1 flex items-center justify-center gap-1 sm:gap-2 bg-amber-100 text-amber-800 py-1.5 sm:py-2 rounded-lg font-medium hover:bg-amber-200 transition-colors text-xs sm:text-sm">
+        <button className="self-start inline-flex items-center gap-1 sm:gap-2 bg-amber-100 text-amber-800 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium hover:bg-amber-200 transition-colors text-xs sm:text-sm">
           <Phone size={14} className="sm:w-4 sm:h-4" />
           Call Now
         </button>
-        <button className="flex-1 bg-[#800000] text-white py-1.5 sm:py-2 rounded-lg font-medium hover:bg-[#A52A2A] transition-colors text-xs sm:text-sm">
+        <button className="self-start inline-flex items-center justify-center bg-[#800000] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium hover:bg-[#A52A2A] transition-colors text-xs sm:text-sm">
           Schedule Call
         </button>
       </div>
@@ -790,7 +790,7 @@ function DashboardSection() {
         
         <button 
           onClick={() => navigate('/bookings')}
-          className="w-full bg-amber-100 text-amber-800 py-1.5 sm:py-2 rounded-lg font-medium hover:bg-amber-200 transition-colors text-xs sm:text-sm"
+          className="self-start inline-flex bg-amber-100 text-amber-800 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium hover:bg-amber-200 transition-colors text-xs sm:text-sm"
         >
           View All Bookings
         </button>
@@ -901,11 +901,11 @@ function EnhancedPanditProfile() {
           </div>
         )}
 
-        <div className="flex gap-2 sm:gap-3 md:gap-4 justify-between">
-          <button className="flex-1 border border-gray-400 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded text-gray-700 hover:bg-gray-100 text-xs sm:text-sm transition-colors">
+        <div className="flex gap-2 sm:gap-3 md:gap-4 justify-start">
+          <button className="inline-flex items-center border border-gray-400 px-3 sm:px-4 py-1.5 sm:py-2 rounded text-gray-700 hover:bg-gray-100 text-xs sm:text-sm transition-colors">
             Call
           </button>
-          <button className="flex-1 bg-[#800000] text-white px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded hover:bg-[#A52A2A] text-xs sm:text-sm transition-colors">
+          <button className="inline-flex items-center bg-[#800000] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded hover:bg-[#A52A2A] text-xs sm:text-sm transition-colors">
             Book Now
           </button>
         </div>
