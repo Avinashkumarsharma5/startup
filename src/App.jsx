@@ -14,7 +14,6 @@ import PanditBooking from "./pages/PanditBooking";
 import EventsPage from "./pages/EventsPage";
 import BookingsPage from "./pages/BookingsPage";
 import UserProfile from "./pages/UserProfile";
-import BookEvent from "./pages/BookEvents";
 import VoiceAssistant from "./pages/VoiceAssistant";
 import SearchPage from "./pages/SearchPage";
 import ServiceProviderProfile from "./pages/ServiceProviderProfile";
@@ -51,7 +50,6 @@ export default function App() {
           
           <Route path="/BookingsPage" element={<BookingsPage />} />
           <Route path="/UserProfile" element={<UserProfile />} />
-          <Route path="/book" element={<BookEvent />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/service-provider/profile" element={<ServiceProviderProfile />} />
         <Route path="/vendor-registration" element={<VendorRegistration />} />
