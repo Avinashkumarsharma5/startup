@@ -1,126 +1,86 @@
-/* ----------------- Footer ----------------- */
+/* ----------------- Elegant Sanskaraa Footer (Fixed Bottom Style) ----------------- */
 import React from "react";
-import { Facebook, Instagram, Twitter, Youtube, MapPin, Mail, Phone, Heart } from "lucide-react";
+import {
+  Facebook,
+  Instagram,
+  Twitter,
+  Youtube,
+  MapPin,
+  Mail,
+  Phone,
+  Heart,
+} from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-r from-[#5C3A21] to-[#8B4513] text-[#FFD700] py-8 px-6 md:px-12 border-t-2 border-[#FFD700]/40 shadow-inner shadow-[#FFD700]/20 relative z-10">
-      
-      {/* Main Footer Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-10 md:gap-12 text-center md:text-left">
+    <footer className="bg-gradient-to-br from-[#4E2A12] via-[#6B3B1E] to-[#8B4513] text-[#FFD700] pt-8 pb-4 px-6 md:px-12 border-t border-[#FFD700]/30 shadow-[0_-4px_10px_rgba(255,215,0,0.1)] relative z-10">
+      {/* Main Content */}
+      <div className="flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-8 md:gap-16">
         
-        {/* Logo & Tagline */}
-        <div className="md:col-span-1">
-          <div className="flex items-center justify-center md:justify-start gap-3">
+        {/* Logo + Tagline */}
+        <div className="flex flex-col items-center md:items-start">
+          <div className="flex items-center gap-2">
             <img
               src="src/assets/images/sanskaraa-logo.png"
               alt="Sanskaraa"
-              className="h-10 w-10 object-contain"
+              className="h-10 w-10 object-contain drop-shadow-[0_0_6px_rgba(255,215,0,0.4)]"
             />
             <span className="font-bold text-xl tracking-wide">Sanskaraa</span>
           </div>
-          <p className="mt-3 italic text-[#FFD700]/80 text-sm">
-            "Preserving Traditions. Celebrating Culture."
-          </p>
-          <div className="flex justify-center md:justify-start gap-4 mt-5">
-            <Facebook className="w-5 h-5 hover:text-[#FFC107] cursor-pointer transition" />
-            <Instagram className="w-5 h-5 hover:text-[#FFC107] cursor-pointer transition" />
-            <Twitter className="w-5 h-5 hover:text-[#FFC107] cursor-pointer transition" />
-            <Youtube className="w-5 h-5 hover:text-[#FFC107] cursor-pointer transition" />
-          </div>
-        </div>
-
-        {/* Quick Links */}
-        <div>
-          <h3 className="font-semibold mb-4 text-lg underline decoration-[#FFD700]/40">
-            Quick Links
-          </h3>
-          <ul className="space-y-2 text-sm">
-            <li className="hover:text-[#FFC107] cursor-pointer transition">Home</li>
-            <li className="hover:text-[#FFC107] cursor-pointer transition">Book a Puja</li>
-            <li className="hover:text-[#FFC107] cursor-pointer transition">Pandit Booking</li>
-            <li className="hover:text-[#FFC107] cursor-pointer transition">Puja Kits</li>
-            <li className="hover:text-[#FFC107] cursor-pointer transition">Decorations</li>
-          </ul>
-        </div>
-
-        {/* Services */}
-        <div>
-          <h3 className="font-semibold mb-4 text-lg underline decoration-[#FFD700]/40">
-            Our Services
-          </h3>
-          <ul className="space-y-2 text-sm">
-            <li className="hover:text-[#FFC107] cursor-pointer transition">Wedding Puja</li>
-            <li className="hover:text-[#FFC107] cursor-pointer transition">Griha Pravesh</li>
-            <li className="hover:text-[#FFC107] cursor-pointer transition">Satyanarayan Katha</li>
-            <li className="hover:text-[#FFC107] cursor-pointer transition">Festival Puja</li>
-            <li className="hover:text-[#FFC107] cursor-pointer transition">Online Consultation</li>
-          </ul>
-        </div>
-
-        {/* Information */}
-        <div>
-          <h3 className="font-semibold mb-4 text-lg underline decoration-[#FFD700]/40">
-            Information
-          </h3>
-          <ul className="space-y-2 text-sm">
-            <li className="hover:text-[#FFC107] cursor-pointer transition">About Us</li>
-            <li className="hover:text-[#FFC107] cursor-pointer transition">Privacy Policy</li>
-            <li className="hover:text-[#FFC107] cursor-pointer transition">Terms of Service</li>
-            <li className="hover:text-[#FFC107] cursor-pointer transition">Refund Policy</li>
-            <li className="hover:text-[#FFC107] cursor-pointer transition">FAQs</li>
-          </ul>
-        </div>
-
-        {/* Contact & Newsletter */}
-        <div>
-          <h3 className="font-semibold mb-4 text-lg underline decoration-[#FFD700]/40">
-            Contact Us
-          </h3>
-          <p className="text-sm leading-relaxed">
-            <MapPin className="inline w-4 h-4 mr-1" /> Patna, Bihar, India <br />
-            <Phone className="inline w-4 h-4 mr-1" />{" "}
-            <a href="tel:+919876543210" className="hover:text-[#FFC107]">+91 98765 43210</a><br />
-            <Mail className="inline w-4 h-4 mr-1" />{" "}
-            <a href="mailto:support@sanskaraa.com" className="hover:text-[#FFC107]">support@sanskaraa.com</a>
+          <p className="text-sm italic mt-2 text-[#FFD700]/80 max-w-xs">
+            "Ārambh se Sampūrṇ tak – har kadam mein saath!"
           </p>
 
-          <div className="mt-5">
-            <p className="text-sm mb-2 font-medium">🪔 Subscribe for Ritual Updates:</p>
-            <div className="flex flex-col sm:flex-row items-center gap-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="px-4 py-2 rounded-lg bg-[#8B4513]/30 border border-[#FFD700]/40 text-[#FFD700] placeholder-[#FFD700]/70 focus:outline-none w-full"
+          {/* Social Links */}
+          <div className="flex gap-4 mt-4">
+            {[Facebook, Instagram, Twitter, Youtube].map((Icon, idx) => (
+              <Icon
+                key={idx}
+                className="w-5 h-5 cursor-pointer hover:text-[#FFC107] transition-transform transform hover:scale-110"
               />
-              <button className="bg-[#FFD700] text-[#5C3A21] font-semibold px-4 py-2 rounded-lg hover:bg-[#FFC107] transition w-full sm:w-auto">
-                Subscribe
-              </button>
-            </div>
+            ))}
           </div>
+        </div>
+
+        {/* Contact Info */}
+        <div className="text-sm leading-relaxed space-y-1">
+          <p className="flex items-center justify-center md:justify-start gap-2">
+            <MapPin className="w-4 h-4" /> Patna, Bihar, India
+          </p>
+          <p className="flex items-center justify-center md:justify-start gap-2">
+            <Phone className="w-4 h-4" />
+            <a
+              href="tel:+919876543210"
+              className="hover:text-[#FFC107] transition"
+            >
+              +91 98765 43210
+            </a>
+          </p>
+          <p className="flex items-center justify-center md:justify-start gap-2">
+            <Mail className="w-4 h-4" />
+            <a
+              href="mailto:support@sanskaraa.com"
+              className="hover:text-[#FFC107] transition"
+            >
+              support@sanskaraa.com
+            </a>
+          </p>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="border-t border-[#FFD700]/30 my-6"></div>
+      <div className="border-t border-[#FFD700]/20 my-5"></div>
 
-      {/* Trust badges / App links */}
-      <div className="flex flex-wrap justify-center gap-4 text-xs text-[#FFD700]/70 mb-4">
-        <span>🔒 100% Secure Payments</span>
-        <span>📦 Free Delivery on Puja Kits</span>
-        <span>🙏 Verified Pandits</span>
-        <span>🌐 All India Service</span>
-      </div>
-
-      {/* Footer Bottom */}
-      <div className="flex flex-col md:flex-row justify-between items-center text-xs text-[#FFD700]/80 gap-20">
+      {/* Bottom Bar */}
+      <div className="flex flex-col md:flex-row justify-between items-center text-xs text-[#FFD700]/80 gap-3">
         <p>
-          © {new Date().getFullYear()} Sanskaraa. Made with{" "}
-          <Heart className="inline w-3 h-3 text-[#FFC107]" /> for Indian Traditions.
+          © {new Date().getFullYear()} <span className="font-semibold">Sanskaraa</span>.{" "}
+          Made with <Heart className="inline w-3 h-3 text-[#FFC107] animate-pulse" /> for
+          Indian Traditions.
         </p>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="underline hover:text-[#FFC107] transition"
+          className="underline underline-offset-4 hover:text-[#FFC107] transition text-sm pb-14"
         >
           Back to Top ↑
         </button>
