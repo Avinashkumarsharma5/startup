@@ -499,7 +499,7 @@ function BottomNavbar() {
                 navigate(item.path);
               }}
               className={`flex flex-col items-center ${
-                activeTab === item.id ? "text-[#800000]" : "text-gray-500"
+                activeTab === item.id ? "text-[#800000]" : "text-gray-500 "
               }`}
             >
               <Icon size={22} />

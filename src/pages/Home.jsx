@@ -1171,64 +1171,7 @@ function FloatingCart({ itemCount }) {
   );
 }
 
-// ----------------- Bottom Navbar -----------------
-function BottomNavbar() {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("home");
 
-  const navItems = [
-    { id: "home", icon: HomeIcon, label: "Home" },
-    { id: "search", icon: Search, label: "Search" },
-    { id: "kits", icon: Package, label: "Kits" },
-    { id: "bookings", icon: Bookmark, label: "Bookings" },
-    { id: "more", icon: Menu, label: "More" },
-  ];
-
-  const handleNavigation = (itemId) => {
-    setActiveTab(itemId);
-    switch (itemId) {
-      case "home":
-        navigate("/");
-        break;
-      case "bookings":
-        navigate("/bookings");
-        break;
-      case "kits":
-        navigate("/pujakits");
-        break;
-      case "search":
-        // Focus search or navigate to search page
-        document.querySelector('input[type="text"]')?.focus();
-        break;
-      default:
-        break;
-    }
-  };
-
-  return (
-    <div className="fixed bottom-0 left-0 right-0 bg-[#FFF7E0] shadow-lg rounded-t-xl sm:rounded-t-2xl px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 z-50 border-t border-orange-200">
-      <div className="flex justify-between items-center">
-        {navItems.map(item => {
-          const Icon = item.icon;
-          const isActive = activeTab === item.id;
-          
-          return (
-            <button 
-              key={item.id}
-              onClick={() => handleNavigation(item.id)}
-              className="flex flex-col items-center min-w-[50px] sm:min-w-[56px]"
-            >
-              <Icon className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${isActive ? "text-[#800000]" : "text-gray-600"}`} />
-              <span className={`text-[10px] sm:text-[11px] md:text-xs mt-0.5 ${isActive ? "text-[#800000] font-medium" : "text-gray-600"}`}>
-                {item.label}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 
 // ----------------- Voice Search Modal -----------------
 function VoiceSearchModal({ isOpen, onClose, onResult }) {
@@ -1380,7 +1323,7 @@ export default function EnhancedHome() {
 
       <QuickActions />
       <FloatingCart itemCount={cartItems} />
-      <BottomNavbar />
+     
       
       <VoiceSearchModal 
         isOpen={voiceModalOpen} 
