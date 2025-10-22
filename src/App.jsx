@@ -27,7 +27,7 @@ export default function App() {
   const location = useLocation();
   const [micOpen, setMicOpen] = useState(false);
 
-  const noLayoutRoutes = ["/login", "/signup"];
+  const noLayoutRoutes = ["/login", "/signup","/forget-password"];
   const hideLayout = noLayoutRoutes.includes(location.pathname);
 
   const handleMicClick = () => setMicOpen(true);
