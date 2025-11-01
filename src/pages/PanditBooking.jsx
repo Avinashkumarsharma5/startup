@@ -84,57 +84,57 @@ const Toast = ({ message, type = "success", onClose, bookingId }) => {
 
 // Skeleton Loading Component
 const PanditCardSkeleton = () => (
-  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 animate-pulse">
+  <div className="bg-white rounded-2xl shadow-lg p-6 animate-pulse">
     <div className="flex items-start justify-between mb-4">
       <div className="flex items-center gap-3">
-        <div className="w-16 h-16 bg-gray-300 dark:bg-gray-700 rounded-xl"></div>
+        <div className="w-16 h-16 bg-gray-300 rounded-xl"></div>
         <div className="space-y-2">
-          <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-32"></div>
-          <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-24"></div>
+          <div className="h-4 bg-gray-300 rounded w-32"></div>
+          <div className="h-3 bg-gray-300 rounded w-24"></div>
         </div>
       </div>
-      <div className="w-8 h-8 bg-gray-300 dark:bg-gray-700 rounded-lg"></div>
+      <div className="w-8 h-8 bg-gray-300 rounded-lg"></div>
     </div>
     <div className="space-y-3 mb-4">
-      <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded"></div>
-      <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-4/5"></div>
+      <div className="h-3 bg-gray-300 rounded"></div>
+      <div className="h-3 bg-gray-300 rounded w-4/5"></div>
     </div>
     <div className="flex items-center justify-between">
-      <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-20"></div>
-      <div className="h-10 bg-gray-300 dark:bg-gray-700 rounded-lg w-24"></div>
+      <div className="h-6 bg-gray-300 rounded w-20"></div>
+      <div className="h-10 bg-gray-300 rounded-lg w-24"></div>
     </div>
   </div>
 );
 
 // Trust Badges Component
-const TrustBadges = ({ darkMode }) => (
-  <div className="flex flex-wrap justify-center gap-6 py-8 border-t border-amber-200 dark:border-gray-700 mt-8">
-    <div className="flex items-center gap-3 text-sm text-amber-700 dark:text-amber-300">
+const TrustBadges = () => (
+  <div className="flex flex-wrap justify-center gap-6 py-8 border-t border-amber-200 mt-8">
+    <div className="flex items-center gap-3 text-sm text-amber-700">
       <Shield className="w-5 h-5 text-green-500" />
       <div>
         <div className="font-semibold">Verified Pandits</div>
-        <div className="text-xs text-amber-600 dark:text-amber-400">ID & Background Checked</div>
+        <div className="text-xs text-amber-600">ID & Background Checked</div>
       </div>
     </div>
-    <div className="flex items-center gap-3 text-sm text-amber-700 dark:text-amber-300">
+    <div className="flex items-center gap-3 text-sm text-amber-700">
       <Award className="w-5 h-5 text-blue-500" />
       <div>
         <div className="font-semibold">Quality Guarantee</div>
-        <div className="text-xs text-amber-600 dark:text-amber-400">Satisfaction Assured</div>
+        <div className="text-xs text-amber-600">Satisfaction Assured</div>
       </div>
     </div>
-    <div className="flex items-center gap-3 text-sm text-amber-700 dark:text-amber-300">
+    <div className="flex items-center gap-3 text-sm text-amber-700">
       <PhoneCall className="w-5 h-5 text-purple-500" />
       <div>
         <div className="font-semibold">24/7 Support</div>
-        <div className="text-xs text-amber-600 dark:text-amber-400">Always Here to Help</div>
+        <div className="text-xs text-amber-600">Always Here to Help</div>
       </div>
     </div>
   </div>
 );
 
 // Pandit Detail Modal Component
-const PanditDetailModal = ({ pandit, isOpen, onClose, onBookNow, darkMode }) => {
+const PanditDetailModal = ({ pandit, isOpen, onClose, onBookNow }) => {
   if (!isOpen) return null;
 
   return (
@@ -143,15 +143,15 @@ const PanditDetailModal = ({ pandit, isOpen, onClose, onBookNow, darkMode }) => 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto`}
+        className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
       >
         <div className="flex justify-between items-start mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-2xl font-bold text-gray-900">
             {pandit.name} {pandit.verified && "✅"}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100"
           >
             <X size={24} />
           </button>
@@ -167,10 +167,10 @@ const PanditDetailModal = ({ pandit, isOpen, onClose, onBookNow, darkMode }) => 
                 className="w-24 h-24 rounded-xl object-cover border-2 border-amber-200"
               />
               <div className="flex-1">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   {pandit.name}
                 </h3>
-                <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-3">
+                <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
                   <div className="flex items-center gap-1">
                     <MapPin className="w-4 h-4" />
                     <span>{pandit.city}</span>
@@ -182,7 +182,7 @@ const PanditDetailModal = ({ pandit, isOpen, onClose, onBookNow, darkMode }) => 
                 </div>
                 <div className="flex items-center gap-2">
                   <Star className="w-5 h-5 text-amber-500 fill-current" />
-                  <span className="font-semibold text-gray-900 dark:text-white">
+                  <span className="font-semibold text-gray-900">
                     {pandit.rating} ({pandit.reviews} reviews)
                   </span>
                 </div>
@@ -191,24 +191,24 @@ const PanditDetailModal = ({ pandit, isOpen, onClose, onBookNow, darkMode }) => 
 
             <div className="space-y-4">
               <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">About</h4>
-                <p className="text-gray-700 dark:text-gray-300">{pandit.description}</p>
+                <h4 className="font-semibold text-gray-900 mb-2">About</h4>
+                <p className="text-gray-700">{pandit.description}</p>
               </div>
 
               <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Specialization</h4>
+                <h4 className="font-semibold text-gray-900 mb-2">Specialization</h4>
                 <div className="flex flex-wrap gap-2">
-                  <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 px-3 py-1 rounded-full text-sm">
+                  <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm">
                     {pandit.specialization}
                   </span>
                 </div>
               </div>
 
               <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Languages</h4>
+                <h4 className="font-semibold text-gray-900 mb-2">Languages</h4>
                 <div className="flex flex-wrap gap-2">
                   {pandit.languages.map((lang, index) => (
-                    <span key={index} className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm">
+                    <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
                       {lang}
                     </span>
                   ))}
@@ -219,26 +219,26 @@ const PanditDetailModal = ({ pandit, isOpen, onClose, onBookNow, darkMode }) => 
 
           {/* Right Column - Booking Info */}
           <div className="space-y-6">
-            <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 border border-amber-200 dark:border-amber-800">
+            <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
               <div className="text-center mb-4">
-                <div className="text-3xl font-bold text-amber-600 dark:text-amber-400">
+                <div className="text-3xl font-bold text-amber-600">
                   ₹{pandit.price}
                 </div>
-                <div className="text-sm text-amber-600 dark:text-amber-400">per ceremony</div>
+                <div className="text-sm text-amber-600">per ceremony</div>
               </div>
               
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Response Time:</span>
+                  <span className="text-gray-600">Response Time:</span>
                   <span className="font-semibold">{pandit.responseTime}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Completed Pujas:</span>
+                  <span className="text-gray-600">Completed Pujas:</span>
                   <span className="font-semibold">{pandit.completedPujas}+</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Availability:</span>
-                  <span className="font-semibold text-green-600 dark:text-green-400">Available</span>
+                  <span className="text-gray-600">Availability:</span>
+                  <span className="font-semibold text-green-600">Available</span>
                 </div>
               </div>
 
@@ -254,8 +254,8 @@ const PanditDetailModal = ({ pandit, isOpen, onClose, onBookNow, darkMode }) => 
             </div>
 
             {/* Contact Options */}
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Contact Pandit</h4>
+            <div className="bg-gray-50 rounded-xl p-4">
+              <h4 className="font-semibold text-gray-900 mb-3">Contact Pandit</h4>
               <div className="flex gap-2">
                 <button className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-2">
                   <MessageSquare className="w-4 h-4" />
@@ -294,7 +294,6 @@ export default function PanditBooking() {
   const [showPanditDetail, setShowPanditDetail] = useState(false);
   const [bookingStep, setBookingStep] = useState(0);
   const [bookingData, setBookingData] = useState({});
-  const [darkMode, setDarkMode] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [bookingId, setBookingId] = useState("");
   const [recentlyViewed, setRecentlyViewed] = useState([]);
@@ -400,15 +399,11 @@ export default function PanditBooking() {
   useEffect(() => {
     const savedFavorites = localStorage.getItem("panditFavorites");
     const savedRecentlyViewed = localStorage.getItem("recentlyViewedPandits");
-    const savedDarkMode = localStorage.getItem("darkMode");
     const savedBookings = localStorage.getItem("panditBookings");
     
     if (savedFavorites) setFavorites(JSON.parse(savedFavorites));
     if (savedRecentlyViewed) setRecentlyViewed(JSON.parse(savedRecentlyViewed));
-    if (savedDarkMode === 'true') {
-      setDarkMode(true);
-      document.documentElement.classList.add('dark');
-    }
+    
     // Initialize bookings if not exists
     if (!savedBookings) {
       localStorage.setItem('panditBookings', JSON.stringify([]));
@@ -423,10 +418,6 @@ export default function PanditBooking() {
   useEffect(() => {
     localStorage.setItem("recentlyViewedPandits", JSON.stringify(recentlyViewed));
   }, [recentlyViewed]);
-
-  useEffect(() => {
-    localStorage.setItem("darkMode", darkMode.toString());
-  }, [darkMode]);
 
   const allServices = useMemo(() => [...new Set(panditList.map(p => p.specialization))], [panditList]);
   const allLocations = useMemo(() => [...new Set(panditList.map(p => p.city))], [panditList]);
@@ -552,11 +543,6 @@ export default function PanditBooking() {
     }, 5000);
   };
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    document.documentElement.classList.toggle('dark');
-  };
-
   const navigateToMyBookings = () => {
     navigate('/my-bookings');
   };
@@ -566,9 +552,9 @@ export default function PanditBooking() {
   };
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-amber-50'} transition-colors duration-300`}>
+    <div className="min-h-screen bg-amber-50">
       {/* Header Section */}
-      <section className={`relative ${darkMode ? 'bg-gray-800' : 'bg-gradient-to-r from-amber-800 to-amber-600'} text-white py-16 sm:py-20 md:py-24 px-4 sm:px-6 text-center`}>
+      <section className="relative bg-gradient-to-r from-amber-800 to-amber-600 text-white py-16 sm:py-20 md:py-24 px-4 sm:px-6 text-center">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Sparkles className="w-8 h-8 text-amber-300" />
@@ -603,12 +589,6 @@ export default function PanditBooking() {
                 <Filter className="w-5 h-5" /> 
                 <span>Filters</span>
               </button>
-              <button 
-                onClick={toggleDarkMode}
-                className="bg-gray-700 hover:bg-gray-800 text-white px-4 py-3 rounded-xl transition text-sm font-medium shadow-lg hover:shadow-xl"
-              >
-                {darkMode ? '☀️' : '🌙'}
-              </button>
             </div>
           </div>
         </div>
@@ -619,7 +599,7 @@ export default function PanditBooking() {
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`sticky top-0 z-40 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-2xl p-4 sm:p-6 border-b ${darkMode ? 'border-gray-700' : 'border-amber-200'}`}
+          className="sticky top-0 z-40 bg-white shadow-2xl p-4 sm:p-6 border-b border-amber-200"
         >
           <div className="max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-4">
@@ -627,7 +607,7 @@ export default function PanditBooking() {
                 <Filter className="w-5 h-5" />
                 Refine Your Search
               </h3>
-              <button onClick={() => setShowFilters(false)} className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+              <button onClick={() => setShowFilters(false)} className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -639,9 +619,7 @@ export default function PanditBooking() {
                 <select
                   value={filters.service}
                   onChange={(e) => handleFilterChange('service', e.target.value)}
-                  className={`w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none ${
-                    darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-700'
-                  }`}
+                  className="w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white border-gray-300 text-gray-700"
                 >
                   <option value="">All Pujas</option>
                   {allServices.map(service => (
@@ -656,9 +634,7 @@ export default function PanditBooking() {
                 <select
                   value={filters.location}
                   onChange={(e) => handleFilterChange('location', e.target.value)}
-                  className={`w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none ${
-                    darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-700'
-                  }`}
+                  className="w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white border-gray-300 text-gray-700"
                 >
                   <option value="">All Cities</option>
                   {allLocations.map(location => (
@@ -673,9 +649,7 @@ export default function PanditBooking() {
                 <select
                   value={filters.language}
                   onChange={(e) => handleFilterChange('language', e.target.value)}
-                  className={`w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none ${
-                    darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-700'
-                  }`}
+                  className="w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white border-gray-300 text-gray-700"
                 >
                   <option value="">All Languages</option>
                   {allLanguages.map(language => (
@@ -690,9 +664,7 @@ export default function PanditBooking() {
                 <input
                   type="date"
                   min={new Date().toISOString().split('T')[0]}
-                  className={`w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none ${
-                    darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-700'
-                  }`}
+                  className="w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white border-gray-300 text-gray-700"
                   onChange={(e) => handleFilterChange('availability', e.target.value)}
                 />
               </div>
@@ -703,9 +675,7 @@ export default function PanditBooking() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className={`w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none ${
-                    darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-700'
-                  }`}
+                  className="w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white border-gray-300 text-gray-700"
                 >
                   <option value="rating">Rating</option>
                   <option value="experience">Experience</option>
@@ -717,7 +687,7 @@ export default function PanditBooking() {
             </div>
 
             {/* Range Sliders */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-gray-200">
               <div>
                 <label className="block text-sm font-medium mb-2">
                   Price Range: ₹{filters.minPrice} - ₹{filters.maxPrice}
@@ -811,7 +781,7 @@ export default function PanditBooking() {
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <User className="w-6 h-6 text-amber-600" />
             Available Pandits
-            <span className="text-sm font-normal text-gray-500 dark:text-gray-400 ml-2">
+            <span className="text-sm font-normal text-gray-500 ml-2">
               ({sortedPandits.length} found)
             </span>
           </h2>
@@ -819,7 +789,7 @@ export default function PanditBooking() {
           {/* Active Filters Chips */}
           <div className="flex flex-wrap gap-2">
             {searchQuery && (
-              <span className={`${darkMode ? 'bg-gray-700' : 'bg-amber-100'} px-3 py-1 rounded-full text-sm flex items-center gap-2`}>
+              <span className="bg-amber-100 px-3 py-1 rounded-full text-sm flex items-center gap-2">
                 Search: "{searchQuery}"
                 <X 
                   size={14}
@@ -831,7 +801,7 @@ export default function PanditBooking() {
             {Object.entries(filters).map(([key, value]) => {
               if (value && key !== 'minPrice' && key !== 'maxPrice' && key !== 'minRating' && key !== 'minExperience') {
                 return (
-                  <span key={key} className={`${darkMode ? 'bg-gray-700' : 'bg-amber-100'} px-3 py-1 rounded-full text-sm flex items-center gap-2`}>
+                  <span key={key} className="bg-amber-100 px-3 py-1 rounded-full text-sm flex items-center gap-2">
                     {key}: {value}
                     <X 
                       size={14}
@@ -860,9 +830,7 @@ export default function PanditBooking() {
                 key={pandit.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-2xl shadow-lg hover:shadow-xl p-6 transition-all duration-300 transform hover:scale-[1.02] border ${
-                  darkMode ? 'border-gray-700' : 'border-amber-100'
-                }`}
+                className="bg-white rounded-2xl shadow-lg hover:shadow-xl p-6 transition-all duration-300 transform hover:scale-[1.02] border border-amber-100"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -873,14 +841,14 @@ export default function PanditBooking() {
                     />
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-lg text-gray-800 dark:text-white">{pandit.name}</h3>
+                        <h3 className="font-semibold text-lg text-gray-800">{pandit.name}</h3>
                         {pandit.verified && (
                           <CheckCircle className="w-4 h-4 text-green-500" title="Verified Pandit" />
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-1">
                         <Star className="w-4 h-4 text-amber-500 fill-current" />
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <span className="text-sm font-medium text-gray-700">
                           {pandit.rating} ({pandit.reviews} reviews)
                         </span>
                       </div>
@@ -890,8 +858,8 @@ export default function PanditBooking() {
                     onClick={() => toggleFavorite(pandit.id)}
                     className={`p-2 rounded-lg transition-colors ${
                       favorites.includes(pandit.id)
-                        ? 'text-red-500 bg-red-50 dark:bg-red-900/20'
-                        : 'text-gray-400 hover:text-red-500 hover:bg-gray-50 dark:hover:bg-gray-700'
+                        ? 'text-red-500 bg-red-50'
+                        : 'text-gray-400 hover:text-red-500 hover:bg-gray-50'
                     }`}
                   >
                     <Heart
@@ -902,18 +870,18 @@ export default function PanditBooking() {
                 </div>
 
                 <div className="space-y-3 mb-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
                     <MapPin className="w-4 h-4" />
                     <span>{pandit.city}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Clock3 className="w-4 h-4" />
                     <span>{pandit.experience} years experience • {pandit.completedPujas}+ pujas</span>
                   </div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">{pandit.description}</p>
+                  <p className="text-sm text-gray-700 line-clamp-2">{pandit.description}</p>
                   
                   {/* Response Time */}
-                  <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+                  <div className="flex items-center gap-2 text-sm text-green-600">
                     <Clock className="w-4 h-4" />
                     <span>{pandit.responseTime}</span>
                   </div>
@@ -921,17 +889,17 @@ export default function PanditBooking() {
 
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <span className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+                    <span className="text-2xl font-bold text-amber-600">
                       ₹{pandit.price}
                     </span>
-                    <span className="text-sm text-gray-500 dark:text-gray-400 ml-1">/ceremony</span>
+                    <span className="text-sm text-gray-500 ml-1">/ceremony</span>
                   </div>
                 </div>
 
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleViewDetails(pandit)}
-                    className="flex-1 border border-amber-600 text-amber-600 dark:text-amber-400 dark:border-amber-400 py-2 rounded-lg font-medium hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors flex items-center justify-center gap-2"
+                    className="flex-1 border border-amber-600 text-amber-600 py-2 rounded-lg font-medium hover:bg-amber-50 transition-colors flex items-center justify-center gap-2"
                   >
                     <Eye className="w-4 h-4" />
                     View Details
@@ -950,10 +918,10 @@ export default function PanditBooking() {
           /* No Results Found */
           <div className="text-center py-16">
             <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-4">
+            <h3 className="text-2xl font-bold text-gray-700 mb-4">
               No Pandits Found
             </h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
+            <p className="text-gray-500 mb-8 max-w-md mx-auto">
               Try adjusting your search criteria or filters to find the perfect pandit for your puja.
             </p>
             <button
@@ -988,19 +956,17 @@ export default function PanditBooking() {
               {recentlyViewed.map((pandit) => (
                 <div
                   key={pandit.id}
-                  className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-4 border ${
-                    darkMode ? 'border-gray-700' : 'border-amber-100'
-                  } hover:shadow-lg transition-shadow`}
+                  className="bg-white rounded-xl p-4 border border-amber-100 hover:shadow-lg transition-shadow"
                 >
                   <img
                     src={pandit.image}
                     alt={pandit.name}
                     className="w-full h-32 object-cover rounded-lg mb-3"
                   />
-                  <h4 className="font-semibold text-gray-800 dark:text-white">{pandit.name}</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{pandit.specialization}</p>
+                  <h4 className="font-semibold text-gray-800">{pandit.name}</h4>
+                  <p className="text-sm text-gray-600 mb-2">{pandit.specialization}</p>
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-amber-600 dark:text-amber-400">
+                    <span className="font-semibold text-amber-600">
                       ₹{pandit.price}
                     </span>
                     <button
@@ -1017,7 +983,7 @@ export default function PanditBooking() {
         )}
 
         {/* Trust Badges */}
-        <TrustBadges darkMode={darkMode} />
+        <TrustBadges />
       </div>
 
       {/* Enhanced Booking Modal */}
@@ -1028,10 +994,10 @@ export default function PanditBooking() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto`}
+              className="bg-white rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-bold text-gray-900">
                   Book {selectedPandit.name}
                 </h2>
                 <button
@@ -1039,7 +1005,7 @@ export default function PanditBooking() {
                     setBookingStep(0);
                     setSelectedPandit(null);
                   }}
-                  className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100"
                 >
                   <X size={24} />
                 </button>
@@ -1052,13 +1018,13 @@ export default function PanditBooking() {
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
                       bookingStep >= step 
                         ? 'bg-amber-600 text-white' 
-                        : 'bg-gray-300 dark:bg-gray-700 text-gray-500'
+                        : 'bg-gray-300 text-gray-500'
                     }`}>
                       {step}
                     </div>
                     {step < 4 && (
                       <div className={`flex-1 h-1 ${
-                        bookingStep > step ? 'bg-amber-600' : 'bg-gray-300 dark:bg-gray-700'
+                        bookingStep > step ? 'bg-amber-600' : 'bg-gray-300'
                       }`} />
                     )}
                   </div>
@@ -1068,21 +1034,21 @@ export default function PanditBooking() {
               {/* Step 1: Service Selection */}
               {bookingStep === 1 && (
                 <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h3 className="text-lg font-semibold text-gray-900">
                     Select Service
                   </h3>
                   <div className="grid gap-4">
-                    <div className="p-4 border-2 border-amber-300 rounded-xl bg-amber-50 dark:bg-amber-900/20">
+                    <div className="p-4 border-2 border-amber-300 rounded-xl bg-amber-50">
                       <div className="flex justify-between items-center">
                         <div>
-                          <h4 className="font-semibold text-gray-900 dark:text-white">
+                          <h4 className="font-semibold text-gray-900">
                             {selectedPandit.specialization}
                           </h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                          <p className="text-sm text-gray-600 mt-1">
                             {selectedPandit.description}
                           </p>
                         </div>
-                        <span className="text-lg font-bold text-amber-600 dark:text-amber-400">
+                        <span className="text-lg font-bold text-amber-600">
                           ₹{selectedPandit.price}
                         </span>
                       </div>
@@ -1100,12 +1066,12 @@ export default function PanditBooking() {
               {/* Step 2: Date & Time Selection */}
               {bookingStep === 2 && (
                 <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h3 className="text-lg font-semibold text-gray-900">
                     Select Date & Time
                   </h3>
                   <div className="grid gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         Preferred Date
                       </label>
                       <select
@@ -1117,7 +1083,7 @@ export default function PanditBooking() {
                             time: "" // Reset time when date changes
                           }));
                         }}
-                        className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white dark:bg-gray-700"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white"
                       >
                         <option value="">Select Date</option>
                         {selectedPandit.availability.dates.map(date => (
@@ -1135,7 +1101,7 @@ export default function PanditBooking() {
                     
                     {bookingData.date && (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
                           Available Time Slots
                         </label>
                         <div className="grid grid-cols-2 gap-2">
@@ -1146,7 +1112,7 @@ export default function PanditBooking() {
                               className={`p-3 rounded-lg border text-center transition-colors ${
                                 bookingData.time === timeSlot
                                   ? 'bg-amber-600 text-white border-amber-600'
-                                  : 'border-gray-300 dark:border-gray-600 hover:border-amber-500'
+                                  : 'border-gray-300 hover:border-amber-500'
                               }`}
                             >
                               {timeSlot}
@@ -1159,7 +1125,7 @@ export default function PanditBooking() {
                   <div className="flex gap-3">
                     <button
                       onClick={handleBookingBack}
-                      className="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                     >
                       Back
                     </button>
@@ -1169,7 +1135,7 @@ export default function PanditBooking() {
                       className={`flex-1 py-3 rounded-lg font-semibold transition-colors ${
                         bookingData.date && bookingData.time
                           ? 'bg-amber-600 hover:bg-amber-700 text-white'
-                          : 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       }`}
                     >
                       Continue to Details
@@ -1181,24 +1147,24 @@ export default function PanditBooking() {
               {/* Step 3: Address & Additional Details */}
               {bookingStep === 3 && (
                 <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h3 className="text-lg font-semibold text-gray-900">
                     Enter Details
                   </h3>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         Complete Address
                       </label>
                       <textarea
                         placeholder="Enter your complete address with landmark..."
                         rows={4}
-                        className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white dark:bg-gray-700 resize-none"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white resize-none"
                         value={bookingData.address}
                         onChange={(e) => setBookingData(prev => ({ ...prev, address: e.target.value }))}
                       />
                     </div>
                     
-                    <div className="flex items-center gap-3 p-4 border border-amber-300 rounded-xl bg-amber-50 dark:bg-amber-900/20">
+                    <div className="flex items-center gap-3 p-4 border border-amber-300 rounded-xl bg-amber-50">
                       <input
                         type="checkbox"
                         id="includeSamagri"
@@ -1206,22 +1172,22 @@ export default function PanditBooking() {
                         checked={bookingData.includeSamagri}
                         onChange={(e) => setBookingData(prev => ({ ...prev, includeSamagri: e.target.checked }))}
                       />
-                      <label htmlFor="includeSamagri" className="text-sm text-gray-700 dark:text-gray-300 flex-1">
+                      <label htmlFor="includeSamagri" className="text-sm text-gray-700 flex-1">
                         <div className="font-semibold">Include Puja Samagri Kit</div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">
+                        <div className="text-xs text-gray-600">
                           All necessary puja items delivered to your doorstep (+₹{selectedPandit.samagriPrice})
                         </div>
                       </label>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         Additional Notes (Optional)
                       </label>
                       <textarea
                         placeholder="Any special requirements or instructions..."
                         rows={3}
-                        className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white dark:bg-gray-700 resize-none"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white resize-none"
                         value={bookingData.additionalNotes}
                         onChange={(e) => setBookingData(prev => ({ ...prev, additionalNotes: e.target.value }))}
                       />
@@ -1230,7 +1196,7 @@ export default function PanditBooking() {
                   <div className="flex gap-3">
                     <button
                       onClick={handleBookingBack}
-                      className="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                     >
                       Back
                     </button>
@@ -1240,7 +1206,7 @@ export default function PanditBooking() {
                       className={`flex-1 py-3 rounded-lg font-semibold transition-colors ${
                         bookingData.address
                           ? 'bg-amber-600 hover:bg-amber-700 text-white'
-                          : 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       }`}
                     >
                       Review Booking
@@ -1252,50 +1218,50 @@ export default function PanditBooking() {
               {/* Step 4: Confirmation */}
               {bookingStep === 4 && (
                 <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h3 className="text-lg font-semibold text-gray-900">
                     Confirm Booking
                   </h3>
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 space-y-3">
+                  <div className="bg-gray-50 rounded-xl p-4 space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Pandit:</span>
+                      <span className="text-gray-600">Pandit:</span>
                       <span className="font-semibold">{selectedPandit.name}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Service:</span>
+                      <span className="text-gray-600">Service:</span>
                       <span className="font-semibold">{bookingData.service}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Date & Time:</span>
+                      <span className="text-gray-600">Date & Time:</span>
                       <span className="font-semibold">
                         {new Date(bookingData.date).toLocaleDateString('en-IN')} at {bookingData.time}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Samagri Kit:</span>
+                      <span className="text-gray-600">Samagri Kit:</span>
                       <span className="font-semibold">
                         {bookingData.includeSamagri ? `Included (+₹${selectedPandit.samagriPrice})` : 'Not Included'}
                       </span>
                     </div>
                     {bookingData.additionalNotes && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600 dark:text-gray-400">Special Instructions:</span>
+                        <span className="text-gray-600">Special Instructions:</span>
                         <span className="font-semibold text-right max-w-[60%]">{bookingData.additionalNotes}</span>
                       </div>
                     )}
-                    <div className="border-t border-gray-200 dark:border-gray-600 pt-3">
+                    <div className="border-t border-gray-200 pt-3">
                       <div className="flex justify-between text-lg font-bold">
                         <span>Total Amount:</span>
-                        <span className="text-amber-600 dark:text-amber-400">
+                        <span className="text-amber-600">
                           ₹{selectedPandit.price + (bookingData.includeSamagri ? selectedPandit.samagriPrice : 0)}
                         </span>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+                  <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
                     <div className="flex items-start gap-3">
                       <Shield className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                      <div className="text-sm text-blue-700 dark:text-blue-300">
+                      <div className="text-sm text-blue-700">
                         <div className="font-semibold">Cancellation Policy</div>
                         <div>Free cancellation up to 24 hours before the puja. 50% refund for cancellations within 12-24 hours.</div>
                       </div>
@@ -1305,7 +1271,7 @@ export default function PanditBooking() {
                   <div className="flex gap-3">
                     <button
                       onClick={handleBookingBack}
-                      className="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                     >
                       Back
                     </button>
@@ -1330,7 +1296,6 @@ export default function PanditBooking() {
         isOpen={showPanditDetail}
         onClose={() => setShowPanditDetail(false)}
         onBookNow={handleBookNow}
-        darkMode={darkMode}
       />
 
       {/* Enhanced Toast Notification */}
@@ -1344,44 +1309,6 @@ export default function PanditBooking() {
           />
         )}
       </AnimatePresence>
-
-      {/* Floating Action Buttons - Now at the TOP */}
-      <div className="fixed top-24 right-6 z-40 flex flex-col gap-3">
-        {/* My Bookings Button */}
-        <button
-          onClick={navigateToMyBookings}
-          className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-110 flex items-center justify-center"
-          title="My Bookings"
-        >
-          <BookOpen className="w-6 h-6" />
-        </button>
-
-        {/* Favorites Button */}
-        <button
-          onClick={navigateToFavorites}
-          className="bg-pink-600 hover:bg-pink-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-110 flex items-center justify-center"
-          title="My Favorites"
-        >
-          <Heart className="w-6 h-6" fill="currentColor" />
-        </button>
-
-        {/* Filter Button */}
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="bg-amber-600 hover:bg-amber-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-110 flex items-center justify-center"
-          title="Filters"
-        >
-          <Filter className="w-6 h-6" />
-        </button>
-        
-        {/* Support Chat Button */}
-        <button 
-          className="bg-green-600 hover:bg-green-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-110 flex items-center justify-center"
-          title="Support Chat"
-        >
-          <MessageSquare className="w-6 h-6" />
-        </button>
-      </div>
     </div>
   );
 }
