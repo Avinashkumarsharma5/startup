@@ -117,7 +117,7 @@ const servicesData = {
     {
       id: 1,
       name: "Traditional Mandap Decoration",
-      img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop",
+      img: "src/assets/images/decor2.png",
       rating: 4.7,
       price: 25000,
       reviews: 128,
@@ -137,15 +137,15 @@ const servicesData = {
       description: "Beautiful traditional mandap decoration with fresh flowers and traditional elements for your special day.",
       inclusions: ["Fresh Flower Decoration", "Traditional Fabric Draping", "Lighting Setup", "On-site Support"],
       images: [
-        "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop"
+        "src/assets/images/sanskaraa1.png",
+        "src/assets/images/sadi1.jpg",
+        "src/assets/images/decor3.png"
       ]
     },
     {
       id: 2,
       name: "Floral Stage Decoration",
-      img: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=400&h=300&fit=crop",
+      img: "src/assets/images/flowerdeco3.png",
       rating: 4.5,
       price: 18000,
       reviews: 89,
@@ -155,8 +155,8 @@ const servicesData = {
       description: "Elegant floral stage decoration perfect for weddings and corporate events.",
       inclusions: ["Fresh Flower Arrangements", "Stage Backdrop", "Floral Garlands", "Setup & Teardown"],
       images: [
-        "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop"
+        "src/assets/images/flowerdeco1.png",
+        "src/assets/images/flowerdeco2.png"
       ]
     },
   ],
