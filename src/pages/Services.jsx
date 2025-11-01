@@ -242,7 +242,7 @@ const servicesData = {
     {
       id: 7,
       name: "Wedding Photography & Videography",
-      img: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=300&fit=crop",
+      img: "src/assets/images/photography1.png",
       rating: 4.8,
       price: 45000,
       reviews: 203,
@@ -251,8 +251,8 @@ const servicesData = {
       description: "Capture your special moments with our professional photography and videography team.",
       inclusions: ["8 Hours Coverage", "2 Photographers", "1 Videographer", "100+ Edited Photos", "5 Min Highlight Video"],
       images: [
-        "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop"
+        "src/assets/images/photography2.png",
+        "src/assets/images/photography3.png"
       ]
     },
   ],
@@ -260,7 +260,7 @@ const servicesData = {
     {
       id: 8,
       name: "Live DJ & Music",
-      img: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=300&fit=crop",
+      img: "src/assets/images/dj1.png",
       rating: 4.5,
       price: 25000,
       reviews: 89,
@@ -269,7 +269,7 @@ const servicesData = {
       description: "Professional DJ services with latest sound equipment and vast music library.",
       inclusions: ["5 Hours Performance", "Sound System", "Light Effects", "Music Requests", "MC Services"],
       images: [
-        "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=300&fit=crop"
+        "src/assets/images/dj2.png"
       ]
     },
   ]
@@ -294,7 +294,7 @@ const packagesData = [
     price: 89999,
     originalPrice: 104999,
     savings: 15000,
-    image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=250&fit=crop",
+    image: "src/assets/images/Wedding Combo.png",
     rating: 4.8,
     reviews: 89
   },
@@ -305,7 +305,7 @@ const packagesData = [
     price: 45999,
     originalPrice: 54999,
     savings: 9000,
-    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=250&fit=crop",
+    image: "src/assets/images/Grih Pravesh Combo.png",
     rating: 4.6,
     reviews: 45
   },
@@ -316,7 +316,7 @@ const packagesData = [
     price: 32999,
     originalPrice: 39999,
     savings: 7000,
-    image: "https://images.unsplash.com/photo-1601297183305-6df142704ea2?w=400&h=250&fit=crop",
+    image: "src/assets/images/Festival Special.png",
     rating: 4.7,
     reviews: 67
   }
