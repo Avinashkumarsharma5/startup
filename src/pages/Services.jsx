@@ -117,7 +117,7 @@ const servicesData = {
     {
       id: 1,
       name: "Traditional Mandap Decoration",
-      img: "src/assets/images/decor2.png",
+      img: "src/assets/images/mandapdeco1.png",
       rating: 4.7,
       price: 25000,
       reviews: 128,
@@ -164,7 +164,7 @@ const servicesData = {
     {
       id: 3,
       name: "LED Wedding Lighting",
-      img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
+      img: "src/assets/images/lightdeco1.png",
       rating: 4.6,
       price: 12000,
       reviews: 67,
@@ -174,7 +174,7 @@ const servicesData = {
       description: "Professional LED lighting setup to create the perfect ambiance for your event.",
       inclusions: ["LED Spotlights", "Color Lighting", "DMX Control", "Technical Support"],
       images: [
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop"
+        "src/assets/images/lightdeco2.png"
       ]
     },
   ],
