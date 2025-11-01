@@ -182,7 +182,7 @@ const servicesData = {
     {
       id: 4,
       name: "Premium Vegetarian Catering",
-      img: "https://images.unsplash.com/photo-1555244162-803834f70033?w=400&h=300&fit=crop",
+      img: "src/assets/images/catring01.png",
       rating: 4.8,
       price: 499,
       unit: "/plate",
@@ -197,8 +197,8 @@ const servicesData = {
       description: "Delicious vegetarian catering with traditional and contemporary dishes for all your guests.",
       inclusions: ["5 Main Courses", "3 Appetizers", "Desserts", "Serving Staff", "Utensils"],
       images: [
-        "https://images.unsplash.com/photo-1555244162-803834f70033?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop"
+        "src/assets/images/catring02.png",
+        "src/assets/images/catring03.png"
       ]
     },
   ],
@@ -206,7 +206,7 @@ const servicesData = {
     {
       id: 5,
       name: "Premium Wedding Tent",
-      img: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop",
+      img: "src/assets/images/tent1.png",
       rating: 4.4,
       price: 35000,
       reviews: 72,
@@ -215,7 +215,7 @@ const servicesData = {
       description: "Spacious and elegant wedding tents with climate control and beautiful interiors.",
       inclusions: ["Weather-proof Tent", "AC Setup", "Flooring", "Lighting", "Setup & Removal"],
       images: [
-        "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop"
+        "src/assets/images/tent2.png"
       ]
     },
   ],
@@ -223,7 +223,7 @@ const servicesData = {
     {
       id: 6,
       name: "Luxury Wedding Hall",
-      img: "https://images.unsplash.com/photo-1519677100203-0f0c8da7f8c1?w=400&h=300&fit=crop",
+      img: "src/assets/images/hall02.png",
       rating: 4.9,
       price: 150000,
       reviews: 156,
@@ -233,8 +233,8 @@ const servicesData = {
       description: "Grand luxury wedding hall with modern amenities and traditional architecture.",
       inclusions: ["Main Hall", "Parking Space", "Dressing Rooms", "Basic Sound System", "Security"],
       images: [
-        "https://images.unsplash.com/photo-1519677100203-0f0c8da7f8c1?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=400&h=300&fit=crop"
+        "src/assets/images/hall01.png",
+        "src/assets/images/hall03.png"
       ]
     },
   ],
