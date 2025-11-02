@@ -451,7 +451,7 @@ export default function BookingsPage() {
     };
 
     return (
-        <div className="min-h-screen p-4 sm:p-6 pt-20 sm:pt-24 bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] dark:bg-gray-900">
+        <div className="min-h-screen p-4 sm:p-6 pt-20 sm:pt-24 bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3]">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <motion.div
@@ -459,10 +459,10 @@ export default function BookingsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     className="text-center mb-8"
                 >
-                    <h1 className="text-4xl sm:text-5xl font-bold text-[#800000] dark:text-amber-400 mb-2">
+                    <h1 className="text-4xl sm:text-5xl font-bold text-[#800000] mb-2">
                         Your Spiritual Journey
                     </h1>
-                    <p className="text-lg text-gray-700 dark:text-gray-300">
+                    <p className="text-lg text-gray-700">
                         Manage your puja bookings and ceremonies
                     </p>
                 </motion.div>
@@ -472,7 +472,7 @@ export default function BookingsPage() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="bg-white/80 dark:bg-gray-800 backdrop-blur-sm rounded-2xl p-4 sm:p-6 mb-8 shadow-xl border border-[#FFD7AA] dark:border-gray-700"
+                    className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 mb-8 shadow-xl border border-[#FFD7AA]"
                 >
                     <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
                         {/* Search */}
@@ -483,7 +483,7 @@ export default function BookingsPage() {
                                 placeholder="Search by event, pandit, or service..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#FFD7A3] focus:outline-none focus:ring-2 focus:ring-[#800000] focus:border-transparent bg-white dark:bg-gray-700 dark:text-white transition"
+                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#FFD7A3] focus:outline-none focus:ring-2 focus:ring-[#800000] focus:border-transparent bg-white transition"
                             />
                         </div>
 
@@ -492,7 +492,7 @@ export default function BookingsPage() {
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value)}
-                                className="flex-1 px-4 py-3 rounded-xl border border-[#FFD7A3] focus:ring-2 focus:ring-[#800000] bg-white dark:bg-gray-700 dark:text-white transition text-sm"
+                                className="flex-1 px-4 py-3 rounded-xl border border-[#FFD7A3] focus:ring-2 focus:ring-[#800000] bg-white transition text-sm"
                             >
                                 <option value="All">All Status</option>
                                 <option value="Pending">Pending</option>
@@ -504,7 +504,7 @@ export default function BookingsPage() {
                             <select
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value)}
-                                className="flex-1 px-4 py-3 rounded-xl border border-[#FFD7A3] focus:ring-2 focus:ring-[#800000] bg-white dark:bg-gray-700 dark:text-white transition text-sm"
+                                className="flex-1 px-4 py-3 rounded-xl border border-[#FFD7A3] focus:ring-2 focus:ring-[#800000] bg-white transition text-sm"
                             >
                                 <option value="date">Sort by Date</option>
                                 <option value="name">Sort by Name</option>
@@ -519,11 +519,11 @@ export default function BookingsPage() {
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl shadow-lg"
+                        className="text-center py-16 bg-white rounded-2xl shadow-lg"
                     >
                         <div className="text-6xl mb-4">🛕</div>
-                        <h3 className="text-2xl font-semibold text-[#800000] dark:text-amber-400 mb-2">No Bookings Found</h3>
-                        <p className="text-gray-600 dark:text-gray-400 mb-6">Try adjusting your search or filters.</p>
+                        <h3 className="text-2xl font-semibold text-[#800000] mb-2">No Bookings Found</h3>
+                        <p className="text-gray-600 mb-6">Try adjusting your search or filters.</p>
                     </motion.div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -540,7 +540,7 @@ export default function BookingsPage() {
                                         exit={{ opacity: 0, y: -20 }}
                                         transition={{ delay: index * 0.05, duration: 0.3 }}
                                         whileHover={{ y: -5, scale: 1.02 }}
-                                        className="relative bg-[#FFF2D1] dark:bg-gray-800 border border-[#FFD7A3] dark:border-gray-700 rounded-2xl shadow-xl transition-all duration-300 overflow-hidden text-gray-700 dark:text-gray-300"
+                                        className="relative bg-[#FFF2D1] border border-[#FFD7A3] rounded-2xl shadow-xl transition-all duration-300 overflow-hidden text-gray-700"
                                     >
                                         {/* Status Badge */}
                                         <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(booking.status)}`}>
@@ -556,7 +556,7 @@ export default function BookingsPage() {
 
                                         {/* Blessing for Confirmed Bookings */}
                                         {booking.status === "Confirmed" && (
-                                            <div className="bg-green-100 dark:bg-green-900/40 border-b border-green-200 px-4 py-2 text-center text-xs text-green-800 dark:text-green-300">
+                                            <div className="bg-green-100 border-b border-green-200 px-4 py-2 text-center text-xs text-green-800">
                                                 🙏 May Lord Ganesha bless your ceremony with peace and prosperity.
                                             </div>
                                         )}
@@ -566,7 +566,7 @@ export default function BookingsPage() {
                                             <div className="flex items-start justify-between mb-4">
                                                 <div className="flex items-center gap-2">
                                                     <div className="text-2xl">🛕</div>
-                                                    <h2 className="text-xl sm:text-2xl font-bold text-[#800000] dark:text-amber-400">
+                                                    <h2 className="text-xl sm:text-2xl font-bold text-[#800000]">
                                                         {booking.event}
                                                     </h2>
                                                 </div>
@@ -580,7 +580,7 @@ export default function BookingsPage() {
                                             {/* Booking Details */}
                                             <div className="space-y-3 text-sm mb-4">
                                                 <div className="flex items-center gap-3">
-                                                    <User className="w-4 h-4 text-[#800000] dark:text-amber-400 flex-shrink-0" />
+                                                    <User className="w-4 h-4 text-[#800000] flex-shrink-0" />
                                                     <span className="font-semibold">Pandit:</span> {booking.pandit.name}
                                                     {/* Optional: Pandit Image */}
                                                 </div>
@@ -603,7 +603,7 @@ export default function BookingsPage() {
                                                         <span className="font-semibold">Location:</span> {booking.address}
                                                         <button
                                                             onClick={() => openGoogleMaps(booking.address)}
-                                                            className="ml-2 text-[#800000] dark:text-amber-400 hover:text-[#A00000] text-sm flex items-center gap-1 font-medium"
+                                                            className="ml-2 text-[#800000] hover:text-[#A00000] text-sm flex items-center gap-1 font-medium"
                                                         >
                                                             <MapPinIcon className="w-3 h-3" /> View on Map
                                                         </button>
@@ -626,7 +626,7 @@ export default function BookingsPage() {
                                                 <div className="mb-4">
                                                     <button
                                                         onClick={() => toggleNotes(booking.id)}
-                                                        className="flex items-center gap-1 text-sm text-[#800000] dark:text-amber-400 font-semibold hover:text-[#A00000]"
+                                                        className="flex items-center gap-1 text-sm text-[#800000] font-semibold hover:text-[#A00000]"
                                                     >
                                                         Notes {expandedNotes[booking.id] ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                                                     </button>
@@ -635,7 +635,7 @@ export default function BookingsPage() {
                                                             initial={{ opacity: 0, height: 0 }}
                                                             animate={{ opacity: 1, height: 'auto' }}
                                                             exit={{ opacity: 0, height: 0 }}
-                                                            className="mt-2 text-sm text-gray-600 dark:text-gray-400 bg-white/50 dark:bg-gray-700 rounded-lg p-3 border border-[#FFD7A3] dark:border-gray-600"
+                                                            className="mt-2 text-sm text-gray-600 bg-white/50 rounded-lg p-3 border border-[#FFD7A3]"
                                                         >
                                                             {booking.notes}
                                                         </motion.p>
@@ -644,7 +644,7 @@ export default function BookingsPage() {
                                             )}
 
                                             {/* Action Buttons */}
-                                            <div className="flex flex-wrap gap-2 pt-4 border-t border-[#FFD7A3] dark:border-gray-700">
+                                            <div className="flex flex-wrap gap-2 pt-4 border-t border-[#FFD7A3]">
                                                 <button
                                                     onClick={() => handleEdit(booking)}
                                                     className="flex items-center justify-center gap-1 text-sm text-white bg-[#800000] px-3 py-2 rounded-lg hover:bg-[#A00000] transition flex-1 sm:flex-none"
@@ -653,25 +653,25 @@ export default function BookingsPage() {
                                                 </button>
                                                 <button
                                                     onClick={() => setReminder(booking, 24)}
-                                                    className="flex items-center justify-center gap-1 text-sm text-gray-700 bg-white border border-[#FFD7A3] px-3 py-2 rounded-lg hover:bg-gray-50 transition flex-1 sm:flex-none dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                                    className="flex items-center justify-center gap-1 text-sm text-gray-700 bg-white border border-[#FFD7A3] px-3 py-2 rounded-lg hover:bg-gray-50 transition flex-1 sm:flex-none"
                                                 >
                                                     <Bell className="w-4 h-4" /> Remind
                                                 </button>
                                                 <button
                                                     onClick={() => shareBooking(booking)}
-                                                    className="flex items-center justify-center gap-1 text-sm text-gray-700 bg-white border border-[#FFD7A3] px-3 py-2 rounded-lg hover:bg-gray-50 transition flex-1 sm:flex-none dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                                    className="flex items-center justify-center gap-1 text-sm text-gray-700 bg-white border border-[#FFD7A3] px-3 py-2 rounded-lg hover:bg-gray-50 transition flex-1 sm:flex-none"
                                                 >
                                                     <Share2 className="w-4 h-4" /> Share
                                                 </button>
                                                 <button
                                                     onClick={() => setShowQR(booking.id)}
-                                                    className="flex items-center justify-center gap-1 text-sm text-gray-700 bg-white border border-[#FFD7A3] px-3 py-2 rounded-lg hover:bg-gray-50 transition flex-1 sm:flex-none dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                                    className="flex items-center justify-center gap-1 text-sm text-gray-700 bg-white border border-[#FFD7A3] px-3 py-2 rounded-lg hover:bg-gray-50 transition flex-1 sm:flex-none"
                                                 >
                                                     <QrCode className="w-4 h-4" /> QR
                                                 </button>
                                                 <button
                                                     onClick={() => downloadInvoice(booking)}
-                                                    className="flex items-center justify-center gap-1 text-sm text-gray-700 bg-white border border-[#FFD7A3] px-3 py-2 rounded-lg hover:bg-gray-50 transition flex-1 sm:flex-none dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                                    className="flex items-center justify-center gap-1 text-sm text-gray-700 bg-white border border-[#FFD7A3] px-3 py-2 rounded-lg hover:bg-gray-50 transition flex-1 sm:flex-none"
                                                 >
                                                     <Download className="w-4 h-4" /> Invoice
                                                 </button>
@@ -686,11 +686,11 @@ export default function BookingsPage() {
 
                                             {/* Status Management */}
                                             {booking.status !== "Completed" && booking.status !== "Cancelled" && (
-                                                <div className="flex gap-2 mt-3 pt-2 border-t border-dashed border-[#FFD7A3] dark:border-gray-700">
+                                                <div className="flex gap-2 mt-3 pt-2 border-t border-dashed border-[#FFD7A3]">
                                                     <select
                                                         value={booking.status}
                                                         onChange={(e) => handleStatusChange(booking.id, e.target.value)}
-                                                        className="flex-1 text-sm border border-[#FFD7A3] rounded-lg px-2 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-[#800000] dark:bg-gray-700 dark:text-white"
+                                                        className="flex-1 text-sm border border-[#FFD7A3] rounded-lg px-2 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-[#800000]"
                                                     >
                                                         <option value="Pending">Mark as Pending</option>
                                                         <option value="Confirmed">Mark as Confirmed</option>
