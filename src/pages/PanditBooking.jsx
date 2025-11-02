@@ -34,12 +34,72 @@ import {
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
+// WhatsApp Integration Function
+const sendWhatsAppMessage = (bookingDetails, pandit) => {
+  const {
+    service,
+    date,
+    time,
+    address,
+    includeSamagri,
+    additionalNotes,
+    bookingId
+  } = bookingDetails;
+
+  const totalAmount = pandit.price + (includeSamagri ? pandit.samagriPrice : 0);
+  
+  // Format date properly
+  const formattedDate = new Date(date).toLocaleDateString('en-IN', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  // Create message template
+  const message = `🪷 *Puja Booking Confirmed* 🪷
+
+📅 *Booking Details:*
+• *Pandit Ji:* ${pandit.name}
+• *Service:* ${service}
+• *Date:* ${formattedDate}
+• *Time:* ${time}
+• *Address:* ${address}
+
+💰 *Payment Summary:*
+• Puja Charges: ₹${pandit.price}
+• Samagri Kit: ${includeSamagri ? `₹${pandit.samagriPrice}` : 'Not Included'}
+• *Total Amount:* ₹${totalAmount}
+
+📋 *Additional Notes:* ${additionalNotes || 'None'}
+
+🆔 *Booking ID:* ${bookingId}
+
+_We wish you a blessed and prosperous puja!_
+_For any queries, contact support._`;
+
+  // Encode message for URL
+  const encodedMessage = encodeURIComponent(message);
+  
+  // Create WhatsApp URL
+  const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+  
+  // Open WhatsApp in new tab
+  window.open(whatsappUrl, '_blank');
+};
+
 // Toast Component
-const Toast = ({ message, type = "success", onClose, bookingId }) => {
+const Toast = ({ message, type = "success", onClose, bookingId, bookingDetails, pandit }) => {
   useEffect(() => {
-    const timer = setTimeout(onClose, 5000);
+    const timer = setTimeout(onClose, 10000); // 10 seconds
     return () => clearTimeout(timer);
   }, [onClose]);
+
+  const handleResendWhatsApp = () => {
+    if (bookingDetails && pandit) {
+      sendWhatsAppMessage(bookingDetails, pandit);
+    }
+  };
 
   return (
     <motion.div
@@ -59,16 +119,15 @@ const Toast = ({ message, type = "success", onClose, bookingId }) => {
           </p>
         )}
         <p className="text-sm opacity-90 mt-2">
-          {type === "success" 
-            ? "You will receive confirmation via WhatsApp shortly." 
-            : "Please try again or contact support."}
+          Booking details sent to your WhatsApp
         </p>
         <div className="flex gap-3 mt-3">
           <button 
-            onClick={() => window.open(`https://wa.me/?text=My Pandit Booking ID: ${bookingId}`, '_blank')}
-            className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm font-semibold hover:bg-green-50 transition-colors"
+            onClick={handleResendWhatsApp}
+            className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm font-semibold hover:bg-green-50 transition-colors flex items-center gap-2"
           >
-            Share on WhatsApp
+            <MessageSquare className="w-4 h-4" />
+            Resend WhatsApp
           </button>
           <button 
             onClick={onClose}
@@ -136,6 +195,21 @@ const TrustBadges = () => (
 // Pandit Detail Modal Component
 const PanditDetailModal = ({ pandit, isOpen, onClose, onBookNow }) => {
   if (!isOpen) return null;
+
+  const handleWhatsAppPandit = () => {
+    const message = `Namaste Pandit Ji! 🙏
+
+I'm interested in booking your ${pandit.specialization} service.
+
+Could you please share more details about:
+• Availability
+• Exact charges
+• Any specific requirements
+
+Thank you!`;
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -257,7 +331,10 @@ const PanditDetailModal = ({ pandit, isOpen, onClose, onBookNow }) => {
             <div className="bg-gray-50 rounded-xl p-4">
               <h4 className="font-semibold text-gray-900 mb-3">Contact Pandit</h4>
               <div className="flex gap-2">
-                <button className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-2">
+                <button 
+                  onClick={handleWhatsAppPandit}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                >
                   <MessageSquare className="w-4 h-4" />
                   WhatsApp
                 </button>
@@ -524,18 +601,28 @@ export default function PanditBooking() {
     setBookingId(newBookingId);
     setShowToast(true);
     
+    // Complete booking data
+    const completeBookingData = {
+      ...bookingData,
+      bookingId: newBookingId
+    };
+
     // Save booking to localStorage
     const bookings = JSON.parse(localStorage.getItem('panditBookings') || '[]');
     const selectedPanditData = panditList.find(p => p.id === selectedPandit.id);
     const newBooking = {
       id: newBookingId,
       pandit: selectedPandit,
-      ...bookingData,
+      ...completeBookingData,
       totalAmount: selectedPanditData.price + (bookingData.includeSamagri ? selectedPanditData.samagriPrice : 0),
       status: 'confirmed',
       bookedAt: new Date().toISOString()
     };
+    
     localStorage.setItem('panditBookings', JSON.stringify([newBooking, ...bookings]));
+    
+    // Send WhatsApp message
+    sendWhatsAppMessage(completeBookingData, selectedPandit);
     
     setTimeout(() => {
       setBookingStep(0);
@@ -1305,6 +1392,11 @@ export default function PanditBooking() {
             message={`Your puja with ${selectedPandit?.name} is confirmed!`}
             type="success"
             bookingId={bookingId}
+            bookingDetails={{
+              ...bookingData,
+              bookingId: bookingId
+            }}
+            pandit={selectedPandit}
             onClose={() => setShowToast(false)}
           />
         )}
