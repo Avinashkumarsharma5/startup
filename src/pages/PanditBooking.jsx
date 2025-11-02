@@ -75,7 +75,7 @@ _For any queries, contact support._`;
 
   const encodedMessage = encodeURIComponent(message);
   
-  const supportNumber = "919876543210"; 
+  const supportNumber = "916201486202"; 
   const whatsappUrl = `https://wa.me/${supportNumber}?text=${encodedMessage}`;
   
   window.open(whatsappUrl, '_blank');
