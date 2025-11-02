@@ -528,8 +528,8 @@ function UpcomingEvents() {
   const getDaysUntil = (dateString) => {
     const eventDate = new Date(dateString);
     const today = new Date();
-    const diffTime = eventDate - today;
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffTime =   today-eventDate;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 200));
   };
 
   return (
