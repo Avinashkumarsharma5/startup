@@ -1,69 +1,77 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { 
-  Search, 
-  MapPin, 
-  Star, 
-  Heart, 
-  Filter, 
-  X, 
-  Calendar, 
-  MessageCircle,
-  CheckCircle,
-  Clock,
-  ChevronDown,
-  ChevronUp,
-  Map,
-  Phone,
-  MessageSquare,
-  Shield,
-  Award,
-  PhoneCall,
-  FileText,
-  User,
-  Sparkles,
-  IndianRupee,
-  Clock3,
-  Eye,
-  RotateCcw
+  Search, 
+  MapPin, 
+  Star, 
+  Heart, 
+  Filter, 
+  X, 
+  Calendar, 
+  MessageCircle,
+  CheckCircle,
+  Clock,
+  ChevronDown,
+  ChevronUp,
+  Map,
+  Phone,
+  MessageSquare,
+  Shield,
+  Award,
+  PhoneCall,
+  FileText,
+  User,
+  Sparkles,
+  IndianRupee,
+  Clock3,
+  Eye,
+  RotateCcw,
+  Home,
+  Baby,
+  Heart as HeartIcon,
+  Users,
+  Calendar as CalendarIcon
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
+// Temple icon replacement - using Sparkles as fallback
+const Temple = Sparkles;
+
 // --- START: SHARED COMPONENTS & UTILITIES ---
 
 // WhatsApp Integration Function
-const sendWhatsAppMessage = (bookingDetails, pandit) => {
-  const {
-    service,
-    date,
-    time,
-    address,
-    includeSamagri,
-    additionalNotes,
-    bookingId
-  } = bookingDetails;
+const sendWhatsAppMessage = (bookingDetails, puja) => {
+  const {
+    service,
+    date,
+    time,
+    address,
+    includeSamagri,
+    additionalNotes,
+    bookingId
+  } = bookingDetails;
 
-  const totalAmount = pandit.price + (includeSamagri ? pandit.samagriPrice : 0);
-  
-  const formattedDate = new Date(date).toLocaleDateString('en-IN', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
+  const totalAmount = puja.price + (includeSamagri ? puja.samagriPrice : 0);
+  
+  const formattedDate = new Date(date).toLocaleDateString('en-IN', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
 
-  const message = `🪷 *Puja Booking Confirmed* 🪷
+  const message = `🪷 *Puja Booking Confirmed* 🪷
 
 📅 *Booking Details:*
-• *Pandit Ji:* ${pandit.name}
+• *Puja Type:* ${puja.name}
 • *Service:* ${service}
 • *Date:* ${formattedDate}
 • *Time:* ${time}
 • *Address:* ${address}
 
 💰 *Payment Summary:*
-• Puja Charges: ₹${pandit.price}
-• Samagri Kit: ${includeSamagri ? `₹${pandit.samagriPrice}` : 'Not Included'}
+• Puja Charges: ₹${puja.price}
+• Samagri Kit: ${includeSamagri ? `₹${puja.samagriPrice}` : 'Not Included'}
 • *Total Amount:* ₹${totalAmount}
 
 📋 *Additional Notes:* ${additionalNotes || 'None'}
@@ -73,287 +81,285 @@ const sendWhatsAppMessage = (bookingDetails, pandit) => {
 _We wish you a blessed and prosperous puja!_
 _For any queries, contact support._`;
 
-  const encodedMessage = encodeURIComponent(message);
-  
-  const supportNumber = "916201486202"; 
-  const whatsappUrl = `https://wa.me/${supportNumber}?text=${encodedMessage}`;
-  
-  window.open(whatsappUrl, '_blank');
+  const encodedMessage = encodeURIComponent(message);
+  
+  const supportNumber = "916201486202"; 
+  const whatsappUrl = `https://wa.me/${supportNumber}?text=${encodedMessage}`;
+  
+  window.open(whatsappUrl, '_blank');
 };
 
 // Toast Component
-const Toast = ({ message, type = "success", onClose, bookingId, bookingDetails, pandit }) => {
-  useEffect(() => {
-    const timer = setTimeout(onClose, 10000); 
-    return () => clearTimeout(timer);
-  }, [onClose]);
+const Toast = ({ message, type = "success", onClose, bookingId, bookingDetails, puja }) => {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 10000); 
+    return () => clearTimeout(timer);
+  }, [onClose]);
 
-  const handleResendWhatsApp = () => {
-    if (bookingDetails && pandit) {
-      sendWhatsAppMessage(bookingDetails, pandit);
-    }
-  };
+  const handleResendWhatsApp = () => {
+    if (bookingDetails && puja) {
+      sendWhatsAppMessage(bookingDetails, puja);
+    }
+  };
 
-  const Icon = type === "success" ? CheckCircle : X;
+  const Icon = type === "success" ? CheckCircle : X;
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -50 }}
-      className={`fixed top-4 right-4 z-50 p-6 rounded-xl shadow-2xl ${
-        type === "success" ? "bg-green-600" : "bg-red-600"
-      } text-white flex items-start gap-4 min-w-96 max-w-md`}
-    >
-      <Icon className="w-6 h-6 mt-1 flex-shrink-0" />
-      <div className="flex-1">
-        <p className="font-bold text-lg">{message}</p>
-        {bookingId && (
-          <p className="text-sm opacity-90 mt-1">
-            Booking ID: <span className="font-mono font-bold">{bookingId}</span>
-          </p>
-        )}
-        <p className="text-sm opacity-90 mt-2">
-          Booking details sent to your WhatsApp
-        </p>
-        <div className="flex gap-3 mt-3">
-          <button 
-            onClick={handleResendWhatsApp}
-            className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm font-semibold hover:bg-green-50 transition-colors flex items-center gap-2"
-          >
-            <MessageSquare className="w-4 h-4" />
-            Resend WhatsApp
-          </button>
-          <button 
-            onClick={onClose}
-            className="bg-white/20 text-white px-3 py-1 rounded-lg text-sm font-semibold hover:bg-white/30 transition-colors"
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    </motion.div>
-  );
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -50 }}
+      className={`fixed top-4 right-4 z-50 p-6 rounded-xl shadow-2xl ${
+        type === "success" ? "bg-green-600" : "bg-red-600"
+      } text-white flex items-start gap-4 min-w-96 max-w-md`}
+    >
+      <Icon className="w-6 h-6 mt-1 flex-shrink-0" />
+      <div className="flex-1">
+        <p className="font-bold text-lg">{message}</p>
+        {bookingId && (
+          <p className="text-sm opacity-90 mt-1">
+            Booking ID: <span className="font-mono font-bold">{bookingId}</span>
+          </p>
+        )}
+        <p className="text-sm opacity-90 mt-2">
+          Booking details sent to your WhatsApp
+        </p>
+        <div className="flex gap-3 mt-3">
+          <button 
+            onClick={handleResendWhatsApp}
+            className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm font-semibold hover:bg-green-50 transition-colors flex items-center gap-2"
+          >
+            <MessageSquare className="w-4 h-4" />
+            Resend WhatsApp
+          </button>
+          <button 
+            onClick={onClose}
+            className="bg-white/20 text-white px-3 py-1 rounded-lg text-sm font-semibold hover:bg-white/30 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
 };
 
 // Skeleton Loading Component
-const PanditCardSkeleton = () => (
-  <div className="bg-white rounded-2xl shadow-lg p-6 animate-pulse">
-    <div className="flex items-start justify-between mb-4">
-      <div className="flex items-center gap-3">
-        <div className="w-16 h-16 bg-gray-300 rounded-xl"></div>
-        <div className="space-y-2">
-          <div className="h-4 bg-gray-300 rounded w-32"></div>
-          <div className="h-3 bg-gray-300 rounded w-24"></div>
-        </div>
-        </div>
-      <div className="w-8 h-8 bg-gray-300 rounded-lg"></div>
-    </div>
-    <div className="space-y-3 mb-4">
-      <div className="h-3 bg-gray-300 rounded"></div>
-      <div className="h-3 bg-gray-300 rounded w-4/5"></div>
-    </div>
-    <div className="flex items-center justify-between">
-      <div className="h-6 bg-gray-300 rounded w-20"></div>
-      <div className="h-10 bg-gray-300 rounded-lg w-24"></div>
-    </div>
-  </div>
+const PujaCardSkeleton = () => (
+  <div className="bg-white rounded-2xl shadow-lg p-6 animate-pulse">
+    <div className="flex items-start justify-between mb-4">
+      <div className="flex items-center gap-3">
+        <div className="w-16 h-16 bg-gray-300 rounded-full"></div>
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-300 rounded w-32"></div>
+          <div className="h-3 bg-gray-300 rounded w-24"></div>
+        </div>
+        </div>
+      <div className="w-8 h-8 bg-gray-300 rounded-lg"></div>
+    </div>
+    <div className="space-y-3 mb-4">
+      <div className="h-3 bg-gray-300 rounded"></div>
+      <div className="h-3 bg-gray-300 rounded w-4/5"></div>
+    </div>
+    <div className="flex items-center justify-between">
+      <div className="h-6 bg-gray-300 rounded w-20"></div>
+      <div className="h-10 bg-gray-300 rounded-lg w-24"></div>
+    </div>
+  </div>
 );
 
 // Trust Badges Component
 const TrustBadges = () => (
-  <div className="flex flex-wrap justify-center gap-6 py-8 border-t border-amber-200 mt-8">
-    <div className="flex items-center gap-3 text-sm text-amber-700">
-      <Shield className="w-5 h-5 text-green-500" />
-      <div>
-        <div className="font-semibold">Verified Pandits</div>
-        <div className="text-xs text-amber-600">ID & Background Checked</div>
-      </div>
-      </div>
-    <div className="flex items-center gap-3 text-sm text-amber-700">
-      <Award className="w-5 h-5 text-blue-500" />
-      <div>
-        <div className="font-semibold">Quality Guarantee</div>
-        <div className="text-xs text-amber-600">Satisfaction Assured</div>
-      </div>
-    </div>
-    <div className="flex items-center gap-3 text-sm text-amber-700">
-      <PhoneCall className="w-5 h-5 text-purple-500" />
-      <div>
-        <div className="font-semibold">24/7 Support</div>
-        <div className="text-xs text-amber-600">Always Here to Help</div>
-      </div>
-    </div>
-  </div>
+  <div className="flex flex-wrap justify-center gap-6 py-8 border-t border-amber-200 mt-8">
+    <div className="flex items-center gap-3 text-sm text-amber-700">
+      <Shield className="w-5 h-5 text-green-500" />
+      <div>
+        <div className="font-semibold">Verified Pujas</div>
+        <div className="text-xs text-amber-600">Authentic & Traditional</div>
+      </div>
+      </div>
+    <div className="flex items-center gap-3 text-sm text-amber-700">
+      <Award className="w-5 h-5 text-blue-500" />
+      <div>
+        <div className="font-semibold">Quality Guarantee</div>
+        <div className="text-xs text-amber-600">Satisfaction Assured</div>
+      </div>
+    </div>
+    <div className="flex items-center gap-3 text-sm text-amber-700">
+      <PhoneCall className="w-5 h-5 text-purple-500" />
+      <div>
+        <div className="font-semibold">24/7 Support</div>
+        <div className="text-xs text-amber-600">Always Here to Help</div>
+      </div>
+    </div>
+  </div>
 );
 
-// Pandit Detail Modal Component (FIXED className)
-const PanditDetailModal = ({ pandit, isOpen, onClose, onBookNow }) => {
-  if (!isOpen || !pandit) return null; 
+// Puja Detail Modal Component
+const PujaDetailModal = ({ puja, isOpen, onClose, onBookNow }) => {
+  if (!isOpen || !puja) return null; 
 
-  const handleWhatsAppPandit = () => {
-    const message = `Namaste Pandit Ji! 🙏
+  const getCategoryIcon = (category) => {
+    switch(category) {
+      case "Ghar ke Sanskaar": return <Home className="w-5 h-5" />;
+      case "Bacchon ke Sanskaar": return <Baby className="w-5 h-5" />;
+      case "Vivah Sanskar": return <HeartIcon className="w-5 h-5" />;
+      case "Pitrakarya": return <Users className="w-5 h-5" />;
+      case "Festival Pujas": return <CalendarIcon className="w-5 h-5" />;
+      case "Temple / Special Pujas": return <Temple className="w-5 h-5" />;
+      default: return <Sparkles className="w-5 h-5" />;
+    }
+  };
 
-I'm interested in booking your ${pandit.specialization} service.
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+      >
+        <div className="flex justify-between items-start mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">
+            {puja.name}
+          </h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100"
+          >
+            <X size={24} />
+          </button>
+        </div>
 
-Could you please share more details about:
-• Availability
-• Exact charges
-• Any specific requirements
-
-Thank you!`;
-    const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/91XXXXXXXXXX?text=${encodedMessage}`, '_blank'); 
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-      >
-        <div className="flex justify-between items-start mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">
-            {pandit.name} {pandit.verified && "✅"}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100"
-          >
-            <X size={24} />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Basic Info */}
-          <div className="lg:col-span-2">
-            <div className="flex items-start gap-4 mb-6">
-              <img
-                src={pandit.image}
-                alt={pandit.name}
-                className="w-24 h-24 rounded-xl object-cover border-2 border-amber-200"
-              />
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {pandit.name}
-                </h3>
-                <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-                  <div className="flex items-center gap-1">
-                    <MapPin className="w-4 h-4" />
-                    <span>{pandit.city}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Clock3 className="w-4 h-4" />
-                    <span>{pandit.experience} years experience</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Star className="w-5 h-5 text-amber-500 fill-current" />
-                  <span className="font-semibold text-gray-900">
-                    {pandit.rating} ({pandit.reviews} reviews)
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">About</h4>
-                <p className="text-gray-700">{pandit.description}</p>
-              </div>
-
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Puja Details</h4>
-                <div className="flex flex-wrap gap-4 text-sm">
-                    <div className="flex items-center gap-1 text-gray-700">
-                        <Clock className="w-4 h-4 text-amber-600" />
-                        <span>Duration: **{pandit.duration || '2-3 hours'}**</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-gray-700">
-                        <User className="w-4 h-4 text-amber-600" />
-                        <span>Requirements: **{pandit.requirements || 'Puja Samagri, Seating'}**</span>
-                    </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Basic Info */}
+          <div className="lg:col-span-2">
+            <div className="flex items-start gap-4 mb-6">
+              <div className="relative">
+                <img
+                  src={puja.img}
+                  alt={puja.name}
+                  className="w-24 h-24 rounded-full object-cover border-4 border-amber-200"
+                />
+                <div className="absolute -bottom-1 -right-1 bg-amber-500 text-white p-1 rounded-full">
+                  {getCategoryIcon(puja.category)}
                 </div>
-              </div>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  {puja.name}
+                </h3>
+                <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                  <div className="flex items-center gap-1 bg-amber-100 px-3 py-1 rounded-full">
+                    <Sparkles className="w-4 h-4 text-amber-600" />
+                    <span className="font-medium text-amber-700">{puja.category}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Star className="w-5 h-5 text-amber-500 fill-current" />
+                  <span className="font-semibold text-gray-900">
+                    {puja.rating} ({puja.reviews} reviews)
+                  </span>
+                </div>
+              </div>
+            </div>
 
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Languages</h4>
-                <div className="flex flex-wrap gap-2">
-                  {pandit.languages.map((lang, index) => (
-                    <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                      {lang}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">About this Puja</h4>
+                <p className="text-gray-700">{puja.description}</p>
+              </div>
 
-          {/* Right Column - Booking Info */}
-          <div className="space-y-6">
-            <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
-              <div className="text-center mb-4">
-                <div className="text-3xl font-bold text-amber-600">
-                  ₹{pandit.price}
-                </div>
-                <div className="text-sm text-amber-600">per ceremony</div>
-              </div>
-              
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Samagri Price:</span>
-                  <span className="font-semibold">₹{pandit.samagriPrice}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Completed Pujas:</span>
-                  <span className="font-semibold">{pandit.completedPujas}+</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Availability:</span>
-                  <span className="font-semibold text-green-600">Available</span>
-                </div>
-              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">Puja Details</h4>
+                <div className="flex flex-wrap gap-4 text-sm">
+                  <div className="flex items-center gap-1 text-gray-700">
+                    <Clock className="w-4 h-4 text-amber-600" />
+                    <span>Duration: <strong>{puja.duration || '2-3 hours'}</strong></span>
+                  </div>
+                  <div className="flex items-center gap-1 text-gray-700">
+                    <User className="w-4 h-4 text-amber-600" />
+                    <span>Requirements: <strong>{puja.requirements || 'Puja Samagri, Seating'}</strong></span>
+                  </div>
+                </div>
+              </div>
 
-              <button
-                onClick={() => {
-                  onBookNow(pandit);
-                  onClose();
-                }}
-                className="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-lg font-semibold transition-colors mt-4"
-              >
-                Book Now
-              </button>
-            </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">Benefits</h4>
+                <div className="flex flex-wrap gap-2">
+                  {puja.benefits.map((benefit, index) => (
+                    <span key={index} className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                      {benefit}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
 
-            {/* Contact Options */}
-            <div className="bg-gray-50 rounded-xl p-4">
-              <h4 className="font-semibold text-gray-900 mb-3">Contact Pandit</h4>
-              <div className="flex gap-2">
-                <button 
-                  onClick={handleWhatsAppPandit}
-                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-2"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  WhatsApp
-                </button>
-                <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-2">
-                  <Phone className="w-4 h-4" />
-                  Call
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    </div>
-  );
+          {/* Right Column - Booking Info */}
+          <div className="space-y-6">
+            <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
+              <div className="text-center mb-4">
+                <div className="text-3xl font-bold text-amber-600">
+                  ₹{puja.price}
+                </div>
+                <div className="text-sm text-amber-600">per ceremony</div>
+              </div>
+              
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Samagri Price:</span>
+                  <span className="font-semibold">₹{puja.samagriPrice}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Completed Pujas:</span>
+                  <span className="font-semibold">{puja.completedPujas}+</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Availability:</span>
+                  <span className="font-semibold text-green-600">Available</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  onBookNow(puja);
+                  onClose();
+                }}
+                className="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-lg font-semibold transition-colors mt-4"
+              >
+                Book Now
+              </button>
+            </div>
+
+            {/* Contact Options */}
+            <div className="bg-gray-50 rounded-xl p-4">
+              <h4 className="font-semibold text-gray-900 mb-3">Need Help?</h4>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => window.open('https://wa.me/916201486202', '_blank')}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  WhatsApp
+                </button>
+                <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  Call
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
 };
 
 // Booking Summary Panel Component
-const BookingSummaryPanel = ({ pandit, bookingData, currentStep }) => {
-    const totalAmount = pandit.price + (bookingData.includeSamagri ? pandit.samagriPrice : 0);
+const BookingSummaryPanel = ({ puja, bookingData, currentStep }) => {
+    const totalAmount = puja.price + (bookingData.includeSamagri ? puja.samagriPrice : 0);
 
     const formattedDate = bookingData.date 
         ? new Date(bookingData.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })
@@ -366,8 +372,8 @@ const BookingSummaryPanel = ({ pandit, bookingData, currentStep }) => {
             </h4>
             <div className="space-y-2 text-sm">
                 <div className="flex justify-between items-center pb-2 border-b border-amber-100">
-                    <span className="text-gray-600">Pandit Ji:</span>
-                    <span className="font-semibold">{pandit.name}</span>
+                    <span className="text-gray-600">Puja Type:</span>
+                    <span className="font-semibold">{puja.name}</span>
                 </div>
                 <div className="flex justify-between">
                     <span className="text-gray-600">Service:</span>
@@ -389,12 +395,12 @@ const BookingSummaryPanel = ({ pandit, bookingData, currentStep }) => {
                 <div className="pt-3 border-t border-amber-200 space-y-1">
                     <div className="flex justify-between text-gray-700">
                         <span>Puja Price:</span>
-                        <span>₹{pandit.price}</span>
+                        <span>₹{puja.price}</span>
                     </div>
                     <div className="flex justify-between text-gray-700">
                         <span>Samagri Kit:</span>
                         <span className={bookingData.includeSamagri ? 'text-green-600' : 'text-red-500'}>
-                            {bookingData.includeSamagri ? `+₹${pandit.samagriPrice}` : 'Not Included'}
+                            {bookingData.includeSamagri ? `+₹${puja.samagriPrice}` : 'Not Included'}
                         </span>
                     </div>
                 </div>
@@ -408,348 +414,1328 @@ const BookingSummaryPanel = ({ pandit, bookingData, currentStep }) => {
     );
 };
 
-
 // --- END: SHARED COMPONENTS & UTILITIES ---
 
-
-export default function PanditBooking() {
-  const navigate = useNavigate();
-  const [filters, setFilters] = useState({ 
-    service: "", 
-    location: "", 
-    language: "",
-    minPrice: 1000,
-    maxPrice: 5000,
-    minRating: 0,
-    minExperience: 0,
-    availability: ""
-  });
-  const [sortBy, setSortBy] = useState("rating");
-  const [showFilters, setShowFilters] = useState(false);
-  const [favorites, setFavorites] = useState([]);
-  const [selectedPandit, setSelectedPandit] = useState(null);
-  const [selectedPanditDetail, setSelectedPanditDetail] = useState(null);
-  const [showPanditDetail, setShowPanditDetail] = useState(false);
-  const [bookingStep, setBookingStep] = useState(0);
-  const [bookingData, setBookingData] = useState({});
-  const [showToast, setShowToast] = useState(false);
-  const [bookingId, setBookingId] = useState("");
-  const [recentlyViewed, setRecentlyViewed] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+export default function PujaBooking() {
+  const navigate = useNavigate();
+  const [filters, setFilters] = useState({ 
+    service: "", 
+    category: "", 
+    minPrice: 700,
+    maxPrice: 5000,
+    minRating: 0,
+    availability: ""
+  });
+  const [sortBy, setSortBy] = useState("rating");
+  const [showFilters, setShowFilters] = useState(false);
+  const [favorites, setFavorites] = useState([]);
+  const [selectedPuja, setSelectedPuja] = useState(null);
+  const [selectedPujaDetail, setSelectedPujaDetail] = useState(null);
+  const [showPujaDetail, setShowPujaDetail] = useState(false);
+  const [bookingStep, setBookingStep] = useState(0);
+  const [bookingData, setBookingData] = useState({});
+  const [showToast, setShowToast] = useState(false);
+  const [bookingId, setBookingId] = useState("");
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const [validationError, setValidationError] = useState(""); 
 
-  const panditList = useMemo(() => [
-    { 
-      id: 1, 
-      name: "Pandit Rajesh Sharma", 
-      specialization: "Satyanarayan Puja", 
-      experience: 12, 
-      price: 1500, 
-      samagriPrice: 300,
-      image: "https://images.unsplash.com/photo-1580477667995-2b94f01c9516?w=400&h=300&fit=crop",
-      city: "Varanasi",
-      rating: 4.8,
-      reviews: 45,
-      languages: ["Hindi", "Sanskrit"],
-      availability: {
-        dates: ["2025-11-03", "2025-11-04", "2025-11-06"],
-        timeSlots: {
-          "2025-11-03": ["09:00 AM", "02:00 PM"],
-          "2025-11-04": ["11:00 AM", "05:00 PM"],
-          "2025-11-06": ["07:00 AM", "02:00 PM"]
-        }
-      },
-      description: "Expert in Vedic rituals with deep knowledge of ancient scriptures. Specializes in Satyanarayan Puja and other daily rituals.",
-      verified: true,
-      responseTime: "Within 15 minutes",
-      completedPujas: 250,
-      duration: "1.5 hours", 
-      requirements: "Aasan, Water pot (Kalash)", 
-      bio: "15+ years of experience in Vedic rituals. Trained under renowned gurus in Varanasi. Specializes in all types of pujas and ceremonies."
-    },
-    { 
-      id: 2, 
-      name: "Pandit Anil Joshi", 
-      specialization: "Grih Pravesh", 
-      experience: 8, 
-      price: 1200, 
-      samagriPrice: 400,
-      image: "https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=400&h=300&fit=crop",
-      city: "Delhi",
-      rating: 4.6,
-      reviews: 32,
-      languages: ["Hindi", "English"],
-      availability: {
-        dates: ["2025-11-05", "2025-11-07", "2025-11-08"],
-        timeSlots: {
-          "2025-11-05": ["09:00 AM", "05:00 PM"],
-          "2025-11-07": ["11:00 AM", "02:00 PM"],
-          "2025-11-08": ["07:00 AM", "05:00 PM"]
-        }
-      },
-      description: "Specializes in house warming ceremonies with modern approach. Fluent in English for international clients.",
-      verified: true,
-      responseTime: "Within 30 minutes",
-      completedPujas: 120,
-      duration: "3 hours", 
-      requirements: "Havan Kund, 5 types of grains", 
-      bio: "Expert in Grih Pravesh and Vastu Puja. Known for modern approach while maintaining traditional values."
-    },
-    { 
-      id: 3, 
-      name: "Pandit Suresh Mishra", 
-      specialization: "Maha Mrityunjaya Jaap", 
-      experience: 15, 
-      price: 2000, 
-      samagriPrice: 600,
-      image: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&h=300&fit=crop",
-      city: "Prayagraj",
-      rating: 4.9,
-      reviews: 67,
-      languages: ["Hindi", "Sanskrit", "Marathi"],
-      availability: {
-        dates: ["2025-11-03", "2025-11-04", "2025-11-09"],
-        timeSlots: {
-          "2025-11-03": ["07:00 AM", "11:00 AM"],
-          "2025-11-04": ["09:00 AM", "02:00 PM"],
-          "2025-11-09": ["05:00 PM"]
-        }
-      },
-      description: "Renowned for powerful healing and protection rituals. Expert in Maha Mrityunjaya Jaap and Rudrabhishek.",
-      verified: true,
-      responseTime: "Within 20 minutes",
-      completedPujas: 180,
-      duration: "2 hours", 
-      requirements: "Specific Yantra, Rudraksha Mala", 
-      bio: "Specialist in healing rituals and protective pujas. 15+ years of dedicated service in spiritual healing."
-    }
-  ], []);
+  // Complete Puja Data with ALL 46 pujas
+  const pujaList = useMemo(() => [
+    // 🏡 Ghar ke Sanskaar (1-10)
+    { 
+      id: 1, 
+      name: "Griha Pravesh / गृह प्रवेश", 
+      price: 1500, 
+      category: "Ghar ke Sanskaar", 
+      img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop&crop=center", 
+      rating: 4.8,
+      reviews: 45,
+      description: "Sacred house warming ceremony to bring peace, prosperity and positive energy to your new home.",
+      samagriPrice: 300,
+      completedPujas: 250,
+      duration: "2-3 hours",
+      requirements: "Kalash, Coconut, Flowers, Fruits",
+      benefits: ["Peace & Prosperity", "Positive Energy", "Family Harmony"],
+      availability: {
+        dates: ["2025-11-03", "2025-11-04", "2025-11-06"],
+        timeSlots: {
+          "2025-11-03": ["09:00 AM", "02:00 PM"],
+          "2025-11-04": ["11:00 AM", "05:00 PM"],
+          "2025-11-06": ["07:00 AM", "02:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 2, 
+      name: "Vastu Shanti / वास्तु शांति", 
+      price: 1300, 
+      category: "Ghar ke Sanskaar", 
+      img: "https://images.unsplash.com/photo-1544984243-ec57ea16fe25?w=400&h=400&fit=crop&crop=center",
+      rating: 4.6,
+      reviews: 32,
+      description: "Vastu correction puja to harmonize your living space with natural energies.",
+      samagriPrice: 400,
+      completedPujas: 120,
+      duration: "2 hours",
+      requirements: "Vastu Purush Drawing, Grains",
+      benefits: ["Energy Balance", "Peaceful Environment", "Positive Vibes"],
+      availability: {
+        dates: ["2025-11-05", "2025-11-07", "2025-11-08"],
+        timeSlots: {
+          "2025-11-05": ["09:00 AM", "05:00 PM"],
+          "2025-11-07": ["11:00 AM", "02:00 PM"],
+          "2025-11-08": ["07:00 AM", "05:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 3, 
+      name: "Navagraha Shanti / नवग्रह शांति", 
+      price: 1400, 
+      category: "Ghar ke Sanskaar", 
+      img: "https://images.unsplash.com/photo-1601379327929-8ceeff79a991?w=400&h=400&fit=crop&crop=center",
+      rating: 4.7,
+      reviews: 28,
+      description: "Planetary peace ceremony to balance the nine planets and remove obstacles.",
+      samagriPrice: 500,
+      completedPujas: 180,
+      duration: "3 hours",
+      requirements: "9 Grains, 9 Flowers, Havan Samagri",
+      benefits: ["Planetary Harmony", "Obstacle Removal", "Success in Endeavors"],
+      availability: {
+        dates: ["2025-11-03", "2025-11-04", "2025-11-09"],
+        timeSlots: {
+          "2025-11-03": ["07:00 AM", "11:00 AM"],
+          "2025-11-04": ["09:00 AM", "02:00 PM"],
+          "2025-11-09": ["05:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 4, 
+      name: "Sundarkand Path / सुंदरकांड पाठ", 
+      price: 1000, 
+      category: "Ghar ke Sanskaar", 
+      img: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=400&fit=crop&crop=center",
+      rating: 4.5,
+      reviews: 38,
+      description: "Recitation of Sundarkand for success, protection and removal of obstacles.",
+      samagriPrice: 250,
+      completedPujas: 180,
+      duration: "2 hours",
+      requirements: "Hanuman Chalisa Book, Flowers",
+      benefits: ["Success in Endeavors", "Protection from Evil", "Obstacle Removal"],
+      availability: {
+        dates: ["2025-11-04", "2025-11-07", "2025-11-10"],
+        timeSlots: {
+          "2025-11-04": ["06:00 PM", "08:00 PM"],
+          "2025-11-07": ["07:00 PM"],
+          "2025-11-10": ["06:30 PM", "08:30 PM"]
+        }
+      }
+    },
+    { 
+      id: 5, 
+      name: "Ramayan Path / रामायण पाठ", 
+      price: 1000, 
+      category: "Ghar ke Sanskaar", 
+      img: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=400&h=400&fit=crop&crop=center",
+      rating: 4.6,
+      reviews: 42,
+      description: "Complete recitation of Ramayana for peace, prosperity and family harmony.",
+      samagriPrice: 300,
+      completedPujas: 95,
+      duration: "7 days",
+      requirements: "Ramayana Book, Aasan",
+      benefits: ["Family Harmony", "Peace & Prosperity", "Spiritual Growth"],
+      availability: {
+        dates: ["2025-11-05", "2025-11-08", "2025-11-12"],
+        timeSlots: {
+          "2025-11-05": ["06:00 PM"],
+          "2025-11-08": ["07:00 PM"],
+          "2025-11-12": ["06:30 PM"]
+        }
+      }
+    },
+    { 
+      id: 6, 
+      name: "Satyanarayan Katha / सत्यनारायण कथा", 
+      price: 1200, 
+      category: "Ghar ke Sanskaar", 
+      img: "https://images.unsplash.com/photo-1587132135056-ba836f83a6da?w=400&h=400&fit=crop&crop=center",
+      rating: 4.9,
+      reviews: 67,
+      description: "Divine storytelling ceremony for peace, prosperity and fulfillment of wishes.",
+      samagriPrice: 350,
+      completedPujas: 320,
+      duration: "2.5 hours",
+      requirements: "Panchamrit, Fruits, Flowers",
+      benefits: ["Wish Fulfillment", "Family Unity", "Divine Blessings"],
+      availability: {
+        dates: ["2025-11-06", "2025-11-09", "2025-11-13"],
+        timeSlots: {
+          "2025-11-06": ["06:00 PM", "08:00 PM"],
+          "2025-11-09": ["07:00 PM"],
+          "2025-11-13": ["06:30 PM", "08:30 PM"]
+        }
+      }
+    },
+    { 
+      id: 7, 
+      name: "Lakshmi Puja / लक्ष्मी पूजा", 
+      price: 800, 
+      category: "Ghar ke Sanskaar", 
+      img: "https://images.unsplash.com/photo-1601919051950-dab3e7e35e0f?w=400&h=400&fit=crop&crop=center",
+      rating: 4.7,
+      reviews: 89,
+      description: "Goddess Lakshmi worship for wealth, prosperity and abundance.",
+      samagriPrice: 200,
+      completedPujas: 450,
+      duration: "1.5 hours",
+      requirements: "Lakshmi Idol, Coins, Flowers",
+      benefits: ["Wealth & Prosperity", "Financial Stability", "Abundance"],
+      availability: {
+        dates: ["2025-11-03", "2025-11-07", "2025-11-11"],
+        timeSlots: {
+          "2025-11-03": ["07:00 AM", "11:00 AM"],
+          "2025-11-07": ["08:00 AM", "12:00 PM"],
+          "2025-11-11": ["07:30 AM", "11:30 AM"]
+        }
+      }
+    },
+    { 
+      id: 8, 
+      name: "Ganesh Puja / गणेश पूजा", 
+      price: 800, 
+      category: "Ghar ke Sanskaar", 
+      img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=center",
+      rating: 4.8,
+      reviews: 76,
+      description: "Lord Ganesha worship for wisdom, success and obstacle removal.",
+      samagriPrice: 250,
+      completedPujas: 380,
+      duration: "1.5 hours",
+      requirements: "Ganesh Idol, Modak, Flowers",
+      benefits: ["Wisdom & Knowledge", "Success in Endeavors", "Obstacle Removal"],
+      availability: {
+        dates: ["2025-11-04", "2025-11-08", "2025-11-12"],
+        timeSlots: {
+          "2025-11-04": ["07:00 AM", "11:00 AM"],
+          "2025-11-08": ["08:00 AM", "12:00 PM"],
+          "2025-11-12": ["07:30 AM", "11:30 AM"]
+        }
+      }
+    },
+    { 
+      id: 9, 
+      name: "Durga Saptashati / दुर्गा सप्तशती पाठ", 
+      price: 900, 
+      category: "Ghar ke Sanskaar", 
+      img: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=400&fit=crop&crop=center",
+      rating: 4.6,
+      reviews: 54,
+      description: "Powerful Durga Saptashati recitation for protection and strength.",
+      samagriPrice: 300,
+      completedPujas: 120,
+      duration: "3 hours",
+      requirements: "Durga Saptashati Book, Red Cloth",
+      benefits: ["Divine Protection", "Strength & Courage", "Negative Energy Removal"],
+      availability: {
+        dates: ["2025-11-05", "2025-11-09", "2025-11-14"],
+        timeSlots: {
+          "2025-11-05": ["06:00 AM", "10:00 AM"],
+          "2025-11-09": ["07:00 AM", "11:00 AM"],
+          "2025-11-14": ["06:30 AM", "10:30 AM"]
+        }
+      }
+    },
+    { 
+      id: 10, 
+      name: "Hanuman Chalisa Path / हनुमान चालीसा पाठ", 
+      price: 700, 
+      category: "Ghar ke Sanskaar", 
+      img: "https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=400&h=400&fit=crop&crop=center",
+      rating: 4.9,
+      reviews: 210,
+      description: "Hanuman Chalisa recitation for protection, strength and courage.",
+      samagriPrice: 150,
+      completedPujas: 680,
+      duration: "1 hour",
+      requirements: "Hanuman Chalisa Book, Sindoor",
+      benefits: ["Protection from Evil", "Strength & Courage", "Quick Results"],
+      availability: {
+        dates: ["2025-11-03", "2025-11-06", "2025-11-10"],
+        timeSlots: {
+          "2025-11-03": ["05:00 AM", "07:00 PM"],
+          "2025-11-06": ["06:00 AM", "08:00 PM"],
+          "2025-11-10": ["05:30 AM", "07:30 PM"]
+        }
+      }
+    },
 
-  const getAvailableTimeSlots = (panditId, selectedDate) => {
-    const pandit = panditList.find(p => p.id === panditId);
-    if (!pandit || !selectedDate) return [];
-    return pandit.availability.timeSlots[selectedDate] || [];
-  };
+    // 👶 Bacchon ke Sanskaar (11-14)
+    { 
+      id: 11, 
+      name: "Naamkaran Sanskar / नामकरण संस्कार", 
+      price: 1200, 
+      category: "Bacchon ke Sanskaar", 
+      img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=center",
+      rating: 4.8,
+      reviews: 45,
+      description: "Sacred naming ceremony for newborn babies with Vedic rituals.",
+      samagriPrice: 300,
+      completedPujas: 150,
+      duration: "1.5 hours",
+      requirements: "Baby's Birth Details, Honey, Ghee",
+      benefits: ["Good Health", "Bright Future", "Divine Protection"],
+      availability: {
+        dates: ["2025-11-05", "2025-11-08", "2025-11-12"],
+        timeSlots: {
+          "2025-11-05": ["10:00 AM", "03:00 PM"],
+          "2025-11-08": ["11:00 AM", "04:00 PM"],
+          "2025-11-12": ["09:00 AM", "02:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 12, 
+      name: "Annaprashan / अन्नप्राशन", 
+      price: 1100, 
+      category: "Bacchon ke Sanskaar", 
+      img: "https://images.unsplash.com/photo-1544984243-ec57ea16fe25?w=400&h=400&fit=crop&crop=center",
+      rating: 4.7,
+      reviews: 38,
+      description: "First rice eating ceremony for babies with traditional rituals.",
+      samagriPrice: 250,
+      completedPujas: 95,
+      duration: "1.5 hours",
+      requirements: "Rice, Honey, Ghee, Fruits",
+      benefits: ["Good Health", "Proper Growth", "Divine Blessings"],
+      availability: {
+        dates: ["2025-11-06", "2025-11-09", "2025-11-13"],
+        timeSlots: {
+          "2025-11-06": ["10:00 AM", "02:00 PM"],
+          "2025-11-09": ["11:00 AM", "03:00 PM"],
+          "2025-11-13": ["09:00 AM", "01:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 13, 
+      name: "Mundan Sanskar / मुंडन संस्कार", 
+      price: 1000, 
+      category: "Bacchon ke Sanskaar", 
+      img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop&crop=center",
+      rating: 4.6,
+      reviews: 42,
+      description: "First hair cutting ceremony for children with Vedic rituals.",
+      samagriPrice: 200,
+      completedPujas: 78,
+      duration: "2 hours",
+      requirements: "Scissors, Bowl, Flowers",
+      benefits: ["Purification", "Healthy Growth", "Divine Protection"],
+      availability: {
+        dates: ["2025-11-07", "2025-11-10", "2025-11-14"],
+        timeSlots: {
+          "2025-11-07": ["09:00 AM", "01:00 PM"],
+          "2025-11-10": ["10:00 AM", "02:00 PM"],
+          "2025-11-14": ["08:00 AM", "12:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 14, 
+      name: "Janamdin Puja / जन्मदिन पूजा", 
+      price: 900, 
+      category: "Bacchon ke Sanskaar", 
+      img: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=400&fit=crop&crop=center",
+      rating: 4.8,
+      reviews: 67,
+      description: "Special birthday puja for children's health and prosperity.",
+      samagriPrice: 180,
+      completedPujas: 210,
+      duration: "1 hour",
+      requirements: "Birth Details, Cake, Flowers",
+      benefits: ["Good Health", "Long Life", "Prosperity"],
+      availability: {
+        dates: ["2025-11-08", "2025-11-11", "2025-11-15"],
+        timeSlots: {
+          "2025-11-08": ["10:00 AM", "04:00 PM"],
+          "2025-11-11": ["11:00 AM", "05:00 PM"],
+          "2025-11-15": ["09:00 AM", "03:00 PM"]
+        }
+      }
+    },
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500);
-    return () => clearTimeout(timer);
-  }, []);
+    // 💑 Vivah Sanskar (15-22)
+    { 
+      id: 15, 
+      name: "Vivah / विवाह", 
+      price: 2500, 
+      category: "Vivah Sanskar", 
+      img: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=400&fit=crop&crop=center",
+      rating: 4.9,
+      reviews: 89,
+      description: "Complete wedding ceremony with all Vedic rituals and mantras.",
+      samagriPrice: 800,
+      completedPujas: 95,
+      duration: "6-8 hours",
+      requirements: "Wedding Mandap, Sacred Fire Setup",
+      benefits: ["Lifelong Partnership", "Divine Blessings", "Family Unity"],
+      availability: {
+        dates: ["2025-11-06", "2025-11-09", "2025-11-15"],
+        timeSlots: {
+          "2025-11-06": ["07:00 AM"],
+          "2025-11-09": ["08:00 AM"],
+          "2025-11-15": ["07:30 AM"]
+        }
+      }
+    },
+    { 
+      id: 16, 
+      name: "Roka / रोका समारोह", 
+      price: 2000, 
+      category: "Vivah Sanskar", 
+      img: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=400&h=400&fit=crop&crop=center",
+      rating: 4.7,
+      reviews: 34,
+      description: "Engagement ceremony with traditional rituals and blessings.",
+      samagriPrice: 500,
+      completedPujas: 45,
+      duration: "2-3 hours",
+      requirements: "Ring, Sweets, Flowers",
+      benefits: ["Official Commitment", "Family Approval", "Divine Blessings"],
+      availability: {
+        dates: ["2025-11-07", "2025-11-10", "2025-11-16"],
+        timeSlots: {
+          "2025-11-07": ["11:00 AM", "04:00 PM"],
+          "2025-11-10": ["12:00 PM", "05:00 PM"],
+          "2025-11-16": ["10:00 AM", "03:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 17, 
+      name: "Sagai / सगाई", 
+      price: 1800, 
+      category: "Vivah Sanskar", 
+      img: "https://images.unsplash.com/photo-1587132135056-ba836f83a6da?w=400&h=400&fit=crop&crop=center",
+      rating: 4.6,
+      reviews: 28,
+      description: "Formal engagement ceremony with exchange of gifts and blessings.",
+      samagriPrice: 400,
+      completedPujas: 52,
+      duration: "2 hours",
+      requirements: "Rings, Sweets, Garland",
+      benefits: ["Formal Commitment", "Family Bonding", "Divine Approval"],
+      availability: {
+        dates: ["2025-11-08", "2025-11-11", "2025-11-17"],
+        timeSlots: {
+          "2025-11-08": ["11:00 AM", "03:00 PM"],
+          "2025-11-11": ["12:00 PM", "04:00 PM"],
+          "2025-11-17": ["10:00 AM", "02:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 18, 
+      name: "Haldi / हल्दी रस्म", 
+      price: 900, 
+      category: "Vivah Sanskar", 
+      img: "https://images.unsplash.com/photo-1601919051950-dab3e7e35e0f?w=400&h=400&fit=crop&crop=center",
+      rating: 4.8,
+      reviews: 76,
+      description: "Traditional turmeric ceremony for purification and glow.",
+      samagriPrice: 200,
+      completedPujas: 120,
+      duration: "1.5 hours",
+      requirements: "Turmeric, Oil, Flowers",
+      benefits: ["Purification", "Beautiful Glow", "Auspicious Beginning"],
+      availability: {
+        dates: ["2025-11-09", "2025-11-12", "2025-11-18"],
+        timeSlots: {
+          "2025-11-09": ["08:00 AM", "11:00 AM"],
+          "2025-11-12": ["09:00 AM", "12:00 PM"],
+          "2025-11-18": ["07:00 AM", "10:00 AM"]
+        }
+      }
+    },
+    { 
+      id: 19, 
+      name: "Mehendi / मेहंदी", 
+      price: 1200, 
+      category: "Vivah Sanskar", 
+      img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=center",
+      rating: 4.7,
+      reviews: 63,
+      description: "Henna ceremony with traditional songs and rituals.",
+      samagriPrice: 300,
+      completedPujas: 88,
+      duration: "3-4 hours",
+      requirements: "Henna, Decorations, Music",
+      benefits: ["Beauty Enhancement", "Joyful Celebration", "Traditional Art"],
+      availability: {
+        dates: ["2025-11-10", "2025-11-13", "2025-11-19"],
+        timeSlots: {
+          "2025-11-10": ["02:00 PM", "06:00 PM"],
+          "2025-11-13": ["03:00 PM", "07:00 PM"],
+          "2025-11-19": ["01:00 PM", "05:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 20, 
+      name: "Sangeet / संगीत", 
+      price: 1500, 
+      category: "Vivah Sanskar", 
+      img: "https://images.unsplash.com/photo-1544984243-ec57ea16fe25?w=400&h=400&fit=crop&crop=center",
+      rating: 4.9,
+      reviews: 94,
+      description: "Musical night with dance performances and celebrations.",
+      samagriPrice: 500,
+      completedPujas: 67,
+      duration: "4-5 hours",
+      requirements: "Sound System, Decorations, Stage",
+      benefits: ["Entertainment", "Family Bonding", "Memorable Moments"],
+      availability: {
+        dates: ["2025-11-11", "2025-11-14", "2025-11-20"],
+        timeSlots: {
+          "2025-11-11": ["06:00 PM", "10:00 PM"],
+          "2025-11-14": ["07:00 PM", "11:00 PM"],
+          "2025-11-20": ["05:00 PM", "09:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 21, 
+      name: "Reception / रिसेप्शन", 
+      price: 2000, 
+      category: "Vivah Sanskar", 
+      img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop&crop=center",
+      rating: 4.8,
+      reviews: 58,
+      description: "Grand reception ceremony to welcome the newly married couple.",
+      samagriPrice: 600,
+      completedPujas: 42,
+      duration: "3-4 hours",
+      requirements: "Stage, Decorations, Sound System",
+      benefits: ["Grand Welcome", "Social Celebration", "Blessings Gathering"],
+      availability: {
+        dates: ["2025-11-12", "2025-11-15", "2025-11-21"],
+        timeSlots: {
+          "2025-11-12": ["07:00 PM", "10:00 PM"],
+          "2025-11-15": ["08:00 PM", "11:00 PM"],
+          "2025-11-21": ["06:00 PM", "09:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 22, 
+      name: "Wedding Anniversary Puja / विवाह वर्षगांठ पूजा", 
+      price: 1500, 
+      category: "Vivah Sanskar", 
+      img: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=400&fit=crop&crop=center",
+      rating: 4.7,
+      reviews: 45,
+      description: "Special puja to celebrate wedding anniversary with blessings.",
+      samagriPrice: 350,
+      completedPujas: 78,
+      duration: "1.5 hours",
+      requirements: "Couple's Photo, Flowers, Sweets",
+      benefits: ["Marital Bliss", "Long-lasting Relationship", "Divine Blessings"],
+      availability: {
+        dates: ["2025-11-13", "2025-11-16", "2025-11-22"],
+        timeSlots: {
+          "2025-11-13": ["10:00 AM", "04:00 PM"],
+          "2025-11-16": ["11:00 AM", "05:00 PM"],
+          "2025-11-22": ["09:00 AM", "03:00 PM"]
+        }
+      }
+    },
 
-  useEffect(() => {
-    const savedFavorites = localStorage.getItem("panditFavorites");
-    const savedRecentlyViewed = localStorage.getItem("recentlyViewedPandits");
-    
-    if (savedFavorites) setFavorites(JSON.parse(savedFavorites));
-    if (savedRecentlyViewed) setRecentlyViewed(JSON.parse(savedRecentlyViewed));
-    
-    if (!localStorage.getItem("panditBookings")) {
-      localStorage.setItem('panditBookings', JSON.stringify([]));
-    }
-  }, []);
+    // ⚰ Pitrakarya (23-27)
+    { 
+      id: 23, 
+      name: "Antim Sanskar / अंतिम संस्कार", 
+      price: 2000, 
+      category: "Pitrakarya", 
+      img: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=400&h=400&fit=crop&crop=center",
+      rating: 4.9,
+      reviews: 34,
+      description: "Final rites ceremony performed with Vedic rituals and mantras.",
+      samagriPrice: 600,
+      completedPujas: 56,
+      duration: "3-4 hours",
+      requirements: "Sacred Fire Setup, Pinda, Flowers",
+      benefits: ["Peaceful Departure", "Soul Liberation", "Family Closure"],
+      availability: {
+        dates: ["2025-11-14", "2025-11-17", "2025-11-23"],
+        timeSlots: {
+          "2025-11-14": ["07:00 AM", "02:00 PM"],
+          "2025-11-17": ["08:00 AM", "03:00 PM"],
+          "2025-11-23": ["06:00 AM", "01:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 24, 
+      name: "Pind Daan / पिंडदान", 
+      price: 1800, 
+      category: "Pitrakarya", 
+      img: "https://images.unsplash.com/photo-1587132135056-ba836f83a6da?w=400&h=400&fit=crop&crop=center",
+      rating: 4.7,
+      reviews: 28,
+      description: "Offering rituals for departed ancestors for their peace.",
+      samagriPrice: 500,
+      completedPujas: 42,
+      duration: "2-3 hours",
+      requirements: "Rice Balls, Black Sesame, Water",
+      benefits: ["Ancestors Peace", "Family Blessings", "Karma Cleansing"],
+      availability: {
+        dates: ["2025-11-15", "2025-11-18", "2025-11-24"],
+        timeSlots: {
+          "2025-11-15": ["08:00 AM", "12:00 PM"],
+          "2025-11-18": ["09:00 AM", "01:00 PM"],
+          "2025-11-24": ["07:00 AM", "11:00 AM"]
+        }
+      }
+    },
+    { 
+      id: 25, 
+      name: "Shraddh / श्राद्ध पूजा", 
+      price: 1500, 
+      category: "Pitrakarya", 
+      img: "https://images.unsplash.com/photo-1601919051950-dab3e7e35e0f?w=400&h=400&fit=crop&crop=center",
+      rating: 4.6,
+      reviews: 39,
+      description: "Annual ceremony to pay homage to departed ancestors.",
+      samagriPrice: 400,
+      completedPujas: 67,
+      duration: "2 hours",
+      requirements: "Ancestors Details, Rice, Flowers",
+      benefits: ["Ancestors Blessings", "Family Protection", "Peace to Departed Souls"],
+      availability: {
+        dates: ["2025-11-16", "2025-11-19", "2025-11-25"],
+        timeSlots: {
+          "2025-11-16": ["09:00 AM", "02:00 PM"],
+          "2025-11-19": ["10:00 AM", "03:00 PM"],
+          "2025-11-25": ["08:00 AM", "01:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 26, 
+      name: "Asthi Visarjan / अस्थि विसर्जन", 
+      price: 1300, 
+      category: "Pitrakarya", 
+      img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=center",
+      rating: 4.8,
+      reviews: 23,
+      description: "Sacred immersion of ashes in holy river with rituals.",
+      samagriPrice: 300,
+      completedPujas: 31,
+      duration: "2 hours",
+      requirements: "Ashes, Holy Water, Flowers",
+      benefits: ["Final Liberation", "Soul Peace", "Completion of Rituals"],
+      availability: {
+        dates: ["2025-11-17", "2025-11-20", "2025-11-26"],
+        timeSlots: {
+          "2025-11-17": ["07:00 AM", "11:00 AM"],
+          "2025-11-20": ["08:00 AM", "12:00 PM"],
+          "2025-11-26": ["06:00 AM", "10:00 AM"]
+        }
+      }
+    },
+    { 
+      id: 27, 
+      name: "Tehravin / तेरहवीं संस्कार", 
+      price: 1200, 
+      category: "Pitrakarya", 
+      img: "https://images.unsplash.com/photo-1544984243-ec57ea16fe25?w=400&h=400&fit=crop&crop=center",
+      rating: 4.7,
+      reviews: 35,
+      description: "Thirteenth day ceremony after departure for family peace.",
+      samagriPrice: 350,
+      completedPujas: 48,
+      duration: "1.5 hours",
+      requirements: "Family Members, Pinda, Holy Water",
+      benefits: ["Family Peace", "Completion of Mourning", "New Beginning"],
+      availability: {
+        dates: ["2025-11-18", "2025-11-21", "2025-11-27"],
+        timeSlots: {
+          "2025-11-18": ["10:00 AM", "03:00 PM"],
+          "2025-11-21": ["11:00 AM", "04:00 PM"],
+          "2025-11-27": ["09:00 AM", "02:00 PM"]
+        }
+      }
+    },
 
-  useEffect(() => {
-    localStorage.setItem("panditFavorites", JSON.stringify(favorites));
-  }, [favorites]);
+    // 📿 Festival Pujas (28-36)
+    { 
+      id: 28, 
+      name: "Karwa Chauth Puja / करवा चौथ पूजा", 
+      price: 900, 
+      category: "Festival Pujas", 
+      img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop&crop=center",
+      rating: 4.8,
+      reviews: 156,
+      description: "Special puja for married women observing Karwa Chauth fast for husband's long life.",
+      samagriPrice: 250,
+      completedPujas: 340,
+      duration: "1 hour",
+      requirements: "Karwa, Matthi, Sindoor, Story Book",
+      benefits: ["Husband's Long Life", "Marital Bliss", "Family Happiness"],
+      availability: {
+        dates: ["2025-11-03", "2025-11-04"],
+        timeSlots: {
+          "2025-11-03": ["05:00 PM", "06:30 PM"],
+          "2025-11-04": ["05:30 PM", "07:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 29, 
+      name: "Diwali Lakshmi Ganesh Puja / दिवाली लक्ष्मी गणेश पूजा", 
+      price: 1200, 
+      category: "Festival Pujas", 
+      img: "https://images.unsplash.com/photo-1601379327929-8ceeff79a991?w=400&h=400&fit=crop&crop=center",
+      rating: 4.9,
+      reviews: 234,
+      description: "Special Diwali puja for wealth, prosperity and removal of obstacles.",
+      samagriPrice: 400,
+      completedPujas: 450,
+      duration: "2 hours",
+      requirements: "Lakshmi-Ganesh Idols, Diyas, Sweets",
+      benefits: ["Wealth & Prosperity", "Obstacle Removal", "Auspicious Beginning"],
+      availability: {
+        dates: ["2025-11-19", "2025-11-20", "2025-11-21"],
+        timeSlots: {
+          "2025-11-19": ["06:00 PM", "08:00 PM"],
+          "2025-11-20": ["07:00 PM", "09:00 PM"],
+          "2025-11-21": ["05:00 PM", "07:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 30, 
+      name: "Raksha Bandhan / रक्षा बंधन पूजा", 
+      price: 800, 
+      category: "Festival Pujas", 
+      img: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=400&fit=crop&crop=center",
+      rating: 4.7,
+      reviews: 178,
+      description: "Brother-sister bond celebration with sacred thread tying ritual.",
+      samagriPrice: 200,
+      completedPujas: 290,
+      duration: "1 hour",
+      requirements: "Rakhi, Sweets, Rice",
+      benefits: ["Brother Protection", "Sister Love", "Family Bonding"],
+      availability: {
+        dates: ["2025-11-22", "2025-11-23"],
+        timeSlots: {
+          "2025-11-22": ["09:00 AM", "12:00 PM"],
+          "2025-11-23": ["10:00 AM", "01:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 31, 
+      name: "Navratri Puja / नवरात्रि पूजा", 
+      price: 1000, 
+      category: "Festival Pujas", 
+      img: "https://images.unsplash.com/photo-1587132135056-ba836f83a6da?w=400&h=400&fit=crop&crop=center",
+      rating: 4.8,
+      reviews: 195,
+      description: "Nine nights goddess worship for power, protection and blessings.",
+      samagriPrice: 350,
+      completedPujas: 320,
+      duration: "9 days",
+      requirements: "Goddess Idol, Kalash, Flowers",
+      benefits: ["Divine Power", "Protection from Evil", "Spiritual Growth"],
+      availability: {
+        dates: ["2025-11-24", "2025-11-25", "2025-11-26"],
+        timeSlots: {
+          "2025-11-24": ["06:00 AM", "07:00 PM"],
+          "2025-11-25": ["07:00 AM", "08:00 PM"],
+          "2025-11-26": ["06:30 AM", "07:30 PM"]
+        }
+      }
+    },
+    { 
+      id: 32, 
+      name: "Saraswati Puja / सरस्वती पूजा", 
+      price: 1000, 
+      category: "Festival Pujas", 
+      img: "https://images.unsplash.com/photo-1601919051950-dab3e7e35e0f?w=400&h=400&fit=crop&crop=center",
+      rating: 4.7,
+      reviews: 145,
+      description: "Goddess of knowledge worship for wisdom, education and arts.",
+      samagriPrice: 300,
+      completedPujas: 230,
+      duration: "1.5 hours",
+      requirements: "Saraswati Idol, Books, Musical Instruments",
+      benefits: ["Knowledge & Wisdom", "Academic Success", "Creative Skills"],
+      availability: {
+        dates: ["2025-11-27", "2025-11-28"],
+        timeSlots: {
+          "2025-11-27": ["08:00 AM", "11:00 AM"],
+          "2025-11-28": ["09:00 AM", "12:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 33, 
+      name: "Mahashivratri Puja / महाशिवरात्रि पूजा", 
+      price: 1100, 
+      category: "Festival Pujas", 
+      img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=center",
+      rating: 4.9,
+      reviews: 267,
+      description: "Great night of Shiva worship for spiritual growth and liberation.",
+      samagriPrice: 400,
+      completedPujas: 380,
+      duration: "All night",
+      requirements: "Shiva Lingam, Milk, Bilva Leaves",
+      benefits: ["Spiritual Awakening", "Moksha", "Negative Energy Removal"],
+      availability: {
+        dates: ["2025-11-29"],
+        timeSlots: {
+          "2025-11-29": ["08:00 PM", "06:00 AM"]
+        }
+      }
+    },
+    { 
+      id: 34, 
+      name: "Chhath Puja / छठ पूजा", 
+      price: 1000, 
+      category: "Festival Pujas", 
+      img: "https://images.unsplash.com/photo-1544984243-ec57ea16fe25?w=400&h=400&fit=crop&crop=center",
+      rating: 4.8,
+      reviews: 189,
+      description: "Ancient sun god worship for health, prosperity and offspring.",
+      samagriPrice: 350,
+      completedPujas: 270,
+      duration: "4 days",
+      requirements: "Bamboo Basket, Fruits, Sugarcane",
+      benefits: ["Health & Longevity", "Progeny Blessings", "Family Prosperity"],
+      availability: {
+        dates: ["2025-11-30", "2025-12-01"],
+        timeSlots: {
+          "2025-11-30": ["05:00 AM", "05:00 PM"],
+          "2025-12-01": ["06:00 AM", "06:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 35, 
+      name: "Holi Dahan Puja / होली दहन पूजा", 
+      price: 900, 
+      category: "Festival Pujas", 
+      img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop&crop=center",
+      rating: 4.7,
+      reviews: 156,
+      description: "Holika dahan ceremony for victory of good over evil.",
+      samagriPrice: 250,
+      completedPujas: 210,
+      duration: "1.5 hours",
+      requirements: "Wood Pyre, Coconut, Flowers",
+      benefits: ["Victory of Good", "Evil Destruction", "New Beginnings"],
+      availability: {
+        dates: ["2025-12-02"],
+        timeSlots: {
+          "2025-12-02": ["07:00 PM", "09:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 36, 
+      name: "Janmashtami Puja / जन्माष्टमी पूजा", 
+      price: 1000, 
+      category: "Festival Pujas", 
+      img: "https://images.unsplash.com/photo-1601379327929-8ceeff79a991?w=400&h=400&fit=crop&crop=center",
+      rating: 4.9,
+      reviews: 278,
+      description: "Lord Krishna birth celebration with midnight puja and festivities.",
+      samagriPrice: 350,
+      completedPujas: 420,
+      duration: "2 hours",
+      requirements: "Krishna Idol, Butter, Flute",
+      benefits: ["Divine Love", "Joy & Happiness", "Spiritual Bliss"],
+      availability: {
+        dates: ["2025-12-03"],
+        timeSlots: {
+          "2025-12-03": ["10:00 PM", "12:00 AM"]
+        }
+      }
+    },
 
-  useEffect(() => {
-    localStorage.setItem("recentlyViewedPandits", JSON.stringify(recentlyViewed));
-  }, [recentlyViewed]);
+    // 🛕 Temple / Special Pujas (37-43)
+    { 
+      id: 37, 
+      name: "Rudrabhishek / रुद्राभिषेक", 
+      price: 2200, 
+      category: "Temple / Special Pujas", 
+      img: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=400&fit=crop&crop=center",
+      rating: 4.9,
+      reviews: 156,
+      description: "Powerful Shiva abhishekam for health, wealth and spiritual growth.",
+      samagriPrice: 600,
+      completedPujas: 120,
+      duration: "3 hours",
+      requirements: "Shiva Lingam, Milk, Honey, Bilva Leaves",
+      benefits: ["Health & Wealth", "Spiritual Growth", "Negative Energy Removal"],
+      availability: {
+        dates: ["2025-11-04", "2025-11-08", "2025-11-11"],
+        timeSlots: {
+          "2025-11-04": ["06:00 AM", "11:00 AM"],
+          "2025-11-08": ["07:00 AM", "12:00 PM"],
+          "2025-11-11": ["06:30 AM", "11:30 AM"]
+        }
+      }
+    },
+    { 
+      id: 38, 
+      name: "Mahamrityunjaya Jaap / महामृत्युंजय जाप", 
+      price: 2500, 
+      category: "Temple / Special Pujas", 
+      img: "https://images.unsplash.com/photo-1587132135056-ba836f83a6da?w=400&h=400&fit=crop&crop=center",
+      rating: 4.9,
+      reviews: 134,
+      description: "Powerful mantra chanting for longevity and freedom from diseases.",
+      samagriPrice: 700,
+      completedPujas: 89,
+      duration: "4 hours",
+      requirements: "Specific Yantra, Rudraksha Mala, Sacred Fire",
+      benefits: ["Longevity", "Disease Freedom", "Death Fear Removal"],
+      availability: {
+        dates: ["2025-11-05", "2025-11-09", "2025-11-13"],
+        timeSlots: {
+          "2025-11-05": ["05:00 AM", "09:00 AM"],
+          "2025-11-09": ["06:00 AM", "10:00 AM"],
+          "2025-11-13": ["05:30 AM", "09:30 AM"]
+        }
+      }
+    },
+    { 
+      id: 39, 
+      name: "Bhumi Pujan / भूमि पूजन", 
+      price: 2000, 
+      category: "Temple / Special Pujas", 
+      img: "https://images.unsplash.com/photo-1601919051950-dab3e7e35e0f?w=400&h=400&fit=crop&crop=center",
+      rating: 4.8,
+      reviews: 98,
+      description: "Land worship ceremony before construction for prosperity.",
+      samagriPrice: 500,
+      completedPujas: 76,
+      duration: "2.5 hours",
+      requirements: "Land Deed, Kalash, Grains",
+      benefits: ["Construction Safety", "Property Prosperity", "Positive Energy"],
+      availability: {
+        dates: ["2025-11-06", "2025-11-10", "2025-11-14"],
+        timeSlots: {
+          "2025-11-06": ["08:00 AM", "11:00 AM"],
+          "2025-11-10": ["09:00 AM", "12:00 PM"],
+          "2025-11-14": ["07:00 AM", "10:00 AM"]
+        }
+      }
+    },
+    { 
+      id: 40, 
+      name: "Kundali Shanti / कुंडली शांति", 
+      price: 1800, 
+      category: "Temple / Special Pujas", 
+      img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=center",
+      rating: 4.7,
+      reviews: 112,
+      description: "Planetary peace puja based on birth chart for life harmony.",
+      samagriPrice: 450,
+      completedPujas: 145,
+      duration: "3 hours",
+      requirements: "Birth Details, Gemstones, Specific Grains",
+      benefits: ["Planetary Harmony", "Life Balance", "Problem Solution"],
+      availability: {
+        dates: ["2025-11-07", "2025-11-11", "2025-11-15"],
+        timeSlots: {
+          "2025-11-07": ["10:00 AM", "01:00 PM"],
+          "2025-11-11": ["11:00 AM", "02:00 PM"],
+          "2025-11-15": ["09:00 AM", "12:00 PM"]
+        }
+      }
+    },
+    { 
+      id: 41, 
+      name: "Upanayan Sanskar / उपनयन संस्कार", 
+      price: 1700, 
+      category: "Temple / Special Pujas", 
+      img: "https://images.unsplash.com/photo-1544984243-ec57ea16fe25?w=400&h=400&fit=crop&crop=center",
+      rating: 4.8,
+      reviews: 67,
+      description: "Sacred thread ceremony for spiritual initiation of young boys.",
+      samagriPrice: 400,
+      completedPujas: 53,
+      duration: "2 hours",
+      requirements: "Sacred Thread, Deer Skin, Guru Dakshina",
+      benefits: ["Spiritual Initiation", "Knowledge Beginning", "Cultural Heritage"],
+      availability: {
+        dates: ["2025-11-08", "2025-11-12", "2025-11-16"],
+        timeSlots: {
+          "2025-11-08": ["08:00 AM", "11:00 AM"],
+          "2025-11-12": ["09:00 AM", "12:00 PM"],
+          "2025-11-16": ["07:00 AM", "10:00 AM"]
+        }
+      }
+    },
+    { 
+      id: 42, 
+      name: "Kalash Sthapana / कलश स्थापना", 
+      price: 1600, 
+      category: "Temple / Special Pujas", 
+      img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop&crop=center",
+      rating: 4.7,
+      reviews: 89,
+      description: "Sacred pot installation ceremony for positive energy flow.",
+      samagriPrice: 350,
+      completedPujas: 78,
+      duration: "1.5 hours",
+      requirements: "Brass Pot, Coconut, Mango Leaves",
+      benefits: ["Positive Energy", "Divine Presence", "Ceremony Foundation"],
+      availability: {
+        dates: ["2025-11-09", "2025-11-13", "2025-11-17"],
+        timeSlots: {
+          "2025-11-09": ["07:00 AM", "10:00 AM"],
+          "2025-11-13": ["08:00 AM", "11:00 AM"],
+          "2025-11-17": ["06:00 AM", "09:00 AM"]
+        }
+      }
+    },
+    { 
+      id: 43, 
+      name: "Ayushya Homam / आयुष्य हवन", 
+      price: 1500, 
+      category: "Temple / Special Pujas", 
+      img: "https://images.unsplash.com/photo-1601379327929-8ceeff79a991?w=400&h=400&fit=crop&crop=center",
+      rating: 4.8,
+      reviews: 102,
+      description: "Long life fire ritual for health, longevity and well-being.",
+      samagriPrice: 400,
+      completedPujas: 95,
+      duration: "2 hours",
+      requirements: "Sacred Fire Setup, Ghee, Medicinal Herbs",
+      benefits: ["Long Life", "Good Health", "Disease Protection"],
+      availability: {
+        dates: ["2025-11-10", "2025-11-14", "2025-11-18"],
+        timeSlots: {
+          "2025-11-10": ["08:00 AM", "11:00 AM"],
+          "2025-11-14": ["09:00 AM", "12:00 PM"],
+          "2025-11-18": ["07:00 AM", "10:00 AM"]
+        }
+      }
+    },
 
-  const allServices = useMemo(() => [...new Set(panditList.map(p => p.specialization))], [panditList]);
-  const allLocations = useMemo(() => [...new Set(panditList.map(p => p.city))], [panditList]);
-  const allLanguages = useMemo(() => [...new Set(panditList.flatMap(p => p.languages))], [panditList]);
+    // 🧾 Others / Custom Options (44-46)
+    { 
+      id: 44, 
+      name: "Personalized Puja Package / व्यक्तिगत पूजा पैकेज", 
+      price: 3000, 
+      category: "Others / Custom Options", 
+      img: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=400&fit=crop&crop=center",
+      rating: 4.8,
+      reviews: 23,
+      description: "Customized puja package tailored to your specific needs and requirements.",
+      samagriPrice: 800,
+      completedPujas: 35,
+      duration: "Custom",
+      requirements: "Specific Requirements Discussed",
+      benefits: ["Personalized Solution", "Flexible Timing", "Custom Rituals"],
+      availability: {
+        dates: ["2025-11-05", "2025-11-09", "2025-11-13"],
+        timeSlots: {
+          "2025-11-05": ["Flexible"],
+          "2025-11-09": ["Flexible"],
+          "2025-11-13": ["Flexible"]
+        }
+      }
+    },
+    { 
+      id: 45, 
+      name: "Online Puja Seva / ऑनलाइन पूजा सेवा", 
+      price: 2500, 
+      category: "Others / Custom Options", 
+      img: "https://images.unsplash.com/photo-1587132135056-ba836f83a6da?w=400&h=400&fit=crop&crop=center",
+      rating: 4.7,
+      reviews: 45,
+      description: "Live online puja service for devotees who cannot visit physically.",
+      samagriPrice: 500,
+      completedPujas: 68,
+      duration: "As per puja",
+      requirements: "Stable Internet, Webcam",
+      benefits: ["Remote Participation", "Live Darshan", "Convenient"],
+      availability: {
+        dates: ["2025-11-06", "2025-11-10", "2025-11-14"],
+        timeSlots: {
+          "2025-11-06": ["Flexible"],
+          "2025-11-10": ["Flexible"],
+          "2025-11-14": ["Flexible"]
+        }
+      }
+    },
+    { 
+      id: 46, 
+      name: "Customized Event Plan / कस्टम इवेंट प्लान", 
+      price: 3500, 
+      category: "Others / Custom Options", 
+      img: "https://images.unsplash.com/photo-1601919051950-dab3e7e35e0f?w=400&h=400&fit=crop&crop=center",
+      rating: 4.9,
+      reviews: 32,
+      description: "Complete event planning and management for special occasions.",
+      samagriPrice: 1000,
+      completedPujas: 28,
+      duration: "As per event",
+      requirements: "Event Details, Budget, Guest Count",
+      benefits: ["Stress-free Planning", "Professional Management", "Memorable Event"],
+      availability: {
+        dates: ["2025-11-07", "2025-11-11", "2025-11-15"],
+        timeSlots: {
+          "2025-11-07": ["Flexible"],
+          "2025-11-11": ["Flexible"],
+          "2025-11-15": ["Flexible"]
+        }
+      }
+    }
+  ], []);
 
-  const handleFilterChange = (name, value) => {
-    setFilters(prev => ({ ...prev, [name]: value }));
-  };
+  // Rest of the component code remains exactly the same...
+  const getAvailableTimeSlots = (pujaId, selectedDate) => {
+    const puja = pujaList.find(p => p.id === pujaId);
+    if (!puja || !selectedDate) return [];
+    return puja.availability.timeSlots[selectedDate] || [];
+  };
 
-  const toggleFavorite = (panditId) => {
-    setFavorites(prev => 
-      prev.includes(panditId) 
-        ? prev.filter(id => id !== panditId)
-        : [...prev, panditId]
-    );
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
-  const filteredPandits = useMemo(() => {
-    return panditList.filter(p => {
-      const matchesSearch = !searchQuery || 
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.specialization.toLowerCase().includes(searchQuery.toLowerCase());
+  useEffect(() => {
+    const savedFavorites = localStorage.getItem("pujaFavorites");
+    const savedRecentlyViewed = localStorage.getItem("recentlyViewedPujas");
+    
+    if (savedFavorites) setFavorites(JSON.parse(savedFavorites));
+    if (savedRecentlyViewed) setRecentlyViewed(JSON.parse(savedRecentlyViewed));
+    
+    if (!localStorage.getItem("pujaBookings")) {
+      localStorage.setItem('pujaBookings', JSON.stringify([]));
+    }
+  }, []);
 
-      const matchesFilters = (
-        (!filters.service || p.specialization === filters.service) &&
-        (!filters.location || p.city === filters.location) &&
-        (!filters.language || p.languages.includes(filters.language)) &&
-        p.price >= filters.minPrice &&
-        p.price <= filters.maxPrice &&
-        p.rating >= filters.minRating &&
-        p.experience >= filters.minExperience &&
-        (!filters.availability || p.availability.dates.includes(filters.availability))
-      );
+  useEffect(() => {
+    localStorage.setItem("pujaFavorites", JSON.stringify(favorites));
+  }, [favorites]);
 
-      return matchesSearch && matchesFilters;
-    });
-  }, [panditList, filters, searchQuery]);
+  useEffect(() => {
+    localStorage.setItem("recentlyViewedPujas", JSON.stringify(recentlyViewed));
+  }, [recentlyViewed]);
 
+  const allServices = useMemo(() => [...new Set(pujaList.map(p => p.name))], [pujaList]);
+  const allCategories = useMemo(() => [...new Set(pujaList.map(p => p.category))], [pujaList]);
 
-  const sortedPandits = useMemo(() => {
-    return [...filteredPandits].sort((a, b) => {
-      switch(sortBy) {
-        case "rating": return b.rating - a.rating;
-        case "experience": return b.experience - a.experience;
-        case "price-low": return a.price - b.price;
-        case "price-high": return b.price - a.price;
-        case "reviews": return b.reviews - a.reviews;
-        default: return 0;
-      }
-    });
-  }, [filteredPandits, sortBy]);
+  const handleFilterChange = (name, value) => {
+    setFilters(prev => ({ ...prev, [name]: value }));
+  };
 
+  const toggleFavorite = (pujaId) => {
+    setFavorites(prev => 
+      prev.includes(pujaId) 
+        ? prev.filter(id => id !== pujaId)
+        : [...prev, pujaId]
+    );
+  };
 
-  const handleBookNow = (pandit) => {
-    setSelectedPandit(pandit);
-    setBookingStep(1);
-    setBookingData({ 
-      panditId: pandit.id, 
-      service: pandit.specialization, 
-      date: "", 
-      time: "", 
-      address: "",
-      includeSamagri: false,
-      additionalNotes: ""
-    });
+  const filteredPujas = useMemo(() => {
+    return pujaList.filter(p => {
+      const matchesSearch = !searchQuery || 
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesFilters = (
+        (!filters.service || p.name === filters.service) &&
+        (!filters.category || p.category === filters.category) &&
+        p.price >= filters.minPrice &&
+        p.price <= filters.maxPrice &&
+        p.rating >= filters.minRating &&
+        (!filters.availability || p.availability.dates.includes(filters.availability))
+      );
+
+      return matchesSearch && matchesFilters;
+    });
+  }, [pujaList, filters, searchQuery]);
+
+  const sortedPujas = useMemo(() => {
+    return [...filteredPujas].sort((a, b) => {
+      switch(sortBy) {
+        case "rating": return b.rating - a.rating;
+        case "price-low": return a.price - b.price;
+        case "price-high": return b.price - a.price;
+        case "reviews": return b.reviews - a.reviews;
+        default: return 0;
+      }
+    });
+  }, [filteredPujas, sortBy]);
+
+  const handleBookNow = (puja) => {
+    setSelectedPuja(puja);
+    setBookingStep(1);
+    setBookingData({ 
+      pujaId: puja.id, 
+      service: puja.name, 
+      date: "", 
+      time: "", 
+      address: "",
+      includeSamagri: false,
+      additionalNotes: ""
+    });
     setValidationError(""); 
 
-    setRecentlyViewed(prev => {
-      const filtered = prev.filter(item => item.id !== pandit.id);
-      return [pandit, ...filtered].slice(0, 4);
-    });
-  };
+    setRecentlyViewed(prev => {
+      const filtered = prev.filter(item => item.id !== puja.id);
+      return [puja, ...filtered].slice(0, 4);
+    });
+  };
 
-  const handleViewDetails = (pandit) => {
-    setSelectedPanditDetail(pandit);
-    setShowPanditDetail(true);
-    
-    setRecentlyViewed(prev => {
-      const filtered = prev.filter(item => item.id !== pandit.id);
-      return [pandit, ...filtered].slice(0, 4);
-    });
-  };
+  const handleViewDetails = (puja) => {
+    setSelectedPujaDetail(puja);
+    setShowPujaDetail(true);
+    
+    setRecentlyViewed(prev => {
+      const filtered = prev.filter(item => item.id !== puja.id);
+      return [puja, ...filtered].slice(0, 4);
+    });
+  };
 
-  const handleBookingNext = () => {
-    setValidationError(""); 
-
-    if (bookingStep === 2) {
-      if (!bookingData.date || !bookingData.time) {
-        setValidationError("Please select both a date and an available time slot.");
-        return;
-      }
-    }
-    if (bookingStep === 3) {
-      if (!bookingData.address || bookingData.address.trim().length < 10) {
-        setValidationError("Please enter your complete address (at least 10 characters).");
-        return;
-      }
-    }
-    setBookingStep(prev => prev + 1);
-  };
-
-  const handleBookingBack = () => {
+  const handleBookingNext = () => {
     setValidationError(""); 
-    setBookingStep(prev => prev - 1);
-  };
 
-  const handleBookingComplete = () => {
-    const newBookingId = `BK${Date.now().toString().slice(-8)}`;
-    setBookingId(newBookingId);
-    
-    const completeBookingData = {
-      ...bookingData,
-      bookingId: newBookingId
-    };
+    if (bookingStep === 2) {
+      if (!bookingData.date || !bookingData.time) {
+        setValidationError("Please select both a date and an available time slot.");
+        return;
+      }
+    }
+    if (bookingStep === 3) {
+      if (!bookingData.address || bookingData.address.trim().length < 10) {
+        setValidationError("Please enter your complete address (at least 10 characters).");
+        return;
+      }
+    }
+    setBookingStep(prev => prev + 1);
+  };
 
-    const bookings = JSON.parse(localStorage.getItem('panditBookings') || '[]');
-    const selectedPanditData = panditList.find(p => p.id === selectedPandit.id);
-    const newBooking = {
-      id: newBookingId,
-      pandit: selectedPandit,
-      ...completeBookingData,
-      totalAmount: selectedPanditData.price + (bookingData.includeSamagri ? selectedPanditData.samagriPrice : 0),
-      status: 'confirmed',
-      bookedAt: new Date().toISOString()
-    };
-    
-    localStorage.setItem('panditBookings', JSON.stringify([newBooking, ...bookings]));
-    
-    sendWhatsAppMessage(completeBookingData, selectedPandit);
-    
-    setShowToast(true);
-    
-    setTimeout(() => {
-      setBookingStep(0);
-      setSelectedPandit(null);
-    }, 5000);
-  };
+  const handleBookingBack = () => {
+    setValidationError(""); 
+    setBookingStep(prev => prev - 1);
+  };
 
-  const navigateToMyBookings = () => {
-    navigate('/my-bookings');
-  };
+  const handleBookingComplete = () => {
+    const newBookingId = `BK${Date.now().toString().slice(-8)}`;
+    setBookingId(newBookingId);
+    
+    const completeBookingData = {
+      ...bookingData,
+      bookingId: newBookingId
+    };
 
-  const navigateToFavorites = () => {
-    navigate('/favorites');
-  };
+    const bookings = JSON.parse(localStorage.getItem('pujaBookings') || '[]');
+    const selectedPujaData = pujaList.find(p => p.id === selectedPuja.id);
+    const newBooking = {
+      id: newBookingId,
+      puja: selectedPuja,
+      ...completeBookingData,
+      totalAmount: selectedPujaData.price + (bookingData.includeSamagri ? selectedPujaData.samagriPrice : 0),
+      status: 'confirmed',
+      bookedAt: new Date().toISOString()
+    };
+    
+    localStorage.setItem('pujaBookings', JSON.stringify([newBooking, ...bookings]));
+    
+    sendWhatsAppMessage(completeBookingData, selectedPuja);
+    
+    setShowToast(true);
+    
+    setTimeout(() => {
+      setBookingStep(0);
+      setSelectedPuja(null);
+    }, 5000);
+  };
 
+  const navigateToMyBookings = () => {
+    navigate('/my-bookings');
+  };
 
-  return (
-    <div className="min-h-screen bg-amber-50">
-      
-      {/* Header Section (Cleaned up - only background and search) */}
-      <section className="relative bg-gradient-to-r from-amber-800 to-amber-600 text-white py-16 sm:py-20 md:py-24 px-4 sm:px-6 text-center">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Sparkles className="w-8 h-8 text-amber-300" />
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              Book Pandit Ji for Your Puja
-            </h1>
-          </div>
-          <p className="text-lg sm:text-xl md:text-2xl mb-8 text-amber-100">
-            Verified & Experienced Pandits – Anytime, Anywhere
-          </p>
-          <p className="text-sm sm:text-base mb-10 text-amber-200">
-            पंडित जी बुकिंग सेक्शन • 100% Verified • Best Prices Guaranteed
-          </p>
+  const navigateToFavorites = () => {
+    navigate('/favorites');
+  };
 
-          {/* Enhanced Search Bar */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-4 mt-8 border border-white/20 max-w-4xl mx-auto">
-            <div className="flex-1 w-full relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-amber-300 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search pandits by name, city, or puja type..."
-                className="w-full pl-10 pr-4 py-3 border border-amber-300 rounded-xl text-gray-700 focus:ring-2 focus:ring-amber-500 focus:outline-none text-base"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <div className="flex gap-3 w-full sm:w-auto">
-              <button 
-                onClick={() => setShowFilters(!showFilters)}
-                className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition text-sm font-medium shadow-lg hover:shadow-xl flex-1 sm:flex-none justify-center"
-              >
-                <Filter className="w-5 h-5" /> 
-                <span>Filters</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+  const getCategoryIcon = (category) => {
+    switch(category) {
+      case "Ghar ke Sanskaar": return <Home className="w-4 h-4" />;
+      case "Bacchon ke Sanskaar": return <Baby className="w-4 h-4" />;
+      case "Vivah Sanskar": return <HeartIcon className="w-4 h-4" />;
+      case "Pitrakarya": return <Users className="w-4 h-4" />;
+      case "Festival Pujas": return <CalendarIcon className="w-4 h-4" />;
+      case "Temple / Special Pujas": return <Temple className="w-4 h-4" />;
+      default: return <Sparkles className="w-4 h-4" />;
+    }
+  };
 
-      {/* Sticky Filters Bar */}
-      {showFilters && (
+  return (
+    <div className="min-h-screen bg-amber-50">
+      
+      {/* Header Section */}
+      <section className="relative bg-gradient-to-r from-amber-800 to-amber-600 text-white py-16 sm:py-20 md:py-24 px-4 sm:px-6 text-center">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Sparkles className="w-8 h-8 text-amber-300" />
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              Book Puja Services
+            </h1>
+          </div>
+          <p className="text-lg sm:text-xl md:text-2xl mb-8 text-amber-100">
+            Traditional Pujas & Ceremonies – Anytime, Anywhere
+          </p>
+          <p className="text-sm sm:text-base mb-10 text-amber-200">
+            पूजा बुकिंग सेक्शन • 100% Authentic • Best Prices Guaranteed
+          </p>
+
+          {/* Enhanced Search Bar */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-4 mt-8 border border-white/20 max-w-4xl mx-auto">
+            <div className="flex-1 w-full relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-amber-300 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search pujas by name, category, or description..."
+                className="w-full pl-10 pr-4 py-3 border border-amber-300 rounded-xl text-gray-700 focus:ring-2 focus:ring-amber-500 focus:outline-none text-base"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-3 w-full sm:w-auto">
+              <button 
+                onClick={() => setShowFilters(!showFilters)}
+                className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition text-sm font-medium shadow-lg hover:shadow-xl flex-1 sm:flex-none justify-center"
+              >
+                <Filter className="w-5 h-5" /> 
+                <span>Filters</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sticky Filters Bar */}
+      {showFilters && (
         <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -767,7 +1753,7 @@ export default function PanditBooking() {
                     </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {/* Service Filter */}
                     <div>
                         <label className="block text-sm font-medium mb-2">Puja Type</label>
@@ -783,32 +1769,17 @@ export default function PanditBooking() {
                         </select>
                     </div>
 
-                    {/* Location Filter */}
+                    {/* Category Filter */}
                     <div>
-                        <label className="block text-sm font-medium mb-2">City</label>
+                        <label className="block text-sm font-medium mb-2">Category</label>
                         <select
-                            value={filters.location}
-                            onChange={(e) => handleFilterChange('location', e.target.value)}
+                            value={filters.category}
+                            onChange={(e) => handleFilterChange('category', e.target.value)}
                             className="w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white border-gray-300 text-gray-700"
                         >
-                            <option value="">All Cities</option>
-                            {allLocations.map(location => (
-                                <option key={location} value={location}>{location}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {/* Language Filter */}
-                    <div>
-                        <label className="block text-sm font-medium mb-2">Language</label>
-                        <select
-                            value={filters.language}
-                            onChange={(e) => handleFilterChange('language', e.target.value)}
-                            className="w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white border-gray-300 text-gray-700"
-                        >
-                            <option value="">All Languages</option>
-                            {allLanguages.map(language => (
-                                <option key={language} value={language}>{language}</option>
+                            <option value="">All Categories</option>
+                            {allCategories.map(category => (
+                                <option key={category} value={category}>{category}</option>
                             ))}
                         </select>
                     </div>
@@ -833,7 +1804,6 @@ export default function PanditBooking() {
                             className="w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white border-gray-300 text-gray-700"
                         >
                             <option value="rating">Rating</option>
-                            <option value="experience">Experience</option>
                             <option value="price-low">Price: Low to High</option>
                             <option value="price-high">Price: High to Low</option>
                             <option value="reviews">Most Reviews</option>
@@ -842,28 +1812,28 @@ export default function PanditBooking() {
                 </div>
 
                 {/* Range Sliders */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-gray-200">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-gray-200">
                     <div>
                         <label className="block text-sm font-medium mb-2">
                             Price Range: ₹{filters.minPrice} - ₹{filters.maxPrice}
                         </label>
                         <div className="flex gap-4 items-center">
-                            <span className="text-xs text-gray-500">₹1000</span>
+                            <span className="text-xs text-gray-500">₹700</span>
                             <div className="flex-1 space-y-2">
                                 <input
                                     type="range"
-                                    min="1000"
+                                    min="700"
                                     max="5000"
-                                    step="500"
+                                    step="100"
                                     value={filters.minPrice}
                                     onChange={(e) => handleFilterChange('minPrice', parseInt(e.target.value))}
                                     className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
                                 />
                                 <input
                                     type="range"
-                                    min="1000"
+                                    min="700"
                                     max="5000"
-                                    step="500"
+                                    step="100"
                                     value={filters.maxPrice}
                                     onChange={(e) => handleFilterChange('maxPrice', parseInt(e.target.value))}
                                     className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
@@ -887,21 +1857,6 @@ export default function PanditBooking() {
                             className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
                         />
                     </div>
-
-                    <div>
-                        <label className="block text-sm font-medium mb-2">
-                            Min Experience: {filters.minExperience} years
-                        </label>
-                        <input
-                            type="range"
-                            min="0"
-                            max="20"
-                            step="1"
-                            value={filters.minExperience}
-                            onChange={(e) => handleFilterChange('minExperience', parseInt(e.target.value))}
-                            className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
-                        />
-                    </div>
                 </div>
 
                 {/* Reset Filters Button */}
@@ -910,12 +1865,10 @@ export default function PanditBooking() {
                         onClick={() => {
                             setFilters({
                                 service: "", 
-                                location: "", 
-                                language: "",
-                                minPrice: 1000,
+                                category: "", 
+                                minPrice: 700,
                                 maxPrice: 5000,
                                 minRating: 0,
-                                minExperience: 0,
                                 availability: ""
                             });
                             setSearchQuery("");
@@ -927,21 +1880,21 @@ export default function PanditBooking() {
                 </div>
             </div>
         </motion.div>
-      )}
+      )}
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        {/* Results Count (Includes quick links for My Bookings/Favorites) */}
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <User className="w-6 h-6 text-amber-600" />
-            Available Pandits
-            <span className="text-sm font-normal text-gray-500 ml-2">
-              ({sortedPandits.length} found)
-            </span>
-          </h2>
-          
-          {/* Quick Action Buttons (for navigation in an external app structure) */}
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        {/* Results Count */}
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <Temple className="w-6 h-6 text-amber-600" />
+            Available Pujas
+            <span className="text-sm font-normal text-gray-500 ml-2">
+              ({sortedPujas.length} found)
+            </span>
+          </h2>
+          
+          {/* Quick Action Buttons */}
           <div className="flex gap-3">
             <button 
                 onClick={navigateToMyBookings} 
@@ -965,205 +1918,199 @@ export default function PanditBooking() {
                 )}
             </button>
           </div>
-        </div>
+        </div>
 
-        {/* Pandit Cards Grid */}
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <PanditCardSkeleton key={i} />
-            ))}
-          </div>
-        ) : sortedPandits.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sortedPandits.map((pandit) => (
-              <motion.div
-                key={pandit.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-xl p-6 transition-all duration-300 transform hover:scale-[1.02] border border-amber-100"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={pandit.image}
-                      alt={pandit.name}
-                      className="w-16 h-16 rounded-xl object-cover border-2 border-amber-200"
-                    />
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-lg text-gray-800">{pandit.name}</h3>
-                        {pandit.verified && (
-                          <CheckCircle className="w-4 h-4 text-green-500" title="Verified Pandit" />
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Star className="w-4 h-4 text-amber-500 fill-current" />
-                        <span className="text-sm font-medium text-gray-700">
-                          {pandit.rating} ({pandit.reviews} reviews)
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => toggleFavorite(pandit.id)}
-                    className={`p-2 rounded-lg transition-colors ${
-                      favorites.includes(pandit.id)
-                        ? 'text-red-500 bg-red-50'
-                        : 'text-gray-400 hover:text-red-500 hover:bg-gray-50'
-                    }`}
-                  >
-                    <Heart
-                      size={20}
-                      fill={favorites.includes(pandit.id) ? 'currentColor' : 'none'}
-                    />
-                  </button>
-                </div>
-
-                <div className="space-y-3 mb-4">
-                    <div className="flex flex-wrap gap-2 mb-2">
-                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs font-medium">
-                            {pandit.specialization}
-                        </span>
-                        {pandit.languages.slice(0, 2).map((lang, index) => (
-                            <span key={index} className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full text-xs">
-                                {lang}
-                            </span>
-                        ))}
+        {/* Puja Cards Grid */}
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <PujaCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : sortedPujas.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sortedPujas.map((puja) => (
+              <motion.div
+                key={puja.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white rounded-2xl shadow-lg hover:shadow-xl p-6 transition-all duration-300 transform hover:scale-[1.02] border border-amber-100"
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <img
+                        src={puja.img}
+                        alt={puja.name}
+                        className="w-16 h-16 rounded-full object-cover border-2 border-amber-200"
+                      />
+                      <div className="absolute -bottom-1 -right-1 bg-amber-500 text-white p-1 rounded-full text-xs">
+                        {getCategoryIcon(puja.category)}
+                      </div>
                     </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <MapPin className="w-4 h-4" />
-                    <span>{pandit.city}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Clock3 className="w-4 h-4" />
-                    <span>{pandit.experience} yrs exp • {pandit.duration || '2 hrs'}</span>
-                  </div>
-                </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-lg text-gray-800 line-clamp-1">{puja.name}</h3>
+                      </div>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Star className="w-4 h-4 text-amber-500 fill-current" />
+                        <span className="text-sm font-medium text-gray-700">
+                          {puja.rating} ({puja.reviews} reviews)
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => toggleFavorite(puja.id)}
+                    className={`p-2 rounded-lg transition-colors ${
+                      favorites.includes(puja.id)
+                        ? 'text-red-500 bg-red-50'
+                        : 'text-gray-400 hover:text-red-500 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Heart
+                      size={20}
+                      fill={favorites.includes(puja.id) ? 'currentColor' : 'none'}
+                    />
+                  </button>
+                </div>
 
-                <div className="flex items-center justify-between mb-3">
-                  <div>
+                <div className="space-y-3 mb-4">
+                    <div className="flex flex-wrap gap-2 mb-2">
+                        <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1">
+                          {getCategoryIcon(puja.category)}
+                          {puja.category}
+                        </span>
+                    </div>
+                  <p className="text-sm text-gray-600 line-clamp-2">{puja.description}</p>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Clock3 className="w-4 h-4" />
+                    <span>{puja.duration}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between mb-3">
+                  <div>
                         <div className="flex items-center">
                             <span className="text-2xl font-bold text-amber-600">
-                                ₹{pandit.price}
+                                ₹{puja.price}
                             </span>
                             <span className="text-sm text-gray-500 ml-1">/ceremony</span>
                         </div>
                         <span className="text-xs text-green-600 flex items-center gap-1 mt-0.5">
-                            <IndianRupee className="w-3 h-3" /> Samagri: +₹{pandit.samagriPrice}
+                            <IndianRupee className="w-3 h-3" /> Samagri: +₹{puja.samagriPrice}
                         </span>
-                  </div>
-                </div>
+                  </div>
+                </div>
 
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleViewDetails(pandit)}
-                    className="flex-1 border border-amber-600 text-amber-600 py-2 rounded-lg font-medium hover:bg-amber-50 transition-colors flex items-center justify-center gap-2"
-                  >
-                    <Eye className="w-4 h-4" />
-                    View Details
-                  </button>
-                  <button
-                    onClick={() => handleBookNow(pandit)}
-                    className="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-lg font-medium transition-colors shadow-lg hover:shadow-xl"
-                  >
-                    Book Now
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          /* No Results Found */
-          <div className="text-center py-16">
-            <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-2xl font-bold text-gray-700 mb-4">
-              No Pandits Found
-            </h3>
-            <p className="text-gray-500 mb-8 max-w-md mx-auto">
-              Try adjusting your search criteria or filters to find the perfect pandit for your puja.
-            </p>
-            <button
-              onClick={() => {
-                setFilters({
-                  service: "", 
-                  location: "", 
-                  language: "",
-                  minPrice: 1000,
-                  maxPrice: 5000,
-                  minRating: 0,
-                  minExperience: 0,
-                  availability: ""
-                });
-                setSearchQuery("");
-              }}
-              className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-            >
-              Reset All Filters
-            </button>
-          </div>
-        )}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleViewDetails(puja)}
+                    className="flex-1 border border-amber-600 text-amber-600 py-2 rounded-lg font-medium hover:bg-amber-50 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Eye className="w-4 h-4" />
+                    View Details
+                  </button>
+                  <button
+                    onClick={() => handleBookNow(puja)}
+                    className="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-lg font-medium transition-colors shadow-lg hover:shadow-xl"
+                  >
+                    Book Now
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          /* No Results Found */
+          <div className="text-center py-16">
+            <div className="text-6xl mb-4">🔍</div>
+            <h3 className="text-2xl font-bold text-gray-700 mb-4">
+              No Pujas Found
+            </h3>
+            <p className="text-gray-500 mb-8 max-w-md mx-auto">
+              Try adjusting your search criteria or filters to find the perfect puja for your occasion.
+            </p>
+            <button
+              onClick={() => {
+                setFilters({
+                  service: "", 
+                  category: "", 
+                  minPrice: 700,
+                  maxPrice: 5000,
+                  minRating: 0,
+                  availability: ""
+                });
+                setSearchQuery("");
+              }}
+              className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+            >
+              Reset All Filters
+            </button>
+          </div>
+        )}
 
-        {/* Recently Viewed Section */}
-        {recentlyViewed.length > 0 && (
-          <div className="mt-16">
-            <h3 className="text-2xl font-bold mb-8 flex items-center gap-2">
-              <Clock className="w-6 h-6 text-amber-600" />
-              Recently Viewed Pandits
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {recentlyViewed.map((pandit) => (
-                <div
-                  key={pandit.id}
-                  className="bg-white rounded-xl p-4 border border-amber-100 hover:shadow-lg transition-shadow"
-                >
-                  <img
-                    src={pandit.image}
-                    alt={pandit.name}
-                    className="w-full h-32 object-cover rounded-lg mb-3"
-                  />
-                  <h4 className="font-semibold text-gray-800">{pandit.name}</h4>
-                  <p className="text-sm text-gray-600 mb-2">{pandit.specialization}</p>
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-amber-600">
-                      ₹{pandit.price}
-                    </span>
-                    <button
-                      onClick={() => handleBookNow(pandit)}
-                      className="bg-amber-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-amber-700 transition"
-                    >
-                      Book Again
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Recently Viewed Section */}
+        {recentlyViewed.length > 0 && (
+          <div className="mt-16">
+            <h3 className="text-2xl font-bold mb-8 flex items-center gap-2">
+              <Clock className="w-6 h-6 text-amber-600" />
+              Recently Viewed Pujas
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {recentlyViewed.map((puja) => (
+                <div
+                  key={puja.id}
+                  className="bg-white rounded-xl p-4 border border-amber-100 hover:shadow-lg transition-shadow"
+                >
+                  <div className="flex justify-center mb-3">
+                    <img
+                      src={puja.img}
+                      alt={puja.name}
+                      className="w-20 h-20 rounded-full object-cover border-2 border-amber-200"
+                    />
+                  </div>
+                  <h4 className="font-semibold text-gray-800 text-center text-sm mb-2 line-clamp-2">{puja.name}</h4>
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-amber-600 text-sm">
+                      ₹{puja.price}
+                    </span>
+                    <button
+                      onClick={() => handleBookNow(puja)}
+                      className="bg-amber-600 text-white px-3 py-1 rounded-lg text-xs hover:bg-amber-700 transition"
+                    >
+                      Book Again
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-        {/* Trust Badges */}
-        <TrustBadges />
-      </div>
+        {/* Trust Badges */}
+        <TrustBadges />
+      </div>
 
-      {/* Enhanced Booking Modal */}
-      <AnimatePresence>
-        {selectedPandit && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto grid grid-cols-1 lg:grid-cols-3 gap-6"
-            >
+      {/* Enhanced Booking Modal */}
+      <AnimatePresence>
+        {selectedPuja && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto grid grid-cols-1 lg:grid-cols-3 gap-6"
+            >
                 <div className="lg:col-span-2">
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-xl font-bold text-gray-900">
-                            Book {selectedPandit.name}
+                            Book {selectedPuja.name}
                         </h2>
                         <button
                             onClick={() => {
                                 setBookingStep(0);
-                                setSelectedPandit(null);
+                                setSelectedPuja(null);
                             }}
                             className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100"
                         >
@@ -1214,14 +2161,14 @@ export default function PanditBooking() {
                                     <div className="flex justify-between items-center">
                                         <div>
                                             <h4 className="font-semibold text-gray-900">
-                                                {selectedPandit.specialization}
+                                                {selectedPuja.name}
                                             </h4>
                                             <p className="text-sm text-gray-600 mt-1">
-                                                Duration: **{selectedPandit.duration || '2-3 hours'}**
+                                                Duration: {selectedPuja.duration}
                                             </p>
                                         </div>
                                         <span className="text-lg font-bold text-amber-600">
-                                            ₹{selectedPandit.price}
+                                            ₹{selectedPuja.price}
                                         </span>
                                     </div>
                                 </div>
@@ -1259,7 +2206,7 @@ export default function PanditBooking() {
                                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white"
                                     >
                                         <option value="">Select Date</option>
-                                        {selectedPandit.availability.dates.map(date => (
+                                        {selectedPuja.availability.dates.map(date => (
                                             <option key={date} value={date}>
                                                 {new Date(date).toLocaleDateString('en-IN', { 
                                                     weekday: 'long', 
@@ -1278,7 +2225,7 @@ export default function PanditBooking() {
                                             Available Time Slots
                                         </label>
                                         <div className="grid grid-cols-2 gap-2">
-                                            {getAvailableTimeSlots(selectedPandit.id, bookingData.date).map(timeSlot => (
+                                            {getAvailableTimeSlots(selectedPuja.id, bookingData.date).map(timeSlot => (
                                                 <button
                                                     key={timeSlot}
                                                     onClick={() => {
@@ -1353,7 +2300,7 @@ export default function PanditBooking() {
                                     <label htmlFor="includeSamagri" className="text-sm text-gray-700 flex-1">
                                         <div className="font-semibold">Include Puja Samagri Kit</div>
                                         <div className="text-xs text-gray-600">
-                                            All necessary puja items delivered to your doorstep (**+₹{selectedPandit.samagriPrice}**)
+                                            All necessary puja items delivered to your doorstep (+₹{selectedPuja.samagriPrice})
                                         </div>
                                     </label>
                                 </div>
@@ -1403,7 +2350,7 @@ export default function PanditBooking() {
                                 <div className="flex items-start gap-3">
                                     <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
                                     <p className="text-gray-700 font-medium">
-                                        Please review the **Booking Summary** on the side one last time. By confirming, you agree to our terms and conditions.
+                                        Please review the Booking Summary on the side one last time. By confirming, you agree to our terms and conditions.
                                     </p>
                                 </div>
                             </div>
@@ -1430,52 +2377,52 @@ export default function PanditBooking() {
                                     className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
                                 >
                                     <CheckCircle className="w-5 h-5" />
-                                    Confirm & Pay (₹{selectedPandit.price + (bookingData.includeSamagri ? selectedPandit.samagriPrice : 0)})
+                                    Confirm & Pay (₹{selectedPuja.price + (bookingData.includeSamagri ? selectedPuja.samagriPrice : 0)})
                                 </button>
                             </div>
                         </div>
                     )}
                 </div>
 
-                {/* Booking Summary Column (NEW) */}
+                {/* Booking Summary Column */}
                 <div className="lg:col-span-1">
-                    {selectedPandit && (
+                    {selectedPuja && (
                         <BookingSummaryPanel 
-                            pandit={selectedPandit} 
+                            puja={selectedPuja} 
                             bookingData={bookingData}
                             currentStep={bookingStep}
                         />
                     )}
                 </div>
-            </motion.div>
+            </motion.div>
         </div> 
-        )}
-      </AnimatePresence>
+        )}
+      </AnimatePresence>
 
-      {/* Pandit Detail Modal */}
-      <PanditDetailModal
-        pandit={selectedPanditDetail}
-        isOpen={showPanditDetail}
-        onClose={() => setShowPanditDetail(false)}
-        onBookNow={handleBookNow}
-      />
+      {/* Puja Detail Modal */}
+      <PujaDetailModal
+        puja={selectedPujaDetail}
+        isOpen={showPujaDetail}
+        onClose={() => setShowPujaDetail(false)}
+        onBookNow={handleBookNow}
+      />
 
-      {/* Enhanced Toast Notification */}
-      <AnimatePresence>
-        {showToast && (
-          <Toast
-            message={`Your puja with ${selectedPandit?.name} is confirmed!`}
-            type="success"
-            bookingId={bookingId}
-            bookingDetails={{
-              ...bookingData,
-              bookingId: bookingId
-            }}
-            pandit={selectedPandit}
-            onClose={() => setShowToast(false)}
-          />
-        )}
-      </AnimatePresence>
-    </div>
-  );
+      {/* Enhanced Toast Notification */}
+      <AnimatePresence>
+        {showToast && (
+          <Toast
+            message={`Your ${selectedPuja?.name} puja is confirmed!`}
+            type="success"
+            bookingId={bookingId}
+            bookingDetails={{
+              ...bookingData,
+              bookingId: bookingId
+            }}
+            puja={selectedPuja}
+            onClose={() => setShowToast(false)}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
