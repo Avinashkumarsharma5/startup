@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Bell, Menu, X, Mic, Heart } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import sanskaraaLogo from "../../assets/images/sanskaraa-logo.png";
+
 
 export default function Navbar({ onMicClick }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -36,10 +36,11 @@ export default function Navbar({ onMicClick }) {
           <Link to="/" className="flex items-center gap-2">
   <div className="w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
     <img
-      src={sanskaraaLogo}
-      alt="Sanskaraa Logo"
-      className="w-7 h-7 sm:w-8 sm:h-8 object-contain"
-    />
+  src="/images/sanskaraa-logo.png"
+  alt="Sanskaraa Logo"
+  className="w-7 h-7 sm:w-8 sm:h-8 object-contain"
+/>
+
   </div>
   <span className="text-white font-bold text-lg sm:text-xl">Sanskaraa</span>
 </Link>

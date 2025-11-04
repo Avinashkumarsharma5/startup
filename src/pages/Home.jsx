@@ -398,19 +398,19 @@ function HeroBanner() {
   const slides = [
     {
       id: 1,
-      img: "src/assets/images/grrih prews 1.png",
+      img: "/images/grrih1.png",
       title: "Griha Pravesh Puja",
       subtitle: "Sacred beginnings with blessings",
     },
     {
       id: 2,
-      img: "src/assets/images/havan.jpg",
+      img: "/images/havan.jpg",
       title: "Satyanarayan Puja",
       subtitle: "Invoke prosperity & harmony",
     },
     {
       id: 3,
-      img: "src/assets/images/decor2.png",
+      img: "/images/decor2.png",
       title: "Wedding Rituals",
       subtitle: "Memorable sacred unions",
     },
