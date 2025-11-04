@@ -1049,6 +1049,7 @@ function EnhancedPanditProfile() {
 function EnhancedPujaKits() {
   const [kits, setKits] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // ✅ for navigation
 
   useEffect(() => {
     // Simulate API call
@@ -1065,7 +1066,21 @@ function EnhancedPujaKits() {
 
   const handleFilterChange = (filters) => {
     console.log('Applied filters:', filters);
-    // Implement actual filtering logic here
+  };
+
+  const handleRequestPuja = () => {
+    toast.info("Redirecting to Pandit Booking...");
+    setTimeout(() => navigate("/panditbooking"), 600);
+  };
+
+  const handleDonate = () => {
+    toast.info("🙏 Donation feature coming soon!");
+  };
+
+  // ✅ Add to Cart → Redirect to Puja Kits Page
+  const handleAddToCart = (kit) => {
+    toast.success(`Opening ${kit.title} details...`);
+    setTimeout(() => navigate("/pujakits"), 600);
   };
 
   if (loading) {
@@ -1095,15 +1110,39 @@ function EnhancedPujaKits() {
           >
             <h4 className="font-medium text-gray-800 text-sm sm:text-base">{kit.title}</h4>
             <p className="text-xs sm:text-sm text-gray-600 mt-1">{kit.price}</p>
-            <button className="mt-2 sm:mt-3 w-full bg-[#800000] text-white py-1.5 sm:py-2 rounded hover:bg-[#A52A2A] text-xs sm:text-sm transition-colors">
+
+            {/* ✅ Updated Add to Cart button */}
+            <button
+              onClick={() => handleAddToCart(kit)}
+              className="mt-2 sm:mt-3 w-full bg-[#800000] text-white py-1.5 sm:py-2 rounded hover:bg-[#A52A2A] text-xs sm:text-sm transition-colors"
+            >
               Add to Cart
             </button>
           </motion.div>
         ))}
       </div>
+
+      {/* ✅ Extra CTA Buttons */}
+      <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mt-6">
+        <button
+          onClick={handleRequestPuja}
+          className="bg-amber-100 text-amber-800 font-medium px-4 py-2 sm:px-6 sm:py-2 rounded-lg border border-amber-300 hover:bg-amber-200 transition-colors text-sm sm:text-base"
+        >
+          🕉️ Request Puja
+        </button>
+
+        <button
+          onClick={handleDonate}
+          className="bg-[#800000] text-white font-medium px-4 py-2 sm:px-6 sm:py-2 rounded-lg hover:bg-[#A52A2A] transition-colors text-sm sm:text-base"
+        >
+          🙏 Donate Now
+        </button>
+      </div>
     </div>
   );
 }
+
+
 
 // ----------------- Testimonials Section -----------------
 function TestimonialsSection() {
@@ -1229,7 +1268,8 @@ function EnhancedFestivalOffers() {
 // ----------------- Quick Actions Floating Buttons -----------------
 function QuickActions() {
   const [expanded, setExpanded] = useState(false);
-  
+  const navigate = useNavigate(); // ✅ Add this for page navigation
+
   const actions = [
     { icon: MessageCircle, label: "WhatsApp Support", color: "bg-green-500" },
     { icon: Gift, label: "Request Puja", color: "bg-amber-500" },
@@ -1238,10 +1278,24 @@ function QuickActions() {
 
   const handleAction = (index) => {
     setExpanded(false);
-    // Add actual functionality here
-    if (index === 0) window.open('https://wa.me/1234567890', '_blank');
-    else if (index === 1) toast.info("Puja request feature coming soon!");
-    else if (index === 2) toast.success("Donation portal launching soon!");
+
+    // ✅ 1. WhatsApp Support
+    if (index === 0) {
+      window.open(
+        'https://wa.me/916201486202?text=Hello%20Sanskaraa%20Support!%20I%20need%20assistance.',
+        '_blank'
+      );
+    }
+
+    // ✅ 2. Request Puja → Navigate to Pandit Booking Page
+    else if (index === 1) {
+      navigate('/panditbooking');
+    }
+
+    // ✅ 3. Donate → Coming soon message
+    else if (index === 2) {
+      toast.info("🙏 Donation feature coming soon!");
+    }
   };
 
   return (
@@ -1255,8 +1309,10 @@ function QuickActions() {
           transition={{ delay: index * 0.1 }}
           className="flex items-center gap-2 bg-white rounded-full shadow-lg pl-2 pr-3 sm:pl-3 sm:pr-4 py-1.5 sm:py-2"
         >
-          <span className="text-xs font-medium whitespace-nowrap hidden sm:block">{action.label}</span>
-          <button 
+          <span className="text-xs font-medium whitespace-nowrap hidden sm:block">
+            {action.label}
+          </span>
+          <button
             onClick={() => handleAction(index)}
             className={`${action.color} rounded-full p-1.5 sm:p-2 text-white hover:opacity-90 transition-opacity`}
           >
@@ -1264,43 +1320,23 @@ function QuickActions() {
           </button>
         </motion.div>
       ))}
-      
+
       <motion.button
         whileTap={{ scale: 0.9 }}
         onClick={() => setExpanded(!expanded)}
         className="rounded-full p-2.5 sm:p-3 md:p-3.5 bg-[#800000] text-white shadow-lg hover:bg-[#A52A2A] transition-colors"
       >
-        {expanded ? <X size={18} className="sm:w-5 sm:h-5" /> : <Sparkles size={18} className="sm:w-5 sm:h-5" />}
+        {expanded ? (
+          <X size={18} className="sm:w-5 sm:h-5" />
+        ) : (
+          <Sparkles size={18} className="sm:w-5 sm:h-5" />
+        )}
       </motion.button>
     </div>
   );
 }
 
-// ----------------- Floating Cart with Badge -----------------
-function FloatingCart({ itemCount }) {
-  const navigate = useNavigate();
 
-  return (
-    <motion.div
-      className="fixed bottom-16 sm:bottom-20 md:bottom-24 right-2 sm:right-4 z-50"
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 0.6 }}
-    >
-      <button
-        onClick={() => navigate("/cart")}
-        className="bg-[#800000] text-white rounded-full p-2.5 sm:p-3 md:p-3.5 shadow-lg hover:bg-[#A52A2A] transition-colors relative"
-      >
-        <ShoppingCart size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6" />
-        {itemCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
-            {itemCount}
-          </span>
-        )}
-      </button>
-    </motion.div>
-  );
-}
 
 
 
@@ -1453,7 +1489,7 @@ export default function EnhancedHome() {
       <EnhancedFestivalOffers />
 
       <QuickActions />
-      <FloatingCart itemCount={cartItems} />
+      {/* <FloatingCart itemCount={cartItems} /> */}
      
       
       <VoiceSearchModal 
