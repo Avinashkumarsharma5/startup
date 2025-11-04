@@ -328,7 +328,7 @@ function DynamicGreeting() {
       className="mt-4 sm:mt-12"
     >
       <p className="text-gray-600 text-sm sm:text-base mt-12">{greeting},</p>
-      <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#800000] ">Avinash Sharma</h2>
+      <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#800000] "></h2>
       <p className="mt-2 text-xs sm:text-sm md:text-base text-amber-800 bg-amber-100 p-2 sm:p-3 rounded-lg ">{shloka}</p>
     </motion.div>
   );
