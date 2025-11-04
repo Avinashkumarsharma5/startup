@@ -64,9 +64,9 @@ const testimonials = [
 
 // Sample offers
 const specialOffers = [
-  { id: 1, title: "Ganesh Puja Kits", discount: "20% off", expiry: "2025-09-10", image: "src/assets/images/ganesh puja 1.jpeg" },
-  { id: 2, title: "Navratri Special", discount: "15% off", expiry: "2025-09-25", image: "src/assets/images/sanskaraa1.png" },
-  { id: 3, title: "Wedding Puja Package", discount: "25% off", expiry: "2025-10-15", image: "src/assets/images/sadi1.jpg" }
+  { id: 1, title: "Ganesh Puja Kits", discount: "20% off", expiry: "2025-09-10", image: "images/ganesh puja 1.jpeg" },
+  { id: 2, title: "Navratri Special", discount: "15% off", expiry: "2025-09-25", image: "images/sanskaraa1.png" },
+  { id: 3, title: "Wedding Puja Package", discount: "25% off", expiry: "2025-10-15", image: "images/sadi1.jpg" }
 ];
 
 // Sample past bookings
@@ -702,7 +702,7 @@ function GaneshPromo() {
     >
       <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
         <img
-          src="https://images.unsplash.com/photo-1566618432041-6f0e1438dffd?w=100&h=100&fit=crop"
+          src="images/ganesh puja 1.jpeg"
           alt="Ganesh Ji"
           className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 object-cover rounded-full"
         />
@@ -805,7 +805,7 @@ function EnhancedPanditProfile() {
   
   const panditData = {
     name: "Pandit Ram Sharma",
-    image: "https://images.unsplash.com/photo-1600486913747-55e5470d6f40?w=400&h=300&fit=crop",
+    image: "public/images/panditji 3.png",
     specialization: "Satyanarayan, Griha Pravesh, Marriage",
     rating: 4.8,
     totalReviews: 47,
