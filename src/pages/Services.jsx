@@ -137,15 +137,15 @@ const servicesData = {
       description: "Beautiful traditional mandap decoration with fresh flowers and traditional elements for your special day.",
       inclusions: ["Fresh Flower Decoration", "Traditional Fabric Draping", "Lighting Setup", "On-site Support"],
       images: [
-        "src/assets/images/sanskaraa1.png",
-        "src/assets/images/sadi1.jpg",
-        "src/assets/images/decor3.png"
+        "images/sanskaraa1.png",
+        "images/sadi1.jpg",
+        "images/decor3.png"
       ]
     },
     {
       id: 2,
       name: "Floral Stage Decoration",
-      img: "src/assets/images/flowerdeco3.png",
+      img: "images/flowerdeco3.png",
       rating: 4.5,
       price: 18000,
       reviews: 89,
@@ -155,8 +155,8 @@ const servicesData = {
       description: "Elegant floral stage decoration perfect for weddings and corporate events.",
       inclusions: ["Fresh Flower Arrangements", "Stage Backdrop", "Floral Garlands", "Setup & Teardown"],
       images: [
-        "src/assets/images/flowerdeco1.png",
-        "src/assets/images/flowerdeco2.png"
+        "images/flowerdeco1.png",
+        "images/flowerdeco2.png"
       ]
     },
   ],
@@ -164,7 +164,7 @@ const servicesData = {
     {
       id: 3,
       name: "LED Wedding Lighting",
-      img: "src/assets/images/lightdeco1.png",
+      img: "images/lightdeco1.png",
       rating: 4.6,
       price: 12000,
       reviews: 67,
@@ -174,7 +174,7 @@ const servicesData = {
       description: "Professional LED lighting setup to create the perfect ambiance for your event.",
       inclusions: ["LED Spotlights", "Color Lighting", "DMX Control", "Technical Support"],
       images: [
-        "src/assets/images/lightdeco2.png"
+        "images/lightdeco2.png"
       ]
     },
   ],
@@ -182,7 +182,7 @@ const servicesData = {
     {
       id: 4,
       name: "Premium Vegetarian Catering",
-      img: "src/assets/images/catring01.png",
+      img: "images/catring01.png",
       rating: 4.8,
       price: 499,
       unit: "/plate",
@@ -197,8 +197,8 @@ const servicesData = {
       description: "Delicious vegetarian catering with traditional and contemporary dishes for all your guests.",
       inclusions: ["5 Main Courses", "3 Appetizers", "Desserts", "Serving Staff", "Utensils"],
       images: [
-        "src/assets/images/catring02.png",
-        "src/assets/images/catring03.png"
+        "images/catring02.png",
+        "images/catring03.png"
       ]
     },
   ],
@@ -215,7 +215,7 @@ const servicesData = {
       description: "Spacious and elegant wedding tents with climate control and beautiful interiors.",
       inclusions: ["Weather-proof Tent", "AC Setup", "Flooring", "Lighting", "Setup & Removal"],
       images: [
-        "src/assets/images/tent2.png"
+        "images/tent2.png"
       ]
     },
   ],
@@ -223,7 +223,7 @@ const servicesData = {
     {
       id: 6,
       name: "Luxury Wedding Hall",
-      img: "src/assets/images/hall02.png",
+      img: "images/hall02.png",
       rating: 4.9,
       price: 150000,
       reviews: 156,
@@ -233,8 +233,8 @@ const servicesData = {
       description: "Grand luxury wedding hall with modern amenities and traditional architecture.",
       inclusions: ["Main Hall", "Parking Space", "Dressing Rooms", "Basic Sound System", "Security"],
       images: [
-        "src/assets/images/hall01.png",
-        "src/assets/images/hall03.png"
+        "images/hall01.png",
+        "images/hall03.png"
       ]
     },
   ],
@@ -242,7 +242,7 @@ const servicesData = {
     {
       id: 7,
       name: "Wedding Photography & Videography",
-      img: "src/assets/images/photography1.png",
+      img: "images/photography1.png",
       rating: 4.8,
       price: 45000,
       reviews: 203,
@@ -251,8 +251,8 @@ const servicesData = {
       description: "Capture your special moments with our professional photography and videography team.",
       inclusions: ["8 Hours Coverage", "2 Photographers", "1 Videographer", "100+ Edited Photos", "5 Min Highlight Video"],
       images: [
-        "src/assets/images/photography2.png",
-        "src/assets/images/photography3.png"
+        "images/photography2.png",
+        "images/photography3.png"
       ]
     },
   ],
@@ -260,7 +260,7 @@ const servicesData = {
     {
       id: 8,
       name: "Live DJ & Music",
-      img: "src/assets/images/dj1.png",
+      img: "images/dj1.png",
       rating: 4.5,
       price: 25000,
       reviews: 89,
@@ -269,7 +269,7 @@ const servicesData = {
       description: "Professional DJ services with latest sound equipment and vast music library.",
       inclusions: ["5 Hours Performance", "Sound System", "Light Effects", "Music Requests", "MC Services"],
       images: [
-        "src/assets/images/dj2.png"
+        "images/dj2.png"
       ]
     },
   ]
@@ -294,7 +294,7 @@ const packagesData = [
     price: 89999,
     originalPrice: 104999,
     savings: 15000,
-    image: "src/assets/images/Wedding Combo.png",
+    image: "images/Wedding Combo.png",
     rating: 4.8,
     reviews: 89
   },
@@ -305,7 +305,7 @@ const packagesData = [
     price: 45999,
     originalPrice: 54999,
     savings: 9000,
-    image: "src/assets/images/Grih Pravesh Combo.png",
+    image: "images/Grih Pravesh Combo.png",
     rating: 4.6,
     reviews: 45
   },
@@ -316,7 +316,7 @@ const packagesData = [
     price: 32999,
     originalPrice: 39999,
     savings: 7000,
-    image: "src/assets/images/Festival Special.png",
+    image: "images/Festival Special.png",
     rating: 4.7,
     reviews: 67
   }
