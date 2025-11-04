@@ -1506,7 +1506,6 @@ export default function PujaBooking() {
     }
   ], []);
 
-  // Rest of the component code remains exactly the same...
   const getAvailableTimeSlots = (pujaId, selectedDate) => {
     const puja = pujaList.find(p => p.id === pujaId);
     if (!puja || !selectedDate) return [];
@@ -2100,7 +2099,7 @@ export default function PujaBooking() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto grid grid-cols-1 lg:grid-cols-3 gap-6"
+              className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto grid grid-cols-1 lg:grid-col-3 gap-6"
             >
                 <div className="lg:col-span-2">
                     <div className="flex justify-between items-center mb-6">
