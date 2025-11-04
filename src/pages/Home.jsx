@@ -521,15 +521,21 @@ function ServicesSection() {
 }
 
 // ----------------- Upcoming Events Section -----------------
+
+
 function UpcomingEvents() {
   const navigate = useNavigate();
 
-  // Calculate days until event
   const getDaysUntil = (dateString) => {
     const eventDate = new Date(dateString);
     const today = new Date();
-    const diffTime =   today-eventDate;
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 200));
+    const diffTime = today-eventDate;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 255)); // fixed formula
+  };
+
+  const handleEventClick = (eventId) => {
+    // Redirect to EventsPage
+    navigate("/EventsPage");
   };
 
   return (
@@ -537,44 +543,48 @@ function UpcomingEvents() {
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-lg sm:text-xl font-semibold text-[#800000]">Upcoming Events</h3>
         <button 
-          onClick={() => navigate('/bookings')}
+          onClick={() => navigate("/BookingsPage")}
           className="text-xs sm:text-sm md:text-base text-orange-600 font-medium hover:text-orange-700 transition-colors"
         >
           View All
         </button>
       </div>
-      
+
       <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-3 sm:space-x-4 -mx-4 sm:-mx-6 px-4 sm:px-6">
         {upcomingEvents.map(event => (
           <div 
-            key={event.id} 
+            key={event.id}
             className="inline-block align-top w-48 sm:w-56 md:w-64 bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-md border border-orange-200"
           >
             <div className="flex justify-between items-start">
               <div className="min-w-0 flex-1">
                 <h4 className="font-medium text-gray-800 truncate text-sm sm:text-base">{event.name}</h4>
                 <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                  {new Date(event.date).toLocaleDateString('en-IN', {
-                    day: 'numeric', month: 'short', year: 'numeric'
+                  {new Date(event.date).toLocaleDateString("en-IN", {
+                    day: "numeric", month: "short", year: "numeric"
                   })}
                 </p>
               </div>
-              {event.type === 'festival' && (
+              {event.type === "festival" && (
                 <span className="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full shrink-0 ml-2">
                   Festival
                 </span>
               )}
             </div>
-            
+
             <div className="mt-2 sm:mt-3 flex items-center">
               <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500 mr-1" />
               <span className="text-xs sm:text-sm font-medium text-amber-700">
                 {getDaysUntil(event.date)} days left
               </span>
             </div>
-            
-            <button className="mt-2 sm:mt-3 w-full bg-amber-100 text-amber-800 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-amber-200 transition-colors">
-              {event.type === 'festival' ? 'Learn More' : 'View Details'}
+
+            {/* ✅ On Click Navigate to EventsPage */}
+            <button 
+              onClick={() => handleEventClick(event.id)}
+              className="mt-2 sm:mt-3 w-full bg-amber-100 text-amber-800 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-amber-200 transition-colors"
+            >
+              {event.type === "festival" ? "Learn More" : "View Details"}
             </button>
           </div>
         ))}
@@ -582,6 +592,7 @@ function UpcomingEvents() {
     </div>
   );
 }
+
 
 // ----------------- Enhanced Upcoming Events with Loading -----------------
 function EnhancedUpcomingEvents() {
@@ -619,6 +630,8 @@ function EnhancedUpcomingEvents() {
 
 // ----------------- Personalized Recommendations -----------------
 function PersonalizedRecommendations() {
+  const navigate = useNavigate();
+
   const recommendations = [
     { 
       id: 1, 
@@ -645,17 +658,34 @@ function PersonalizedRecommendations() {
     }
   ];
 
+  // 🧭 Navigation Handler
+  const handleViewDetails = (rec) => {
+    switch (rec.type) {
+      case "puja":
+        navigate("/panditbooking", { state: { rec } });
+        break;
+      case "kit":
+        navigate("/pujakits", { state: { rec } });
+        break;
+      case "pandit":
+        navigate("/panditbooking", { state: { rec } });
+        break;
+      default:
+        console.warn("Unknown recommendation type:", rec.type);
+    }
+  };
+
   return (
     <div className="mt-4 sm:mt-6">
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-lg sm:text-xl font-semibold text-[#800000]">Recommended For You</h3>
         <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
       </div>
-      
+
       <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-3 sm:space-x-4 -mx-4 sm:-mx-6 px-4 sm:px-6">
-        {recommendations.map(rec => (
-          <div 
-            key={rec.id} 
+        {recommendations.map((rec) => (
+          <div
+            key={rec.id}
             className="inline-block align-top w-56 sm:w-64 md:w-72 bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-md border border-orange-200"
           >
             <div className="flex items-start justify-between mb-2">
@@ -666,22 +696,28 @@ function PersonalizedRecommendations() {
                 </span>
               )}
             </div>
-            
+
             <p className="text-xs sm:text-sm text-amber-600 mb-2 sm:mb-3">{rec.reason}</p>
-            
+
             <div className="flex items-center justify-between">
               {rec.rating && (
                 <div className="flex items-center">
                   <Star className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500 fill-amber-500" />
                   <span className="text-xs sm:text-sm text-gray-700 ml-1">{rec.rating}</span>
                   {rec.bookings && (
-                    <span className="text-xs text-gray-500 ml-2 hidden sm:inline">({rec.bookings} bookings)</span>
+                    <span className="text-xs text-gray-500 ml-2 hidden sm:inline">
+                      ({rec.bookings} bookings)
+                    </span>
                   )}
                 </div>
               )}
-              
-              <button className="bg-amber-100 text-amber-800 text-xs px-2 sm:px-3 py-1.5 rounded-lg font-medium hover:bg-amber-200 transition-colors">
-                {rec.type === 'pandit' ? 'View Profile' : 'View Details'}
+
+              {/* ✅ Dynamic Navigation Button */}
+              <button
+                onClick={() => handleViewDetails(rec)}
+                className="bg-amber-100 text-amber-800 text-xs px-2 sm:px-3 py-1.5 rounded-lg font-medium hover:bg-amber-200 transition-colors"
+              >
+                {rec.type === "pandit" ? "View Profile" : "View Details"}
               </button>
             </div>
           </div>
@@ -693,6 +729,18 @@ function PersonalizedRecommendations() {
 
 // ----------------- Promo Banner -----------------
 function GaneshPromo() {
+  const navigate = useNavigate();
+
+  const handleBookNow = () => {
+    // Navigate to Pandit Booking Page
+    navigate("/PanditBooking", {
+      state: {
+        promo: "Ganesh Chaturthi Puja",
+        type: "festival",
+      },
+    });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -710,7 +758,12 @@ function GaneshPromo() {
           Ganesh Chaturthi Puja
         </h3>
       </div>
-      <button className="self-start sm:self-auto bg-[#800000] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium hover:bg-[#A52A2A] transition-colors text-xs sm:text-sm md:text-base">
+
+      {/* ✅ Button triggers navigation */}
+      <button
+        onClick={handleBookNow}
+        className="self-start sm:self-auto bg-[#800000] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium hover:bg-[#A52A2A] transition-colors text-xs sm:text-sm md:text-base"
+      >
         Book Now
       </button>
     </motion.div>
@@ -720,27 +773,54 @@ function GaneshPromo() {
 // ----------------- Pandit Availability -----------------
 function PanditAvailability() {
   const [panditAvailable, setPanditAvailable] = useState(true);
-  
+
+  // 📞 Your contact number
+  const phoneNumber = "6201486202";
+
+  const handleCallNow = () => {
+    window.location.href = `tel:${phoneNumber}`;
+  };
+
+  const handleScheduleCall = () => {
+    // You can later integrate Calendly or WhatsApp Scheduling here
+    window.location.href = `tel:${phoneNumber}`;
+  };
+
   return (
     <div className="mt-4 sm:mt-6 bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 shadow-md border border-orange-200">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-2 sm:mb-3">
         <h3 className="text-lg sm:text-xl font-semibold text-[#800000]">Pandit Assistance</h3>
         <div className="flex items-center">
-          <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full mr-2 ${panditAvailable ? 'bg-green-500' : 'bg-red-500'}`}></div>
-          <span className="text-xs sm:text-sm">{panditAvailable ? 'Available' : 'Busy'}</span>
+          <div
+            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full mr-2 ${
+              panditAvailable ? "bg-green-500" : "bg-red-500"
+            }`}
+          ></div>
+          <span className="text-xs sm:text-sm">
+            {panditAvailable ? "Available" : "Busy"}
+          </span>
         </div>
       </div>
-      
+
       <p className="text-xs sm:text-sm md:text-base text-gray-600 mb-3 sm:mb-4">
         Connect with our expert pandits for guidance and booking assistance.
       </p>
-      
+
       <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-        <button className="self-start inline-flex items-center gap-1 sm:gap-2 bg-amber-100 text-amber-800 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium hover:bg-amber-200 transition-colors text-xs sm:text-sm">
+        {/* ✅ Call Now Button */}
+        <button
+          onClick={handleCallNow}
+          className="self-start inline-flex items-center gap-1 sm:gap-2 bg-amber-100 text-amber-800 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium hover:bg-amber-200 transition-colors text-xs sm:text-sm"
+        >
           <Phone size={14} className="sm:w-4 sm:h-4" />
           Call Now
         </button>
-        <button className="self-start inline-flex items-center justify-center bg-[#800000] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium hover:bg-[#A52A2A] transition-colors text-xs sm:text-sm">
+
+        {/* ✅ Schedule Call Button */}
+        <button
+          onClick={handleScheduleCall}
+          className="self-start inline-flex items-center justify-center bg-[#800000] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium hover:bg-[#A52A2A] transition-colors text-xs sm:text-sm"
+        >
           Schedule Call
         </button>
       </div>
@@ -789,7 +869,7 @@ function DashboardSection() {
         </div>
         
         <button 
-          onClick={() => navigate('/bookings')}
+          onClick={() => navigate('/BookingsPage')}
           className="self-start inline-flex bg-amber-100 text-amber-800 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium hover:bg-amber-200 transition-colors text-xs sm:text-sm"
         >
           View All Bookings
@@ -802,10 +882,14 @@ function DashboardSection() {
 // ----------------- Enhanced Pandit Profile -----------------
 function EnhancedPanditProfile() {
   const [showReviews, setShowReviews] = useState(false);
-  
+  const navigate = useNavigate();
+
+  // 📞 Your contact number
+  const phoneNumber = "6201486202";
+
   const panditData = {
     name: "Pandit Ram Sharma",
-    image: "public/images/panditji 3.png",
+    image: "images/panditji 3.png",
     specialization: "Satyanarayan, Griha Pravesh, Marriage",
     rating: 4.8,
     totalReviews: 47,
@@ -817,9 +901,10 @@ function EnhancedPanditProfile() {
         id: 1,
         user: "Priya Singh",
         rating: 5,
-        comment: "Very knowledgeable and punctual. Explained everything beautifully.",
+        comment:
+          "Very knowledgeable and punctual. Explained everything beautifully.",
         date: "2025-07-15",
-        verified: true
+        verified: true,
       },
       {
         id: 2,
@@ -827,85 +912,131 @@ function EnhancedPanditProfile() {
         rating: 4,
         comment: "Good service, would recommend for family ceremonies.",
         date: "2025-07-10",
-        verified: true
-      }
-    ]
+        verified: true,
+      },
+    ],
+  };
+
+  const handleCall = () => {
+    window.location.href = `tel:${phoneNumber}`;
+  };
+
+  const handleBookNow = () => {
+    navigate("/PanditBooking", { state: { fromProfile: panditData } });
   };
 
   return (
     <div className="mt-4 sm:mt-6">
-      <h3 className="text-lg sm:text-xl font-semibold text-[#800000] mb-3 sm:mb-5">Pandit Ji Profile</h3>
-      <div className="bg-[#FFF7E0] rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 shadow-md border border-orange-200 space-y-3 sm:space-y-4">
-        <div className="w-full overflow-hidden rounded-lg sm:rounded-xl">
-          <img
-            src={panditData.image}
-            alt="Pandit Ji"
-            className="w-full h-32 sm:h-40 md:h-48 object-cover"
-          />
-        </div>
-        
+      <h3 className="text-lg sm:text-xl font-semibold text-[#800000] mb-3 sm:mb-5">
+        Pandit Ji Profile
+      </h3>
+
+      <div className="bg-[#FFF7E0] rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-md border border-orange-200 space-y-4">
+        {/* 📸 Enlarged Image Section (face-focused) */}
+<div className="w-full overflow-hidden rounded-xl shadow-sm border border-amber-100 relative">
+  <img
+    src={panditData.image}
+    alt="Pandit Ji"
+    className="w-full h-56 sm:h-72 md:h-80 object-cover object-top scale-105"
+  />
+</div>
+
+
+        {/* 🔖 Basic Info */}
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <p className="text-sm sm:text-base md:text-lg font-semibold text-gray-800">{panditData.name}</p>
+              <p className="text-base sm:text-lg md:text-xl font-semibold text-gray-800">
+                {panditData.name}
+              </p>
               {panditData.verified && (
-                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Verified</span>
+                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                  Verified
+                </span>
               )}
             </div>
-            <p className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">{panditData.specialization}</p>
+            <p className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">
+              {panditData.specialization}
+            </p>
           </div>
-          
+
           <div className="text-right">
             <div className="flex items-center gap-1 justify-end">
-              <Star className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500 fill-amber-500" />
-              <span className="font-semibold text-sm sm:text-base">{panditData.rating}</span>
+              <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+              <span className="font-semibold text-sm sm:text-base">
+                {panditData.rating}
+              </span>
             </div>
-            <p className="text-xs text-gray-600">{panditData.totalReviews} reviews</p>
+            <p className="text-xs text-gray-600">
+              {panditData.totalReviews} reviews
+            </p>
           </div>
         </div>
 
+        {/* 🔸 Experience & Languages */}
         <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600">
           <span>📅 {panditData.experience} experience</span>
-          <span className="text-right">🗣️ {panditData.languages.join(", ")}</span>
+          <span className="text-right">
+            🗣️ {panditData.languages.join(", ")}
+          </span>
         </div>
 
-        <button 
+        {/* 🧾 Reviews Section */}
+        <button
           onClick={() => setShowReviews(!showReviews)}
-          className="w-full text-center text-orange-600 font-medium py-1.5 sm:py-2 border border-orange-300 rounded-lg hover:bg-orange-50 transition-colors text-xs sm:text-sm"
+          className="w-full text-center text-orange-600 font-medium py-2 border border-orange-300 rounded-lg hover:bg-orange-50 transition-colors text-sm"
         >
-          {showReviews ? 'Hide' : 'Show'} Reviews
+          {showReviews ? "Hide" : "Show"} Reviews
         </button>
 
         {showReviews && (
-          <div className="space-y-2 sm:space-y-3">
-            {panditData.reviews.map(review => (
-              <div key={review.id} className="bg-white p-2 sm:p-3 rounded-lg">
-                <div className="flex justify-between items-start mb-1 sm:mb-2">
+          <div className="space-y-3 mt-2">
+            {panditData.reviews.map((review) => (
+              <div key={review.id} className="bg-white p-3 rounded-lg shadow-sm">
+                <div className="flex justify-between items-start mb-2">
                   <div>
-                    <p className="font-medium text-xs sm:text-sm">{review.user}</p>
+                    <p className="font-medium text-sm">{review.user}</p>
                     <div className="flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (
-                        <Star 
-                          key={i} 
-                          size={10} 
-                          className={i < review.rating ? "text-amber-500 fill-amber-500" : "text-gray-300"} 
+                        <Star
+                          key={i}
+                          size={12}
+                          className={
+                            i < review.rating
+                              ? "text-amber-500 fill-amber-500"
+                              : "text-gray-300"
+                          }
                         />
                       ))}
                     </div>
                   </div>
                   <span className="text-xs text-gray-500">{review.date}</span>
                 </div>
-                <p className="text-xs sm:text-sm text-gray-700">{review.comment}</p>
+                <p className="text-xs sm:text-sm text-gray-700">
+                  {review.comment}
+                </p>
               </div>
             ))}
           </div>
         )}
 
-        <div className="flex gap-2 sm:gap-3 md:gap-4 justify-start">
-          <button className="inline-flex items-center border border-gray-400 px-3 sm:px-4 py-1.5 sm:py-2 rounded text-gray-700 hover:bg-gray-100 text-xs sm:text-sm transition-colors">
-            Call
+        {/* 🔘 Action Buttons */}
+        <div className="flex gap-3 justify-start mt-2">
+          {/* 📞 Call Button */}
+          <button
+            onClick={handleCall}
+            className="inline-flex items-center gap-2 border border-gray-400 px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 text-sm font-medium transition-colors"
+          >
+            <Phone size={16} className="text-gray-700" />
+            Call Now
           </button>
-          <button className="inline-flex items-center bg-[#800000] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded hover:bg-[#A52A2A] text-xs sm:text-sm transition-colors">
+
+          {/* 🕉️ Book Now Button */}
+          <button
+            onClick={handleBookNow}
+            className="inline-flex items-center gap-2 bg-[#800000] text-white px-4 py-2 rounded-lg hover:bg-[#A52A2A] text-sm font-medium transition-colors"
+          >
+            <Calendar size={16} className="text-white" />
             Book Now
           </button>
         </div>
