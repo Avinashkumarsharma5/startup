@@ -362,7 +362,12 @@ const BookingSummaryPanel = ({ puja, bookingData, currentStep }) => {
     const totalAmount = puja.price + (bookingData.includeSamagri ? puja.samagriPrice : 0);
 
     const formattedDate = bookingData.date 
-        ? new Date(bookingData.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })
+        ? new Date(bookingData.date).toLocaleDateString('en-IN', { 
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })
         : 'N/A';
 
     return (
@@ -382,7 +387,8 @@ const BookingSummaryPanel = ({ puja, bookingData, currentStep }) => {
                 <div className="flex justify-between">
                     <span className="text-gray-600">Date & Time:</span>
                     <span className={`font-semibold ${bookingData.date ? '' : 'text-red-500'}`}>
-                        {bookingData.date && bookingData.time ? `${formattedDate} @ ${bookingData.time}` : 'Select Date & Time'}
+                        {bookingData.date && bookingData.time ? 
+                            `${formattedDate} at ${bookingData.time}` : 'Select Date & Time'}
                     </span>
                 </div>
                 <div className="flex justify-between">
@@ -442,1075 +448,731 @@ export default function PujaBooking() {
   const [validationError, setValidationError] = useState(""); 
 
   // Complete Puja Data with ALL 46 pujas
-  const pujaList = useMemo(() => [
-    // 🏡 Ghar ke Sanskaar (1-10)
-    { 
-      id: 1, 
-      name: "Griha Pravesh / गृह प्रवेश", 
-      price: 1500, 
-      category: "Ghar ke Sanskaar", 
-      img: "images/grihprewespan01.png", 
-      rating: 4.8,
-      reviews: 45,
-      description: "Sacred house warming ceremony to bring peace, prosperity and positive energy to your new home.",
-      samagriPrice: 300,
-      completedPujas: 250,
-      duration: "2-3 hours",
-      requirements: "Kalash, Coconut, Flowers, Fruits",
-      benefits: ["Peace & Prosperity", "Positive Energy", "Family Harmony"],
-      availability: {
-        dates: ["2025-11-03", "2025-11-04", "2025-11-06"],
-        timeSlots: {
-          "2025-11-03": ["09:00 AM", "02:00 PM"],
-          "2025-11-04": ["11:00 AM", "05:00 PM"],
-          "2025-11-06": ["07:00 AM", "02:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 2, 
-      name: "Vastu Shanti / वास्तु शांति", 
-      price: 1300, 
-      category: "Ghar ke Sanskaar", 
-      img: "images/grihprewespan01.png",
-      rating: 4.6,
-      reviews: 32,
-      description: "Vastu correction puja to harmonize your living space with natural energies.",
-      samagriPrice: 400,
-      completedPujas: 120,
-      duration: "2 hours",
-      requirements: "Vastu Purush Drawing, Grains",
-      benefits: ["Energy Balance", "Peaceful Environment", "Positive Vibes"],
-      availability: {
-        dates: ["2025-11-05", "2025-11-07", "2025-11-08"],
-        timeSlots: {
-          "2025-11-05": ["09:00 AM", "05:00 PM"],
-          "2025-11-07": ["11:00 AM", "02:00 PM"],
-          "2025-11-08": ["07:00 AM", "05:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 3, 
-      name: "Navagraha Shanti / नवग्रह शांति", 
-      price: 1400, 
-      category: "Ghar ke Sanskaar", 
-      img: "images/grihprewespan01.png",
-      rating: 4.7,
-      reviews: 28,
-      description: "Planetary peace ceremony to balance the nine planets and remove obstacles.",
-      samagriPrice: 500,
-      completedPujas: 180,
-      duration: "3 hours",
-      requirements: "9 Grains, 9 Flowers, Havan Samagri",
-      benefits: ["Planetary Harmony", "Obstacle Removal", "Success in Endeavors"],
-      availability: {
-        dates: ["2025-11-03", "2025-11-04", "2025-11-09"],
-        timeSlots: {
-          "2025-11-03": ["07:00 AM", "11:00 AM"],
-          "2025-11-04": ["09:00 AM", "02:00 PM"],
-          "2025-11-09": ["05:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 4, 
-      name: "Sundarkand Path / सुंदरकांड पाठ", 
-      price: 1000, 
-      category: "Ghar ke Sanskaar", 
-      img: "images/grihprewespan01.png",
-      rating: 4.5,
-      reviews: 38,
-      description: "Recitation of Sundarkand for success, protection and removal of obstacles.",
-      samagriPrice: 250,
-      completedPujas: 180,
-      duration: "2 hours",
-      requirements: "Hanuman Chalisa Book, Flowers",
-      benefits: ["Success in Endeavors", "Protection from Evil", "Obstacle Removal"],
-      availability: {
-        dates: ["2025-11-04", "2025-11-07", "2025-11-10"],
-        timeSlots: {
-          "2025-11-04": ["06:00 PM", "08:00 PM"],
-          "2025-11-07": ["07:00 PM"],
-          "2025-11-10": ["06:30 PM", "08:30 PM"]
-        }
-      }
-    },
-    { 
-      id: 5, 
-      name: "Ramayan Path / रामायण पाठ", 
-      price: 1000, 
-      category: "Ghar ke Sanskaar", 
-      img: "images/grihprewespan01.png",
-      rating: 4.6,
-      reviews: 42,
-      description: "Complete recitation of Ramayana for peace, prosperity and family harmony.",
-      samagriPrice: 300,
-      completedPujas: 95,
-      duration: "7 days",
-      requirements: "Ramayana Book, Aasan",
-      benefits: ["Family Harmony", "Peace & Prosperity", "Spiritual Growth"],
-      availability: {
-        dates: ["2025-11-05", "2025-11-08", "2025-11-12"],
-        timeSlots: {
-          "2025-11-05": ["06:00 PM"],
-          "2025-11-08": ["07:00 PM"],
-          "2025-11-12": ["06:30 PM"]
-        }
-      }
-    },
-    { 
-      id: 6, 
-      name: "Satyanarayan Katha / सत्यनारायण कथा", 
-      price: 1200, 
-      category: "Ghar ke Sanskaar", 
-      img: "images/grihprewespan01.png",
-      rating: 4.9,
-      reviews: 67,
-      description: "Divine storytelling ceremony for peace, prosperity and fulfillment of wishes.",
-      samagriPrice: 350,
-      completedPujas: 320,
-      duration: "2.5 hours",
-      requirements: "Panchamrit, Fruits, Flowers",
-      benefits: ["Wish Fulfillment", "Family Unity", "Divine Blessings"],
-      availability: {
-        dates: ["2025-11-06", "2025-11-09", "2025-11-13"],
-        timeSlots: {
-          "2025-11-06": ["06:00 PM", "08:00 PM"],
-          "2025-11-09": ["07:00 PM"],
-          "2025-11-13": ["06:30 PM", "08:30 PM"]
-        }
-      }
-    },
-    { 
-      id: 7, 
-      name: "Lakshmi Puja / लक्ष्मी पूजा", 
-      price: 800, 
-      category: "Ghar ke Sanskaar", 
-      img: "images/grihprewespan01.png",
-      rating: 4.7,
-      reviews: 89,
-      description: "Goddess Lakshmi worship for wealth, prosperity and abundance.",
-      samagriPrice: 200,
-      completedPujas: 450,
-      duration: "1.5 hours",
-      requirements: "Lakshmi Idol, Coins, Flowers",
-      benefits: ["Wealth & Prosperity", "Financial Stability", "Abundance"],
-      availability: {
-        dates: ["2025-11-03", "2025-11-07", "2025-11-11"],
-        timeSlots: {
-          "2025-11-03": ["07:00 AM", "11:00 AM"],
-          "2025-11-07": ["08:00 AM", "12:00 PM"],
-          "2025-11-11": ["07:30 AM", "11:30 AM"]
-        }
-      }
-    },
-    { 
-      id: 8, 
-      name: "Ganesh Puja / गणेश पूजा", 
-      price: 800, 
-      category: "Ghar ke Sanskaar", 
-      img: "images/grihprewespan01.png",
-      rating: 4.8,
-      reviews: 76,
-      description: "Lord Ganesha worship for wisdom, success and obstacle removal.",
-      samagriPrice: 250,
-      completedPujas: 380,
-      duration: "1.5 hours",
-      requirements: "Ganesh Idol, Modak, Flowers",
-      benefits: ["Wisdom & Knowledge", "Success in Endeavors", "Obstacle Removal"],
-      availability: {
-        dates: ["2025-11-04", "2025-11-08", "2025-11-12"],
-        timeSlots: {
-          "2025-11-04": ["07:00 AM", "11:00 AM"],
-          "2025-11-08": ["08:00 AM", "12:00 PM"],
-          "2025-11-12": ["07:30 AM", "11:30 AM"]
-        }
-      }
-    },
-    { 
-      id: 9, 
-      name: "Durga Saptashati / दुर्गा सप्तशती पाठ", 
-      price: 900, 
-      category: "Ghar ke Sanskaar", 
-      img: "images/grihprewespan01.png",
-      rating: 4.6,
-      reviews: 54,
-      description: "Powerful Durga Saptashati recitation for protection and strength.",
-      samagriPrice: 300,
-      completedPujas: 120,
-      duration: "3 hours",
-      requirements: "Durga Saptashati Book, Red Cloth",
-      benefits: ["Divine Protection", "Strength & Courage", "Negative Energy Removal"],
-      availability: {
-        dates: ["2025-11-05", "2025-11-09", "2025-11-14"],
-        timeSlots: {
-          "2025-11-05": ["06:00 AM", "10:00 AM"],
-          "2025-11-09": ["07:00 AM", "11:00 AM"],
-          "2025-11-14": ["06:30 AM", "10:30 AM"]
-        }
-      }
-    },
-    { 
-      id: 10, 
-      name: "Hanuman Chalisa Path / हनुमान चालीसा पाठ", 
-      price: 700, 
-      category: "Ghar ke Sanskaar", 
-      img: "images/grihprewespan01.png",
-      rating: 4.9,
-      reviews: 210,
-      description: "Hanuman Chalisa recitation for protection, strength and courage.",
-      samagriPrice: 150,
-      completedPujas: 680,
-      duration: "1 hour",
-      requirements: "Hanuman Chalisa Book, Sindoor",
-      benefits: ["Protection from Evil", "Strength & Courage", "Quick Results"],
-      availability: {
-        dates: ["2025-11-03", "2025-11-06", "2025-11-10"],
-        timeSlots: {
-          "2025-11-03": ["05:00 AM", "07:00 PM"],
-          "2025-11-06": ["06:00 AM", "08:00 PM"],
-          "2025-11-10": ["05:30 AM", "07:30 PM"]
-        }
-      }
-    },
+  // Complete Puja Data with ALL 46 pujas
+const pujaList = useMemo(() => [
+  // 🏡 Ghar ke Sanskaar (1-10)
+  { 
+    id: 1, 
+    name: "Griha Pravesh / गृह प्रवेश", 
+    price: 1500, 
+    category: "Ghar ke Sanskaar", 
+    img: "images/grihprewespan01.png", 
+    rating: 4.8,
+    reviews: 45,
+    description: "Sacred house warming ceremony to bring peace, prosperity and positive energy to your new home.",
+    samagriPrice: 300,
+    completedPujas: 250,
+    duration: "2-3 hours",
+    requirements: "Kalash, Coconut, Flowers, Fruits",
+    benefits: ["Peace & Prosperity", "Positive Energy", "Family Harmony"]
+  },
+  { 
+    id: 2, 
+    name: "Vastu Shanti / वास्तु शांति", 
+    price: 1300, 
+    category: "Ghar ke Sanskaar", 
+    img: "images/grihprewespan01.png",
+    rating: 4.6,
+    reviews: 32,
+    description: "Vastu correction puja to harmonize your living space with natural energies.",
+    samagriPrice: 400,
+    completedPujas: 120,
+    duration: "2 hours",
+    requirements: "Vastu Purush Drawing, Grains",
+    benefits: ["Energy Balance", "Peaceful Environment", "Positive Vibes"]
+  },
+  { 
+    id: 3, 
+    name: "Navagraha Shanti / नवग्रह शांति", 
+    price: 1400, 
+    category: "Ghar ke Sanskaar", 
+    img: "images/grihprewespan01.png",
+    rating: 4.7,
+    reviews: 28,
+    description: "Planetary peace ceremony to balance the nine planets and remove obstacles.",
+    samagriPrice: 500,
+    completedPujas: 180,
+    duration: "3 hours",
+    requirements: "9 Grains, 9 Flowers, Havan Samagri",
+    benefits: ["Planetary Harmony", "Obstacle Removal", "Success in Endeavors"]
+  },
+  { 
+    id: 4, 
+    name: "Sundarkand Path / सुंदरकांड पाठ", 
+    price: 1000, 
+    category: "Ghar ke Sanskaar", 
+    img: "images/grihprewespan01.png",
+    rating: 4.5,
+    reviews: 38,
+    description: "Recitation of Sundarkand for success, protection and removal of obstacles.",
+    samagriPrice: 250,
+    completedPujas: 180,
+    duration: "2 hours",
+    requirements: "Hanuman Chalisa Book, Flowers",
+    benefits: ["Success in Endeavors", "Protection from Evil", "Obstacle Removal"]
+  },
+  { 
+    id: 5, 
+    name: "Ramayan Path / रामायण पाठ", 
+    price: 1000, 
+    category: "Ghar ke Sanskaar", 
+    img: "images/grihprewespan01.png",
+    rating: 4.6,
+    reviews: 42,
+    description: "Complete recitation of Ramayana for peace, prosperity and family harmony.",
+    samagriPrice: 300,
+    completedPujas: 95,
+    duration: "7 days",
+    requirements: "Ramayana Book, Aasan",
+    benefits: ["Family Harmony", "Peace & Prosperity", "Spiritual Growth"]
+  },
+  { 
+    id: 6, 
+    name: "Satyanarayan Katha / सत्यनारायण कथा", 
+    price: 1200, 
+    category: "Ghar ke Sanskaar", 
+    img: "images/grihprewespan01.png",
+    rating: 4.9,
+    reviews: 67,
+    description: "Divine storytelling ceremony for peace, prosperity and fulfillment of wishes.",
+    samagriPrice: 350,
+    completedPujas: 320,
+    duration: "2.5 hours",
+    requirements: "Panchamrit, Fruits, Flowers",
+    benefits: ["Wish Fulfillment", "Family Unity", "Divine Blessings"]
+  },
+  { 
+    id: 7, 
+    name: "Lakshmi Puja / लक्ष्मी पूजा", 
+    price: 800, 
+    category: "Ghar ke Sanskaar", 
+    img: "images/grihprewespan01.png",
+    rating: 4.7,
+    reviews: 89,
+    description: "Goddess Lakshmi worship for wealth, prosperity and abundance.",
+    samagriPrice: 200,
+    completedPujas: 450,
+    duration: "1.5 hours",
+    requirements: "Lakshmi Idol, Coins, Flowers",
+    benefits: ["Wealth & Prosperity", "Financial Stability", "Abundance"]
+  },
+  { 
+    id: 8, 
+    name: "Ganesh Puja / गणेश पूजा", 
+    price: 800, 
+    category: "Ghar ke Sanskaar", 
+    img: "images/grihprewespan01.png",
+    rating: 4.8,
+    reviews: 76,
+    description: "Lord Ganesha worship for wisdom, success and obstacle removal.",
+    samagriPrice: 250,
+    completedPujas: 380,
+    duration: "1.5 hours",
+    requirements: "Ganesh Idol, Modak, Flowers",
+    benefits: ["Wisdom & Knowledge", "Success in Endeavors", "Obstacle Removal"]
+  },
+  { 
+    id: 9, 
+    name: "Durga Saptashati / दुर्गा सप्तशती पाठ", 
+    price: 900, 
+    category: "Ghar ke Sanskaar", 
+    img: "images/grihprewespan01.png",
+    rating: 4.6,
+    reviews: 54,
+    description: "Powerful Durga Saptashati recitation for protection and strength.",
+    samagriPrice: 300,
+    completedPujas: 120,
+    duration: "3 hours",
+    requirements: "Durga Saptashati Book, Red Cloth",
+    benefits: ["Divine Protection", "Strength & Courage", "Negative Energy Removal"]
+  },
+  { 
+    id: 10, 
+    name: "Hanuman Chalisa Path / हनुमान चालीसा पाठ", 
+    price: 700, 
+    category: "Ghar ke Sanskaar", 
+    img: "images/grihprewespan01.png",
+    rating: 4.9,
+    reviews: 210,
+    description: "Hanuman Chalisa recitation for protection, strength and courage.",
+    samagriPrice: 150,
+    completedPujas: 680,
+    duration: "1 hour",
+    requirements: "Hanuman Chalisa Book, Sindoor",
+    benefits: ["Protection from Evil", "Strength & Courage", "Quick Results"]
+  },
 
-    // 👶 Bacchon ke Sanskaar (11-14)
-    { 
-      id: 11, 
-      name: "Naamkaran Sanskar / नामकरण संस्कार", 
-      price: 1200, 
-      category: "Bacchon ke Sanskaar", 
-      img: "images/bachhosans02.png",
-      rating: 4.8,
-      reviews: 45,
-      description: "Sacred naming ceremony for newborn babies with Vedic rituals.",
-      samagriPrice: 300,
-      completedPujas: 150,
-      duration: "1.5 hours",
-      requirements: "Baby's Birth Details, Honey, Ghee",
-      benefits: ["Good Health", "Bright Future", "Divine Protection"],
-      availability: {
-        dates: ["2025-11-05", "2025-11-08", "2025-11-12"],
-        timeSlots: {
-          "2025-11-05": ["10:00 AM", "03:00 PM"],
-          "2025-11-08": ["11:00 AM", "04:00 PM"],
-          "2025-11-12": ["09:00 AM", "02:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 12, 
-      name: "Annaprashan / अन्नप्राशन", 
-      price: 1100, 
-      category: "Bacchon ke Sanskaar", 
-      img: "images/bachhosans02.png",
-      rating: 4.7,
-      reviews: 38,
-      description: "First rice eating ceremony for babies with traditional rituals.",
-      samagriPrice: 250,
-      completedPujas: 95,
-      duration: "1.5 hours",
-      requirements: "Rice, Honey, Ghee, Fruits",
-      benefits: ["Good Health", "Proper Growth", "Divine Blessings"],
-      availability: {
-        dates: ["2025-11-06", "2025-11-09", "2025-11-13"],
-        timeSlots: {
-          "2025-11-06": ["10:00 AM", "02:00 PM"],
-          "2025-11-09": ["11:00 AM", "03:00 PM"],
-          "2025-11-13": ["09:00 AM", "01:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 13, 
-      name: "Mundan Sanskar / मुंडन संस्कार", 
-      price: 1000, 
-      category: "Bacchon ke Sanskaar", 
-      img: "images/bachhosans02.png",
-      rating: 4.6,
-      reviews: 42,
-      description: "First hair cutting ceremony for children with Vedic rituals.",
-      samagriPrice: 200,
-      completedPujas: 78,
-      duration: "2 hours",
-      requirements: "Scissors, Bowl, Flowers",
-      benefits: ["Purification", "Healthy Growth", "Divine Protection"],
-      availability: {
-        dates: ["2025-11-07", "2025-11-10", "2025-11-14"],
-        timeSlots: {
-          "2025-11-07": ["09:00 AM", "01:00 PM"],
-          "2025-11-10": ["10:00 AM", "02:00 PM"],
-          "2025-11-14": ["08:00 AM", "12:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 14, 
-      name: "Janamdin Puja / जन्मदिन पूजा", 
-      price: 900, 
-      category: "Bacchon ke Sanskaar", 
-      img: "images/bachhosans02.png",
-      rating: 4.8,
-      reviews: 67,
-      description: "Special birthday puja for children's health and prosperity.",
-      samagriPrice: 180,
-      completedPujas: 210,
-      duration: "1 hour",
-      requirements: "Birth Details, Cake, Flowers",
-      benefits: ["Good Health", "Long Life", "Prosperity"],
-      availability: {
-        dates: ["2025-11-08", "2025-11-11", "2025-11-15"],
-        timeSlots: {
-          "2025-11-08": ["10:00 AM", "04:00 PM"],
-          "2025-11-11": ["11:00 AM", "05:00 PM"],
-          "2025-11-15": ["09:00 AM", "03:00 PM"]
-        }
-      }
-    },
+  // 👶 Bacchon ke Sanskaar (11-14)
+  { 
+    id: 11, 
+    name: "Naamkaran Sanskar / नामकरण संस्कार", 
+    price: 1200, 
+    category: "Bacchon ke Sanskaar", 
+    img: "images/bachhosans02.png",
+    rating: 4.8,
+    reviews: 45,
+    description: "Sacred naming ceremony for newborn babies with Vedic rituals.",
+    samagriPrice: 300,
+    completedPujas: 150,
+    duration: "1.5 hours",
+    requirements: "Baby's Birth Details, Honey, Ghee",
+    benefits: ["Good Health", "Bright Future", "Divine Protection"]
+  },
+  { 
+    id: 12, 
+    name: "Annaprashan / अन्नप्राशन", 
+    price: 1100, 
+    category: "Bacchon ke Sanskaar", 
+    img: "images/bachhosans02.png",
+    rating: 4.7,
+    reviews: 38,
+    description: "First rice eating ceremony for babies with traditional rituals.",
+    samagriPrice: 250,
+    completedPujas: 95,
+    duration: "1.5 hours",
+    requirements: "Rice, Honey, Ghee, Fruits",
+    benefits: ["Good Health", "Proper Growth", "Divine Blessings"]
+  },
+  { 
+    id: 13, 
+    name: "Mundan Sanskar / मुंडन संस्कार", 
+    price: 1000, 
+    category: "Bacchon ke Sanskaar", 
+    img: "images/bachhosans02.png",
+    rating: 4.6,
+    reviews: 42,
+    description: "First hair cutting ceremony for children with Vedic rituals.",
+    samagriPrice: 200,
+    completedPujas: 78,
+    duration: "2 hours",
+    requirements: "Scissors, Bowl, Flowers",
+    benefits: ["Purification", "Healthy Growth", "Divine Protection"]
+  },
+  { 
+    id: 14, 
+    name: "Janamdin Puja / जन्मदिन पूजा", 
+    price: 900, 
+    category: "Bacchon ke Sanskaar", 
+    img: "images/bachhosans02.png",
+    rating: 4.8,
+    reviews: 67,
+    description: "Special birthday puja for children's health and prosperity.",
+    samagriPrice: 180,
+    completedPujas: 210,
+    duration: "1 hour",
+    requirements: "Birth Details, Cake, Flowers",
+    benefits: ["Good Health", "Long Life", "Prosperity"]
+  },
 
-    // 💑 Vivah Sanskar (15-22)
-    { 
-      id: 15, 
-      name: "Vivah / विवाह", 
-      price: 2500, 
-      category: "Vivah Sanskar", 
-      img: "images/vivahsans03.png",
-      rating: 4.9,
-      reviews: 89,
-      description: "Complete wedding ceremony with all Vedic rituals and mantras.",
-      samagriPrice: 800,
-      completedPujas: 95,
-      duration: "6-8 hours",
-      requirements: "Wedding Mandap, Sacred Fire Setup",
-      benefits: ["Lifelong Partnership", "Divine Blessings", "Family Unity"],
-      availability: {
-        dates: ["2025-11-06", "2025-11-09", "2025-11-15"],
-        timeSlots: {
-          "2025-11-06": ["07:00 AM"],
-          "2025-11-09": ["08:00 AM"],
-          "2025-11-15": ["07:30 AM"]
-        }
-      }
-    },
-    { 
-      id: 16, 
-      name: "Roka / रोका समारोह", 
-      price: 2000, 
-      category: "Vivah Sanskar", 
-      img: "images/vivahsans03.png",
-      rating: 4.7,
-      reviews: 34,
-      description: "Engagement ceremony with traditional rituals and blessings.",
-      samagriPrice: 500,
-      completedPujas: 45,
-      duration: "2-3 hours",
-      requirements: "Ring, Sweets, Flowers",
-      benefits: ["Official Commitment", "Family Approval", "Divine Blessings"],
-      availability: {
-        dates: ["2025-11-07", "2025-11-10", "2025-11-16"],
-        timeSlots: {
-          "2025-11-07": ["11:00 AM", "04:00 PM"],
-          "2025-11-10": ["12:00 PM", "05:00 PM"],
-          "2025-11-16": ["10:00 AM", "03:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 17, 
-      name: "Sagai / सगाई", 
-      price: 1800, 
-      category: "Vivah Sanskar", 
-      img: "images/vivahsans03.png",
-      rating: 4.6,
-      reviews: 28,
-      description: "Formal engagement ceremony with exchange of gifts and blessings.",
-      samagriPrice: 400,
-      completedPujas: 52,
-      duration: "2 hours",
-      requirements: "Rings, Sweets, Garland",
-      benefits: ["Formal Commitment", "Family Bonding", "Divine Approval"],
-      availability: {
-        dates: ["2025-11-08", "2025-11-11", "2025-11-17"],
-        timeSlots: {
-          "2025-11-08": ["11:00 AM", "03:00 PM"],
-          "2025-11-11": ["12:00 PM", "04:00 PM"],
-          "2025-11-17": ["10:00 AM", "02:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 18, 
-      name: "Haldi / हल्दी रस्म", 
-      price: 900, 
-      category: "Vivah Sanskar", 
-      img: "images/vivahsans03.png",
-      rating: 4.8,
-      reviews: 76,
-      description: "Traditional turmeric ceremony for purification and glow.",
-      samagriPrice: 200,
-      completedPujas: 120,
-      duration: "1.5 hours",
-      requirements: "Turmeric, Oil, Flowers",
-      benefits: ["Purification", "Beautiful Glow", "Auspicious Beginning"],
-      availability: {
-        dates: ["2025-11-09", "2025-11-12", "2025-11-18"],
-        timeSlots: {
-          "2025-11-09": ["08:00 AM", "11:00 AM"],
-          "2025-11-12": ["09:00 AM", "12:00 PM"],
-          "2025-11-18": ["07:00 AM", "10:00 AM"]
-        }
-      }
-    },
-    { 
-      id: 19, 
-      name: "Mehendi / मेहंदी", 
-      price: 1200, 
-      category: "Vivah Sanskar", 
-      img: "images/vivahsans03.png",
-      rating: 4.7,
-      reviews: 63,
-      description: "Henna ceremony with traditional songs and rituals.",
-      samagriPrice: 300,
-      completedPujas: 88,
-      duration: "3-4 hours",
-      requirements: "Henna, Decorations, Music",
-      benefits: ["Beauty Enhancement", "Joyful Celebration", "Traditional Art"],
-      availability: {
-        dates: ["2025-11-10", "2025-11-13", "2025-11-19"],
-        timeSlots: {
-          "2025-11-10": ["02:00 PM", "06:00 PM"],
-          "2025-11-13": ["03:00 PM", "07:00 PM"],
-          "2025-11-19": ["01:00 PM", "05:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 20, 
-      name: "Sangeet / संगीत", 
-      price: 1500, 
-      category: "Vivah Sanskar", 
-      img: "images/vivahsans03.png",
-      rating: 4.9,
-      reviews: 94,
-      description: "Musical night with dance performances and celebrations.",
-      samagriPrice: 500,
-      completedPujas: 67,
-      duration: "4-5 hours",
-      requirements: "Sound System, Decorations, Stage",
-      benefits: ["Entertainment", "Family Bonding", "Memorable Moments"],
-      availability: {
-        dates: ["2025-11-11", "2025-11-14", "2025-11-20"],
-        timeSlots: {
-          "2025-11-11": ["06:00 PM", "10:00 PM"],
-          "2025-11-14": ["07:00 PM", "11:00 PM"],
-          "2025-11-20": ["05:00 PM", "09:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 21, 
-      name: "Reception / रिसेप्शन", 
-      price: 2000, 
-      category: "Vivah Sanskar", 
-      img: "images/vivahsans03.png",
-      rating: 4.8,
-      reviews: 58,
-      description: "Grand reception ceremony to welcome the newly married couple.",
-      samagriPrice: 600,
-      completedPujas: 42,
-      duration: "3-4 hours",
-      requirements: "Stage, Decorations, Sound System",
-      benefits: ["Grand Welcome", "Social Celebration", "Blessings Gathering"],
-      availability: {
-        dates: ["2025-11-12", "2025-11-15", "2025-11-21"],
-        timeSlots: {
-          "2025-11-12": ["07:00 PM", "10:00 PM"],
-          "2025-11-15": ["08:00 PM", "11:00 PM"],
-          "2025-11-21": ["06:00 PM", "09:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 22, 
-      name: "Wedding Anniversary Puja / विवाह वर्षगांठ पूजा", 
-      price: 1500, 
-      category: "Vivah Sanskar", 
-      img: "images/vivahsans03.png",
-      rating: 4.7,
-      reviews: 45,
-      description: "Special puja to celebrate wedding anniversary with blessings.",
-      samagriPrice: 350,
-      completedPujas: 78,
-      duration: "1.5 hours",
-      requirements: "Couple's Photo, Flowers, Sweets",
-      benefits: ["Marital Bliss", "Long-lasting Relationship", "Divine Blessings"],
-      availability: {
-        dates: ["2025-11-13", "2025-11-16", "2025-11-22"],
-        timeSlots: {
-          "2025-11-13": ["10:00 AM", "04:00 PM"],
-          "2025-11-16": ["11:00 AM", "05:00 PM"],
-          "2025-11-22": ["09:00 AM", "03:00 PM"]
-        }
-      }
-    },
+  // 💑 Vivah Sanskar (15-22)
+  { 
+    id: 15, 
+    name: "Vivah / विवाह", 
+    price: 2500, 
+    category: "Vivah Sanskar", 
+    img: "images/vivahsans03.png",
+    rating: 4.9,
+    reviews: 89,
+    description: "Complete wedding ceremony with all Vedic rituals and mantras.",
+    samagriPrice: 800,
+    completedPujas: 95,
+    duration: "6-8 hours",
+    requirements: "Wedding Mandap, Sacred Fire Setup",
+    benefits: ["Lifelong Partnership", "Divine Blessings", "Family Unity"]
+  },
+  { 
+    id: 16, 
+    name: "Roka / रोका समारोह", 
+    price: 2000, 
+    category: "Vivah Sanskar", 
+    img: "images/vivahsans03.png",
+    rating: 4.7,
+    reviews: 34,
+    description: "Engagement ceremony with traditional rituals and blessings.",
+    samagriPrice: 500,
+    completedPujas: 45,
+    duration: "2-3 hours",
+    requirements: "Ring, Sweets, Flowers",
+    benefits: ["Official Commitment", "Family Approval", "Divine Blessings"]
+  },
+  { 
+    id: 17, 
+    name: "Sagai / सगाई", 
+    price: 1800, 
+    category: "Vivah Sanskar", 
+    img: "images/vivahsans03.png",
+    rating: 4.6,
+    reviews: 28,
+    description: "Formal engagement ceremony with exchange of gifts and blessings.",
+    samagriPrice: 400,
+    completedPujas: 52,
+    duration: "2 hours",
+    requirements: "Rings, Sweets, Garland",
+    benefits: ["Formal Commitment", "Family Bonding", "Divine Approval"]
+  },
+  { 
+    id: 18, 
+    name: "Haldi / हल्दी रस्म", 
+    price: 900, 
+    category: "Vivah Sanskar", 
+    img: "images/vivahsans03.png",
+    rating: 4.8,
+    reviews: 76,
+    description: "Traditional turmeric ceremony for purification and glow.",
+    samagriPrice: 200,
+    completedPujas: 120,
+    duration: "1.5 hours",
+    requirements: "Turmeric, Oil, Flowers",
+    benefits: ["Purification", "Beautiful Glow", "Auspicious Beginning"]
+  },
+  { 
+    id: 19, 
+    name: "Mehendi / मेहंदी", 
+    price: 1200, 
+    category: "Vivah Sanskar", 
+    img: "images/vivahsans03.png",
+    rating: 4.7,
+    reviews: 63,
+    description: "Henna ceremony with traditional songs and rituals.",
+    samagriPrice: 300,
+    completedPujas: 88,
+    duration: "3-4 hours",
+    requirements: "Henna, Decorations, Music",
+    benefits: ["Beauty Enhancement", "Joyful Celebration", "Traditional Art"]
+  },
+  { 
+    id: 20, 
+    name: "Sangeet / संगीत", 
+    price: 1500, 
+    category: "Vivah Sanskar", 
+    img: "images/vivahsans03.png",
+    rating: 4.9,
+    reviews: 94,
+    description: "Musical night with dance performances and celebrations.",
+    samagriPrice: 500,
+    completedPujas: 67,
+    duration: "4-5 hours",
+    requirements: "Sound System, Decorations, Stage",
+    benefits: ["Entertainment", "Family Bonding", "Memorable Moments"]
+  },
+  { 
+    id: 21, 
+    name: "Reception / रिसेप्शन", 
+    price: 2000, 
+    category: "Vivah Sanskar", 
+    img: "images/vivahsans03.png",
+    rating: 4.8,
+    reviews: 58,
+    description: "Grand reception ceremony to welcome the newly married couple.",
+    samagriPrice: 600,
+    completedPujas: 42,
+    duration: "3-4 hours",
+    requirements: "Stage, Decorations, Sound System",
+    benefits: ["Grand Welcome", "Social Celebration", "Blessings Gathering"]
+  },
+  { 
+    id: 22, 
+    name: "Wedding Anniversary Puja / विवाह वर्षगांठ पूजा", 
+    price: 1500, 
+    category: "Vivah Sanskar", 
+    img: "images/vivahsans03.png",
+    rating: 4.7,
+    reviews: 45,
+    description: "Special puja to celebrate wedding anniversary with blessings.",
+    samagriPrice: 350,
+    completedPujas: 78,
+    duration: "1.5 hours",
+    requirements: "Couple's Photo, Flowers, Sweets",
+    benefits: ["Marital Bliss", "Long-lasting Relationship", "Divine Blessings"]
+  },
 
-    // ⚰ Pitrakarya (23-27)
-    { 
-      id: 23, 
-      name: "Antim Sanskar / अंतिम संस्कार", 
-      price: 2000, 
-      category: "Pitrakarya", 
-      img: "images/pitrkry01.png",
-      rating: 4.9,
-      reviews: 34,
-      description: "Final rites ceremony performed with Vedic rituals and mantras.",
-      samagriPrice: 600,
-      completedPujas: 56,
-      duration: "3-4 hours",
-      requirements: "Sacred Fire Setup, Pinda, Flowers",
-      benefits: ["Peaceful Departure", "Soul Liberation", "Family Closure"],
-      availability: {
-        dates: ["2025-11-14", "2025-11-17", "2025-11-23"],
-        timeSlots: {
-          "2025-11-14": ["07:00 AM", "02:00 PM"],
-          "2025-11-17": ["08:00 AM", "03:00 PM"],
-          "2025-11-23": ["06:00 AM", "01:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 24, 
-      name: "Pind Daan / पिंडदान", 
-      price: 1800, 
-      category: "Pitrakarya", 
-      img: "images/pitrkry01.png",
-      rating: 4.7,
-      reviews: 28,
-      description: "Offering rituals for departed ancestors for their peace.",
-      samagriPrice: 500,
-      completedPujas: 42,
-      duration: "2-3 hours",
-      requirements: "Rice Balls, Black Sesame, Water",
-      benefits: ["Ancestors Peace", "Family Blessings", "Karma Cleansing"],
-      availability: {
-        dates: ["2025-11-15", "2025-11-18", "2025-11-24"],
-        timeSlots: {
-          "2025-11-15": ["08:00 AM", "12:00 PM"],
-          "2025-11-18": ["09:00 AM", "01:00 PM"],
-          "2025-11-24": ["07:00 AM", "11:00 AM"]
-        }
-      }
-    },
-    { 
-      id: 25, 
-      name: "Shraddh / श्राद्ध पूजा", 
-      price: 1500, 
-      category: "Pitrakarya", 
-      img: "images/pitrkry01.png",
-      rating: 4.6,
-      reviews: 39,
-      description: "Annual ceremony to pay homage to departed ancestors.",
-      samagriPrice: 400,
-      completedPujas: 67,
-      duration: "2 hours",
-      requirements: "Ancestors Details, Rice, Flowers",
-      benefits: ["Ancestors Blessings", "Family Protection", "Peace to Departed Souls"],
-      availability: {
-        dates: ["2025-11-16", "2025-11-19", "2025-11-25"],
-        timeSlots: {
-          "2025-11-16": ["09:00 AM", "02:00 PM"],
-          "2025-11-19": ["10:00 AM", "03:00 PM"],
-          "2025-11-25": ["08:00 AM", "01:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 26, 
-      name: "Asthi Visarjan / अस्थि विसर्जन", 
-      price: 1300, 
-      category: "Pitrakarya", 
-      img: "images/pitrkry01.png",
-      rating: 4.8,
-      reviews: 23,
-      description: "Sacred immersion of ashes in holy river with rituals.",
-      samagriPrice: 300,
-      completedPujas: 31,
-      duration: "2 hours",
-      requirements: "Ashes, Holy Water, Flowers",
-      benefits: ["Final Liberation", "Soul Peace", "Completion of Rituals"],
-      availability: {
-        dates: ["2025-11-17", "2025-11-20", "2025-11-26"],
-        timeSlots: {
-          "2025-11-17": ["07:00 AM", "11:00 AM"],
-          "2025-11-20": ["08:00 AM", "12:00 PM"],
-          "2025-11-26": ["06:00 AM", "10:00 AM"]
-        }
-      }
-    },
-    { 
-      id: 27, 
-      name: "Tehravin / तेरहवीं संस्कार", 
-      price: 1200, 
-      category: "Pitrakarya", 
-      img: "images/pitrkry01.png",
-      rating: 4.7,
-      reviews: 35,
-      description: "Thirteenth day ceremony after departure for family peace.",
-      samagriPrice: 350,
-      completedPujas: 48,
-      duration: "1.5 hours",
-      requirements: "Family Members, Pinda, Holy Water",
-      benefits: ["Family Peace", "Completion of Mourning", "New Beginning"],
-      availability: {
-        dates: ["2025-11-18", "2025-11-21", "2025-11-27"],
-        timeSlots: {
-          "2025-11-18": ["10:00 AM", "03:00 PM"],
-          "2025-11-21": ["11:00 AM", "04:00 PM"],
-          "2025-11-27": ["09:00 AM", "02:00 PM"]
-        }
-      }
-    },
+  // ⚰ Pitrakarya (23-27)
+  { 
+    id: 23, 
+    name: "Antim Sanskar / अंतिम संस्कार", 
+    price: 2000, 
+    category: "Pitrakarya", 
+    img: "images/pitrkry01.png",
+    rating: 4.9,
+    reviews: 34,
+    description: "Final rites ceremony performed with Vedic rituals and mantras.",
+    samagriPrice: 600,
+    completedPujas: 56,
+    duration: "3-4 hours",
+    requirements: "Sacred Fire Setup, Pinda, Flowers",
+    benefits: ["Peaceful Departure", "Soul Liberation", "Family Closure"]
+  },
+  { 
+    id: 24, 
+    name: "Pind Daan / पिंडदान", 
+    price: 1800, 
+    category: "Pitrakarya", 
+    img: "images/pitrkry01.png",
+    rating: 4.7,
+    reviews: 28,
+    description: "Offering rituals for departed ancestors for their peace.",
+    samagriPrice: 500,
+    completedPujas: 42,
+    duration: "2-3 hours",
+    requirements: "Rice Balls, Black Sesame, Water",
+    benefits: ["Ancestors Peace", "Family Blessings", "Karma Cleansing"]
+  },
+  { 
+    id: 25, 
+    name: "Shraddh / श्राद्ध पूजा", 
+    price: 1500, 
+    category: "Pitrakarya", 
+    img: "images/pitrkry01.png",
+    rating: 4.6,
+    reviews: 39,
+    description: "Annual ceremony to pay homage to departed ancestors.",
+    samagriPrice: 400,
+    completedPujas: 67,
+    duration: "2 hours",
+    requirements: "Ancestors Details, Rice, Flowers",
+    benefits: ["Ancestors Blessings", "Family Protection", "Peace to Departed Souls"]
+  },
+  { 
+    id: 26, 
+    name: "Asthi Visarjan / अस्थि विसर्जन", 
+    price: 1300, 
+    category: "Pitrakarya", 
+    img: "images/pitrkry01.png",
+    rating: 4.8,
+    reviews: 23,
+    description: "Sacred immersion of ashes in holy river with rituals.",
+    samagriPrice: 300,
+    completedPujas: 31,
+    duration: "2 hours",
+    requirements: "Ashes, Holy Water, Flowers",
+    benefits: ["Final Liberation", "Soul Peace", "Completion of Rituals"]
+  },
+  { 
+    id: 27, 
+    name: "Tehravin / तेरहवीं संस्कार", 
+    price: 1200, 
+    category: "Pitrakarya", 
+    img: "images/pitrkry01.png",
+    rating: 4.7,
+    reviews: 35,
+    description: "Thirteenth day ceremony after departure for family peace.",
+    samagriPrice: 350,
+    completedPujas: 48,
+    duration: "1.5 hours",
+    requirements: "Family Members, Pinda, Holy Water",
+    benefits: ["Family Peace", "Completion of Mourning", "New Beginning"]
+  },
 
-    // 📿 Festival Pujas (28-36)
-    { 
-      id: 28, 
-      name: "Karwa Chauth Puja / करवा चौथ पूजा", 
-      price: 900, 
-      category: "Festival Pujas", 
-      img: "images/karwachauth.png",
-      rating: 4.8,
-      reviews: 156,
-      description: "Special puja for married women observing Karwa Chauth fast for husband's long life.",
-      samagriPrice: 250,
-      completedPujas: 340,
-      duration: "1 hour",
-      requirements: "Karwa, Matthi, Sindoor, Story Book",
-      benefits: ["Husband's Long Life", "Marital Bliss", "Family Happiness"],
-      availability: {
-        dates: ["2025-11-03", "2025-11-04"],
-        timeSlots: {
-          "2025-11-03": ["05:00 PM", "06:30 PM"],
-          "2025-11-04": ["05:30 PM", "07:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 29, 
-      name: "Diwali Lakshmi Ganesh Puja / दिवाली लक्ष्मी गणेश पूजा", 
-      price: 1200, 
-      category: "Festival Pujas", 
-      img: "images/karwachauth.png",
-      rating: 4.9,
-      reviews: 234,
-      description: "Special Diwali puja for wealth, prosperity and removal of obstacles.",
-      samagriPrice: 400,
-      completedPujas: 450,
-      duration: "2 hours",
-      requirements: "Lakshmi-Ganesh Idols, Diyas, Sweets",
-      benefits: ["Wealth & Prosperity", "Obstacle Removal", "Auspicious Beginning"],
-      availability: {
-        dates: ["2025-11-19", "2025-11-20", "2025-11-21"],
-        timeSlots: {
-          "2025-11-19": ["06:00 PM", "08:00 PM"],
-          "2025-11-20": ["07:00 PM", "09:00 PM"],
-          "2025-11-21": ["05:00 PM", "07:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 30, 
-      name: "Raksha Bandhan / रक्षा बंधन पूजा", 
-      price: 800, 
-      category: "Festival Pujas", 
-      img: "images/karwachauth.png",
-      rating: 4.7,
-      reviews: 178,
-      description: "Brother-sister bond celebration with sacred thread tying ritual.",
-      samagriPrice: 200,
-      completedPujas: 290,
-      duration: "1 hour",
-      requirements: "Rakhi, Sweets, Rice",
-      benefits: ["Brother Protection", "Sister Love", "Family Bonding"],
-      availability: {
-        dates: ["2025-11-22", "2025-11-23"],
-        timeSlots: {
-          "2025-11-22": ["09:00 AM", "12:00 PM"],
-          "2025-11-23": ["10:00 AM", "01:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 31, 
-      name: "Navratri Puja / नवरात्रि पूजा", 
-      price: 1000, 
-      category: "Festival Pujas", 
-      img: "images/karwachauth.png",
-      rating: 4.8,
-      reviews: 195,
-      description: "Nine nights goddess worship for power, protection and blessings.",
-      samagriPrice: 350,
-      completedPujas: 320,
-      duration: "9 days",
-      requirements: "Goddess Idol, Kalash, Flowers",
-      benefits: ["Divine Power", "Protection from Evil", "Spiritual Growth"],
-      availability: {
-        dates: ["2025-11-24", "2025-11-25", "2025-11-26"],
-        timeSlots: {
-          "2025-11-24": ["06:00 AM", "07:00 PM"],
-          "2025-11-25": ["07:00 AM", "08:00 PM"],
-          "2025-11-26": ["06:30 AM", "07:30 PM"]
-        }
-      }
-    },
-    { 
-      id: 32, 
-      name: "Saraswati Puja / सरस्वती पूजा", 
-      price: 1000, 
-      category: "Festival Pujas", 
-      img: "images/karwachauth.png",
-      rating: 4.7,
-      reviews: 145,
-      description: "Goddess of knowledge worship for wisdom, education and arts.",
-      samagriPrice: 300,
-      completedPujas: 230,
-      duration: "1.5 hours",
-      requirements: "Saraswati Idol, Books, Musical Instruments",
-      benefits: ["Knowledge & Wisdom", "Academic Success", "Creative Skills"],
-      availability: {
-        dates: ["2025-11-27", "2025-11-28"],
-        timeSlots: {
-          "2025-11-27": ["08:00 AM", "11:00 AM"],
-          "2025-11-28": ["09:00 AM", "12:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 33, 
-      name: "Mahashivratri Puja / महाशिवरात्रि पूजा", 
-      price: 1100, 
-      category: "Festival Pujas", 
-      img: "images/karwachauth.png",
-      rating: 4.9,
-      reviews: 267,
-      description: "Great night of Shiva worship for spiritual growth and liberation.",
-      samagriPrice: 400,
-      completedPujas: 380,
-      duration: "All night",
-      requirements: "Shiva Lingam, Milk, Bilva Leaves",
-      benefits: ["Spiritual Awakening", "Moksha", "Negative Energy Removal"],
-      availability: {
-        dates: ["2025-11-29"],
-        timeSlots: {
-          "2025-11-29": ["08:00 PM", "06:00 AM"]
-        }
-      }
-    },
-    { 
-      id: 34, 
-      name: "Chhath Puja / छठ पूजा", 
-      price: 1000, 
-      category: "Festival Pujas", 
-      img: "images/karwachauth.png",
-      rating: 4.8,
-      reviews: 189,
-      description: "Ancient sun god worship for health, prosperity and offspring.",
-      samagriPrice: 350,
-      completedPujas: 270,
-      duration: "4 days",
-      requirements: "Bamboo Basket, Fruits, Sugarcane",
-      benefits: ["Health & Longevity", "Progeny Blessings", "Family Prosperity"],
-      availability: {
-        dates: ["2025-11-30", "2025-12-01"],
-        timeSlots: {
-          "2025-11-30": ["05:00 AM", "05:00 PM"],
-          "2025-12-01": ["06:00 AM", "06:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 35, 
-      name: "Holi Dahan Puja / होली दहन पूजा", 
-      price: 900, 
-      category: "Festival Pujas", 
-      img: "images/karwachauth.png",
-      rating: 4.7,
-      reviews: 156,
-      description: "Holika dahan ceremony for victory of good over evil.",
-      samagriPrice: 250,
-      completedPujas: 210,
-      duration: "1.5 hours",
-      requirements: "Wood Pyre, Coconut, Flowers",
-      benefits: ["Victory of Good", "Evil Destruction", "New Beginnings"],
-      availability: {
-        dates: ["2025-12-02"],
-        timeSlots: {
-          "2025-12-02": ["07:00 PM", "09:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 36, 
-      name: "Janmashtami Puja / जन्माष्टमी पूजा", 
-      price: 1000, 
-      category: "Festival Pujas", 
-      img: "images/karwachauth.png",
-      rating: 4.9,
-      reviews: 278,
-      description: "Lord Krishna birth celebration with midnight puja and festivities.",
-      samagriPrice: 350,
-      completedPujas: 420,
-      duration: "2 hours",
-      requirements: "Krishna Idol, Butter, Flute",
-      benefits: ["Divine Love", "Joy & Happiness", "Spiritual Bliss"],
-      availability: {
-        dates: ["2025-12-03"],
-        timeSlots: {
-          "2025-12-03": ["10:00 PM", "12:00 AM"]
-        }
-      }
-    },
+  // 📿 Festival Pujas (28-36)
+  { 
+    id: 28, 
+    name: "Karwa Chauth Puja / करवा चौथ पूजा", 
+    price: 900, 
+    category: "Festival Pujas", 
+    img: "images/karwachauth.png",
+    rating: 4.8,
+    reviews: 156,
+    description: "Special puja for married women observing Karwa Chauth fast for husband's long life.",
+    samagriPrice: 250,
+    completedPujas: 340,
+    duration: "1 hour",
+    requirements: "Karwa, Matthi, Sindoor, Story Book",
+    benefits: ["Husband's Long Life", "Marital Bliss", "Family Happiness"]
+  },
+  { 
+    id: 29, 
+    name: "Diwali Lakshmi Ganesh Puja / दिवाली लक्ष्मी गणेश पूजा", 
+    price: 1200, 
+    category: "Festival Pujas", 
+    img: "images/karwachauth.png",
+    rating: 4.9,
+    reviews: 234,
+    description: "Special Diwali puja for wealth, prosperity and removal of obstacles.",
+    samagriPrice: 400,
+    completedPujas: 450,
+    duration: "2 hours",
+    requirements: "Lakshmi-Ganesh Idols, Diyas, Sweets",
+    benefits: ["Wealth & Prosperity", "Obstacle Removal", "Auspicious Beginning"]
+  },
+  { 
+    id: 30, 
+    name: "Raksha Bandhan / रक्षा बंधन पूजा", 
+    price: 800, 
+    category: "Festival Pujas", 
+    img: "images/karwachauth.png",
+    rating: 4.7,
+    reviews: 178,
+    description: "Brother-sister bond celebration with sacred thread tying ritual.",
+    samagriPrice: 200,
+    completedPujas: 290,
+    duration: "1 hour",
+    requirements: "Rakhi, Sweets, Rice",
+    benefits: ["Brother Protection", "Sister Love", "Family Bonding"]
+  },
+  { 
+    id: 31, 
+    name: "Navratri Puja / नवरात्रि पूजा", 
+    price: 1000, 
+    category: "Festival Pujas", 
+    img: "images/karwachauth.png",
+    rating: 4.8,
+    reviews: 195,
+    description: "Nine nights goddess worship for power, protection and blessings.",
+    samagriPrice: 350,
+    completedPujas: 320,
+    duration: "9 days",
+    requirements: "Goddess Idol, Kalash, Flowers",
+    benefits: ["Divine Power", "Protection from Evil", "Spiritual Growth"]
+  },
+  { 
+    id: 32, 
+    name: "Saraswati Puja / सरस्वती पूजा", 
+    price: 1000, 
+    category: "Festival Pujas", 
+    img: "images/karwachauth.png",
+    rating: 4.7,
+    reviews: 145,
+    description: "Goddess of knowledge worship for wisdom, education and arts.",
+    samagriPrice: 300,
+    completedPujas: 230,
+    duration: "1.5 hours",
+    requirements: "Saraswati Idol, Books, Musical Instruments",
+    benefits: ["Knowledge & Wisdom", "Academic Success", "Creative Skills"]
+  },
+  { 
+    id: 33, 
+    name: "Mahashivratri Puja / महाशिवरात्रि पूजा", 
+    price: 1100, 
+    category: "Festival Pujas", 
+    img: "images/karwachauth.png",
+    rating: 4.9,
+    reviews: 267,
+    description: "Great night of Shiva worship for spiritual growth and liberation.",
+    samagriPrice: 400,
+    completedPujas: 380,
+    duration: "All night",
+    requirements: "Shiva Lingam, Milk, Bilva Leaves",
+    benefits: ["Spiritual Awakening", "Moksha", "Negative Energy Removal"]
+  },
+  { 
+    id: 34, 
+    name: "Chhath Puja / छठ पूजा", 
+    price: 1000, 
+    category: "Festival Pujas", 
+    img: "images/karwachauth.png",
+    rating: 4.8,
+    reviews: 189,
+    description: "Ancient sun god worship for health, prosperity and offspring.",
+    samagriPrice: 350,
+    completedPujas: 270,
+    duration: "4 days",
+    requirements: "Bamboo Basket, Fruits, Sugarcane",
+    benefits: ["Health & Longevity", "Progeny Blessings", "Family Prosperity"]
+  },
+  { 
+    id: 35, 
+    name: "Holi Dahan Puja / होली दहन पूजा", 
+    price: 900, 
+    category: "Festival Pujas", 
+    img: "images/karwachauth.png",
+    rating: 4.7,
+    reviews: 156,
+    description: "Holika dahan ceremony for victory of good over evil.",
+    samagriPrice: 250,
+    completedPujas: 210,
+    duration: "1.5 hours",
+    requirements: "Wood Pyre, Coconut, Flowers",
+    benefits: ["Victory of Good", "Evil Destruction", "New Beginnings"]
+  },
+  { 
+    id: 36, 
+    name: "Janmashtami Puja / जन्माष्टमी पूजा", 
+    price: 1000, 
+    category: "Festival Pujas", 
+    img: "images/karwachauth.png",
+    rating: 4.9,
+    reviews: 278,
+    description: "Lord Krishna birth celebration with midnight puja and festivities.",
+    samagriPrice: 350,
+    completedPujas: 420,
+    duration: "2 hours",
+    requirements: "Krishna Idol, Butter, Flute",
+    benefits: ["Divine Love", "Joy & Happiness", "Spiritual Bliss"]
+  },
 
-    // 🛕 Temple / Special Pujas (37-43)
-    { 
-      id: 37, 
-      name: "Rudrabhishek / रुद्राभिषेक", 
-      price: 2200, 
-      category: "Temple / Special Pujas", 
-      img: "images/temple.png",
-      rating: 4.9,
-      reviews: 156,
-      description: "Powerful Shiva abhishekam for health, wealth and spiritual growth.",
-      samagriPrice: 600,
-      completedPujas: 120,
-      duration: "3 hours",
-      requirements: "Shiva Lingam, Milk, Honey, Bilva Leaves",
-      benefits: ["Health & Wealth", "Spiritual Growth", "Negative Energy Removal"],
-      availability: {
-        dates: ["2025-11-04", "2025-11-08", "2025-11-11"],
-        timeSlots: {
-          "2025-11-04": ["06:00 AM", "11:00 AM"],
-          "2025-11-08": ["07:00 AM", "12:00 PM"],
-          "2025-11-11": ["06:30 AM", "11:30 AM"]
-        }
-      }
-    },
-    { 
-      id: 38, 
-      name: "Mahamrityunjaya Jaap / महामृत्युंजय जाप", 
-      price: 2500, 
-      category: "Temple / Special Pujas", 
-      img: "images/temple.png",
-      rating: 4.9,
-      reviews: 134,
-      description: "Powerful mantra chanting for longevity and freedom from diseases.",
-      samagriPrice: 700,
-      completedPujas: 89,
-      duration: "4 hours",
-      requirements: "Specific Yantra, Rudraksha Mala, Sacred Fire",
-      benefits: ["Longevity", "Disease Freedom", "Death Fear Removal"],
-      availability: {
-        dates: ["2025-11-05", "2025-11-09", "2025-11-13"],
-        timeSlots: {
-          "2025-11-05": ["05:00 AM", "09:00 AM"],
-          "2025-11-09": ["06:00 AM", "10:00 AM"],
-          "2025-11-13": ["05:30 AM", "09:30 AM"]
-        }
-      }
-    },
-    { 
-      id: 39, 
-      name: "Bhumi Pujan / भूमि पूजन", 
-      price: 2000, 
-      category: "Temple / Special Pujas", 
-      img: "images/temple.png",
-      rating: 4.8,
-      reviews: 98,
-      description: "Land worship ceremony before construction for prosperity.",
-      samagriPrice: 500,
-      completedPujas: 76,
-      duration: "2.5 hours",
-      requirements: "Land Deed, Kalash, Grains",
-      benefits: ["Construction Safety", "Property Prosperity", "Positive Energy"],
-      availability: {
-        dates: ["2025-11-06", "2025-11-10", "2025-11-14"],
-        timeSlots: {
-          "2025-11-06": ["08:00 AM", "11:00 AM"],
-          "2025-11-10": ["09:00 AM", "12:00 PM"],
-          "2025-11-14": ["07:00 AM", "10:00 AM"]
-        }
-      }
-    },
-    { 
-      id: 40, 
-      name: "Kundali Shanti / कुंडली शांति", 
-      price: 1800, 
-      category: "Temple / Special Pujas", 
-      img: "images/temple.png",
-      rating: 4.7,
-      reviews: 112,
-      description: "Planetary peace puja based on birth chart for life harmony.",
-      samagriPrice: 450,
-      completedPujas: 145,
-      duration: "3 hours",
-      requirements: "Birth Details, Gemstones, Specific Grains",
-      benefits: ["Planetary Harmony", "Life Balance", "Problem Solution"],
-      availability: {
-        dates: ["2025-11-07", "2025-11-11", "2025-11-15"],
-        timeSlots: {
-          "2025-11-07": ["10:00 AM", "01:00 PM"],
-          "2025-11-11": ["11:00 AM", "02:00 PM"],
-          "2025-11-15": ["09:00 AM", "12:00 PM"]
-        }
-      }
-    },
-    { 
-      id: 41, 
-      name: "Upanayan Sanskar / उपनयन संस्कार", 
-      price: 1700, 
-      category: "Temple / Special Pujas", 
-      img: "images/temple.png",
-      rating: 4.8,
-      reviews: 67,
-      description: "Sacred thread ceremony for spiritual initiation of young boys.",
-      samagriPrice: 400,
-      completedPujas: 53,
-      duration: "2 hours",
-      requirements: "Sacred Thread, Deer Skin, Guru Dakshina",
-      benefits: ["Spiritual Initiation", "Knowledge Beginning", "Cultural Heritage"],
-      availability: {
-        dates: ["2025-11-08", "2025-11-12", "2025-11-16"],
-        timeSlots: {
-          "2025-11-08": ["08:00 AM", "11:00 AM"],
-          "2025-11-12": ["09:00 AM", "12:00 PM"],
-          "2025-11-16": ["07:00 AM", "10:00 AM"]
-        }
-      }
-    },
-    { 
-      id: 42, 
-      name: "Kalash Sthapana / कलश स्थापना", 
-      price: 1600, 
-      category: "Temple / Special Pujas", 
-      img: "images/temple.png",
-      rating: 4.7,
-      reviews: 89,
-      description: "Sacred pot installation ceremony for positive energy flow.",
-      samagriPrice: 350,
-      completedPujas: 78,
-      duration: "1.5 hours",
-      requirements: "Brass Pot, Coconut, Mango Leaves",
-      benefits: ["Positive Energy", "Divine Presence", "Ceremony Foundation"],
-      availability: {
-        dates: ["2025-11-09", "2025-11-13", "2025-11-17"],
-        timeSlots: {
-          "2025-11-09": ["07:00 AM", "10:00 AM"],
-          "2025-11-13": ["08:00 AM", "11:00 AM"],
-          "2025-11-17": ["06:00 AM", "09:00 AM"]
-        }
-      }
-    },
-    { 
-      id: 43, 
-      name: "Ayushya Homam / आयुष्य हवन", 
-      price: 1500, 
-      category: "Temple / Special Pujas", 
-      img: "images/temple.png",
-      rating: 4.8,
-      reviews: 102,
-      description: "Long life fire ritual for health, longevity and well-being.",
-      samagriPrice: 400,
-      completedPujas: 95,
-      duration: "2 hours",
-      requirements: "Sacred Fire Setup, Ghee, Medicinal Herbs",
-      benefits: ["Long Life", "Good Health", "Disease Protection"],
-      availability: {
-        dates: ["2025-11-10", "2025-11-14", "2025-11-18"],
-        timeSlots: {
-          "2025-11-10": ["08:00 AM", "11:00 AM"],
-          "2025-11-14": ["09:00 AM", "12:00 PM"],
-          "2025-11-18": ["07:00 AM", "10:00 AM"]
-        }
-      }
-    },
+  // 🛕 Temple / Special Pujas (37-43)
+  { 
+    id: 37, 
+    name: "Rudrabhishek / रुद्राभिषेक", 
+    price: 2200, 
+    category: "Temple / Special Pujas", 
+    img: "images/temple.png",
+    rating: 4.9,
+    reviews: 156,
+    description: "Powerful Shiva abhishekam for health, wealth and spiritual growth.",
+    samagriPrice: 600,
+    completedPujas: 120,
+    duration: "3 hours",
+    requirements: "Shiva Lingam, Milk, Honey, Bilva Leaves",
+    benefits: ["Health & Wealth", "Spiritual Growth", "Negative Energy Removal"]
+  },
+  { 
+    id: 38, 
+    name: "Mahamrityunjaya Jaap / महामृत्युंजय जाप", 
+    price: 2500, 
+    category: "Temple / Special Pujas", 
+    img: "images/temple.png",
+    rating: 4.9,
+    reviews: 134,
+    description: "Powerful mantra chanting for longevity and freedom from diseases.",
+    samagriPrice: 700,
+    completedPujas: 89,
+    duration: "4 hours",
+    requirements: "Specific Yantra, Rudraksha Mala, Sacred Fire",
+    benefits: ["Longevity", "Disease Freedom", "Death Fear Removal"]
+  },
+  { 
+    id: 39, 
+    name: "Bhumi Pujan / भूमि पूजन", 
+    price: 2000, 
+    category: "Temple / Special Pujas", 
+    img: "images/temple.png",
+    rating: 4.8,
+    reviews: 98,
+    description: "Land worship ceremony before construction for prosperity.",
+    samagriPrice: 500,
+    completedPujas: 76,
+    duration: "2.5 hours",
+    requirements: "Land Deed, Kalash, Grains",
+    benefits: ["Construction Safety", "Property Prosperity", "Positive Energy"]
+  },
+  { 
+    id: 40, 
+    name: "Kundali Shanti / कुंडली शांति", 
+    price: 1800, 
+    category: "Temple / Special Pujas", 
+    img: "images/temple.png",
+    rating: 4.7,
+    reviews: 112,
+    description: "Planetary peace puja based on birth chart for life harmony.",
+    samagriPrice: 450,
+    completedPujas: 145,
+    duration: "3 hours",
+    requirements: "Birth Details, Gemstones, Specific Grains",
+    benefits: ["Planetary Harmony", "Life Balance", "Problem Solution"]
+  },
+  { 
+    id: 41, 
+    name: "Upanayan Sanskar / उपनयन संस्कार", 
+    price: 1700, 
+    category: "Temple / Special Pujas", 
+    img: "images/temple.png",
+    rating: 4.8,
+    reviews: 67,
+    description: "Sacred thread ceremony for spiritual initiation of young boys.",
+    samagriPrice: 400,
+    completedPujas: 53,
+    duration: "2 hours",
+    requirements: "Sacred Thread, Deer Skin, Guru Dakshina",
+    benefits: ["Spiritual Initiation", "Knowledge Beginning", "Cultural Heritage"]
+  },
+  { 
+    id: 42, 
+    name: "Kalash Sthapana / कलश स्थापना", 
+    price: 1600, 
+    category: "Temple / Special Pujas", 
+    img: "images/temple.png",
+    rating: 4.7,
+    reviews: 89,
+    description: "Sacred pot installation ceremony for positive energy flow.",
+    samagriPrice: 350,
+    completedPujas: 78,
+    duration: "1.5 hours",
+    requirements: "Brass Pot, Coconut, Mango Leaves",
+    benefits: ["Positive Energy", "Divine Presence", "Ceremony Foundation"]
+  },
+  { 
+    id: 43, 
+    name: "Ayushya Homam / आयुष्य हवन", 
+    price: 1500, 
+    category: "Temple / Special Pujas", 
+    img: "images/temple.png",
+    rating: 4.8,
+    reviews: 102,
+    description: "Long life fire ritual for health, longevity and well-being.",
+    samagriPrice: 400,
+    completedPujas: 95,
+    duration: "2 hours",
+    requirements: "Sacred Fire Setup, Ghee, Medicinal Herbs",
+    benefits: ["Long Life", "Good Health", "Disease Protection"]
+  },
 
-    // 🧾 Others / Custom Options (44-46)
-    { 
-      id: 44, 
-      name: "Personalized Puja Package / व्यक्तिगत पूजा पैकेज", 
-      price: 3000, 
-      category: "Others / Custom Options", 
-      img: "images/temple.png",
-      rating: 4.8,
-      reviews: 23,
-      description: "Customized puja package tailored to your specific needs and requirements.",
-      samagriPrice: 800,
-      completedPujas: 35,
-      duration: "Custom",
-      requirements: "Specific Requirements Discussed",
-      benefits: ["Personalized Solution", "Flexible Timing", "Custom Rituals"],
-      availability: {
-        dates: ["2025-11-05", "2025-11-09", "2025-11-13"],
-        timeSlots: {
-          "2025-11-05": ["Flexible"],
-          "2025-11-09": ["Flexible"],
-          "2025-11-13": ["Flexible"]
-        }
-      }
-    },
-    { 
-      id: 45, 
-      name: "Online Puja Seva / ऑनलाइन पूजा सेवा", 
-      price: 2500, 
-      category: "Others / Custom Options", 
-      img: "images/temple.png",
-      rating: 4.7,
-      reviews: 45,
-      description: "Live online puja service for devotees who cannot visit physically.",
-      samagriPrice: 500,
-      completedPujas: 68,
-      duration: "As per puja",
-      requirements: "Stable Internet, Webcam",
-      benefits: ["Remote Participation", "Live Darshan", "Convenient"],
-      availability: {
-        dates: ["2025-11-06", "2025-11-10", "2025-11-14"],
-        timeSlots: {
-          "2025-11-06": ["Flexible"],
-          "2025-11-10": ["Flexible"],
-          "2025-11-14": ["Flexible"]
-        }
-      }
-    },
-    { 
-      id: 46, 
-      name: "Customized Event Plan / कस्टम इवेंट प्लान", 
-      price: 3500, 
-      category: "Others / Custom Options", 
-      img: "images/temple.png",
-      rating: 4.9,
-      reviews: 32,
-      description: "Complete event planning and management for special occasions.",
-      samagriPrice: 1000,
-      completedPujas: 28,
-      duration: "As per event",
-      requirements: "Event Details, Budget, Guest Count",
-      benefits: ["Stress-free Planning", "Professional Management", "Memorable Event"],
-      availability: {
-        dates: ["2025-11-07", "2025-11-11", "2025-11-15"],
-        timeSlots: {
-          "2025-11-07": ["Flexible"],
-          "2025-11-11": ["Flexible"],
-          "2025-11-15": ["Flexible"]
-        }
+  // 🧾 Others / Custom Options (44-46)
+  { 
+    id: 44, 
+    name: "Personalized Puja Package / व्यक्तिगत पूजा पैकेज", 
+    price: 3000, 
+    category: "Others / Custom Options", 
+    img: "images/temple.png",
+    rating: 4.8,
+    reviews: 23,
+    description: "Customized puja package tailored to your specific needs and requirements.",
+    samagriPrice: 800,
+    completedPujas: 35,
+    duration: "Custom",
+    requirements: "Specific Requirements Discussed",
+    benefits: ["Personalized Solution", "Flexible Timing", "Custom Rituals"]
+  },
+  { 
+    id: 45, 
+    name: "Online Puja Seva / ऑनलाइन पूजा सेवा", 
+    price: 2500, 
+    category: "Others / Custom Options", 
+    img: "images/temple.png",
+    rating: 4.7,
+    reviews: 45,
+    description: "Live online puja service for devotees who cannot visit physically.",
+    samagriPrice: 500,
+    completedPujas: 68,
+    duration: "As per puja",
+    requirements: "Stable Internet, Webcam",
+    benefits: ["Remote Participation", "Live Darshan", "Convenient"]
+  },
+  { 
+    id: 46, 
+    name: "Customized Event Plan / कस्टम इवेंट प्लान", 
+    price: 3500, 
+    category: "Others / Custom Options", 
+    img: "images/temple.png",
+    rating: 4.9,
+    reviews: 32,
+    description: "Complete event planning and management for special occasions.",
+    samagriPrice: 1000,
+    completedPujas: 28,
+    duration: "As per event",
+    requirements: "Event Details, Budget, Guest Count",
+    benefits: ["Stress-free Planning", "Professional Management", "Memorable Event"]
+  }
+], []);
+
+  // Generate time slots from 5:00 AM to 9:00 PM
+  const generateTimeSlots = () => {
+    const timeSlots = [];
+    for (let hour = 5; hour <= 21; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        const time12hr = new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-IN', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
+        });
+        timeSlots.push(time12hr);
       }
     }
-  ], []);
-
-  const getAvailableTimeSlots = (pujaId, selectedDate) => {
-    const puja = pujaList.find(p => p.id === pujaId);
-    if (!puja || !selectedDate) return [];
-    return puja.availability.timeSlots[selectedDate] || [];
+    return timeSlots;
   };
+
+  const allTimeSlots = generateTimeSlots();
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1500);
@@ -1564,8 +1226,7 @@ export default function PujaBooking() {
         (!filters.category || p.category === filters.category) &&
         p.price >= filters.minPrice &&
         p.price <= filters.maxPrice &&
-        p.rating >= filters.minRating &&
-        (!filters.availability || p.availability.dates.includes(filters.availability))
+        p.rating >= filters.minRating
       );
 
       return matchesSearch && matchesFilters;
@@ -1619,7 +1280,7 @@ export default function PujaBooking() {
 
     if (bookingStep === 2) {
       if (!bookingData.date || !bookingData.time) {
-        setValidationError("Please select both a date and an available time slot.");
+        setValidationError("Please select both date and time for your puja.");
         return;
       }
     }
@@ -1687,6 +1348,13 @@ export default function PujaBooking() {
       case "Temple / Special Pujas": return <Temple className="w-4 h-4" />;
       default: return <Sparkles className="w-4 h-4" />;
     }
+  };
+
+  // Get tomorrow's date for calendar min date
+  const getTomorrowDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
   };
 
   return (
@@ -1781,17 +1449,6 @@ export default function PujaBooking() {
                                 <option key={category} value={category}>{category}</option>
                             ))}
                         </select>
-                    </div>
-
-                    {/* Availability Date */}
-                    <div>
-                        <label className="block text-sm font-medium mb-2">Available On</label>
-                        <input
-                            type="date"
-                            min={new Date().toISOString().split('T')[0]}
-                            className="w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white border-gray-300 text-gray-700"
-                            onChange={(e) => handleFilterChange('availability', e.target.value)}
-                        />
                     </div>
 
                     {/* Sort By */}
@@ -2099,7 +1756,7 @@ export default function PujaBooking() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto grid grid-cols-1 lg:grid-col-3 gap-6"
+              className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto grid grid-cols-1 lg:grid-cols-3 gap-6"
             >
                 <div className="lg:col-span-2">
                     <div className="flex justify-between items-center mb-6">
@@ -2187,63 +1844,87 @@ export default function PujaBooking() {
                             <h3 className="text-lg font-semibold text-gray-900">
                                 Step 2: Select Date & Time
                             </h3>
-                            <div className="grid gap-4">
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Date Selection */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Preferred Date
+                                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                                        Select Date <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="border border-gray-300 rounded-lg p-1 bg-white">
+                                        <input
+                                            type="date"
+                                            min={getTomorrowDate()}
+                                            className="w-full p-3 border-none focus:ring-0 focus:outline-none text-gray-700"
+                                            value={bookingData.date}
+                                            onChange={(e) => {
+                                                setBookingData(prev => ({ 
+                                                    ...prev, 
+                                                    date: e.target.value 
+                                                }));
+                                                setValidationError("");
+                                            }}
+                                        />
+                                    </div>
+                                    <p className="text-xs text-gray-500 mt-2">
+                                        Select any date from tomorrow onwards
+                                    </p>
+                                </div>
+
+                                {/* Time Selection */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                                        Select Time <span className="text-red-500">*</span>
                                     </label>
                                     <select
-                                        value={bookingData.date}
+                                        value={bookingData.time}
                                         onChange={(e) => {
-                                            setBookingData(prev => ({ 
-                                                ...prev, 
-                                                date: e.target.value,
-                                                time: "" 
-                                            }));
-                                            setValidationError(""); 
+                                            setBookingData(prev => ({ ...prev, time: e.target.value }));
+                                            setValidationError("");
                                         }}
-                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white"
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-700"
                                     >
-                                        <option value="">Select Date</option>
-                                        {selectedPuja.availability.dates.map(date => (
-                                            <option key={date} value={date}>
-                                                {new Date(date).toLocaleDateString('en-IN', { 
-                                                    weekday: 'long', 
-                                                    year: 'numeric', 
-                                                    month: 'long', 
-                                                    day: 'numeric' 
-                                                })}
+                                        <option value="">Choose your preferred time</option>
+                                        {allTimeSlots.map(timeSlot => (
+                                            <option key={timeSlot} value={timeSlot}>
+                                                {timeSlot}
                                             </option>
                                         ))}
                                     </select>
+                                    <p className="text-xs text-gray-500 mt-2">
+                                        Available: 5:00 AM to 9:00 PM
+                                    </p>
                                 </div>
-                                
-                                {bookingData.date && (
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Available Time Slots
-                                        </label>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            {getAvailableTimeSlots(selectedPuja.id, bookingData.date).map(timeSlot => (
-                                                <button
-                                                    key={timeSlot}
-                                                    onClick={() => {
-                                                        setBookingData(prev => ({ ...prev, time: timeSlot }));
-                                                        setValidationError(""); 
-                                                    }}
-                                                    className={`p-3 rounded-lg border text-center transition-colors ${
-                                                        bookingData.time === timeSlot
-                                                            ? 'bg-amber-600 text-white border-amber-600'
-                                                            : 'border-gray-300 hover:border-amber-500'
-                                                    }`}
-                                                >
-                                                    {timeSlot}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
                             </div>
+
+                            {/* Selected Schedule Display */}
+                            {(bookingData.date || bookingData.time) && (
+                                <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                                    <h4 className="font-semibold text-green-800 mb-2">Your Selected Schedule</h4>
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm">
+                                        {bookingData.date && (
+                                            <div className="flex items-center gap-2">
+                                                <Calendar className="w-4 h-4 text-green-600" />
+                                                <span className="font-medium">
+                                                    {new Date(bookingData.date).toLocaleDateString('en-IN', { 
+                                                        weekday: 'long', 
+                                                        year: 'numeric', 
+                                                        month: 'long', 
+                                                        day: 'numeric' 
+                                                    })}
+                                                </span>
+                                            </div>
+                                        )}
+                                        {bookingData.time && (
+                                            <div className="flex items-center gap-2">
+                                                <Clock className="w-4 h-4 text-green-600" />
+                                                <span className="font-medium">{bookingData.time}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                            
                             <div className="flex gap-3">
                                 <button
                                     onClick={handleBookingBack}
@@ -2258,6 +1939,7 @@ export default function PujaBooking() {
                                             ? 'bg-amber-600 hover:bg-amber-700 text-white'
                                             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                     }`}
+                                    disabled={!bookingData.date || !bookingData.time}
                                 >
                                     Continue to Details
                                 </button>
@@ -2274,7 +1956,7 @@ export default function PujaBooking() {
                             <div className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Complete Address
+                                        Complete Address <span className="text-red-500">*</span>
                                     </label>
                                     <textarea
                                         placeholder="Enter your complete address with landmark..."
@@ -2286,6 +1968,9 @@ export default function PujaBooking() {
                                             setValidationError(""); 
                                         }}
                                     />
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        Please provide complete address for puja arrangements
+                                    </p>
                                 </div>
                                 
                                 <div className="flex items-center gap-3 p-4 border border-amber-300 rounded-xl bg-amber-50">
@@ -2344,8 +2029,49 @@ export default function PujaBooking() {
                             <h3 className="text-lg font-semibold text-gray-900">
                                 Step 4: Confirm Booking
                             </h3>
+                            
+                            {/* Payment Method Selection */}
+                            <div className="bg-white border border-gray-300 rounded-xl p-4">
+                                <h4 className="font-semibold text-gray-900 mb-3">Payment Method</h4>
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-3 p-3 border-2 border-amber-500 rounded-lg bg-amber-50">
+                                        <input
+                                            type="radio"
+                                            id="payOnDelivery"
+                                            name="paymentMethod"
+                                            value="payOnDelivery"
+                                            checked={true}
+                                            onChange={() => {}}
+                                            className="w-5 h-5 text-amber-600 focus:ring-amber-500"
+                                        />
+                                        <label htmlFor="payOnDelivery" className="flex-1">
+                                            <div className="font-semibold text-gray-900">Cash on Delivery</div>
+                                            <div className="text-sm text-gray-600">
+                                                Pay after puja completion - No advance payment required
+                                            </div>
+                                        </label>
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg bg-gray-50 opacity-50">
+                                        <input
+                                            type="radio"
+                                            id="onlinePayment"
+                                            name="paymentMethod"
+                                            value="onlinePayment"
+                                            disabled
+                                            className="w-5 h-5 text-gray-400"
+                                        />
+                                        <label htmlFor="onlinePayment" className="flex-1">
+                                            <div className="font-semibold text-gray-500">Online Payment</div>
+                                            <div className="text-sm text-gray-500">
+                                                Pay securely online (Coming Soon)
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="bg-gray-50 rounded-xl p-4 space-y-3">
-                                
                                 <div className="flex items-start gap-3">
                                     <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
                                     <p className="text-gray-700 font-medium">
@@ -2375,8 +2101,8 @@ export default function PujaBooking() {
                                     onClick={handleBookingComplete}
                                     className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
                                 >
-                                    <CheckCircle className="w-5 h-5" />
-                                    Confirm & Pay (₹{selectedPuja.price + (bookingData.includeSamagri ? selectedPuja.samagriPrice : 0)})
+                                    <MessageSquare className="w-5 h-5" />
+                                    Confirm & Send WhatsApp
                                 </button>
                             </div>
                         </div>
