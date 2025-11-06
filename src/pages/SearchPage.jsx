@@ -131,8 +131,8 @@ export default function SearchPage() {
       {/* 💫 Quick Links */}
       <div className="flex flex-wrap justify-center gap-4 mt-16">
         {[
-          { icon: <FiShoppingBag />, text: "Puja Kits", link: "/puja-kits" },
-          { icon: <FiCalendar />, text: "Book Pandit Ji", link: "/pandit-booking" },
+          { icon: <FiShoppingBag />, text: "Puja Kits", link: "/pujakits" },
+          { icon: <FiCalendar />, text: "Book Pandit Ji", link: "/panditbooking" },
         ].map((btn, i) => (
           <button
             key={i}
