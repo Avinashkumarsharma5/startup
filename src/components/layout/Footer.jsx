@@ -21,7 +21,7 @@ export default function Footer() {
         <div className="flex flex-col items-center md:items-start">
           <div className="flex items-center gap-2">
             <img
-              src="src/assets/images/sanskaraa-logo.png"
+              src="images/sanskaraa-logo.png"
               alt="Sanskaraa"
               className="h-10 w-10 object-contain drop-shadow-[0_0_6px_rgba(255,215,0,0.4)]"
             />
