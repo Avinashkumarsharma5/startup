@@ -371,6 +371,19 @@ function PanchangWidget() {
 
 // ----------------- Search Bar with Voice -----------------
 function AnimatedSearch({ onVoiceSearch }) {
+  const handleSearch = (e) => {
+    if (e.key === "Enter") {
+      const query = e.target.value.trim();
+      if (query) {
+        window.location.href = `/search?query=${encodeURIComponent(query)}`;
+      }
+    }
+  };
+
+  const handleVoiceClick = () => {
+    if (onVoiceSearch) onVoiceSearch();
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -384,8 +397,12 @@ function AnimatedSearch({ onVoiceSearch }) {
           type="text"
           placeholder="Search pujas, pandits..."
           className="ml-2 bg-transparent outline-none text-gray-700 w-full placeholder-gray-400 text-sm sm:text-base"
+          onKeyDown={handleSearch}
         />
-        <button onClick={onVoiceSearch} className="p-1 sm:p-1.5 hover:bg-amber-100 rounded-full transition-colors">
+        <button
+          onClick={handleVoiceClick}
+          className="p-1 sm:p-1.5 hover:bg-amber-100 rounded-full transition-colors"
+        >
           <Mic className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
         </button>
       </div>
