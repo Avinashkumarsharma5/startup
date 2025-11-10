@@ -6,8 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 const kits = [
   // 🏡 Ghar ke Sanskaar
   { id: 1, name: "Griha Pravesh / गृह प्रवेश", price: 1500, category: "Ghar ke Sanskaar", img: "images/pujakit.jpg" },
-  { id: 2, name: "Vastu Shanti / वास्तु शांति", price: 1300, category: "Ghar ke Sanskaar", img: "images/pujakit.jpg" },
-  { id: 3, name: "Navagraha Shanti / नवग्रह शांति", price: 1400, category: "Ghar ke Sanskaar", img: "images/pujakit.jpg" },
+  //{ id: 2, name: "Vastu Shanti / वास्तु शांति", price: 1300, category: "Ghar ke Sanskaar", img: "images/pujakit.jpg" },
+  //{ id: 3, name: "Navagraha Shanti / नवग्रह शांति", price: 1400, category: "Ghar ke Sanskaar", img: "images/pujakit.jpg" },
   { id: 4, name: "Sundarkand Path / सुंदरकांड पाठ", price: 1000, category: "Ghar ke Sanskaar", img: "images/pujakit.jpg" },
   { id: 5, name: "Ramayan Path / रामायण पाठ", price: 1000, category: "Ghar ke Sanskaar", img: "images/pujakit.jpg" },
   { id: 6, name: "Satyanarayan Katha / सत्यनारायण कथा", price: 1200, category: "Ghar ke Sanskaar", img: "images/pujakit.jpg" },
@@ -17,18 +17,18 @@ const kits = [
   { id: 10, name: "Hanuman Chalisa Path / हनुमान चालीसा पाठ", price: 700, category: "Ghar ke Sanskaar", img: "images/pujakit.jpg" },
 
   // 👶 Bacchon ke Sanskaar
-  { id: 11, name: "Naamkaran Sanskar / नामकरण संस्कार", price: 1200, category: "Bacchon ke Sanskaar", img: "images/pujakit2.jpg" },
+  //{ id: 11, name: "Naamkaran Sanskar / नामकरण संस्कार", price: 1200, category: "Bacchon ke Sanskaar", img: "images/pujakit2.jpg" },
   { id: 12, name: "Annaprashan / अन्नप्राशन", price: 1100, category: "Bacchon ke Sanskaar", img: "images/pujakit2.jpg" },
-  { id: 13, name: "Mundan Sanskar / मुंडन संस्कार", price: 1000, category: "Bacchon ke Sanskaar", img: "images/pujakit2.jpg" },
+  //{ id: 13, name: "Mundan Sanskar / मुंडन संस्कार", price: 1000, category: "Bacchon ke Sanskaar", img: "images/pujakit2.jpg" },
   { id: 14, name: "Janamdin Puja / जन्मदिन पूजा", price: 900, category: "Bacchon ke Sanskaar", img: "images/pujakit2.jpg" },
 
   // 💑 Vivah Sanskar
   { id: 15, name: "Vivah / विवाह", price: 2500, category: "Vivah Sanskar", img: "images/pujakit.jpg" },
-  { id: 16, name: "Roka / रोका समारोह", price: 2000, category: "Vivah Sanskar", img: "images/pujakit2.jpg" },
+  //{ id: 16, name: "Roka / रोका समारोह", price: 2000, category: "Vivah Sanskar", img: "images/pujakit2.jpg" },
   { id: 17, name: "Sagai / सगाई", price: 1800, category: "Vivah Sanskar", img: "images/pujakit.jpg" },
   { id: 18, name: "Haldi / हल्दी रस्म", price: 900, category: "Vivah Sanskar", img: "images/pujakit2.jpg" },
-  { id: 19, name: "Mehendi / मेहंदी", price: 1200, category: "Vivah Sanskar", img: "images/pujakit.jpg" },
-  { id: 20, name: "Sangeet / संगीत", price: 1500, category: "Vivah Sanskar", img: "images/pujakit2.jpg" },
+ // { id: 19, name: "Mehendi / मेहंदी", price: 1200, category: "Vivah Sanskar", img: "images/pujakit.jpg" },
+  //{ id: 20, name: "Sangeet / संगीत", price: 1500, category: "Vivah Sanskar", img: "images/pujakit2.jpg" },
   { id: 21, name: "Reception / रिसेप्शन", price: 2000, category: "Vivah Sanskar", img: "images/pujakit.jpg" },
   { id: 22, name: "Wedding Anniversary Puja / विवाह वर्षगांठ पूजा", price: 1500, category: "Vivah Sanskar", img: "images/pujakit2.jpg" },
 
@@ -36,7 +36,7 @@ const kits = [
   { id: 23, name: "Antim Sanskar / अंतिम संस्कार", price: 2000, category: "Pitrakarya", img: "images/pujakit2.jpg" },
   { id: 24, name: "Pind Daan / पिंडदान", price: 1800, category: "Pitrakarya", img: "images/pujakit.jpg" },
   { id: 25, name: "Shraddh / श्राद्ध पूजा", price: 1500, category: "Pitrakarya", img: "images/pujakit2.jpg" },
-  { id: 26, name: "Asthi Visarjan / अस्थि विसर्जन", price: 1300, category: "Pitrakarya", img: "images/pujakit.jpg" },
+ // { id: 26, name: "Asthi Visarjan / अस्थि विसर्जन", price: 1300, category: "Pitrakarya", img: "images/pujakit.jpg" },
   { id: 27, name: "Tehravin / तेरहवीं संस्कार", price: 1200, category: "Pitrakarya", img: "images/pujakit2.jpg" },
 
   // 📿 Festival Pujas
@@ -47,7 +47,7 @@ const kits = [
   { id: 32, name: "Saraswati Puja / सरस्वती पूजा", price: 1000, category: "Festival Pujas", img: "images/pujakit.jpg" },
   { id: 33, name: "Mahashivratri Puja / महाशिवरात्रि पूजा", price: 1100, category: "Festival Pujas", img: "images/pujakit2.jpg" },
   { id: 34, name: "Chhath Puja / छठ पूजा", price: 1000, category: "Festival Pujas", img: "images/pujakit.jpg" },
-  { id: 35, name: "Holi Dahan Puja / होली दहन पूजा", price: 900, category: "Festival Pujas", img: "images/pujakit2.jpg" },
+  //{ id: 35, name: "Holi Dahan Puja / होली दहन पूजा", price: 900, category: "Festival Pujas", img: "images/pujakit2.jpg" },
   { id: 36, name: "Janmashtami Puja / जन्माष्टमी पूजा", price: 1000, category: "Festival Pujas", img: "images/pujakit.jpg" },
 
   // 🛕 Temple / Special Pujas

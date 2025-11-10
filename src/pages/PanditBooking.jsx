@@ -454,7 +454,7 @@ const pujaList = useMemo(() => [
   { 
     id: 1, 
     name: "Griha Pravesh / गृह प्रवेश", 
-    price: 1500, 
+    price: 5100, 
     category: "Ghar ke Sanskaar", 
     img: "images/grihprewespan01.png", 
     rating: 4.8,
@@ -462,29 +462,16 @@ const pujaList = useMemo(() => [
     description: "Sacred house warming ceremony to bring peace, prosperity and positive energy to your new home.",
     samagriPrice: 300,
     completedPujas: 250,
-    duration: "2-3 hours",
+    duration: "1 Day",
+    pandit: 2,
     requirements: "Kalash, Coconut, Flowers, Fruits",
     benefits: ["Peace & Prosperity", "Positive Energy", "Family Harmony"]
   },
-  { 
-    id: 2, 
-    name: "Vastu Shanti / वास्तु शांति", 
-    price: 1300, 
-    category: "Ghar ke Sanskaar", 
-    img: "images/grihprewespan01.png",
-    rating: 4.6,
-    reviews: 32,
-    description: "Vastu correction puja to harmonize your living space with natural energies.",
-    samagriPrice: 400,
-    completedPujas: 120,
-    duration: "2 hours",
-    requirements: "Vastu Purush Drawing, Grains",
-    benefits: ["Energy Balance", "Peaceful Environment", "Positive Vibes"]
-  },
+  
   { 
     id: 3, 
     name: "Navagraha Shanti / नवग्रह शांति", 
-    price: 1400, 
+    price: 1500, 
     category: "Ghar ke Sanskaar", 
     img: "images/grihprewespan01.png",
     rating: 4.7,
@@ -492,14 +479,15 @@ const pujaList = useMemo(() => [
     description: "Planetary peace ceremony to balance the nine planets and remove obstacles.",
     samagriPrice: 500,
     completedPujas: 180,
-    duration: "3 hours",
+    duration: "1 Day",
+    panditji:1,
     requirements: "9 Grains, 9 Flowers, Havan Samagri",
     benefits: ["Planetary Harmony", "Obstacle Removal", "Success in Endeavors"]
   },
   { 
     id: 4, 
     name: "Sundarkand Path / सुंदरकांड पाठ", 
-    price: 1000, 
+    price: 15000, 
     category: "Ghar ke Sanskaar", 
     img: "images/grihprewespan01.png",
     rating: 4.5,
@@ -507,14 +495,14 @@ const pujaList = useMemo(() => [
     description: "Recitation of Sundarkand for success, protection and removal of obstacles.",
     samagriPrice: 250,
     completedPujas: 180,
-    duration: "2 hours",
-    requirements: "Hanuman Chalisa Book, Flowers",
-    benefits: ["Success in Endeavors", "Protection from Evil", "Obstacle Removal"]
+    duration: "1 Day",
+    requirements: "Dj Box, Mic",
+    benefits: ["Music setup", "PanditJi", "singer"]
   },
   { 
     id: 5, 
     name: "Ramayan Path / रामायण पाठ", 
-    price: 1000, 
+    price: 21000, 
     category: "Ghar ke Sanskaar", 
     img: "images/grihprewespan01.png",
     rating: 4.6,
@@ -523,8 +511,8 @@ const pujaList = useMemo(() => [
     samagriPrice: 300,
     completedPujas: 95,
     duration: "7 days",
-    requirements: "Ramayana Book, Aasan",
-    benefits: ["Family Harmony", "Peace & Prosperity", "Spiritual Growth"]
+    requirements: "Dj Box, Mic",
+    benefits: ["Music setup", "PanditJi", "singer"]
   },
   { 
     id: 6, 
