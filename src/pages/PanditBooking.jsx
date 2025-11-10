@@ -517,7 +517,7 @@ const pujaList = useMemo(() => [
   { 
     id: 6, 
     name: "Satyanarayan Katha / सत्यनारायण कथा", 
-    price: 1200, 
+    price: 1500, 
     category: "Ghar ke Sanskaar", 
     img: "images/grihprewespan01.png",
     rating: 4.9,
@@ -532,7 +532,7 @@ const pujaList = useMemo(() => [
   { 
     id: 7, 
     name: "Lakshmi Puja / लक्ष्मी पूजा", 
-    price: 800, 
+    price: 1500, 
     category: "Ghar ke Sanskaar", 
     img: "images/grihprewespan01.png",
     rating: 4.7,
@@ -547,7 +547,7 @@ const pujaList = useMemo(() => [
   { 
     id: 8, 
     name: "Ganesh Puja / गणेश पूजा", 
-    price: 800, 
+    price: 1500, 
     category: "Ghar ke Sanskaar", 
     img: "images/grihprewespan01.png",
     rating: 4.8,
@@ -561,8 +561,8 @@ const pujaList = useMemo(() => [
   },
   { 
     id: 9, 
-    name: "Durga Saptashati / दुर्गा सप्तशती पाठ", 
-    price: 900, 
+    name: "Navratri Puja / नवरात्रि पूजा", 
+    price: 5100, 
     category: "Ghar ke Sanskaar", 
     img: "images/grihprewespan01.png",
     rating: 4.6,
@@ -577,7 +577,7 @@ const pujaList = useMemo(() => [
   { 
     id: 10, 
     name: "Hanuman Chalisa Path / हनुमान चालीसा पाठ", 
-    price: 700, 
+    price: 1500, 
     category: "Ghar ke Sanskaar", 
     img: "images/grihprewespan01.png",
     rating: 4.9,
@@ -585,27 +585,13 @@ const pujaList = useMemo(() => [
     description: "Hanuman Chalisa recitation for protection, strength and courage.",
     samagriPrice: 150,
     completedPujas: 680,
-    duration: "1 hour",
+    duration: "2 hour",
     requirements: "Hanuman Chalisa Book, Sindoor",
     benefits: ["Protection from Evil", "Strength & Courage", "Quick Results"]
   },
 
   // 👶 Bacchon ke Sanskaar (11-14)
-  { 
-    id: 11, 
-    name: "Naamkaran Sanskar / नामकरण संस्कार", 
-    price: 1200, 
-    category: "Bacchon ke Sanskaar", 
-    img: "images/bachhosans02.png",
-    rating: 4.8,
-    reviews: 45,
-    description: "Sacred naming ceremony for newborn babies with Vedic rituals.",
-    samagriPrice: 300,
-    completedPujas: 150,
-    duration: "1.5 hours",
-    requirements: "Baby's Birth Details, Honey, Ghee",
-    benefits: ["Good Health", "Bright Future", "Divine Protection"]
-  },
+
   { 
     id: 12, 
     name: "Annaprashan / अन्नप्राशन", 
@@ -656,7 +642,7 @@ const pujaList = useMemo(() => [
   { 
     id: 15, 
     name: "Vivah / विवाह", 
-    price: 2500, 
+    price: 21000, 
     category: "Vivah Sanskar", 
     img: "images/vivahsans03.png",
     rating: 4.9,
@@ -666,7 +652,7 @@ const pujaList = useMemo(() => [
     completedPujas: 95,
     duration: "6-8 hours",
     requirements: "Wedding Mandap, Sacred Fire Setup",
-    benefits: ["Lifelong Partnership", "Divine Blessings", "Family Unity"]
+    benefits: ["complete sadi", "all event", "Family Unity"]
   },
   { 
     id: 16, 
@@ -686,7 +672,7 @@ const pujaList = useMemo(() => [
   { 
     id: 17, 
     name: "Sagai / सगाई", 
-    price: 1800, 
+    price: 2100, 
     category: "Vivah Sanskar", 
     img: "images/vivahsans03.png",
     rating: 4.6,
@@ -701,7 +687,7 @@ const pujaList = useMemo(() => [
   { 
     id: 18, 
     name: "Haldi / हल्दी रस्म", 
-    price: 900, 
+    price: 2100, 
     category: "Vivah Sanskar", 
     img: "images/vivahsans03.png",
     rating: 4.8,
@@ -716,7 +702,7 @@ const pujaList = useMemo(() => [
   { 
     id: 19, 
     name: "Mehendi / मेहंदी", 
-    price: 1200, 
+    price: 2100, 
     category: "Vivah Sanskar", 
     img: "images/vivahsans03.png",
     rating: 4.7,
@@ -728,25 +714,11 @@ const pujaList = useMemo(() => [
     requirements: "Henna, Decorations, Music",
     benefits: ["Beauty Enhancement", "Joyful Celebration", "Traditional Art"]
   },
-  { 
-    id: 20, 
-    name: "Sangeet / संगीत", 
-    price: 1500, 
-    category: "Vivah Sanskar", 
-    img: "images/vivahsans03.png",
-    rating: 4.9,
-    reviews: 94,
-    description: "Musical night with dance performances and celebrations.",
-    samagriPrice: 500,
-    completedPujas: 67,
-    duration: "4-5 hours",
-    requirements: "Sound System, Decorations, Stage",
-    benefits: ["Entertainment", "Family Bonding", "Memorable Moments"]
-  },
+  
   { 
     id: 21, 
     name: "Reception / रिसेप्शन", 
-    price: 2000, 
+    price: 1100, 
     category: "Vivah Sanskar", 
     img: "images/vivahsans03.png",
     rating: 4.8,
@@ -761,7 +733,7 @@ const pujaList = useMemo(() => [
   { 
     id: 22, 
     name: "Wedding Anniversary Puja / विवाह वर्षगांठ पूजा", 
-    price: 1500, 
+    price: 2100, 
     category: "Vivah Sanskar", 
     img: "images/vivahsans03.png",
     rating: 4.7,
@@ -778,7 +750,7 @@ const pujaList = useMemo(() => [
   { 
     id: 23, 
     name: "Antim Sanskar / अंतिम संस्कार", 
-    price: 2000, 
+    price: 15000, 
     category: "Pitrakarya", 
     img: "images/pitrkry01.png",
     rating: 4.9,
@@ -788,12 +760,12 @@ const pujaList = useMemo(() => [
     completedPujas: 56,
     duration: "3-4 hours",
     requirements: "Sacred Fire Setup, Pinda, Flowers",
-    benefits: ["Peaceful Departure", "Soul Liberation", "Family Closure"]
+    benefits: ["complete work ", "Soul Liberation", "Family Closure"]
   },
   { 
     id: 24, 
     name: "Pind Daan / पिंडदान", 
-    price: 1800, 
+    price: 2100, 
     category: "Pitrakarya", 
     img: "images/pitrkry01.png",
     rating: 4.7,
@@ -808,7 +780,7 @@ const pujaList = useMemo(() => [
   { 
     id: 25, 
     name: "Shraddh / श्राद्ध पूजा", 
-    price: 1500, 
+    price: 2100, 
     category: "Pitrakarya", 
     img: "images/pitrkry01.png",
     rating: 4.6,
@@ -820,21 +792,7 @@ const pujaList = useMemo(() => [
     requirements: "Ancestors Details, Rice, Flowers",
     benefits: ["Ancestors Blessings", "Family Protection", "Peace to Departed Souls"]
   },
-  { 
-    id: 26, 
-    name: "Asthi Visarjan / अस्थि विसर्जन", 
-    price: 1300, 
-    category: "Pitrakarya", 
-    img: "images/pitrkry01.png",
-    rating: 4.8,
-    reviews: 23,
-    description: "Sacred immersion of ashes in holy river with rituals.",
-    samagriPrice: 300,
-    completedPujas: 31,
-    duration: "2 hours",
-    requirements: "Ashes, Holy Water, Flowers",
-    benefits: ["Final Liberation", "Soul Peace", "Completion of Rituals"]
-  },
+  
   { 
     id: 27, 
     name: "Tehravin / तेरहवीं संस्कार", 
@@ -855,7 +813,7 @@ const pujaList = useMemo(() => [
   { 
     id: 28, 
     name: "Karwa Chauth Puja / करवा चौथ पूजा", 
-    price: 900, 
+    price: 1500, 
     category: "Festival Pujas", 
     img: "images/karwachauth.png",
     rating: 4.8,
@@ -870,7 +828,7 @@ const pujaList = useMemo(() => [
   { 
     id: 29, 
     name: "Diwali Lakshmi Ganesh Puja / दिवाली लक्ष्मी गणेश पूजा", 
-    price: 1200, 
+    price: 2100, 
     category: "Festival Pujas", 
     img: "images/karwachauth.png",
     rating: 4.9,
@@ -882,25 +840,26 @@ const pujaList = useMemo(() => [
     requirements: "Lakshmi-Ganesh Idols, Diyas, Sweets",
     benefits: ["Wealth & Prosperity", "Obstacle Removal", "Auspicious Beginning"]
   },
+  
   { 
-    id: 30, 
-    name: "Raksha Bandhan / रक्षा बंधन पूजा", 
-    price: 800, 
+    id: 31, 
+    name: "Navratri Puja / नवरात्रि पूजा", 
+    price: 11000, 
     category: "Festival Pujas", 
     img: "images/karwachauth.png",
-    rating: 4.7,
-    reviews: 178,
-    description: "Brother-sister bond celebration with sacred thread tying ritual.",
-    samagriPrice: 200,
-    completedPujas: 290,
-    duration: "1 hour",
-    requirements: "Rakhi, Sweets, Rice",
-    benefits: ["Brother Protection", "Sister Love", "Family Bonding"]
+    rating: 4.8,
+    reviews: 195,
+    description: "Nine nights goddess worship for power, protection and blessings.",
+    samagriPrice: 350,
+    completedPujas: 320,
+    duration: "9 days",
+    requirements: "Goddess Idol, Kalash, Flowers",
+    benefits: ["Divine Power", "Protection from Evil", "Spiritual Growth"]
   },
   { 
     id: 31, 
     name: "Navratri Puja / नवरात्रि पूजा", 
-    price: 1000, 
+    price: 21000, 
     category: "Festival Pujas", 
     img: "images/karwachauth.png",
     rating: 4.8,
@@ -915,7 +874,7 @@ const pujaList = useMemo(() => [
   { 
     id: 32, 
     name: "Saraswati Puja / सरस्वती पूजा", 
-    price: 1000, 
+    price: 2100, 
     category: "Festival Pujas", 
     img: "images/karwachauth.png",
     rating: 4.7,
@@ -927,25 +886,11 @@ const pujaList = useMemo(() => [
     requirements: "Saraswati Idol, Books, Musical Instruments",
     benefits: ["Knowledge & Wisdom", "Academic Success", "Creative Skills"]
   },
-  { 
-    id: 33, 
-    name: "Mahashivratri Puja / महाशिवरात्रि पूजा", 
-    price: 1100, 
-    category: "Festival Pujas", 
-    img: "images/karwachauth.png",
-    rating: 4.9,
-    reviews: 267,
-    description: "Great night of Shiva worship for spiritual growth and liberation.",
-    samagriPrice: 400,
-    completedPujas: 380,
-    duration: "All night",
-    requirements: "Shiva Lingam, Milk, Bilva Leaves",
-    benefits: ["Spiritual Awakening", "Moksha", "Negative Energy Removal"]
-  },
+  
   { 
     id: 34, 
     name: "Chhath Puja / छठ पूजा", 
-    price: 1000, 
+    price: 2500, 
     category: "Festival Pujas", 
     img: "images/karwachauth.png",
     rating: 4.8,
@@ -957,25 +902,11 @@ const pujaList = useMemo(() => [
     requirements: "Bamboo Basket, Fruits, Sugarcane",
     benefits: ["Health & Longevity", "Progeny Blessings", "Family Prosperity"]
   },
-  { 
-    id: 35, 
-    name: "Holi Dahan Puja / होली दहन पूजा", 
-    price: 900, 
-    category: "Festival Pujas", 
-    img: "images/karwachauth.png",
-    rating: 4.7,
-    reviews: 156,
-    description: "Holika dahan ceremony for victory of good over evil.",
-    samagriPrice: 250,
-    completedPujas: 210,
-    duration: "1.5 hours",
-    requirements: "Wood Pyre, Coconut, Flowers",
-    benefits: ["Victory of Good", "Evil Destruction", "New Beginnings"]
-  },
+  
   { 
     id: 36, 
     name: "Janmashtami Puja / जन्माष्टमी पूजा", 
-    price: 1000, 
+    price: 1100, 
     category: "Festival Pujas", 
     img: "images/karwachauth.png",
     rating: 4.9,
@@ -991,8 +922,23 @@ const pujaList = useMemo(() => [
   // 🛕 Temple / Special Pujas (37-43)
   { 
     id: 37, 
-    name: "Rudrabhishek / रुद्राभिषेक", 
-    price: 2200, 
+    name: "Rudrabhishek / रुद्राभिषेक(normal)", 
+    price: 5100, 
+    category: "Temple / Special Pujas", 
+    img: "images/temple.png",
+    rating: 4.9,
+    reviews: 156,
+    description: "Powerful Shiva abhishekam for health, wealth and spiritual growth.",
+    samagriPrice: 600,
+    completedPujas: 120,
+    duration: "3 hours",
+    requirements: "Shiva Lingam, Milk, Honey, Bilva Leaves",
+    benefits: ["Health & Wealth", "Spiritual Growth", "Negative Energy Removal"]
+  },
+  { 
+    id: 37, 
+    name: "Rudrabhishek / रुद्राभिषेक (sangitmaye)", 
+    price: 11000, 
     category: "Temple / Special Pujas", 
     img: "images/temple.png",
     rating: 4.9,
@@ -1007,22 +953,22 @@ const pujaList = useMemo(() => [
   { 
     id: 38, 
     name: "Mahamrityunjaya Jaap / महामृत्युंजय जाप", 
-    price: 2500, 
+    price: 35000, 
     category: "Temple / Special Pujas", 
     img: "images/temple.png",
     rating: 4.9,
     reviews: 134,
     description: "Powerful mantra chanting for longevity and freedom from diseases.",
-    samagriPrice: 700,
+    samagriPrice: 15000,
     completedPujas: 89,
-    duration: "4 hours",
+    duration: "7 pandit ji 5 day",
     requirements: "Specific Yantra, Rudraksha Mala, Sacred Fire",
     benefits: ["Longevity", "Disease Freedom", "Death Fear Removal"]
   },
   { 
     id: 39, 
     name: "Bhumi Pujan / भूमि पूजन", 
-    price: 2000, 
+    price: 1500, 
     category: "Temple / Special Pujas", 
     img: "images/temple.png",
     rating: 4.8,
@@ -1034,21 +980,7 @@ const pujaList = useMemo(() => [
     requirements: "Land Deed, Kalash, Grains",
     benefits: ["Construction Safety", "Property Prosperity", "Positive Energy"]
   },
-  { 
-    id: 40, 
-    name: "Kundali Shanti / कुंडली शांति", 
-    price: 1800, 
-    category: "Temple / Special Pujas", 
-    img: "images/temple.png",
-    rating: 4.7,
-    reviews: 112,
-    description: "Planetary peace puja based on birth chart for life harmony.",
-    samagriPrice: 450,
-    completedPujas: 145,
-    duration: "3 hours",
-    requirements: "Birth Details, Gemstones, Specific Grains",
-    benefits: ["Planetary Harmony", "Life Balance", "Problem Solution"]
-  },
+  
   { 
     id: 41, 
     name: "Upanayan Sanskar / उपनयन संस्कार", 
@@ -1067,7 +999,7 @@ const pujaList = useMemo(() => [
   { 
     id: 42, 
     name: "Kalash Sthapana / कलश स्थापना", 
-    price: 1600, 
+    price:2500, 
     category: "Temple / Special Pujas", 
     img: "images/temple.png",
     rating: 4.7,
@@ -1099,7 +1031,7 @@ const pujaList = useMemo(() => [
   { 
     id: 44, 
     name: "Personalized Puja Package / व्यक्तिगत पूजा पैकेज", 
-    price: 3000, 
+    price: 1500, 
     category: "Others / Custom Options", 
     img: "images/temple.png",
     rating: 4.8,
@@ -1107,14 +1039,14 @@ const pujaList = useMemo(() => [
     description: "Customized puja package tailored to your specific needs and requirements.",
     samagriPrice: 800,
     completedPujas: 35,
-    duration: "Custom",
+    duration: "1 day",
     requirements: "Specific Requirements Discussed",
     benefits: ["Personalized Solution", "Flexible Timing", "Custom Rituals"]
   },
   { 
     id: 45, 
     name: "Online Puja Seva / ऑनलाइन पूजा सेवा", 
-    price: 2500, 
+    price: 1100, 
     category: "Others / Custom Options", 
     img: "images/temple.png",
     rating: 4.7,
@@ -1122,14 +1054,14 @@ const pujaList = useMemo(() => [
     description: "Live online puja service for devotees who cannot visit physically.",
     samagriPrice: 500,
     completedPujas: 68,
-    duration: "As per puja",
+    duration: "1 hr",
     requirements: "Stable Internet, Webcam",
     benefits: ["Remote Participation", "Live Darshan", "Convenient"]
   },
   { 
     id: 46, 
     name: "Customized Event Plan / कस्टम इवेंट प्लान", 
-    price: 3500, 
+    price: 1500, 
     category: "Others / Custom Options", 
     img: "images/temple.png",
     rating: 4.9,
@@ -1137,7 +1069,7 @@ const pujaList = useMemo(() => [
     description: "Complete event planning and management for special occasions.",
     samagriPrice: 1000,
     completedPujas: 28,
-    duration: "As per event",
+    duration: "1500 pr day",
     requirements: "Event Details, Budget, Guest Count",
     benefits: ["Stress-free Planning", "Professional Management", "Memorable Event"]
   }
