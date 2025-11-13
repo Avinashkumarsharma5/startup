@@ -322,16 +322,21 @@ export default function BookingsPage() {
 
     // Filter and sort bookings
     const filteredBookings = bookings
-        .filter(booking => {
-            const matchesSearch = 
-                booking.event.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                booking.pandit.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                booking.service.toLowerCase().includes(searchTerm.toLowerCase());
-            
-            const matchesStatus = statusFilter === "All" || booking.status === statusFilter;
-            
-            return matchesSearch && matchesStatus;
-        })
+    .filter(booking => {
+        const event = booking.event?.toLowerCase() || "";
+        const pandit = booking.pandit?.name?.toLowerCase() || "";
+        const service = booking.service?.toLowerCase() || "";
+        const search = searchTerm.toLowerCase();
+
+        const matchesSearch =
+            event.includes(search) ||
+            pandit.includes(search) ||
+            service.includes(search);
+
+        const matchesStatus = statusFilter === "All" || booking.status === statusFilter;
+        return matchesSearch && matchesStatus;
+    })
+
         .sort((a, b) => {
             switch (sortBy) {
                 case "date":
@@ -581,7 +586,8 @@ export default function BookingsPage() {
                                             <div className="space-y-3 text-sm mb-4">
                                                 <div className="flex items-center gap-3">
                                                     <User className="w-4 h-4 text-[#800000] flex-shrink-0" />
-                                                    <span className="font-semibold">Pandit:</span> {booking.pandit.name}
+                                                    <span className="font-semibold">Pandit:</span> {booking?.pandit?.name || "Unknown"}
+
                                                     {/* Optional: Pandit Image */}
                                                 </div>
                                                 <div className="flex items-center gap-3">
