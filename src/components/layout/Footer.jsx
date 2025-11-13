@@ -45,7 +45,7 @@ export default function Footer() {
         {/* Contact Info */}
         <div className="text-sm leading-relaxed space-y-1">
           <p className="flex items-center justify-center md:justify-start gap-2">
-            <MapPin className="w-4 h-4" /> Patna, Bihar, India
+            <MapPin className="w-4 h-4" /> Ranchi, India
           </p>
           <p className="flex items-center justify-center md:justify-start gap-2">
             <Phone className="w-4 h-4" />
@@ -53,7 +53,7 @@ export default function Footer() {
               href="tel:+919876543210"
               className="hover:text-[#FFC107] transition"
             >
-              +91 98765 43210
+              +91 6201486202
             </a>
           </p>
           <p className="flex items-center justify-center md:justify-start gap-2">
@@ -62,7 +62,7 @@ export default function Footer() {
               href="mailto:support@sanskaraa.com"
               className="hover:text-[#FFC107] transition"
             >
-              support@sanskaraa.com
+              support@sanskaraa.net@gmail.com
             </a>
           </p>
         </div>
