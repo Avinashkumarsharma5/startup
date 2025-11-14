@@ -21,7 +21,7 @@ import VendorRegistration from "./components/layout/VendorRegistration";
 import SanskaraaNotifications from "./pages/Notification";
 import CartPage from "./components/layout/CartPage";
 import ForgetPassword from "./pages/ForgetPassword";
-
+import Alphastore from "./pages/alphastore";
 
 export default function App() {
   const location = useLocation();
@@ -44,7 +44,7 @@ export default function App() {
           <Route path="/pujakits" element={<PujaKits />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-   
+          <Route path="/Alphastore" element={<Alphastore />} />
           <Route path="/panditbooking" element={<PanditBooking />} />
           <Route path="/EventsPage" element={<EventsPage />} />
           
