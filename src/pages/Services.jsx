@@ -21,7 +21,7 @@ export default function EventKitsPage() {
         className="bg-[#fff3e0] border border-amber-200 rounded-3xl shadow-lg p-10 max-w-3xl w-full text-center"
       >
         <h2 className="text-3xl font-extrabold text-[#8b0000] mb-3 flex items-center justify-center gap-2">
-          🎉 <span>More Services Coming Soon!</span>
+           <span>More Services Coming Soon!</span>
         </h2>
         <p className="text-gray-700 mb-8 text-base">
           We’re preparing something exciting for you! Until then, explore our available services below 👇
