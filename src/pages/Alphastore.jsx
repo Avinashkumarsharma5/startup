@@ -677,7 +677,7 @@ _This order is placed via Sanskaraa AlphaStore (Puja Essentials)._`;
             <FiCheckCircle className="text-green-600 w-8 h-8 sm:w-9 sm:h-9" />
           </div>
           <div className="mt-2 text-xs sm:text-sm text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
-            AlphaStore • Puja Essentials
+            Sanskaraa • Puja Essentials
           </div>
         </div>
 
@@ -952,7 +952,7 @@ export default function Alphastore() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-6 sm:mt-10">
           <div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#800000] font-serif">
-              Sanskaraa AlphaStore
+              Sanskaraa
             </h1>
             <p className="text-xs sm:text-sm text-[#800000] mt-1">
               Daily puja essentials – Nariyal, Agarbatti, Kapoor & more
