@@ -65,6 +65,50 @@ const kits = [
   { id: 46, name: "Customized Event Plan / कस्टम इवेंट प्लान", price: 3500, category: "Others / Custom Options", img: "images/pujakit.jpg" },
 ];
 
+const comboPacks = [
+  {
+    id: 1,
+    name: "Festival Combo Pack",
+    price: 1999,
+    originalPrice: 2799,
+    img: "images/pujakit.jpg",
+    items: [
+      "Lakshmi Puja Kit",
+      "Ganesh Puja Kit",
+      "Dhoop & Agarbatti Pack",
+      "Brass Diya Set"
+    ],
+    subscription: false
+  },
+  {
+    id: 2,
+    name: "Monthly Puja Essentials",
+    price: 1499,
+    originalPrice: 1999,
+    img: "images/pujakit2.jpg",
+    items: [
+      "Agarbatti Pack",
+      "Ghee Diya Set",
+      "Panchamrit Kit",
+      "Fresh Flowers"
+    ],
+    subscription: true
+  },
+  {
+    id: 3,
+    name: "Home Rituals Combo",
+    price: 2499,
+    originalPrice: 3299,
+    img: "images/pujakit.jpg",
+    items: [
+      "Satyanarayan Kit",
+      "Ganesh Puja Kit",
+      "Haldi Kumkum Pack",
+      "Kalash Set"
+    ],
+    subscription: false
+  }
+];
 const categories = [
   "All",
   "Ghar ke Sanskaar",
