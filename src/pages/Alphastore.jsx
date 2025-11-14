@@ -21,86 +21,70 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // ----------------- Mock Data: AlphaStore Products -----------------
 const products = [
-  {
-    id: 1,
-    name: "Nariyal / नारियल",
-    price: 40,
-    category: "Fruits & Offerings",
-    unit: "पीस",
-    img: "images/nariyal.jpg",
-  },
-  {
-    id: 2,
-    name: "Agarbatti Pack / अगरबत्ती",
-    price: 30,
-    category: "Fragrance",
-    unit: "पैक",
-    img: "images/agarbatti.jpg",
-  },
-  {
-    id: 3,
-    name: "Dhoop Sticks / धूप",
-    price: 35,
-    category: "Fragrance",
-    unit: "पैक",
-    img: "images/dhoop.jpg",
-  },
-  {
-    id: 4,
-    name: "Kapoor / कपूर",
-    price: 25,
-    category: "Havan & Aarti",
-    unit: "पैक",
-    img: "images/kapoor.jpg",
-  },
-  {
-    id: 5,
-    name: "Ghee Batti / घी बत्ती",
-    price: 50,
-    category: "Deepak & Diya",
-    unit: "बॉक्स",
-    img: "images/ghee-batti.jpg",
-  },
-  {
-    id: 6,
-    name: "Matchbox / माचिस",
-    price: 10,
-    category: "Others",
-    unit: "पीस",
-    img: "images/matchbox.jpg",
-  },
-  {
-    id: 7,
-    name: "Roli / रोली",
-    price: 15,
-    category: "Tilak & Kumkum",
-    unit: "पैक",
-    img: "images/roli.jpg",
-  },
-  {
-    id: 8,
-    name: "Chawal (Akshat) / चावल",
-    price: 20,
-    category: "Tilak & Kumkum",
-    unit: "पैक",
-    img: "images/chawal.jpg",
-  },
-  {
-    id: 9,
-    name: "Flower Garland / फूल माला",
-    price: 80,
-    category: "Fruits & Offerings",
-    unit: "पीस",
-    img: "images/garland.jpg",
-  },
-  {
-    id: 10,
-    name: "Panchamrit Pack / पंचामृत",
-    price: 60,
-    category: "Prasad",
-    unit: "पैक",
-    img: "images/panchamrit.jpg",
-  },
+  // -------- Fruits & Offerings --------
+  { id: 1, name: "Nariyal / नारियल", price: 40, category: "Fruits & Offerings", unit: "पीस", img: "images/nariyal.jpg" },
+  { id: 2, name: "Banana / केला", price: 10, category: "Fruits & Offerings", unit: "पीस", img: "images/banana.jpg" },
+  { id: 3, name: "Apple / सेब", price: 30, category: "Fruits & Offerings", unit: "पीस", img: "images/apple.jpg" },
+  { id: 4, name: "Pomegranate / अनार", price: 60, category: "Fruits & Offerings", unit: "पीस", img: "images/pomegranate.jpg" },
+  { id: 5, name: "Flower Garland / फूल माला", price: 80, category: "Fruits & Offerings", unit: "पीस", img: "images/garland.jpg" },
+  { id: 6, name: "Marigold Flowers / गेंदे के फूल", price: 50, category: "Fruits & Offerings", unit: "गुच्छा", img: "images/marigold.jpg" },
+  { id: 7, name: "Rose Petals / गुलाब की पंखुड़ी", price: 30, category: "Fruits & Offerings", unit: "पैक", img: "images/rose.jpg" },
+
+  // -------- Fragrance --------
+  { id: 8, name: "Agarbatti / अगरबत्ती", price: 30, category: "Fragrance", unit: "पैक", img: "images/agarbatti.jpg" },
+  { id: 9, name: "Dhoop Sticks / धूप", price: 35, category: "Fragrance", unit: "पैक", img: "images/dhoop.jpg" },
+  { id: 10, name: "Guggal / गुग्गुल", price: 40, category: "Fragrance", unit: "पैक", img: "images/guggal.jpg" },
+  { id: 11, name: "Loban / लोबान", price: 30, category: "Fragrance", unit: "पैक", img: "images/loban.jpg" },
+
+  // -------- Havan & Aarti --------
+  { id: 12, name: "Kapoor / कपूर", price: 25, category: "Havan & Aarti", unit: "पैक", img: "images/kapoor.jpg" },
+  { id: 13, name: "Havan Samagri / हवन सामग्री", price: 60, category: "Havan & Aarti", unit: "पैक", img: "images/havan.jpg" },
+  { id: 14, name: "Samidha Sticks / समिधा", price: 30, category: "Havan & Aarti", unit: "बंडल", img: "images/samidha.jpg" },
+  { id: 15, name: "Ghee Bottle / घी", price: 120, category: "Havan & Aarti", unit: "100ml", img: "images/ghee.jpg" },
+  { id: 16, name: "Camphor Tablets / कपूर टेबलेट", price: 40, category: "Havan & Aarti", unit: "पैक", img: "images/camphor.jpg" },
+
+  // -------- Deepak & Diya --------
+  { id: 17, name: "Ghee Batti / घी बत्ती", price: 50, category: "Deepak & Diya", unit: "बॉक्स", img: "images/ghee-batti.jpg" },
+  { id: 18, name: "Cotton Wick / बाती", price: 20, category: "Deepak & Diya", unit: "पैक", img: "images/batti.jpg" },
+  { id: 19, name: "Clay Diya / मिट्टी का दिया", price: 10, category: "Deepak & Diya", unit: "पीस", img: "images/diya.jpg" },
+  { id: 20, name: "Brass Diya / पीतल का दिया", price: 80, category: "Deepak & Diya", unit: "पीस", img: "images/brass-diya.jpg" },
+
+  // -------- Tilak & Kumkum --------
+  { id: 21, name: "Roli / रोली", price: 15, category: "Tilak & Kumkum", unit: "पैक", img: "images/roli.jpg" },
+  { id: 22, name: "Chawal (Akshat) / अक्षत", price: 20, category: "Tilak & Kumkum", unit: "पैक", img: "images/chawal.jpg" },
+  { id: 23, name: "Sindoor / सिंदूर", price: 20, category: "Tilak & Kumkum", unit: "डिब्बा", img: "images/sindoor.jpg" },
+  { id: 24, name: "Haldi Powder / हल्दी", price: 20, category: "Tilak & Kumkum", unit: "पैक", img: "images/haldi.jpg" },
+  { id: 25, name: "Kumkum / कुमकुम", price: 20, category: "Tilak & Kumkum", unit: "पैक", img: "images/kumkum.jpg" },
+
+  // -------- Prasad --------
+  { id: 26, name: "Panchamrit Pack / पंचामृत", price: 60, category: "Prasad", unit: "पैक", img: "images/panchamrit.jpg" },
+  { id: 27, name: "Mishri / मिश्री", price: 20, category: "Prasad", unit: "पैक", img: "images/mishri.jpg" },
+  { id: 28, name: "Dry Fruits Mix / ड्राई फ्रूट्स", price: 70, category: "Prasad", unit: "पैक", img: "images/dryfruits.jpg" },
+  { id: 29, name: "Laddu Prasad / लड्डू प्रसाद", price: 50, category: "Prasad", unit: "डिब्बा", img: "images/laddu.jpg" },
+  { id: 30, name: "Jaggery / गुड़", price: 30, category: "Prasad", unit: "पैक", img: "images/jaggery.jpg" },
+
+  // -------- Puja Cloth Items --------
+  { id: 31, name: "Red Cloth / लाल कपड़ा", price: 40, category: "Others", unit: "मीटर", img: "images/redcloth.jpg" },
+  { id: 32, name: "Yellow Cloth / पीला कपड़ा", price: 40, category: "Others", unit: "मीटर", img: "images/yellowcloth.jpg" },
+  { id: 33, name: "Dupatta Chunri / चुनरी", price: 50, category: "Others", unit: "पीस", img: "images/chunri.jpg" },
+
+  // -------- Puja Utensils --------
+  { id: 34, name: "Puja Bell / घंटी", price: 60, category: "Others", unit: "पीस", img: "images/bell.jpg" },
+  { id: 35, name: "Kalash / कलश", price: 120, category: "Others", unit: "पीस", img: "images/kalash.jpg" },
+  { id: 36, name: "Steel Plate / थाली", price: 80, category: "Others", unit: "पीस", img: "images/plate.jpg" },
+
+  // -------- Special Puja Items --------
+  { id: 37, name: "Gangajal / गंगाजल", price: 25, category: "Others", unit: "बोतल", img: "images/gangajal.jpg" },
+  { id: 38, name: "Honey / शहद", price: 30, category: "Others", unit: "बोतल", img: "images/honey.jpg" },
+  { id: 39, name: "Black Sesame / काला तिल", price: 20, category: "Others", unit: "पैक", img: "images/til.jpg" },
+  { id: 40, name: "Sugar / शक्कर", price: 20, category: "Others", unit: "पैक", img: "images/sugar.jpg" },
+
+  // -------- Miscellaneous --------
+  { id: 41, name: "Matchbox / माचिस", price: 10, category: "Others", unit: "पीस", img: "images/matchbox.jpg" },
+  { id: 42, name: "Moli / मौली", price: 10, category: "Others", unit: "रोल", img: "images/moli.jpg" },
+  { id: 43, name: "Supari / सुपारी", price: 15, category: "Others", unit: "पैक", img: "images/supari.jpg" },
+  { id: 44, name: "Betel Leaves / पान के पत्ते", price: 10, category: "Others", unit: "पीस", img: "images/betel.jpg" },
+  { id: 45, name: "Camphor Oil / कपूर तेल", price: 50, category: "Others", unit: "बोतल", img: "images/camphoroil.jpg" }
 ];
 
 const categories = [
