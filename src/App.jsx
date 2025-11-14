@@ -9,6 +9,7 @@ import Services from "./pages/Services";
 import PujaKits from "./pages/PujaKits";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+
 import PanditBooking from "./pages/PanditBooking";
 import EventsPage from "./pages/EventsPage";
 import BookingsPage from "./pages/BookingsPage";
@@ -43,7 +44,7 @@ export default function App() {
           <Route path="/pujakits" element={<PujaKits />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-    
+   
           <Route path="/panditbooking" element={<PanditBooking />} />
           <Route path="/EventsPage" element={<EventsPage />} />
           
