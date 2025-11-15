@@ -198,74 +198,74 @@ const OrderWizardModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex justify-between items-center mb-4 sm:mb-5">
-          <div>
-            <h2 className="text-lg sm:text-xl font-bold text-rose-800 flex items-center gap-2">
-              <FiShoppingCart />
-              {mode === "single" ? "Quick Order" : "Complete Cart Order"}
-            </h2>
-            <p className="text-xs sm:text-sm text-gray-500">
-              Daily puja items home delivery – address & delivery slot choose karein
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-rose-600 text-xl p-1"
+<div className="flex justify-between items-center mb-4 sm:mb-5 mt-12">
+  <div>
+    <h2 className="text-lg sm:text-xl font-bold text-rose-800 flex items-center gap-2">
+      <FiShoppingCart />
+      {mode === "single" ? "Quick Order" : "Complete Cart Order"}
+    </h2>
+    <p className="text-xs sm:text-sm text-gray-500">
+      Daily puja items home delivery – address & delivery slot choose karein
+    </p>
+  </div>
+  <button
+    onClick={onClose}
+    className="text-gray-500 hover:text-rose-600 text-xl p-1"
+  >
+    <FiX />
+  </button>
+</div>
+
+       {/* Step Indicator */}
+<div className="mb-4 sm:mb-6 ">
+  <div className="flex items-center justify-between mb-2">
+    {[{ no: 1, label: "Address" }, { no: 2, label: "Delivery Slot" }, { no: 3, label: "Review" }].map(
+      (s) => (
+        <div key={s.no} className="flex-1 flex flex-col items-center">
+          <div
+            className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 text-xs sm:text-sm ${
+              step >= s.no
+                ? "bg-rose-600 border-rose-600 text-white"
+                : "border-gray-300 text-gray-300"
+            }`}
           >
-            <FiX />
-          </button>
-        </div>
-
-        {/* Step Indicator */}
-        <div className="mb-4 sm:mb-6">
-          <div className="flex items-center justify-between mb-2">
-            {[
-              { no: 1, label: "Address" },
-              { no: 2, label: "Delivery Slot" },
-              { no: 3, label: "Review" },
-            ].map((s) => (
-              <div key={s.no} className="flex-1 flex flex-col items-center">
-                <div
-                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 text-xs sm:text-sm ${
-                    step >= s.no
-                      ? "bg-rose-600 border-rose-600 text-white"
-                      : "border-gray-300 text-gray-300"
-                  }`}
-                >
-                  {step > s.no ? <FiCheckCircle /> : s.no}
-                </div>
-                <span
-                  className={`mt-1 text-[11px] sm:text-xs ${
-                    step >= s.no ? "text-rose-700 font-semibold" : "text-gray-400"
-                  }`}
-                >
-                  {s.label}
-                </span>
-              </div>
-            ))}
+            {step > s.no ? <FiCheckCircle /> : s.no}
           </div>
-          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-rose-600"
-              initial={{ width: "0%" }}
-              animate={{ width: `${((step - 1) / 2) * 100}%` }}
-              transition={{ duration: 0.3 }}
-            />
-          </div>
+          <span
+            className={`mt-1 text-[11px] sm:text-xs ${
+              step >= s.no ? "text-rose-700 font-semibold" : "text-gray-400"
+            }`}
+          >
+            {s.label}
+          </span>
         </div>
+      )
+    )}
+  </div>
 
-        {/* Steps */}
-        <div className="min-h-[260px] sm:min-h-[320px]">
-          <AnimatePresence mode="wait">
-            {/* STEP 1: Address */}
-            {step === 1 && (
-              <motion.div
-                key="step1"
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
-                className="space-y-3 sm:space-y-4"
-              >
+  <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+    <motion.div
+      className="h-full bg-rose-600"
+      initial={{ width: "0%" }}
+      animate={{ width: `${((step - 1) / 2) * 100}%` }}
+      transition={{ duration: 0.3 }}
+    />
+  </div>
+</div>
+
+       {/* Steps */}
+<div className="min-h-[260px] sm:min-h-[320px] ">
+  <AnimatePresence mode="wait">
+
+    {/* STEP 1 */}
+    {step === 1 && (
+      <motion.div
+        key="step1"
+        initial={{ opacity: 0, x: 40 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -40 }}
+        className="space-y-3 sm:space-y-4"
+      >
                 <h3 className="text-sm sm:text-base font-semibold text-rose-800 flex items-center gap-2">
                   <FiMapPin />
                   Delivery Address Details
@@ -380,13 +380,13 @@ const OrderWizardModal = ({
 
             {/* STEP 2: Delivery Slot */}
             {step === 2 && (
-              <motion.div
-                key="step2"
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
-                className="space-y-3 sm:space-y-4"
-              >
+      <motion.div
+        key="step2"
+        initial={{ opacity: 0, x: 40 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -40 }}
+        className="space-y-3 sm:space-y-4"
+      >
                 <h3 className="text-sm sm:text-base font-semibold text-rose-800 flex items-center gap-2">
                   <FiCalendar />
                   Delivery Date & Time Slot
@@ -440,14 +440,14 @@ const OrderWizardModal = ({
             )}
 
             {/* STEP 3: Review */}
-            {step === 3 && (
-              <motion.div
-                key="step3"
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
-                className="space-y-3 sm:space-y-4"
-              >
+           {step === 3 && (
+      <motion.div
+        key="step3"
+        initial={{ opacity: 0, x: 40 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -40 }}
+        className="space-y-3 sm:space-y-4"
+      >
                 <h3 className="text-sm sm:text-base font-semibold text-rose-800">
                   Review Your Order
                 </h3>
@@ -539,7 +539,7 @@ const OrderWizardModal = ({
                   </div>
                 </div>
 
-                <div className="bg-green-50 border border-green-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs text-green-800 flex items-start gap-2">
+                <div className="bg-green-50 border border-green-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs text-green-800 flex items-start gap-2 ">
                   <FiShield className="mt-0.5" />
                   <span>
                     Payment integration (UPI / Card / COD) Alpha version me test
@@ -552,30 +552,37 @@ const OrderWizardModal = ({
         </div>
 
         {/* Footer Buttons */}
-        <div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-100 mt-3 sm:mt-4">
-          {step > 1 && (
-            <button
-              onClick={() => setStep((s) => s - 1)}
-              className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg border text-xs sm:text-sm text-gray-700 flex items-center gap-1 hover:bg-gray-50"
-            >
-              <FiArrowLeft className="hidden sm:inline" />
-              Back
-            </button>
-          )}
-          <button
-            onClick={step === 3 ? handleConfirm : handleNext}
-            className="flex-1 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-rose-600 to-rose-700 text-white text-xs sm:text-sm font-semibold hover:shadow-lg flex items-center justify-center gap-2"
-          >
-            {step === 3 ? (
-              <>
-                <FiCheckCircle />
-                Confirm Order
-              </>
-            ) : (
-              "Next"
-            )}
-          </button>
-        </div>
+        <div className="mt-6 pb-6 sm:pb-8 border-t border-gray-100 pt-4">
+  <div className="flex gap-2 sm:gap-3">
+
+    {/* BACK BUTTON */}
+    {step > 1 && (
+      <button
+        onClick={() => setStep((s) => s - 1)}
+        className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg border text-xs sm:text-sm text-gray-700 flex items-center gap-1 hover:bg-gray-50"
+      >
+        <FiArrowLeft className="hidden sm:inline" />
+        Back
+      </button>
+    )}
+
+    {/* NEXT / CONFIRM BUTTON */}
+    <button
+      onClick={step === 3 ? handleConfirm : handleNext}
+      className="flex-1 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-rose-600 to-rose-700 text-white text-xs sm:text-sm font-semibold hover:shadow-lg flex items-center justify-center gap-2"
+    >
+      {step === 3 ? (
+        <>
+          <FiCheckCircle />
+          Confirm Order
+        </>
+      ) : (
+        "Next"
+      )}
+    </button>
+
+  </div>
+</div>
       </motion.div>
     </motion.div>
   );
