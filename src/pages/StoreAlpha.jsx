@@ -22,69 +22,384 @@ import { motion, AnimatePresence } from "framer-motion";
 // ----------------- Mock Data: AlphaStore Products -----------------
 const products = [
   // -------- Fruits & Offerings --------
-  { id: 1, name: "Nariyal / नारियल", price: 40, category: "Fruits & Offerings", unit: "पीस", img: "images/nariyal.jpg" },
-  { id: 2, name: "Banana / केला", price: 10, category: "Fruits & Offerings", unit: "पीस", img: "images/banana.jpg" },
-  { id: 3, name: "Apple / सेब", price: 30, category: "Fruits & Offerings", unit: "पीस", img: "images/apple.jpg" },
-  { id: 4, name: "Pomegranate / अनार", price: 60, category: "Fruits & Offerings", unit: "पीस", img: "images/pomegranate.jpg" },
-  { id: 5, name: "Flower Garland / फूल माला", price: 80, category: "Fruits & Offerings", unit: "पीस", img: "images/garland.jpg" },
-  { id: 6, name: "Marigold Flowers / गेंदे के फूल", price: 50, category: "Fruits & Offerings", unit: "गुच्छा", img: "images/marigold.jpg" },
-  { id: 7, name: "Rose Petals / गुलाब की पंखुड़ी", price: 30, category: "Fruits & Offerings", unit: "पैक", img: "images/rose.jpg" },
+  {
+    id: 1,
+    name: "Nariyal / नारियल",
+    price: 40,
+    category: "Fruits & Offerings",
+    unit: "पीस",
+    img: "images/nariyal.jpg",
+  },
+  {
+    id: 2,
+    name: "Banana / केला",
+    price: 10,
+    category: "Fruits & Offerings",
+    unit: "पीस",
+    img: "images/banana.jpg",
+  },
+  {
+    id: 3,
+    name: "Apple / सेब",
+    price: 30,
+    category: "Fruits & Offerings",
+    unit: "पीस",
+    img: "images/apple.jpg",
+  },
+  {
+    id: 4,
+    name: "Pomegranate / अनार",
+    price: 60,
+    category: "Fruits & Offerings",
+    unit: "पीस",
+    img: "images/pomegranate.jpg",
+  },
+  {
+    id: 5,
+    name: "Flower Garland / फूल माला",
+    price: 80,
+    category: "Fruits & Offerings",
+    unit: "पीस",
+    img: "images/garland.jpg",
+  },
+  {
+    id: 6,
+    name: "Marigold Flowers / गेंदे के फूल",
+    price: 50,
+    category: "Fruits & Offerings",
+    unit: "गुच्छा",
+    img: "images/marigold.jpg",
+  },
+  {
+    id: 7,
+    name: "Rose Petals / गुलाब की पंखुड़ी",
+    price: 30,
+    category: "Fruits & Offerings",
+    unit: "पैक",
+    img: "images/rose.jpg",
+  },
 
   // -------- Fragrance --------
-  { id: 8, name: "Agarbatti / अगरबत्ती", price: 30, category: "Fragrance", unit: "पैक", img: "images/agarbatti.jpg" },
-  { id: 9, name: "Dhoop Sticks / धूप", price: 35, category: "Fragrance", unit: "पैक", img: "images/dhoop.jpg" },
-  { id: 10, name: "Guggal / गुग्गुल", price: 40, category: "Fragrance", unit: "पैक", img: "images/guggal.jpg" },
-  { id: 11, name: "Loban / लोबान", price: 30, category: "Fragrance", unit: "पैक", img: "images/loban.jpg" },
+  {
+    id: 8,
+    name: "Agarbatti / अगरबत्ती",
+    price: 30,
+    category: "Fragrance",
+    unit: "पैक",
+    img: "images/agarbatti.jpg",
+  },
+  {
+    id: 9,
+    name: "Dhoop Sticks / धूप",
+    price: 35,
+    category: "Fragrance",
+    unit: "पैक",
+    img: "images/dhoop.jpg",
+  },
+  {
+    id: 10,
+    name: "Guggal / गुग्गुल",
+    price: 40,
+    category: "Fragrance",
+    unit: "पैक",
+    img: "images/guggal.jpg",
+  },
+  {
+    id: 11,
+    name: "Loban / लोबान",
+    price: 30,
+    category: "Fragrance",
+    unit: "पैक",
+    img: "images/loban.jpg",
+  },
 
   // -------- Havan & Aarti --------
-  { id: 12, name: "Kapoor / कपूर", price: 25, category: "Havan & Aarti", unit: "पैक", img: "images/kapoor.jpg" },
-  { id: 13, name: "Havan Samagri / हवन सामग्री", price: 60, category: "Havan & Aarti", unit: "पैक", img: "images/havan.jpg" },
-  { id: 14, name: "Samidha Sticks / समिधा", price: 30, category: "Havan & Aarti", unit: "बंडल", img: "images/samidha.jpg" },
-  { id: 15, name: "Ghee Bottle / घी", price: 120, category: "Havan & Aarti", unit: "100ml", img: "images/ghee.jpg" },
-  { id: 16, name: "Camphor Tablets / कपूर टेबलेट", price: 40, category: "Havan & Aarti", unit: "पैक", img: "images/camphor.jpg" },
+  {
+    id: 12,
+    name: "Kapoor / कपूर",
+    price: 25,
+    category: "Havan & Aarti",
+    unit: "पैक",
+    img: "images/kapoor.jpg",
+  },
+  {
+    id: 13,
+    name: "Havan Samagri / हवन सामग्री",
+    price: 60,
+    category: "Havan & Aarti",
+    unit: "पैक",
+    img: "images/havan.jpg",
+  },
+  {
+    id: 14,
+    name: "Samidha Sticks / समिधा",
+    price: 30,
+    category: "Havan & Aarti",
+    unit: "बंडल",
+    img: "images/samidha.jpg",
+  },
+  {
+    id: 15,
+    name: "Ghee Bottle / घी",
+    price: 120,
+    category: "Havan & Aarti",
+    unit: "100ml",
+    img: "images/ghee.jpg",
+  },
+  {
+    id: 16,
+    name: "Camphor Tablets / कपूर टेबलेट",
+    price: 40,
+    category: "Havan & Aarti",
+    unit: "पैक",
+    img: "images/camphor.jpg",
+  },
 
   // -------- Deepak & Diya --------
-  { id: 17, name: "Ghee Batti / घी बत्ती", price: 50, category: "Deepak & Diya", unit: "बॉक्स", img: "images/ghee-batti.jpg" },
-  { id: 18, name: "Cotton Wick / बाती", price: 20, category: "Deepak & Diya", unit: "पैक", img: "images/batti.jpg" },
-  { id: 19, name: "Clay Diya / मिट्टी का दिया", price: 10, category: "Deepak & Diya", unit: "पीस", img: "images/diya.jpg" },
-  { id: 20, name: "Brass Diya / पीतल का दिया", price: 80, category: "Deepak & Diya", unit: "पीस", img: "images/brass-diya.jpg" },
+  {
+    id: 17,
+    name: "Ghee Batti / घी बत्ती",
+    price: 50,
+    category: "Deepak & Diya",
+    unit: "बॉक्स",
+    img: "images/ghee-batti.jpg",
+  },
+  {
+    id: 18,
+    name: "Cotton Wick / बाती",
+    price: 20,
+    category: "Deepak & Diya",
+    unit: "पैक",
+    img: "images/batti.jpg",
+  },
+  {
+    id: 19,
+    name: "Clay Diya / मिट्टी का दिया",
+    price: 10,
+    category: "Deepak & Diya",
+    unit: "पीस",
+    img: "images/diya.jpg",
+  },
+  {
+    id: 20,
+    name: "Brass Diya / पीतल का दिया",
+    price: 80,
+    category: "Deepak & Diya",
+    unit: "पीस",
+    img: "images/brass-diya.jpg",
+  },
 
   // -------- Tilak & Kumkum --------
-  { id: 21, name: "Roli / रोली", price: 15, category: "Tilak & Kumkum", unit: "पैक", img: "images/roli.jpg" },
-  { id: 22, name: "Chawal (Akshat) / अक्षत", price: 20, category: "Tilak & Kumkum", unit: "पैक", img: "images/chawal.jpg" },
-  { id: 23, name: "Sindoor / सिंदूर", price: 20, category: "Tilak & Kumkum", unit: "डिब्बा", img: "images/sindoor.jpg" },
-  { id: 24, name: "Haldi Powder / हल्दी", price: 20, category: "Tilak & Kumkum", unit: "पैक", img: "images/haldi.jpg" },
-  { id: 25, name: "Kumkum / कुमकुम", price: 20, category: "Tilak & Kumkum", unit: "पैक", img: "images/kumkum.jpg" },
+  {
+    id: 21,
+    name: "Roli / रोली",
+    price: 15,
+    category: "Tilak & Kumkum",
+    unit: "पैक",
+    img: "images/roli.jpg",
+  },
+  {
+    id: 22,
+    name: "Chawal (Akshat) / अक्षत",
+    price: 20,
+    category: "Tilak & Kumkum",
+    unit: "पैक",
+    img: "images/chawal.jpg",
+  },
+  {
+    id: 23,
+    name: "Sindoor / सिंदूर",
+    price: 20,
+    category: "Tilak & Kumkum",
+    unit: "डिब्बा",
+    img: "images/sindoor.jpg",
+  },
+  {
+    id: 24,
+    name: "Haldi Powder / हल्दी",
+    price: 20,
+    category: "Tilak & Kumkum",
+    unit: "पैक",
+    img: "images/haldi.jpg",
+  },
+  {
+    id: 25,
+    name: "Kumkum / कुमकुम",
+    price: 20,
+    category: "Tilak & Kumkum",
+    unit: "पैक",
+    img: "images/kumkum.jpg",
+  },
 
   // -------- Prasad --------
-  { id: 26, name: "Panchamrit Pack / पंचामृत", price: 60, category: "Prasad", unit: "पैक", img: "images/panchamrit.jpg" },
-  { id: 27, name: "Mishri / मिश्री", price: 20, category: "Prasad", unit: "पैक", img: "images/mishri.jpg" },
-  { id: 28, name: "Dry Fruits Mix / ड्राई फ्रूट्स", price: 70, category: "Prasad", unit: "पैक", img: "images/dryfruits.jpg" },
-  { id: 29, name: "Laddu Prasad / लड्डू प्रसाद", price: 50, category: "Prasad", unit: "डिब्बा", img: "images/laddu.jpg" },
-  { id: 30, name: "Jaggery / गुड़", price: 30, category: "Prasad", unit: "पैक", img: "images/jaggery.jpg" },
+  {
+    id: 26,
+    name: "Panchamrit Pack / पंचामृत",
+    price: 60,
+    category: "Prasad",
+    unit: "पैक",
+    img: "images/panchamrit.jpg",
+  },
+  {
+    id: 27,
+    name: "Mishri / मिश्री",
+    price: 20,
+    category: "Prasad",
+    unit: "पैक",
+    img: "images/mishri.jpg",
+  },
+  {
+    id: 28,
+    name: "Dry Fruits Mix / ड्राई फ्रूट्स",
+    price: 70,
+    category: "Prasad",
+    unit: "पैक",
+    img: "images/dryfruits.jpg",
+  },
+  {
+    id: 29,
+    name: "Laddu Prasad / लड्डू प्रसाद",
+    price: 50,
+    category: "Prasad",
+    unit: "डिब्बा",
+    img: "images/laddu.jpg",
+  },
+  {
+    id: 30,
+    name: "Jaggery / गुड़",
+    price: 30,
+    category: "Prasad",
+    unit: "पैक",
+    img: "images/jaggery.jpg",
+  },
 
   // -------- Puja Cloth Items --------
-  { id: 31, name: "Red Cloth / लाल कपड़ा", price: 40, category: "Others", unit: "मीटर", img: "images/redcloth.jpg" },
-  { id: 32, name: "Yellow Cloth / पीला कपड़ा", price: 40, category: "Others", unit: "मीटर", img: "images/yellowcloth.jpg" },
-  { id: 33, name: "Dupatta Chunri / चुनरी", price: 50, category: "Others", unit: "पीस", img: "images/chunri.jpg" },
+  {
+    id: 31,
+    name: "Red Cloth / लाल कपड़ा",
+    price: 40,
+    category: "Others",
+    unit: "मीटर",
+    img: "images/redcloth.jpg",
+  },
+  {
+    id: 32,
+    name: "Yellow Cloth / पीला कपड़ा",
+    price: 40,
+    category: "Others",
+    unit: "मीटर",
+    img: "images/yellowcloth.jpg",
+  },
+  {
+    id: 33,
+    name: "Dupatta Chunri / चुनरी",
+    price: 50,
+    category: "Others",
+    unit: "पीस",
+    img: "images/chunri.jpg",
+  },
 
   // -------- Puja Utensils --------
-  { id: 34, name: "Puja Bell / घंटी", price: 60, category: "Others", unit: "पीस", img: "images/bell.jpg" },
-  { id: 35, name: "Kalash / कलश", price: 120, category: "Others", unit: "पीस", img: "images/kalash.jpg" },
-  { id: 36, name: "Steel Plate / थाली", price: 80, category: "Others", unit: "पीस", img: "images/plate.jpg" },
+  {
+    id: 34,
+    name: "Puja Bell / घंटी",
+    price: 60,
+    category: "Others",
+    unit: "पीस",
+    img: "images/bell.jpg",
+  },
+  {
+    id: 35,
+    name: "Kalash / कलश",
+    price: 120,
+    category: "Others",
+    unit: "पीस",
+    img: "images/kalash.jpg",
+  },
+  {
+    id: 36,
+    name: "Steel Plate / थाली",
+    price: 80,
+    category: "Others",
+    unit: "पीस",
+    img: "images/plate.jpg",
+  },
 
   // -------- Special Puja Items --------
-  { id: 37, name: "Gangajal / गंगाजल", price: 25, category: "Others", unit: "बोतल", img: "images/gangajal.jpg" },
-  { id: 38, name: "Honey / शहद", price: 30, category: "Others", unit: "बोतल", img: "images/honey.jpg" },
-  { id: 39, name: "Black Sesame / काला तिल", price: 20, category: "Others", unit: "पैक", img: "images/til.jpg" },
-  { id: 40, name: "Sugar / शक्कर", price: 20, category: "Others", unit: "पैक", img: "images/sugar.jpg" },
+  {
+    id: 37,
+    name: "Gangajal / गंगाजल",
+    price: 25,
+    category: "Others",
+    unit: "बोतल",
+    img: "images/gangajal.jpg",
+  },
+  {
+    id: 38,
+    name: "Honey / शहद",
+    price: 30,
+    category: "Others",
+    unit: "बोतल",
+    img: "images/honey.jpg",
+  },
+  {
+    id: 39,
+    name: "Black Sesame / काला तिल",
+    price: 20,
+    category: "Others",
+    unit: "पैक",
+    img: "images/til.jpg",
+  },
+  {
+    id: 40,
+    name: "Sugar / शक्कर",
+    price: 20,
+    category: "Others",
+    unit: "पैक",
+    img: "images/sugar.jpg",
+  },
 
   // -------- Miscellaneous --------
-  { id: 41, name: "Matchbox / माचिस", price: 10, category: "Others", unit: "पीस", img: "images/matchbox.jpg" },
-  { id: 42, name: "Moli / मौली", price: 10, category: "Others", unit: "रोल", img: "images/moli.jpg" },
-  { id: 43, name: "Supari / सुपारी", price: 15, category: "Others", unit: "पैक", img: "images/supari.jpg" },
-  { id: 44, name: "Betel Leaves / पान के पत्ते", price: 10, category: "Others", unit: "पीस", img: "images/betel.jpg" },
-  { id: 45, name: "Camphor Oil / कपूर तेल", price: 50, category: "Others", unit: "बोतल", img: "images/camphoroil.jpg" }
+  {
+    id: 41,
+    name: "Matchbox / माचिस",
+    price: 10,
+    category: "Others",
+    unit: "पीस",
+    img: "images/matchbox.jpg",
+  },
+  {
+    id: 42,
+    name: "Moli / मौली",
+    price: 10,
+    category: "Others",
+    unit: "रोल",
+    img: "images/moli.jpg",
+  },
+  {
+    id: 43,
+    name: "Supari / सुपारी",
+    price: 15,
+    category: "Others",
+    unit: "पैक",
+    img: "images/supari.jpg",
+  },
+  {
+    id: 44,
+    name: "Betel Leaves / पान के पत्ते",
+    price: 10,
+    category: "Others",
+    unit: "पीस",
+    img: "images/betel.jpg",
+  },
+  {
+    id: 45,
+    name: "Camphor Oil / कपूर तेल",
+    price: 50,
+    category: "Others",
+    unit: "बोतल",
+    img: "images/camphoroil.jpg",
+  },
 ];
 
 const categories = [
@@ -129,7 +444,10 @@ const OrderWizardModal = ({
   }, [mode, product, qty, cartItems]);
 
   const pricing = useMemo(() => {
-    const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0);
+    const subtotal = items.reduce(
+      (sum, item) => sum + item.price * item.qty,
+      0
+    );
     const gst = Math.round(subtotal * 0.18);
     const delivery = subtotal === 0 ? 0 : subtotal >= 499 ? 0 : 40;
     const total = subtotal + gst + delivery;
@@ -144,8 +462,16 @@ const OrderWizardModal = ({
 
   const handleNext = () => {
     if (step === 1) {
-      if (!form.name || !form.phone || !form.address || !form.city || !form.pincode) {
-        alert("Please fill all required fields (Name, Phone, Address, City, Pincode)");
+      if (
+        !form.name ||
+        !form.phone ||
+        !form.address ||
+        !form.city ||
+        !form.pincode
+      ) {
+        alert(
+          "Please fill all required fields (Name, Phone, Address, City, Pincode)"
+        );
         return;
       }
       if (form.phone.length < 8) {
@@ -198,74 +524,78 @@ const OrderWizardModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-<div className="flex justify-between items-center mb-4 sm:mb-5 mt-12">
-  <div>
-    <h2 className="text-lg sm:text-xl font-bold text-rose-800 flex items-center gap-2">
-      <FiShoppingCart />
-      {mode === "single" ? "Quick Order" : "Complete Cart Order"}
-    </h2>
-    <p className="text-xs sm:text-sm text-gray-500">
-      Daily puja items home delivery – address & delivery slot choose karein
-    </p>
-  </div>
-  <button
-    onClick={onClose}
-    className="text-gray-500 hover:text-rose-600 text-xl p-1"
-  >
-    <FiX />
-  </button>
-</div>
-
-       {/* Step Indicator */}
-<div className="mb-4 sm:mb-6 ">
-  <div className="flex items-center justify-between mb-2">
-    {[{ no: 1, label: "Address" }, { no: 2, label: "Delivery Slot" }, { no: 3, label: "Review" }].map(
-      (s) => (
-        <div key={s.no} className="flex-1 flex flex-col items-center">
-          <div
-            className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 text-xs sm:text-sm ${
-              step >= s.no
-                ? "bg-rose-600 border-rose-600 text-white"
-                : "border-gray-300 text-gray-300"
-            }`}
-          >
-            {step > s.no ? <FiCheckCircle /> : s.no}
+        <div className="flex justify-between items-center mb-4 sm:mb-5 mt-12">
+          <div>
+            <h2 className="text-lg sm:text-xl font-bold text-rose-800 flex items-center gap-2">
+              <FiShoppingCart />
+              {mode === "single" ? "Quick Order" : "Complete Cart Order"}
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-500">
+              Daily puja items home delivery – address & delivery slot choose
+              karein
+            </p>
           </div>
-          <span
-            className={`mt-1 text-[11px] sm:text-xs ${
-              step >= s.no ? "text-rose-700 font-semibold" : "text-gray-400"
-            }`}
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-rose-600 text-xl p-1"
           >
-            {s.label}
-          </span>
+            <FiX />
+          </button>
         </div>
-      )
-    )}
-  </div>
 
-  <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-    <motion.div
-      className="h-full bg-rose-600"
-      initial={{ width: "0%" }}
-      animate={{ width: `${((step - 1) / 2) * 100}%` }}
-      transition={{ duration: 0.3 }}
-    />
-  </div>
-</div>
+        {/* Step Indicator */}
+        <div className="mb-4 sm:mb-6 ">
+          <div className="flex items-center justify-between mb-2">
+            {[
+              { no: 1, label: "Address" },
+              { no: 2, label: "Delivery Slot" },
+              { no: 3, label: "Review" },
+            ].map((s) => (
+              <div key={s.no} className="flex-1 flex flex-col items-center">
+                <div
+                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 text-xs sm:text-sm ${
+                    step >= s.no
+                      ? "bg-rose-600 border-rose-600 text-white"
+                      : "border-gray-300 text-gray-300"
+                  }`}
+                >
+                  {step > s.no ? <FiCheckCircle /> : s.no}
+                </div>
+                <span
+                  className={`mt-1 text-[11px] sm:text-xs ${
+                    step >= s.no
+                      ? "text-rose-700 font-semibold"
+                      : "text-gray-400"
+                  }`}
+                >
+                  {s.label}
+                </span>
+              </div>
+            ))}
+          </div>
 
-       {/* Steps */}
-<div className="min-h-[260px] sm:min-h-[320px] ">
-  <AnimatePresence mode="wait">
+          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-rose-600"
+              initial={{ width: "0%" }}
+              animate={{ width: `${((step - 1) / 2) * 100}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
+        </div>
 
-    {/* STEP 1 */}
-    {step === 1 && (
-      <motion.div
-        key="step1"
-        initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -40 }}
-        className="space-y-3 sm:space-y-4"
-      >
+        {/* Steps */}
+        <div className="min-h-[260px] sm:min-h-[320px] ">
+          <AnimatePresence mode="wait">
+            {/* STEP 1: Address */}
+            {step === 1 && (
+              <motion.div
+                key="step1"
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                className="space-y-3 sm:space-y-4"
+              >
                 <h3 className="text-sm sm:text-base font-semibold text-rose-800 flex items-center gap-2">
                   <FiMapPin />
                   Delivery Address Details
@@ -372,7 +702,8 @@ const OrderWizardModal = ({
                 <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs text-amber-800 flex items-center gap-2">
                   <FiShield className="text-amber-500" />
                   <span>
-                    Your details are used only for delivery. No spam, no sharing.
+                    Your details are used only for delivery. No spam, no
+                    sharing.
                   </span>
                 </div>
               </motion.div>
@@ -380,13 +711,13 @@ const OrderWizardModal = ({
 
             {/* STEP 2: Delivery Slot */}
             {step === 2 && (
-      <motion.div
-        key="step2"
-        initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -40 }}
-        className="space-y-3 sm:space-y-4"
-      >
+              <motion.div
+                key="step2"
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                className="space-y-3 sm:space-y-4"
+              >
                 <h3 className="text-sm sm:text-base font-semibold text-rose-800 flex items-center gap-2">
                   <FiCalendar />
                   Delivery Date & Time Slot
@@ -432,22 +763,23 @@ const OrderWizardModal = ({
                 <div className="bg-green-50 border border-green-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs text-green-800 flex items-start gap-2">
                   <FiClock className="mt-0.5" />
                   <span>
-                    We always try to deliver in selected slot. In rare cases, there
-                    can be +/- 30 minutes variation based on traffic and location.
+                    We always try to deliver in selected slot. In rare cases,
+                    there can be +/- 30 minutes variation based on traffic and
+                    location.
                   </span>
                 </div>
               </motion.div>
             )}
 
             {/* STEP 3: Review */}
-           {step === 3 && (
-      <motion.div
-        key="step3"
-        initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -40 }}
-        className="space-y-3 sm:space-y-4"
-      >
+            {step === 3 && (
+              <motion.div
+                key="step3"
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                className="space-y-3 sm:space-y-4"
+              >
                 <h3 className="text-sm sm:text-base font-semibold text-rose-800">
                   Review Your Order
                 </h3>
@@ -477,7 +809,9 @@ const OrderWizardModal = ({
                   <div className="bg-white border border-gray-100 rounded-xl p-3 sm:p-4 text-xs sm:text-sm">
                     <div className="flex items-center gap-2 mb-2">
                       <FiHome className="text-rose-600" />
-                      <span className="font-semibold text-gray-800">Delivery To</span>
+                      <span className="font-semibold text-gray-800">
+                        Delivery To
+                      </span>
                     </div>
                     <p className="font-medium text-gray-800">{form.name}</p>
                     <p className="text-gray-600">{form.phone}</p>
@@ -499,7 +833,9 @@ const OrderWizardModal = ({
                     <p className="text-gray-700">
                       Date:{" "}
                       {form.deliveryDate
-                        ? new Date(form.deliveryDate).toLocaleDateString("en-IN", {
+                        ? new Date(
+                            form.deliveryDate
+                          ).toLocaleDateString("en-IN", {
                             weekday: "short",
                             day: "numeric",
                             month: "short",
@@ -542,8 +878,9 @@ const OrderWizardModal = ({
                 <div className="bg-green-50 border border-green-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs text-green-800 flex items-start gap-2 ">
                   <FiShield className="mt-0.5" />
                   <span>
-                    Payment integration (UPI / Card / COD) Alpha version me test
-                    ke liye rahega. Final app me pure secure payment gateway hoga.
+                    Payment integration (UPI / Card / COD) Alpha version me
+                    test ke liye rahega. Final app me pure secure payment
+                    gateway hoga.
                   </span>
                 </div>
               </motion.div>
@@ -553,36 +890,34 @@ const OrderWizardModal = ({
 
         {/* Footer Buttons */}
         <div className="mt-6 pb-6 sm:pb-8 border-t border-gray-100 pt-4">
-  <div className="flex gap-2 sm:gap-3">
+          <div className="flex gap-2 sm:gap-3">
+            {/* BACK BUTTON */}
+            {step > 1 && (
+              <button
+                onClick={() => setStep((s) => s - 1)}
+                className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg border text-xs sm:text-sm text-gray-700 flex items-center gap-1 hover:bg-gray-50"
+              >
+                <FiArrowLeft className="hidden sm:inline" />
+                Back
+              </button>
+            )}
 
-    {/* BACK BUTTON */}
-    {step > 1 && (
-      <button
-        onClick={() => setStep((s) => s - 1)}
-        className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg border text-xs sm:text-sm text-gray-700 flex items-center gap-1 hover:bg-gray-50"
-      >
-        <FiArrowLeft className="hidden sm:inline" />
-        Back
-      </button>
-    )}
-
-    {/* NEXT / CONFIRM BUTTON */}
-    <button
-      onClick={step === 3 ? handleConfirm : handleNext}
-      className="flex-1 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-rose-600 to-rose-700 text-white text-xs sm:text-sm font-semibold hover:shadow-lg flex items-center justify-center gap-2"
-    >
-      {step === 3 ? (
-        <>
-          <FiCheckCircle />
-          Confirm Order
-        </>
-      ) : (
-        "Next"
-      )}
-    </button>
-
-  </div>
-</div>
+            {/* NEXT / CONFIRM BUTTON */}
+            <button
+              onClick={step === 3 ? handleConfirm : handleNext}
+              className="flex-1 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-rose-600 to-rose-700 text-white text-xs sm:text-sm font-semibold hover:shadow-lg flex items-center justify-center gap-2"
+            >
+              {step === 3 ? (
+                <>
+                  <FiCheckCircle />
+                  Confirm Order
+                </>
+              ) : (
+                "Next"
+              )}
+            </button>
+          </div>
+        </div>
       </motion.div>
     </motion.div>
   );
@@ -599,7 +934,9 @@ const OrderSuccessPage = ({ order, onBack }) => {
 
   const handleShare = () => {
     const itemsText = order.items
-      .map((item) => `• ${item.name} (x${item.qty}) - ₹${item.price * item.qty}`)
+      .map(
+        (item) => `• ${item.name} (x${item.qty}) - ₹${item.price * item.qty}`
+      )
       .join("\n");
 
     const msg = `🪷 *Sanskaraa AlphaStore Order Confirmed* 🪷
@@ -676,7 +1013,8 @@ _This order is placed via Sanskaraa AlphaStore (Puja Essentials)._`;
           Order Placed Successfully!
         </h1>
         <p className="text-xs sm:text-sm text-gray-600 text-center mb-3 sm:mb-4">
-          Thank you for choosing Sanskaraa for your daily puja needs.  
+          Thank you for choosing Sanskaraa for your daily puja needs.
+          <br />
           May your home be filled with positivity and blessings.
         </p>
 
@@ -722,7 +1060,9 @@ _This order is placed via Sanskaraa AlphaStore (Puja Essentials)._`;
         <div className="bg-white border border-gray-100 rounded-xl p-3 mb-3 sm:mb-4 text-[11px] sm:text-xs">
           <div className="flex items-center gap-2 mb-1">
             <FiMapPin className="text-rose-600" />
-            <span className="font-semibold text-gray-800">Delivery Address</span>
+            <span className="font-semibold text-gray-800">
+              Delivery Address
+            </span>
           </div>
           <p className="text-gray-700 font-medium">{order.customer.name}</p>
           <p className="text-gray-600">{order.customer.phone}</p>
@@ -751,7 +1091,8 @@ _This order is placed via Sanskaraa AlphaStore (Puja Essentials)._`;
         </div>
 
         <p className="text-[11px] sm:text-xs text-center text-gray-500 italic mt-2">
-          "सर्वे भवन्तु सुखिनः, सर्वे सन्तु निरामयाः"  
+          "सर्वे भवन्तु सुखिनः, सर्वे सन्तु निरामयाः"
+          <br />
           May all be happy, may all be free from illness.
         </p>
       </motion.div>
@@ -839,7 +1180,10 @@ export default function Alphastore() {
   };
 
   // Pricing (for cart sidebar preview)
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.price * item.qty,
+    0
+  );
   const gst = Math.round(subtotal * 0.18);
   const delivery = subtotal === 0 ? 0 : subtotal >= 499 ? 0 : 40;
   const total = subtotal + gst + delivery;
@@ -867,7 +1211,7 @@ export default function Alphastore() {
     setShowCart(false);
   };
 
-  // Handle final confirm from wizard
+  // Handle final confirm from wizard (WITH WHATSAPP)
   const handleOrderConfirm = (orderPayload) => {
     const order = {
       id: Date.now(),
@@ -878,6 +1222,38 @@ export default function Alphastore() {
       mode: orderPayload.mode,
       createdAt: new Date().toISOString(),
     };
+
+    // 🔥 WhatsApp Auto Send to admin
+    const itemsText = order.items
+      .map(
+        (item) =>
+          `• ${item.name} (x${item.qty}) - ₹${item.price * item.qty}`
+      )
+      .join("\n");
+
+    const msg = `🪷 *Sanskaraa AlphaStore New Order* 🪷
+
+*Order ID:* ${order.id}
+*Customer:* ${order.customer.name}
+*Phone:* ${order.customer.phone}
+
+*Items:*
+${itemsText}
+
+*Total:* ₹${order.pricing.total}
+
+*Delivery:*
+• Date: ${new Date(order.delivery.date).toLocaleDateString("en-IN")}
+• Slot: ${order.delivery.slot}
+• Address: ${order.customer.address}, ${order.customer.city} - ${
+      order.customer.pincode
+    }
+
+_Sent automatically from Sanskaraa AlphaStore_`;
+
+    const encoded = encodeURIComponent(msg);
+    const myWhatsapp = "916201486202"; // your confirmed number
+    window.open(`https://wa.me/${myWhatsapp}?text=${encoded}`, "_blank");
 
     // Save to localStorage
     try {
