@@ -1722,7 +1722,7 @@ _For any queries, contact support._`;
                 onClick={() => navigate("/StoreAlpha")}
                 className="ml-1 sm:ml-2 px-3 sm:px-4 py-2 rounded-lg border border-rose-300 text-rose-700 text-xs sm:text-sm font-medium whitespace-nowrap bg-white hover:bg-rose-50 hover:border-rose-400 transition-colors flex items-center gap-1"
               >
-                Single Items Store
+                Single Items Store.
               </button>
             </div>
 
