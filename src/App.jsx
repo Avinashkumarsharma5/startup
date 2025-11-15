@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import BottomNavbar from "./components/layout/BottomNavbar";
@@ -9,7 +10,6 @@ import Services from "./pages/Services";
 import PujaKits from "./pages/PujaKits";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-
 import PanditBooking from "./pages/PanditBooking";
 import EventsPage from "./pages/EventsPage";
 import BookingsPage from "./pages/BookingsPage";
@@ -21,15 +21,30 @@ import VendorRegistration from "./components/layout/VendorRegistration";
 import SanskaraaNotifications from "./pages/Notification";
 import CartPage from "./components/layout/CartPage";
 import ForgetPassword from "./pages/ForgetPassword";
-import Alphastore from "./pages/Alphastore";
+
+// ⭐ ALPHASTORE
+import Alphastore from "./pages/StoreAlpha";
+
+import AlphastoreCheckout from "./components/layout/AlphastoreCheckout";
 
 
 export default function App() {
   const location = useLocation();
   const [micOpen, setMicOpen] = useState(false);
 
-  const noLayoutRoutes = ["/login", "/signup","/forget-password","/vendor-registration","/service-provider/profile"];
-  const hideLayout = noLayoutRoutes.includes(location.pathname);
+  // Pages where navbar & footer should NOT appear
+  const noLayoutRoutes = [
+    "/login",
+    "/signup",
+    "/forget-password",
+    "/vendor-registration",
+    "/service-provider/profile",
+    "/alphastore/checkout",
+    "/alphastore/order-success"
+  ];
+
+  // Convert URL to lowercase to avoid mismatch issues
+  const hideLayout = noLayoutRoutes.includes(location.pathname.toLowerCase());
 
   const handleMicClick = () => setMicOpen(true);
   const handleMicClose = () => setMicOpen(false);
@@ -40,29 +55,34 @@ export default function App() {
 
       <main className="flex-grow relative">
         <Routes>
+          {/* Default */}
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />
           <Route path="/pujakits" element={<PujaKits />} />
+
+          {/* Auth */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-         <Route path="/alphastore" element={<Alphastore />} />
+          <Route path="/forget-password" element={<ForgetPassword />} />
 
+          {/* Pages */}
           <Route path="/panditbooking" element={<PanditBooking />} />
           <Route path="/EventsPage" element={<EventsPage />} />
-          
           <Route path="/BookingsPage" element={<BookingsPage />} />
           <Route path="/UserProfile" element={<UserProfile />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/service-provider/profile" element={<ServiceProviderProfile />} />
-        <Route path="/vendor-registration" element={<VendorRegistration />} />
-          <Route path="/notifications" element={<SanskaraaNotifications />} /> 
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/service-provider/profile" element={<ServiceProviderProfile />} />
+          <Route path="/vendor-registration" element={<VendorRegistration />} />
+          <Route path="/notifications" element={<SanskaraaNotifications />} />
           <Route path="/cart" element={<CartPage />} />
-          <Route path="/forget-password" element={<ForgetPassword />} />
-    
 
+          {/* ⭐ ALPHASTORE ROUTES */}
+          <Route path="/StoreAlpha" element={<Alphastore />} />
+          <Route path="/alphastore/checkout" element={<AlphastoreCheckout />} />
+         
         </Routes>
 
-        {/* VoiceAssistant Overlay */}
+        {/* Voice Assistant */}
         {micOpen && <VoiceAssistant onClose={handleMicClose} />}
       </main>
 

@@ -1120,7 +1120,7 @@ export default function Alphastore() {
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              className="fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 overflow-y-auto"
+              className="fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 overflow-y-auto mt-16"
             >
               <div className="p-3 sm:p-4 border-b border-rose-100 flex items-center justify-between">
                 <h2 className="font-bold text-lg sm:text-xl text-rose-800">
