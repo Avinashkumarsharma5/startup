@@ -60,7 +60,7 @@ const products = [
     price: 80,
     category: "Fruits & Offerings",
     unit: "पीस",
-    img: "images/garland.jpg",
+    img: "images/flower.png",
   },
   {
     id: 6,
@@ -68,7 +68,7 @@ const products = [
     price: 50,
     category: "Fruits & Offerings",
     unit: "गुच्छा",
-    img: "images/marigold.jpg",
+    img: "images/marigold.png",
   },
   {
     id: 7,
@@ -76,7 +76,7 @@ const products = [
     price: 30,
     category: "Fruits & Offerings",
     unit: "पैक",
-    img: "images/rose.jpg",
+    img: "images/rose.png",
   },
 
   // -------- Fragrance --------
@@ -86,7 +86,7 @@ const products = [
     price: 30,
     category: "Fragrance",
     unit: "पैक",
-    img: "images/agarbatti.jpg",
+    img: "images/agarbati.png",
   },
   {
     id: 9,
@@ -94,7 +94,7 @@ const products = [
     price: 35,
     category: "Fragrance",
     unit: "पैक",
-    img: "images/dhoop.jpg",
+    img: "images/dhup.png",
   },
   {
     id: 10,
@@ -102,7 +102,7 @@ const products = [
     price: 40,
     category: "Fragrance",
     unit: "पैक",
-    img: "images/guggal.jpg",
+    img: "images/guggal.png",
   },
   {
     id: 11,
@@ -110,7 +110,7 @@ const products = [
     price: 30,
     category: "Fragrance",
     unit: "पैक",
-    img: "images/loban.jpg",
+    img: "images/loban.png",
   },
 
   // -------- Havan & Aarti --------
@@ -120,7 +120,7 @@ const products = [
     price: 25,
     category: "Havan & Aarti",
     unit: "पैक",
-    img: "images/kapoor.jpg",
+    img: "images/kapoor.png",
   },
   {
     id: 13,
@@ -128,7 +128,7 @@ const products = [
     price: 60,
     category: "Havan & Aarti",
     unit: "पैक",
-    img: "images/havan.jpg",
+    img: "images/havan-samagri.png",
   },
   {
     id: 14,
@@ -136,7 +136,7 @@ const products = [
     price: 30,
     category: "Havan & Aarti",
     unit: "बंडल",
-    img: "images/samidha.jpg",
+    img: "images/samidha.png",
   },
   {
     id: 15,
@@ -144,7 +144,7 @@ const products = [
     price: 120,
     category: "Havan & Aarti",
     unit: "100ml",
-    img: "images/ghee.jpg",
+    img: "images/ghee.png",
   },
   {
     id: 16,
@@ -152,7 +152,7 @@ const products = [
     price: 40,
     category: "Havan & Aarti",
     unit: "पैक",
-    img: "images/camphor.jpg",
+    img: "images/capoor-table.png",
   },
 
   // -------- Deepak & Diya --------
@@ -162,7 +162,7 @@ const products = [
     price: 50,
     category: "Deepak & Diya",
     unit: "बॉक्स",
-    img: "images/ghee-batti.jpg",
+    img: "images/capoor-table.png",
   },
   {
     id: 18,
@@ -170,7 +170,7 @@ const products = [
     price: 20,
     category: "Deepak & Diya",
     unit: "पैक",
-    img: "images/batti.jpg",
+    img: "images/cotton-bati.png",
   },
   {
     id: 19,
@@ -178,7 +178,7 @@ const products = [
     price: 10,
     category: "Deepak & Diya",
     unit: "पीस",
-    img: "images/diya.jpg",
+    img: "images/clay-diya.png",
   },
   {
     id: 20,
@@ -186,7 +186,7 @@ const products = [
     price: 80,
     category: "Deepak & Diya",
     unit: "पीस",
-    img: "images/brass-diya.jpg",
+    img: "images/pital-diya.png",
   },
 
   // -------- Tilak & Kumkum --------
@@ -196,7 +196,7 @@ const products = [
     price: 15,
     category: "Tilak & Kumkum",
     unit: "पैक",
-    img: "images/roli.jpg",
+    img: "images/roli.png",
   },
   {
     id: 22,
@@ -204,7 +204,7 @@ const products = [
     price: 20,
     category: "Tilak & Kumkum",
     unit: "पैक",
-    img: "images/chawal.jpg",
+    img: "images/akchat.png",
   },
   {
     id: 23,
@@ -212,7 +212,7 @@ const products = [
     price: 20,
     category: "Tilak & Kumkum",
     unit: "डिब्बा",
-    img: "images/sindoor.jpg",
+    img: "images/sindoor.png",
   },
   {
     id: 24,
@@ -220,7 +220,7 @@ const products = [
     price: 20,
     category: "Tilak & Kumkum",
     unit: "पैक",
-    img: "images/haldi.jpg",
+    img: "images/haldi.png",
   },
   {
     id: 25,
@@ -228,7 +228,7 @@ const products = [
     price: 20,
     category: "Tilak & Kumkum",
     unit: "पैक",
-    img: "images/kumkum.jpg",
+    img: "images/kumkum.png",
   },
 
   // -------- Prasad --------
@@ -238,7 +238,7 @@ const products = [
     price: 60,
     category: "Prasad",
     unit: "पैक",
-    img: "images/panchamrit.jpg",
+    img: "images/panchamrit.png",
   },
   {
     id: 27,
@@ -246,7 +246,7 @@ const products = [
     price: 20,
     category: "Prasad",
     unit: "पैक",
-    img: "images/mishri.jpg",
+    img: "images/misri.png",
   },
   {
     id: 28,
@@ -254,7 +254,7 @@ const products = [
     price: 70,
     category: "Prasad",
     unit: "पैक",
-    img: "images/dryfruits.jpg",
+    img: "images/dry-fruit.png",
   },
   {
     id: 29,
@@ -262,7 +262,7 @@ const products = [
     price: 50,
     category: "Prasad",
     unit: "डिब्बा",
-    img: "images/laddu.jpg",
+    img: "images/ladoo.png",
   },
   {
     id: 30,
