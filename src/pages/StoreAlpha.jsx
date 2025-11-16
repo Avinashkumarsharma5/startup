@@ -28,7 +28,7 @@ const products = [
     price: 40,
     category: "Fruits & Offerings",
     unit: "पीस",
-    img: "images/nariyal.jpg",
+    img: "images/coconut.png",
   },
   {
     id: 2,
@@ -36,7 +36,7 @@ const products = [
     price: 10,
     category: "Fruits & Offerings",
     unit: "पीस",
-    img: "images/banana.jpg",
+    img: "images/banana.png",
   },
   {
     id: 3,
@@ -44,7 +44,7 @@ const products = [
     price: 30,
     category: "Fruits & Offerings",
     unit: "पीस",
-    img: "images/apple.jpg",
+    img: "images/apple.png",
   },
   {
     id: 4,
@@ -52,7 +52,7 @@ const products = [
     price: 60,
     category: "Fruits & Offerings",
     unit: "पीस",
-    img: "images/pomegranate.jpg",
+    img: "images/Pomegranate.png",
   },
   {
     id: 5,
