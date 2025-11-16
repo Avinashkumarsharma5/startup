@@ -270,7 +270,7 @@ const products = [
     price: 30,
     category: "Prasad",
     unit: "पैक",
-    img: "images/jaggery.jpg",
+    img: "images/jaggery.png",
   },
 
   // -------- Puja Cloth Items --------
@@ -280,7 +280,7 @@ const products = [
     price: 40,
     category: "Others",
     unit: "मीटर",
-    img: "images/redcloth.jpg",
+    img: "images/lal-cloth.png",
   },
   {
     id: 32,
@@ -288,7 +288,7 @@ const products = [
     price: 40,
     category: "Others",
     unit: "मीटर",
-    img: "images/yellowcloth.jpg",
+    img: "images/yellow-cloths.png",
   },
   {
     id: 33,
@@ -296,7 +296,7 @@ const products = [
     price: 50,
     category: "Others",
     unit: "पीस",
-    img: "images/chunri.jpg",
+    img: "images/chunri.png",
   },
 
   // -------- Puja Utensils --------
@@ -306,7 +306,7 @@ const products = [
     price: 60,
     category: "Others",
     unit: "पीस",
-    img: "images/bell.jpg",
+    img: "images/bell.png",
   },
   {
     id: 35,
@@ -314,7 +314,7 @@ const products = [
     price: 120,
     category: "Others",
     unit: "पीस",
-    img: "images/kalash.jpg",
+    img: "images/kalas.png",
   },
   {
     id: 36,
@@ -322,7 +322,7 @@ const products = [
     price: 80,
     category: "Others",
     unit: "पीस",
-    img: "images/plate.jpg",
+    img: "images/steel-plate.png",
   },
 
   // -------- Special Puja Items --------
@@ -332,7 +332,7 @@ const products = [
     price: 25,
     category: "Others",
     unit: "बोतल",
-    img: "images/gangajal.jpg",
+    img: "images/ganga-jal.png",
   },
   {
     id: 38,
@@ -340,7 +340,7 @@ const products = [
     price: 30,
     category: "Others",
     unit: "बोतल",
-    img: "images/honey.jpg",
+    img: "images/honey.png",
   },
   {
     id: 39,
@@ -348,7 +348,7 @@ const products = [
     price: 20,
     category: "Others",
     unit: "पैक",
-    img: "images/til.jpg",
+    img: "images/kala-til.png",
   },
   {
     id: 40,
@@ -356,7 +356,7 @@ const products = [
     price: 20,
     category: "Others",
     unit: "पैक",
-    img: "images/sugar.jpg",
+    img: "images/suger.png",
   },
 
   // -------- Miscellaneous --------
@@ -366,7 +366,7 @@ const products = [
     price: 10,
     category: "Others",
     unit: "पीस",
-    img: "images/matchbox.jpg",
+    img: "images/matchbox.png",
   },
   {
     id: 42,
@@ -374,7 +374,7 @@ const products = [
     price: 10,
     category: "Others",
     unit: "रोल",
-    img: "images/moli.jpg",
+    img: "images/moli.png",
   },
   {
     id: 43,
@@ -382,7 +382,7 @@ const products = [
     price: 15,
     category: "Others",
     unit: "पैक",
-    img: "images/supari.jpg",
+    img: "images/supari.png",
   },
   {
     id: 44,
@@ -390,7 +390,7 @@ const products = [
     price: 10,
     category: "Others",
     unit: "पीस",
-    img: "images/betel.jpg",
+    img: "images/pan-patta.png",
   },
   {
     id: 45,
@@ -398,7 +398,7 @@ const products = [
     price: 50,
     category: "Others",
     unit: "बोतल",
-    img: "images/camphoroil.jpg",
+    img: "images/kapoor-oil.png",
   },
 ];
 
