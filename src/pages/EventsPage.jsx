@@ -33,413 +33,1198 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // ========== RENTAL PRODUCTS DATA ==========
 const rentalProducts = [
-  // ========== SOUND & DJ EQUIPMENT ==========
+  // ========== SOUND & AUDIO EQUIPMENT ==========
   {
     id: 101,
-    name: "Complete DJ Set with Speakers",
-    price: 5000,
-    category: "Sound & DJ",
+    name: "DJ Console (Pioneer/Numark)",
+    price: 3000,
+    category: "Sound & Audio",
     unit: "per day",
     img: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=400&h=300&fit=crop",
-    description: "Professional DJ setup with 2000W speakers, mixer, and wireless mics",
+    description: "Professional DJ controllers from Pioneer or Numark for seamless mixing",
     minRentalDays: 1,
-    deposit: 10000,
-    features: ["2000W Sound System", "Wireless Microphones", "Professional Mixer", "Lighting Effects"],
+    deposit: 15000,
+    features: ["Professional Grade", "USB Connectivity", "Multi-channel Mixing"],
     popular: true
   },
   {
     id: 102,
-    name: "Wireless Microphone System",
-    price: 500,
-    category: "Sound & DJ",
+    name: "Active DJ Speakers",
+    price: 2000,
+    category: "Sound & Audio",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400&h=300&fit=crop",
-    description: "High quality wireless microphone system with dual handheld mics",
+    img: "https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=400&h=300&fit=crop",
+    description: "Powered DJ speakers with built-in amplification",
     minRentalDays: 1,
-    deposit: 3000,
-    features: ["Dual Handheld Mics", "100m Range", "Battery Backup"]
+    deposit: 10000,
+    features: ["Built-in Amplifier", "Multiple Inputs", "EQ Controls"]
   },
   {
     id: 103,
-    name: "Powered Speaker System (1000W)",
-    price: 2000,
-    category: "Sound & DJ",
+    name: "Passive Speaker System",
+    price: 1800,
+    category: "Sound & Audio",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=400&h=300&fit=crop",
-    description: "Professional powered speakers for clear sound quality",
+    img: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400&h=300&fit=crop",
+    description: "High-quality passive speakers with external amplifier",
     minRentalDays: 1,
-    deposit: 5000,
-    features: ["1000W Power", "Built-in Amplifier", "Stand Included"]
+    deposit: 12000,
+    features: ["External Amp Compatible", "High Power Handling", "Durable Construction"]
   },
   {
     id: 104,
-    name: "Karaoke System",
-    price: 1500,
-    category: "Sound & DJ",
+    name: "Stage Speaker System",
+    price: 2500,
+    category: "Sound & Audio",
     unit: "per day",
     img: "https://images.unsplash.com/photo-1571330663919-a5c0cfe3c8e9?w=400&h=300&fit=crop",
-    description: "Complete karaoke system with mixer, mics, and song library",
+    description: "Professional stage speakers for live performances",
     minRentalDays: 1,
-    deposit: 4000,
-    features: ["2000+ Songs", "Dual Wireless Mics", "Video Output"]
+    deposit: 15000,
+    features: ["High SPL", "Wide Coverage", "Monitor Capability"]
   },
-
-  // ========== LIGHTING EQUIPMENT ==========
   {
-    id: 201,
-    name: "LED Stage Lighting Package",
-    price: 2500,
-    category: "Lighting",
+    id: 105,
+    name: "Subwoofer Bass System",
+    price: 2200,
+    category: "Sound & Audio",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1501959181532-7d2a3c064642?w=400&h=300&fit=crop",
-    description: "Complete stage lighting with RGB LED pars and controllers",
+    img: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&h=300&fit=crop",
+    description: "Powerful subwoofers for deep bass response",
+    minRentalDays: 1,
+    deposit: 12000,
+    features: ["Deep Bass", "High Power", "XLR Connections"]
+  },
+  {
+    id: 106,
+    name: "Wireless Microphone System",
+    price: 800,
+    category: "Sound & Audio",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400&h=300&fit=crop",
+    description: "Dual handheld wireless microphone system",
+    minRentalDays: 1,
+    deposit: 5000,
+    features: ["Dual Handheld Mics", "100m Range", "Battery Backup"],
+    popular: true
+  },
+  {
+    id: 107,
+    name: "Wired Microphone Set",
+    price: 400,
+    category: "Sound & Audio",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400&h=300&fit=crop",
+    description: "Professional wired microphones for clear audio",
+    minRentalDays: 1,
+    deposit: 2000,
+    features: ["XLR Connection", "Durable Build", "Clear Audio"]
+  },
+  {
+    id: 108,
+    name: "Collar/Lapel Microphone",
+    price: 600,
+    category: "Sound & Audio",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400&h=300&fit=crop",
+    description: "Discreet collar microphones for presentations",
+    minRentalDays: 1,
+    deposit: 3000,
+    features: ["Discreet Design", "Clip-on Style", "Clear Voice Capture"]
+  },
+  {
+    id: 109,
+    name: "Audio Mixer Console",
+    price: 1500,
+    category: "Sound & Audio",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=400&h=300&fit=crop",
+    description: "Multi-channel audio mixer for professional sound control",
     minRentalDays: 1,
     deposit: 8000,
-    features: ["8x LED Par Lights", "DMX Controller", "Stand Included"],
+    features: ["Multiple Channels", "EQ Controls", "Effects Processing"]
+  },
+  {
+    id: 110,
+    name: "Power Amplifier",
+    price: 1200,
+    category: "Sound & Audio",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400&h=300&fit=crop",
+    description: "High-power amplifier for passive speaker systems",
+    minRentalDays: 1,
+    deposit: 6000,
+    features: ["High Power Output", "Thermal Protection", "Multiple Outputs"]
+  },
+  {
+    id: 111,
+    name: "Speaker Stands (Pair)",
+    price: 300,
+    category: "Sound & Audio",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=400&h=300&fit=crop",
+    description: "Adjustable speaker stands for optimal positioning",
+    minRentalDays: 1,
+    deposit: 1500,
+    minQuantity: 1,
+    features: ["Height Adjustable", "Sturdy Base", "Quick Setup"]
+  },
+  {
+    id: 112,
+    name: "Soundproof Panels",
+    price: 800,
+    category: "Sound & Audio",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&h=300&fit=crop",
+    description: "Acoustic panels for sound control and isolation",
+    minRentalDays: 1,
+    deposit: 4000,
+    minQuantity: 4,
+    features: ["Noise Reduction", "Easy Installation", "Professional Finish"]
+  },
+  {
+    id: 113,
+    name: "PA System Complete",
+    price: 3500,
+    category: "Sound & Audio",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1571330663919-a5c0cfe3c8e9?w=400&h=300&fit=crop",
+    description: "Complete public announcement system with speakers and mixer",
+    minRentalDays: 1,
+    deposit: 20000,
+    features: ["All-in-One System", "Easy Operation", "Clear Announcements"],
     popular: true
+  },
+  {
+    id: 114,
+    name: "Bluetooth Party Speaker",
+    price: 1000,
+    category: "Sound & Audio",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=400&h=300&fit=crop",
+    description: "Portable Bluetooth speaker with party lighting",
+    minRentalDays: 1,
+    deposit: 5000,
+    features: ["Wireless Connectivity", "Built-in Lights", "Battery Powered"]
+  },
+
+  // ========== LIGHTING & EFFECTS ==========
+  {
+    id: 201,
+    name: "LED Par Lights Set",
+    price: 1200,
+    category: "Lighting & Effects",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1501959181532-7d2a3c064642?w=400&h=300&fit=crop",
+    description: "RGB LED par lights with multiple color options",
+    minRentalDays: 1,
+    deposit: 6000,
+    minQuantity: 4,
+    features: ["RGB Colors", "DMX Compatible", "Low Power Consumption"]
   },
   {
     id: 202,
     name: "Moving Head Lights",
     price: 1800,
-    category: "Lighting",
+    category: "Lighting & Effects",
     unit: "per day",
     img: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop",
     description: "Professional moving head lights for dynamic effects",
     minRentalDays: 1,
-    deposit: 6000,
-    features: ["360° Movement", "RGB Colors", "Sound Activation"]
-  },
-  {
-    id: 203,
-    name: "Laser Light System",
-    price: 2200,
-    category: "Lighting",
-    unit: "per day",
-    img: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop",
-    description: "High-power laser lights with pattern effects",
-    minRentalDays: 1,
-    deposit: 7000,
-    features: ["Green Laser", "Multiple Patterns", "Safety Certified"]
-  },
-  {
-    id: 204,
-    name: "Dance Floor Lighting",
-    price: 1200,
-    category: "Lighting",
-    unit: "per day",
-    img: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop",
-    description: "Colorful dance floor lighting with sound activation",
-    minRentalDays: 1,
-    deposit: 4000,
-    features: ["Sound Activated", "Multi-color", "Easy Setup"]
-  },
-
-  // ========== FURNITURE ==========
-  {
-    id: 301,
-    name: "Plastic Chairs",
-    price: 20,
-    category: "Furniture",
-    unit: "per day",
-    img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
-    description: "Comfortable plastic chairs for events and functions",
-    minRentalDays: 1,
-    deposit: 200,
-    minQuantity: 10,
-    features: ["Stackable", "Weather Resistant", "Multiple Colors"]
-  },
-  {
-    id: 302,
-    name: "Round Tables (6-seater)",
-    price: 150,
-    category: "Furniture",
-    unit: "per day",
-    img: "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=400&h=300&fit=crop",
-    description: "6-foot round tables for dining and events",
-    minRentalDays: 1,
-    deposit: 800,
-    minQuantity: 1,
-    features: ["6ft Diameter", "Foldable", "Sturdy Construction"]
-  },
-  {
-    id: 303,
-    name: "Dining Chairs",
-    price: 50,
-    category: "Furniture",
-    unit: "per day",
-    img: "https://images.unsplash.com/photo-1503602642458-232111445657?w=400&h=300&fit=crop",
-    description: "Elegant dining chairs for wedding and corporate events",
-    minRentalDays: 1,
-    deposit: 300,
-    minQuantity: 10,
-    features: ["Cushioned Seats", "Wooden Finish", "Comfortable"],
+    deposit: 9000,
+    features: ["360° Movement", "Pattern Effects", "Sound Activation"],
     popular: true
   },
   {
-    id: 304,
-    name: "Sofa Set (3+1+1)",
+    id: 203,
+    name: "Halogen Stage Lights",
     price: 800,
-    category: "Furniture",
+    category: "Lighting & Effects",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop",
-    description: "Premium sofa set for VIP seating area",
+    img: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&h=300&fit=crop",
+    description: "Bright halogen lights for stage illumination",
     minRentalDays: 1,
-    deposit: 3000,
-    features: ["3 Seater + 2 Single", "Premium Fabric", "Elegant Design"]
+    deposit: 4000,
+    features: ["High Intensity", "Warm Light", "Durable"]
   },
-
-  // ========== DECORATIONS ==========
   {
-    id: 401,
-    name: "Stage Backdrop",
-    price: 2000,
-    category: "Decorations",
+    id: 204,
+    name: "Fairy/String Lights",
+    price: 400,
+    category: "Lighting & Effects",
     unit: "per day",
     img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop",
-    description: "Customizable stage backdrop with floral arrangements",
+    description: "Decorative fairy lights for ambiance creation",
+    minRentalDays: 1,
+    deposit: 2000,
+    minQuantity: 5,
+    features: ["Warm White", "Weather Resistant", "Easy to Install"]
+  },
+  {
+    id: 205,
+    name: "Laser Light System",
+    price: 1500,
+    category: "Lighting & Effects",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop",
+    description: "Professional laser lights with pattern effects",
+    minRentalDays: 1,
+    deposit: 8000,
+    features: ["Multiple Patterns", "Green Laser", "Safety Certified"]
+  },
+  {
+    id: 206,
+    name: "Smoke Machine",
+    price: 900,
+    category: "Lighting & Effects",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop",
+    description: "Professional smoke machine for dramatic effects",
     minRentalDays: 1,
     deposit: 5000,
-    features: ["Custom Design", "Floral Decor", "LED Lighting"],
+    features: ["Remote Control", "Quick Heat-up", "Dense Smoke Output"]
+  },
+  {
+    id: 207,
+    name: "Fog Machine",
+    price: 800,
+    category: "Lighting & Effects",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop",
+    description: "Fog machine for atmospheric effects",
+    minRentalDays: 1,
+    deposit: 4000,
+    features: ["Low-lying Fog", "Wireless Remote", "Safe Fluid"]
+  },
+  {
+    id: 208,
+    name: "Bubble Machine",
+    price: 500,
+    category: "Lighting & Effects",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400&h=300&fit=crop",
+    description: "Automatic bubble machine for celebrations",
+    minRentalDays: 1,
+    deposit: 2500,
+    features: ["High Output", "Automatic Operation", "Safe Solution"]
+  },
+  {
+    id: 209,
+    name: "Disco Ball with Motor",
+    price: 600,
+    category: "Lighting & Effects",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop",
+    description: "Rotating disco ball with mirror effects",
+    minRentalDays: 1,
+    deposit: 3000,
+    features: ["Motorized Rotation", "Mirror Tiles", "Classic Disco Effect"]
+  },
+  {
+    id: 210,
+    name: "Spotlight System",
+    price: 1000,
+    category: "Lighting & Effects",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&h=300&fit=crop",
+    description: "High-intensity spotlights for focus lighting",
+    minRentalDays: 1,
+    deposit: 6000,
+    features: ["Bright Beam", "Adjustable Focus", "Professional Grade"]
+  },
+  {
+    id: 211,
+    name: "Tube/Flood Lights",
+    price: 700,
+    category: "Lighting & Effects",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1501959181532-7d2a3c064642?w=400&h=300&fit=crop",
+    description: "LED tube lights for area illumination",
+    minRentalDays: 1,
+    deposit: 3500,
+    minQuantity: 2,
+    features: ["Even Lighting", "Energy Efficient", "Multiple Colors"]
+  },
+  {
+    id: 212,
+    name: "Uplighting System",
+    price: 1100,
+    category: "Lighting & Effects",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop",
+    description: "Professional uplighting for walls and architecture",
+    minRentalDays: 1,
+    deposit: 6000,
+    minQuantity: 4,
+    features: ["Color Changing", "Wireless Control", "Battery Option"]
+  },
+  {
+    id: 213,
+    name: "Truss Lighting System",
+    price: 2500,
+    category: "Lighting & Effects",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&h=300&fit=crop",
+    description: "Complete truss system with integrated lighting",
+    minRentalDays: 1,
+    deposit: 15000,
+    features: ["Professional Setup", "Multiple Fixtures", "Sturdy Construction"]
+  },
+
+  // ========== WEDDING & EVENT DECORATION ==========
+  {
+    id: 301,
+    name: "Stage Decor Set",
+    price: 5000,
+    category: "Wedding & Decor",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop",
+    description: "Complete stage decoration with backdrop and props",
+    minRentalDays: 1,
+    deposit: 25000,
+    features: ["Premium Materials", "Custom Design", "Full Setup"],
+    popular: true
+  },
+  {
+    id: 302,
+    name: "Mandap Setup",
+    price: 8000,
+    category: "Wedding & Decor",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop",
+    description: "Traditional mandap setup for wedding ceremonies",
+    minRentalDays: 1,
+    deposit: 40000,
+    features: ["Traditional Design", "Floral Decor", "Customizable"]
+  },
+  {
+    id: 303,
+    name: "Flower Backdrop (Artificial)",
+    price: 2500,
+    category: "Wedding & Decor",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1464207687429-7505649dae38?w=400&h=300&fit=crop",
+    description: "Artificial flower backdrop for photo sessions",
+    minRentalDays: 1,
+    deposit: 12000,
+    features: ["Realistic Flowers", "Reusable", "Multiple Colors"]
+  },
+  {
+    id: 304,
+    name: "Photo Booth Setup",
+    price: 3000,
+    category: "Wedding & Decor",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1521334884684-d80222895322?w=400&h=300&fit=crop",
+    description: "Complete photo booth with props and backdrop",
+    minRentalDays: 1,
+    deposit: 15000,
+    features: ["Instant Printing", "Props Included", "Backdrop Options"],
+    popular: true
+  },
+  {
+    id: 305,
+    name: "Haldi Decoration Kit",
+    price: 1500,
+    category: "Wedding & Decor",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop",
+    description: "Complete decoration kit for Haldi ceremony",
+    minRentalDays: 1,
+    deposit: 8000,
+    features: ["Traditional Theme", "Floral Elements", "Color Coordination"]
+  },
+  {
+    id: 306,
+    name: "Mehndi Booth Decor",
+    price: 2000,
+    category: "Wedding & Decor",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1464207687429-7505649dae38?w=400&h=300&fit=crop",
+    description: "Special decoration for Mehndi ceremony booth",
+    minRentalDays: 1,
+    deposit: 10000,
+    features: ["Ethnic Design", "Comfortable Seating", "Aesthetic Appeal"]
+  },
+  {
+    id: 307,
+    name: "Welcome Board Stand",
+    price: 800,
+    category: "Wedding & Decor",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop",
+    description: "Customizable welcome board for guest greeting",
+    minRentalDays: 1,
+    deposit: 4000,
+    features: ["Custom Text", "Elegant Design", "Sturdy Stand"]
+  },
+  {
+    id: 308,
+    name: "Entry Gate Decoration",
+    price: 3500,
+    category: "Wedding & Decor",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop",
+    description: "Grand entrance gate decoration",
+    minRentalDays: 1,
+    deposit: 18000,
+    features: ["Floral Arrangements", "LED Lighting", "Custom Design"]
+  },
+  {
+    id: 309,
+    name: "Jhoomar/Chandelier",
+    price: 2800,
+    category: "Wedding & Decor",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop",
+    description: "Elegant jhoomar or chandelier for ceiling decor",
+    minRentalDays: 1,
+    deposit: 14000,
+    features: ["Crystal Elements", "LED Lights", "Grand Appearance"]
+  },
+  {
+    id: 310,
+    name: "Traditional Props Set",
+    price: 1200,
+    category: "Wedding & Decor",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1464207687429-7505649dae38?w=400&h=300&fit=crop",
+    description: "Traditional props including Matki, Kalash, Umbrella",
+    minRentalDays: 1,
+    deposit: 6000,
+    features: ["Authentic Design", "Multiple Pieces", "Cultural Elements"]
+  },
+
+  // ========== FURNITURE & SEATING ==========
+  {
+    id: 401,
+    name: "Wedding Sofa/Couch",
+    price: 1500,
+    category: "Furniture & Seating",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop",
+    description: "Elegant wedding sofa for couple seating",
+    minRentalDays: 1,
+    deposit: 8000,
+    features: ["Premium Upholstery", "Comfortable", "Elegant Design"],
     popular: true
   },
   {
     id: 402,
-    name: "Welcome Gate Decor",
-    price: 2500,
-    category: "Decorations",
+    name: "Banquet Chairs",
+    price: 50,
+    category: "Furniture & Seating",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop",
-    description: "Grand welcome gate with fresh flowers and drapes",
+    img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+    description: "Comfortable banquet chairs for guest seating",
     minRentalDays: 1,
-    deposit: 6000,
-    features: ["Fresh Flowers", "Custom Name", "LED Lights"]
+    deposit: 300,
+    minQuantity: 10,
+    features: ["Cushioned Seats", "Stackable", "Elegant Look"]
   },
   {
     id: 403,
-    name: "Floral Garland",
-    price: 400,
-    category: "Decorations",
+    name: "Plastic Chairs",
+    price: 20,
+    category: "Furniture & Seating",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1464207687429-7505649dae38?w=400&h=300&fit=crop",
-    description: "Fresh flower garlands for decoration",
+    img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+    description: "Durable plastic chairs for outdoor events",
     minRentalDays: 1,
-    deposit: 1000,
-    minQuantity: 2,
-    features: ["Fresh Flowers", "10ft Length", "Multiple Colors"]
+    deposit: 150,
+    minQuantity: 10,
+    features: ["Weather Resistant", "Stackable", "Multiple Colors"]
   },
   {
     id: 404,
-    name: "Balloon Decor Package",
-    price: 1500,
-    category: "Decorations",
+    name: "Round Tables (6-seater)",
+    price: 200,
+    category: "Furniture & Seating",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400&h=300&fit=crop",
-    description: "Complete balloon decoration with arch and centerpieces",
+    img: "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=400&h=300&fit=crop",
+    description: "6-foot round tables for dining",
+    minRentalDays: 1,
+    deposit: 1000,
+    minQuantity: 1,
+    features: ["6ft Diameter", "Foldable", "Sturdy Construction"]
+  },
+  {
+    id: 405,
+    name: "Buffet Tables",
+    price: 150,
+    category: "Furniture & Seating",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=400&h=300&fit=crop",
+    description: "Long buffet tables for food service",
+    minRentalDays: 1,
+    deposit: 800,
+    minQuantity: 1,
+    features: ["6-8ft Length", "Foldable", "Easy Setup"]
+  },
+  {
+    id: 406,
+    name: "Cocktail Tables",
+    price: 100,
+    category: "Furniture & Seating",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=400&h=300&fit=crop",
+    description: "High cocktail tables for standing events",
+    minRentalDays: 1,
+    deposit: 600,
+    minQuantity: 1,
+    features: ["Bar Height", "Circular Top", "Sturdy Base"]
+  },
+  {
+    id: 407,
+    name: "Bar Stools",
+    price: 80,
+    category: "Furniture & Seating",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1503602642458-232111445657?w=400&h=300&fit=crop",
+    description: "Comfortable bar stools for counter seating",
+    minRentalDays: 1,
+    deposit: 400,
+    minQuantity: 2,
+    features: ["Adjustable Height", "Cushioned Seat", "Sturdy Base"]
+  },
+  {
+    id: 408,
+    name: "Bar Tables",
+    price: 180,
+    category: "Furniture & Seating",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=300&fit=crop",
+    description: "Professional bar tables for beverage service",
+    minRentalDays: 1,
+    deposit: 900,
+    minQuantity: 1,
+    features: ["Bar Height", "Durable Surface", "Professional Look"]
+  },
+  {
+    id: 409,
+    name: "Carpet & Rug Rolls",
+    price: 400,
+    category: "Furniture & Seating",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+    description: "Quality carpets for floor covering",
+    minRentalDays: 1,
+    deposit: 2000,
+    minQuantity: 1,
+    features: ["Premium Quality", "Various Sizes", "Non-slip Backing"]
+  },
+  {
+    id: 410,
+    name: "Stage Platform (Wooden)",
+    price: 600,
+    category: "Furniture & Seating",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&h=300&fit=crop",
+    description: "Modular wooden stage platforms",
     minRentalDays: 1,
     deposit: 3000,
-    features: ["Balloon Arch", "Centerpieces", "Multiple Colors"]
+    minQuantity: 4,
+    features: ["Modular Design", "Non-slip Surface", "2ft Height"]
+  },
+  {
+    id: 411,
+    name: "Tent & Shamiyana",
+    price: 4500,
+    category: "Furniture & Seating",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&h=300&fit=crop",
+    description: "Large tent or shamiyana for outdoor events",
+    minRentalDays: 1,
+    deposit: 25000,
+    features: ["Waterproof", "Side Walls", "Professional Setup"],
+    popular: true
+  },
+  {
+    id: 412,
+    name: "Canopy Setup",
+    price: 2000,
+    category: "Furniture & Seating",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&h=300&fit=crop",
+    description: "Decorative canopy for outdoor functions",
+    minRentalDays: 1,
+    deposit: 10000,
+    features: ["Elegant Design", "Weather Resistant", "Quick Setup"]
+  },
+  {
+    id: 413,
+    name: "Dining Setup Tables",
+    price: 250,
+    category: "Furniture & Seating",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=400&h=300&fit=crop",
+    description: "Complete dining table setup",
+    minRentalDays: 1,
+    deposit: 1200,
+    minQuantity: 1,
+    features: ["Complete Setup", "Tablecloth Included", "Ready to Use"]
   },
 
-  // ========== FOOD SERVICE ==========
+  // ========== CATERING EQUIPMENT ==========
   {
     id: 501,
-    name: "Buffet Counter",
+    name: "Buffet Counters",
     price: 800,
-    category: "Food Service",
+    category: "Catering Equipment",
     unit: "per day",
     img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
-    description: "Stainless steel buffet counter with heating",
+    description: "Stainless steel buffet counters with heating",
     minRentalDays: 1,
-    deposit: 3000,
+    deposit: 4000,
     features: ["Stainless Steel", "Heat Lamps", "6ft Length"]
   },
   {
     id: 502,
-    name: "Chafing Dishes Set",
+    name: "Food Warmers",
     price: 400,
-    category: "Food Service",
+    category: "Catering Equipment",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    description: "Professional food warmers for buffet service",
+    minRentalDays: 1,
+    deposit: 2000,
+    features: ["Temperature Control", "Stainless Steel", "Easy to Clean"]
+  },
+  {
+    id: 503,
+    name: "Chafing Dishes Set",
+    price: 300,
+    category: "Catering Equipment",
     unit: "per day",
     img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
     description: "Set of stainless steel chafing dishes",
     minRentalDays: 1,
     deposit: 1500,
     minQuantity: 3,
-    features: ["Stainless Steel", "Fuel Holders", "3+ Pieces"]
+    features: ["Complete Set", "Fuel Holders", "Professional Grade"]
   },
   {
-    id: 503,
-    name: "Dinnerware Set (100 pax)",
-    price: 600,
-    category: "Food Service",
+    id: 504,
+    name: "Crockery Set (100 pax)",
+    price: 800,
+    category: "Catering Equipment",
     unit: "per day",
     img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
-    description: "Complete dinnerware set for 100 people",
+    description: "Complete crockery set for 100 people",
     minRentalDays: 1,
-    deposit: 2000,
-    features: ["Plates + Cutlery", "Serving Bowls", "Glassware"],
+    deposit: 4000,
+    features: ["Plates + Bowls", "Quality Ceramic", "Complete Set"],
     popular: true
   },
+  {
+    id: 505,
+    name: "Cutlery Set (100 pax)",
+    price: 500,
+    category: "Catering Equipment",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    description: "Stainless steel cutlery for 100 people",
+    minRentalDays: 1,
+    deposit: 2500,
+    features: ["Stainless Steel", "Complete Set", "Hygienic"]
+  },
+  {
+    id: 506,
+    name: "Water Dispensers",
+    price: 300,
+    category: "Catering Equipment",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    description: "Water dispensers with cooling/heating",
+    minRentalDays: 1,
+    deposit: 1500,
+    features: ["Hot/Cold Water", "Hygienic", "Easy to Use"]
+  },
+  {
+    id: 507,
+    name: "Juice Dispensers",
+    price: 350,
+    category: "Catering Equipment",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    description: "Glass juice dispensers for beverages",
+    minRentalDays: 1,
+    deposit: 1800,
+    features: ["Glass Construction", "Tap System", "Elegant Look"]
+  },
+  {
+    id: 508,
+    name: "Ice Box/Cooler",
+    price: 250,
+    category: "Catering Equipment",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&h=300&fit=crop",
+    description: "Large ice box for beverage cooling",
+    minRentalDays: 1,
+    deposit: 1200,
+    features: ["Insulated", "Large Capacity", "Drain Plug"]
+  },
+  {
+    id: 509,
+    name: "Gas Stove/Burner",
+    price: 200,
+    category: "Catering Equipment",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    description: "Commercial gas stove for cooking",
+    minRentalDays: 1,
+    deposit: 1000,
+    features: ["High Power", "Commercial Grade", "Safety Features"]
+  },
+  {
+    id: 510,
+    name: "Tandoor Oven",
+    price: 1200,
+    category: "Catering Equipment",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    description: "Traditional tandoor for authentic cooking",
+    minRentalDays: 1,
+    deposit: 6000,
+    features: ["Authentic Design", "High Temperature", "Traditional Cooking"]
+  },
+  {
+    id: 511,
+    name: "Biryani Handi Set",
+    price: 400,
+    category: "Catering Equipment",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    description: "Traditional handi set for biryani preparation",
+    minRentalDays: 1,
+    deposit: 2000,
+    minQuantity: 2,
+    features: ["Traditional Design", "Large Capacity", "Durable"]
+  },
+  {
+    id: 512,
+    name: "Serving Bowls & Trays",
+    price: 300,
+    category: "Catering Equipment",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    description: "Complete set of serving bowls and trays",
+    minRentalDays: 1,
+    deposit: 1500,
+    features: ["Various Sizes", "Stainless Steel", "Complete Set"]
+  },
+  {
+    id: 513,
+    name: "Handwash Station",
+    price: 600,
+    category: "Catering Equipment",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    description: "Portable handwash station with water tank",
+    minRentalDays: 1,
+    deposit: 3000,
+    features: ["Self-contained", "Water Tank", "Hygienic Setup"]
+  },
+  {
+    id: 514,
+    name: "Commercial Dustbins",
+    price: 150,
+    category: "Catering Equipment",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    description: "Large dustbins for waste management",
+    minRentalDays: 1,
+    deposit: 800,
+    minQuantity: 2,
+    features: ["Large Capacity", "Durable", "Easy to Clean"]
+  },
 
-  // ========== TENT & SHAMIYANA ==========
+  // ========== PHOTOGRAPHY & VIDEOGRAPHY ==========
   {
     id: 601,
-    name: "Party Tent (20x30 ft)",
-    price: 4000,
-    category: "Tent & Shamiyana",
+    name: "DSLR Camera Kit",
+    price: 1200,
+    category: "Photography & Videography",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&h=300&fit=crop",
-    description: "Waterproof party tent for 100-150 guests",
+    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    description: "Professional DSLR camera with lens kit",
     minRentalDays: 1,
     deposit: 15000,
-    features: ["Waterproof", "Side Walls", "Setup Included"],
-    popular: true
+    features: ["Professional Grade", "Multiple Lenses", "High Quality"]
   },
   {
     id: 602,
-    name: "Traditional Shamiyana",
-    price: 3500,
-    category: "Tent & Shamiyana",
+    name: "Video Camera",
+    price: 1500,
+    category: "Photography & Videography",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop",
-    description: "Traditional shamiyana with decorative borders",
+    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    description: "Professional video camera for event coverage",
     minRentalDays: 1,
-    deposit: 12000,
-    features: ["Traditional Design", "Colorful Borders", "Weather Resistant"]
+    deposit: 20000,
+    features: ["4K Recording", "Professional Audio", "Stabilization"]
   },
   {
     id: 603,
-    name: "Marquee Tent (30x40 ft)",
-    price: 6000,
-    category: "Tent & Shamiyana",
+    name: "Camera Tripod",
+    price: 200,
+    category: "Photography & Videography",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&h=300&fit=crop",
-    description: "Large marquee tent for 200+ guests",
+    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    description: "Professional tripod for stable shots",
     minRentalDays: 1,
-    deposit: 20000,
-    features: ["Spacious", "AC Ready", "Elegant Design"]
+    deposit: 1000,
+    features: ["Sturdy Construction", "Adjustable Height", "Quick Release"]
+  },
+  {
+    id: 604,
+    name: "Camera Lights",
+    price: 300,
+    category: "Photography & Videography",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    description: "Professional lighting for photography/videography",
+    minRentalDays: 1,
+    deposit: 1500,
+    features: ["Adjustable Brightness", "Soft Light", "Professional Quality"]
+  },
+  {
+    id: 605,
+    name: "Camera Gimbal",
+    price: 800,
+    category: "Photography & Videography",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    description: "Stabilization gimbal for smooth footage",
+    minRentalDays: 1,
+    deposit: 5000,
+    features: ["3-Axis Stabilization", "Smooth Footage", "Easy to Use"]
+  },
+  {
+    id: 606,
+    name: "Drone Camera",
+    price: 2000,
+    category: "Photography & Videography",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    description: "Professional drone for aerial photography",
+    minRentalDays: 1,
+    deposit: 30000,
+    features: ["4K Video", "GPS Stabilization", "Long Flight Time"],
+    popular: true
+  },
+  {
+    id: 607,
+    name: "360° Camera Setup",
+    price: 1800,
+    category: "Photography & Videography",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    description: "360-degree camera for immersive coverage",
+    minRentalDays: 1,
+    deposit: 12000,
+    features: ["360° Coverage", "High Resolution", "Interactive Content"]
   },
 
-  // ========== STAGE & PLATFORM ==========
+  // ========== ELECTRICITY & POWER BACKUP ==========
   {
     id: 701,
-    name: "Stage Platform (4x8 ft)",
+    name: "Generator (5-10 KVA)",
+    price: 2500,
+    category: "Power & Electricity",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    description: "Silent generator for power backup",
+    minRentalDays: 1,
+    deposit: 25000,
+    features: ["Silent Operation", "High Capacity", "Reliable Power"]
+  },
+  {
+    id: 702,
+    name: "Power Inverter",
+    price: 800,
+    category: "Power & Electricity",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    description: "Power inverter for backup electricity",
+    minRentalDays: 1,
+    deposit: 8000,
+    features: ["Silent Operation", "Battery Backup", "Clean Power"]
+  },
+  {
+    id: 703,
+    name: "Power Cables (100m)",
+    price: 300,
+    category: "Power & Electricity",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    description: "Heavy-duty power cables for distribution",
+    minRentalDays: 1,
+    deposit: 2000,
+    features: ["Heavy Duty", "Weather Resistant", "Multiple Lengths"]
+  },
+  {
+    id: 704,
+    name: "Extension Boards",
+    price: 100,
+    category: "Power & Electricity",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    description: "Multi-socket extension boards",
+    minRentalDays: 1,
+    deposit: 500,
+    minQuantity: 3,
+    features: ["Multiple Sockets", "Surge Protection", "Long Cable"]
+  },
+  {
+    id: 705,
+    name: "LED Work Lamps",
+    price: 150,
+    category: "Power & Electricity",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    description: "Bright LED lamps for area lighting",
+    minRentalDays: 1,
+    deposit: 800,
+    minQuantity: 2,
+    features: ["Bright LED", "Weather Resistant", "Energy Efficient"]
+  },
+  {
+    id: 706,
+    name: "UPS System",
+    price: 600,
+    category: "Power & Electricity",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    description: "Uninterrupted power supply for critical equipment",
+    minRentalDays: 1,
+    deposit: 4000,
+    features: ["Instant Backup", "Voltage Stabilization", "Multiple Outputs"]
+  },
+  {
+    id: 707,
+    name: "Electric Distribution Box",
+    price: 400,
+    category: "Power & Electricity",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    description: "Professional distribution box for power management",
+    minRentalDays: 1,
+    deposit: 2000,
+    features: ["Multiple Circuits", "Safety Breakers", "Professional Grade"]
+  },
+
+  // ========== TRADITIONAL PUJA & RITUAL SETUP ==========
+  {
+    id: 801,
+    name: "Havan Kund Set",
+    price: 600,
+    category: "Puja & Ritual",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop",
+    description: "Traditional havan kund for ceremonies",
+    minRentalDays: 1,
+    deposit: 3000,
+    features: ["Traditional Design", "Copper/Brass", "Complete Set"]
+  },
+  {
+    id: 802,
+    name: "Hawan Samagri Stand",
+    price: 300,
+    category: "Puja & Ritual",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop",
+    description: "Stand for hawan samagri arrangement",
+    minRentalDays: 1,
+    deposit: 1500,
+    features: ["Organized Setup", "Traditional Design", "Sturdy"]
+  },
+  {
+    id: 803,
+    name: "Puja Asan/Mat",
+    price: 200,
+    category: "Puja & Ritual",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop",
+    description: "Comfortable seating for puja ceremonies",
+    minRentalDays: 1,
+    deposit: 1000,
+    minQuantity: 2,
+    features: ["Comfortable", "Traditional Design", "Easy to Clean"]
+  },
+  {
+    id: 804,
+    name: "Traditional Umbrella/Chatri",
+    price: 400,
+    category: "Puja & Ritual",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop",
+    description: "Decorative umbrella for traditional ceremonies",
+    minRentalDays: 1,
+    deposit: 2000,
+    features: ["Ornate Design", "Traditional Look", "Colorful"]
+  },
+  {
+    id: 805,
+    name: "Copper/Ghee Stands",
+    price: 250,
+    category: "Puja & Ritual",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop",
+    description: "Traditional copper stands for puja items",
+    minRentalDays: 1,
+    deposit: 1200,
+    features: ["Authentic Copper", "Traditional Design", "Durable"]
+  },
+  {
+    id: 806,
+    name: "Kalash Stand",
+    price: 350,
+    category: "Puja & Ritual",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop",
+    description: "Decorative stand for kalash placement",
+    minRentalDays: 1,
+    deposit: 1800,
+    features: ["Ornate Design", "Sturdy Base", "Traditional Look"]
+  },
+  {
+    id: 807,
+    name: "Wooden Chowki",
     price: 500,
-    category: "Stage & Platform",
+    category: "Puja & Ritual",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop",
+    description: "Traditional wooden platform for idols",
+    minRentalDays: 1,
+    deposit: 2500,
+    features: ["Carved Design", "Sturdy Wood", "Traditional Craftsmanship"]
+  },
+  {
+    id: 808,
+    name: "Puja Bell",
+    price: 150,
+    category: "Puja & Ritual",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop",
+    description: "Traditional brass bell for ceremonies",
+    minRentalDays: 1,
+    deposit: 800,
+    features: ["Brass Construction", "Clear Sound", "Traditional Design"]
+  },
+
+  // ========== STAGE & EVENT STRUCTURES ==========
+  {
+    id: 901,
+    name: "Stage Platform (4x4 ft)",
+    price: 400,
+    category: "Stage & Structures",
     unit: "per day",
     img: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&h=300&fit=crop",
     description: "Modular stage platforms for performances",
     minRentalDays: 1,
     deposit: 2000,
     minQuantity: 4,
-    features: ["Modular Design", "Non-slip Surface", "2ft Height"]
-  },
-  {
-    id: 702,
-    name: "Dance Floor (3x3 ft)",
-    price: 200,
-    category: "Stage & Platform",
-    unit: "per day",
-    img: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop",
-    description: "Interlocking dance floor tiles",
-    minRentalDays: 1,
-    deposit: 800,
-    minQuantity: 9,
-    features: ["Interlocking", "Wooden Finish", "Easy Setup"]
-  },
-
-  // ========== PHOTOGRAPHY ==========
-  {
-    id: 801,
-    name: "Photo Booth Package",
-    price: 2500,
-    category: "Photography",
-    unit: "per day",
-    img: "https://images.unsplash.com/photo-1521334884684-d80222895322?w=400&h=300&fit=crop",
-    description: "Complete photo booth with props and printer",
-    minRentalDays: 1,
-    deposit: 8000,
-    features: ["Instant Printing", "Props Included", "Backdrop"],
-    popular: true
-  },
-  {
-    id: 802,
-    name: "Selfie Mirror",
-    price: 1800,
-    category: "Photography",
-    unit: "per day",
-    img: "https://images.unsplash.com/photo-1521334884684-d80222895322?w=400&h=300&fit=crop",
-    description: "Interactive selfie mirror with effects",
-    minRentalDays: 1,
-    deposit: 6000,
-    features: ["Touch Screen", "Digital Effects", "Social Sharing"]
-  },
-
-  // ========== SPECIAL EFFECTS ==========
-  {
-    id: 901,
-    name: "Fog Machine",
-    price: 800,
-    category: "Special Effects",
-    unit: "per day",
-    img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop",
-    description: "Professional fog machine for dramatic effects",
-    minRentalDays: 1,
-    deposit: 3000,
-    features: ["Remote Control", "Safe Fluid", "Dense Fog"]
+    features: ["Modular Design", "Non-slip Surface", "Easy Setup"]
   },
   {
     id: 902,
-    name: "Bubble Machine",
-    price: 400,
-    category: "Special Effects",
+    name: "Wedding Mandap Frame",
+    price: 3500,
+    category: "Stage & Structures",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400&h=300&fit=crop",
-    description: "Automatic bubble machine for celebrations",
+    img: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop",
+    description: "Structural frame for wedding mandap",
     minRentalDays: 1,
-    deposit: 1500,
-    features: ["Automatic", "Safe Solution", "Large Capacity"]
+    deposit: 20000,
+    features: ["Sturdy Construction", "Customizable", "Professional Grade"]
   },
-
-  // ========== BAR & BEVERAGE ==========
   {
-    id: 1001,
-    name: "Bar Counter",
+    id: 903,
+    name: "Flower Gate Frame",
+    price: 1800,
+    category: "Stage & Structures",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop",
+    description: "Frame structure for floral entrance gates",
+    minRentalDays: 1,
+    deposit: 9000,
+    features: ["Customizable Size", "Sturdy Design", "Easy Decoration"]
+  },
+  {
+    id: 904,
+    name: "Backdrop Frame",
     price: 1200,
-    category: "Bar & Beverage",
+    category: "Stage & Structures",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=300&fit=crop",
-    description: "Professional bar counter with storage",
+    img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop",
+    description: "Professional backdrop frame system",
     minRentalDays: 1,
-    deposit: 4000,
-    features: ["8ft Length", "Storage Space", "Elegant Design"]
+    deposit: 6000,
+    features: ["Adjustable Size", "Sturdy Construction", "Quick Setup"]
   },
   {
-    id: 1002,
-    name: "Ice Cooler Box",
-    price: 300,
-    category: "Bar & Beverage",
+    id: 905,
+    name: "LED Wall Screen",
+    price: 8000,
+    category: "Stage & Structures",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&h=300&fit=crop",
-    description: "Large ice cooler for beverages",
+    img: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&h=300&fit=crop",
+    description: "High-resolution LED video wall",
     minRentalDays: 1,
-    deposit: 1200,
-    features: ["50L Capacity", "Wheels Included", "Drain Plug"]
+    deposit: 50000,
+    features: ["High Resolution", "Bright Display", "Professional Quality"],
+    popular: true
+  },
+  {
+    id: 906,
+    name: "Video Projector",
+    price: 1500,
+    category: "Stage & Structures",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&h=300&fit=crop",
+    description: "High-lumen video projector",
+    minRentalDays: 1,
+    deposit: 10000,
+    features: ["High Brightness", "HD Resolution", "Multiple Inputs"]
+  },
+  {
+    id: 907,
+    name: "Projector Screen",
+    price: 600,
+    category: "Stage & Structures",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&h=300&fit=crop",
+    description: "Large format projector screen",
+    minRentalDays: 1,
+    deposit: 3000,
+    features: ["Large Size", "Tripod Stand", "Professional Quality"]
+  },
+  {
+    id: 908,
+    name: "Truss System",
+    price: 2000,
+    category: "Stage & Structures",
+    unit: "per day",
+    img: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&h=300&fit=crop",
+    description: "Aluminum truss system for lighting/speakers",
+    minRentalDays: 1,
+    deposit: 12000,
+    features: ["Aluminum Construction", "Modular Design", "Professional Grade"]
   }
 ];
 
 const rentalCategories = [
   "All",
-  "Sound & DJ",
-  "Lighting",
-  "Furniture",
-  "Decorations",
-  "Food Service",
-  "Tent & Shamiyana",
-  "Stage & Platform",
-  "Photography",
-  "Special Effects",
-  "Bar & Beverage"
+  "Sound & Audio",
+  "Lighting & Effects", 
+  "Wedding & Decor",
+  "Furniture & Seating",
+  "Catering Equipment",
+  "Photography & Videography",
+  "Power & Electricity",
+  "Puja & Ritual",
+  "Stage & Structures"
 ];
 
 const formatINR = (amount) => `₹${amount}`;
@@ -1601,7 +2386,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
             <div className="flex items-center gap-3 p-3 bg-saffron/10 rounded-xl border border-saffron/20">
               <FiPackage className="text-saffron w-5 h-5 sm:w-6 sm:h-6" />
               <div>
-                <p className="font-semibold text-brown text-xs sm:text-sm">50+ Equipment Types</p>
+                <p className="font-semibold text-brown text-xs sm:text-sm">80+ Equipment Types</p>
                 <p className="text-xs text-brown/70">Complete event solutions</p>
               </div>
             </div>
@@ -1626,12 +2411,12 @@ _Sent automatically from Sanskaraa Rental Service_`;
         <div className="mt-4 sm:mt-6 lg:hidden bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-saffron/20 p-4">
           <div className="grid grid-cols-3 gap-3">
             {[
-              { icon: FiMusic, label: "Sound & DJ", category: "Sound & DJ" },
-              { icon: FiSun, label: "Lighting", category: "Lighting" },
-              { icon: FiCoffee, label: "Furniture", category: "Furniture" },
-              { icon: FiZap, label: "Decor", category: "Decorations" },
-              { icon: FiPackage, label: "Food", category: "Food Service" },
-              { icon: FiHome, label: "Tents", category: "Tent & Shamiyana" },
+              { icon: FiMusic, label: "Sound & Audio", category: "Sound & Audio" },
+              { icon: FiSun, label: "Lighting", category: "Lighting & Effects" },
+              { icon: FiCoffee, label: "Furniture", category: "Furniture & Seating" },
+              { icon: FiZap, label: "Decor", category: "Wedding & Decor" },
+              { icon: FiPackage, label: "Catering", category: "Catering Equipment" },
+              { icon: FiCamera, label: "Photo/Video", category: "Photography & Videography" },
             ].map((item) => (
               <button
                 key={item.category}
@@ -1653,12 +2438,12 @@ _Sent automatically from Sanskaraa Rental Service_`;
         <div className="hidden lg:block mt-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-saffron/20 p-4">
           <div className="grid grid-cols-6 gap-4">
             {[
-              { icon: FiMusic, label: "Sound & DJ", category: "Sound & DJ" },
-              { icon: FiSun, label: "Lighting", category: "Lighting" },
-              { icon: FiCoffee, label: "Furniture", category: "Furniture" },
-              { icon: FiZap, label: "Decorations", category: "Decorations" },
-              { icon: FiPackage, label: "Food Service", category: "Food Service" },
-              { icon: FiHome, label: "Tents", category: "Tent & Shamiyana" },
+              { icon: FiMusic, label: "Sound & Audio", category: "Sound & Audio" },
+              { icon: FiSun, label: "Lighting", category: "Lighting & Effects" },
+              { icon: FiCoffee, label: "Furniture", category: "Furniture & Seating" },
+              { icon: FiZap, label: "Wedding Decor", category: "Wedding & Decor" },
+              { icon: FiPackage, label: "Catering", category: "Catering Equipment" },
+              { icon: FiCamera, label: "Photo/Video", category: "Photography & Videography" },
             ].map((item) => (
               <button
                 key={item.category}
@@ -1895,7 +2680,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
           )}
         </div>
 
-        {/* Cart Sidebar */}
+                {/* Cart Sidebar */}
         <AnimatePresence>
           {showCart && (
             <motion.div
@@ -1904,8 +2689,8 @@ _Sent automatically from Sanskaraa Rental Service_`;
               exit={{ x: "100%" }}
               className="fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 overflow-y-auto border-l border-saffron/20"
             >
-              <div className="p-4 sm:p-6 border-b border-saffron/20 flex items-center justify-between bg-gradient-to-r from-saffron to-temple text-white">
-                <h2 className="font-bold text-lg sm:text-xl flex items-center gap-2 font-serif">
+              <div className="p-4 border-b border-saffron/20 flex items-center justify-between bg-gradient-to-r from-saffron to-temple text-white">
+                <h2 className="font-bold text-lg flex items-center gap-2 font-serif">
                   <FiShoppingCart />
                   Rental Cart
                 </h2>
@@ -1917,90 +2702,90 @@ _Sent automatically from Sanskaraa Rental Service_`;
                 </button>
               </div>
 
-              <div className="p-4 sm:p-6 bg-cream min-h-full">
+              <div className="p-4 bg-cream min-h-full">
                 {cart.length === 0 ? (
                   <div className="text-center py-16">
-                    <div className="text-6xl mb-4">🎪</div>
-                    <p className="text-sm text-brown mb-2">
+                    <div className="text-4xl mb-2">🎪</div>
+                    <p className="text-sm text-brown mb-1">
                       Your rental cart is empty
                     </p>
-                    <p className="text-xs text-brown/60 mb-4">
+                    <p className="text-xs text-brown/60 mb-3">
                       Add equipment for your event
                     </p>
                     <button
                       onClick={() => setShowCart(false)}
-                      className="bg-gradient-to-r from-saffron to-temple text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:shadow-lg transition-all"
+                      className="bg-gradient-to-r from-saffron to-temple text-white px-4 py-2 rounded-lg text-sm font-semibold hover:shadow-lg transition-all"
                     >
                       Browse Equipment
                     </button>
                   </div>
                 ) : (
                   <>
-                    <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                    <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
                       {cart.map((item) => (
                         <div
                           key={item.id}
-                          className="flex gap-3 items-start p-4 bg-white rounded-xl border border-saffron/20"
+                          className="flex gap-2 items-start p-3 bg-white rounded-lg border border-saffron/20"
                         >
                           <img
                             src={item.img}
                             alt={item.name}
-                            className="h-16 w-16 object-cover rounded-lg flex-shrink-0 bg-saffron/5"
+                            className="h-12 w-12 object-cover rounded flex-shrink-0 bg-saffron/5"
                             onError={(e) => {
-                              e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23FFF8E7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='8' fill='%235A3E2B'%3E${item.name.split(' ')[0]}%3C/text%3E%3C/svg%3E";
+                              e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%23FFF8E7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='6' fill='%235A3E2B'%3E${item.name.split(' ')[0]}%3C/text%3E%3C/svg%3E";
                             }}
                           />
                           <div className="flex-1 min-w-0">
                             <p className="font-semibold text-brown text-sm truncate">
                               {item.name}
                             </p>
-                            <p className="text-xs text-brown/60 mb-2">
+                            <p className="text-xs text-brown/60 mb-1">
                               {formatINR(item.price)}/day • Deposit: {formatINR(item.deposit)}
                             </p>
-                            <div className="flex items-center gap-4">
-                              <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-1">
                                 <span className="text-xs text-brown/70">Qty:</span>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-0.5">
                                   <button
                                     onClick={() => updateCartQty(item.id, item.qty - 1)}
-                                    className="w-6 h-6 flex items-center justify-center rounded bg-white border border-brown/20 text-brown text-xs hover:bg-saffron/10"
+                                    className="w-5 h-5 flex items-center justify-center rounded bg-white border border-brown/20 text-brown text-xs hover:bg-saffron/10"
                                   >
-                                    <FiMinus className="w-3 h-3" />
+                                    <FiMinus className="w-2.5 h-2.5" />
                                   </button>
-                                  <span className="px-2 text-sm font-medium text-brown">
+                                  <span className="px-1 text-xs font-medium text-brown">
                                     {item.qty}
                                   </span>
                                   <button
                                     onClick={() => updateCartQty(item.id, item.qty + 1)}
-                                    className="w-6 h-6 flex items-center justify-center rounded bg-white border border-brown/20 text-brown text-xs hover:bg-saffron/10"
+                                    className="w-5 h-5 flex items-center justify-center rounded bg-white border border-brown/20 text-brown text-xs hover:bg-saffron/10"
                                   >
-                                    <FiPlus className="w-3 h-3" />
+                                    <FiPlus className="w-2.5 h-2.5" />
                                   </button>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-1">
                                 <span className="text-xs text-brown/70">Days:</span>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-0.5">
                                   <button
                                     onClick={() => updateCartRentalDays(item.id, item.rentalDays - 1)}
-                                    className="w-6 h-6 flex items-center justify-center rounded bg-white border border-brown/20 text-brown text-xs hover:bg-saffron/10"
+                                    className="w-5 h-5 flex items-center justify-center rounded bg-white border border-brown/20 text-brown text-xs hover:bg-saffron/10"
                                   >
-                                    <FiMinus className="w-3 h-3" />
+                                    <FiMinus className="w-2.5 h-2.5" />
                                   </button>
-                                  <span className="px-2 text-sm font-medium text-brown">
+                                  <span className="px-1 text-xs font-medium text-brown">
                                     {item.rentalDays}
                                   </span>
                                   <button
                                     onClick={() => updateCartRentalDays(item.id, item.rentalDays + 1)}
-                                    className="w-6 h-6 flex items-center justify-center rounded bg-white border border-brown/20 text-brown text-xs hover:bg-saffron/10"
+                                    className="w-5 h-5 flex items-center justify-center rounded bg-white border border-brown/20 text-brown text-xs hover:bg-saffron/10"
                                   >
-                                    <FiPlus className="w-3 h-3" />
+                                    <FiPlus className="w-2.5 h-2.5" />
                                   </button>
                                 </div>
                               </div>
                               <button
                                 onClick={() => removeFromCart(item.id)}
-                                className="ml-auto text-red-500 hover:text-red-700 text-sm p-1"
+                                className="ml-auto text-red-500 hover:text-red-700 text-sm p-0.5"
                               >
                                 <FiX />
                               </button>
@@ -2084,7 +2869,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
             />
           )}
         </AnimatePresence>
-      </div>
+      </div>  
 
       {/* Custom CSS for hiding scrollbar */}
       <style jsx>{`
