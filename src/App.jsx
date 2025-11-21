@@ -25,7 +25,7 @@ import ForgetPassword from "./pages/ForgetPassword";
 // ⭐ ALPHASTORE
 import Alphastore from "./pages/StoreAlpha";
 
-import AlphastoreCheckout from "./components/layout/AlphastoreCheckout";
+
 
 
 export default function App() {
@@ -81,7 +81,7 @@ export default function App() {
 
           {/* ⭐ ALPHASTORE ROUTES */}
           <Route path="/StoreAlpha" element={<Alphastore />} />
-          <Route path="/alphastore/checkout" element={<AlphastoreCheckout />} />
+
          
         </Routes>
 

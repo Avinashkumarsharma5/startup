@@ -60,7 +60,7 @@ export default function Navbar({ onMicClick }) {
     >
       <div className="flex items-center justify-between">
         
-        {/* Left Section */}
+        {/* Logo + Mobile Menu */}
         <div className="flex items-center gap-3 sm:gap-4">
           <button
             className="sm:hidden text-white focus:outline-none p-1"
@@ -69,7 +69,6 @@ export default function Navbar({ onMicClick }) {
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
             <div className="w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
               <img
@@ -96,13 +95,14 @@ export default function Navbar({ onMicClick }) {
           ))}
         </ul>
 
-        {/* Right Section */}
+        {/* Right Side */}
         <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+
           <Link to="/notifications">
             <Bell className="w-5 h-5 sm:w-6 sm:h-6 text-white cursor-pointer hover:scale-110 transition-transform" />
           </Link>
 
-          {/* Voice Button */}
+          {/* Mic Button */}
           <button
             onClick={onMicClick}
             className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-white text-orange-500 flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
@@ -110,7 +110,7 @@ export default function Navbar({ onMicClick }) {
             <Mic size={16} className="sm:w-5 sm:h-5" />
           </button>
 
-          {/* Profile */}
+          {/* Profile Dropdown */}
           <div
             className="relative"
             onMouseEnter={() => setShowProfileMenu(true)}
@@ -124,8 +124,10 @@ export default function Navbar({ onMicClick }) {
             </div>
 
             {showProfileMenu && (
-              <div className="absolute right-0 top-full pt-2 w-44 z-50">
-                <div className="bg-white rounded-lg shadow-xl border border-orange-100 py-2 text-sm">
+              <div
+                className="absolute right-0 top-full pt-2 w-44"
+              >
+                <div className="bg-white rounded-lg shadow-xl border border-orange-100 py-2 text-sm z-50">
                   <button
                     onClick={() => {
                       setShowProfileMenu(false);
@@ -135,6 +137,7 @@ export default function Navbar({ onMicClick }) {
                   >
                     View Profile
                   </button>
+
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2 hover:bg-orange-50 text-red-600"
@@ -168,6 +171,7 @@ export default function Navbar({ onMicClick }) {
                 </Link>
               </li>
             ))}
+
             <li>
               <button
                 onClick={() => {
