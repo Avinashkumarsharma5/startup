@@ -288,6 +288,7 @@ function SkeletonLoader({ type = "card" }) {
 function DynamicGreeting() {
   const [greeting, setGreeting] = useState("");
   const [shloka, setShloka] = useState("");
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     const updateGreeting = () => {
@@ -308,14 +309,29 @@ function DynamicGreeting() {
         setGreeting("Good night");
       }
 
-      // Select a random shloka for the time of day
       const shlokas = dailyShlokas[timeOfDay];
       const randomIndex = Math.floor(Math.random() * shlokas.length);
       setShloka(shlokas[randomIndex]);
     };
 
+    const loadUserName = () => {
+      try {
+        const stored = localStorage.getItem("loggedInUser");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          setUserName(parsed?.name || parsed?.email?.split("@")[0] || "Sanskaraa Seeker");
+        } else {
+          setUserName("Sanskaraa Seeker");
+        }
+      } catch (error) {
+        console.error("Failed to parse user info:", error);
+        setUserName("Sanskaraa Seeker");
+      }
+    };
+
     updateGreeting();
-    // Update every hour
+    loadUserName();
+
     const interval = setInterval(updateGreeting, 3600000);
     return () => clearInterval(interval);
   }, []);
@@ -327,9 +343,15 @@ function DynamicGreeting() {
       transition={{ delay: 0.2 }}
       className="mt-4 sm:mt-12"
     >
-      <p className="text-gray-600 text-sm sm:text-base mt-12">{greeting},</p>
-      <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#800000] "></h2>
-      <p className="mt-2 text-xs sm:text-sm md:text-base text-amber-800 bg-amber-100 p-2 sm:p-3 rounded-lg ">{shloka}</p>
+      <p className="text-gray-600 text-base sm:text-lg mt-12">
+        {greeting}{userName ? `, ${userName}` : ""}
+      </p>
+      <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#800000]">
+        Wishing you a blessed day ahead 🙏
+      </h2>
+      <p className="mt-2 text-xs sm:text-sm md:text-base text-amber-800 bg-amber-100 p-2 sm:p-3 rounded-lg ">
+        {shloka}
+      </p>
     </motion.div>
   );
 }

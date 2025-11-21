@@ -1,12 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Bell, Menu, X, Mic, Heart } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-
+import { supabase } from "../../lib/supabase";
+import toast from "react-hot-toast";
 
 export default function Navbar({ onMicClick }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [profileInitial, setProfileInitial] = useState("S");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    try {
+      const storedUser = localStorage.getItem("loggedInUser");
+      if (storedUser) {
+        const parsed = JSON.parse(storedUser);
+        const source = parsed?.name || parsed?.email || "";
+        if (source) {
+          setProfileInitial(source.trim().charAt(0).toUpperCase());
+          return;
+        }
+      }
+    } catch (error) {
+      console.error("Failed to read user data:", error);
+    }
+    setProfileInitial("S");
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error("Logout failed:", error);
+      toast.error("Unable to log out. Please try again.");
+      return;
+    } finally {
+      localStorage.removeItem("loggedInUser");
+    }
+
+    toast.success("Logged out successfully");
+    setShowProfileMenu(false);
+    navigate("/login");
+  };
 
   const menuItems = [
     { name: "Services", path: "/services" },
@@ -75,12 +111,45 @@ export default function Navbar({ onMicClick }) {
             <Mic size={16} className="sm:w-5 sm:h-5" />
           </button>
 
-          <img
-            src="https://randomuser.me/api/portraits/lego/0.jpg"
-            alt="Profile"
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border-2 border-white hover:scale-110 transition-transform cursor-pointer"
-            onClick={() => navigate("/UserProfile")}
-          />
+          <div
+            className="relative"
+            onMouseEnter={() => setShowProfileMenu(true)}
+            onMouseLeave={() => setShowProfileMenu(false)}
+            onMouseEnter={() => setShowProfileMenu(true)}
+            onMouseLeave={() => setShowProfileMenu(false)}
+          >
+            <div
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white text-orange-500 border-2 border-white flex items-center justify-center font-semibold hover:scale-110 transition-transform cursor-pointer"
+              onClick={() => navigate("/UserProfile")}
+            >
+              {profileInitial}
+            </div>
+            {showProfileMenu && (
+              <div
+                className="absolute right-0 top-full pt-2 w-44"
+                onMouseEnter={() => setShowProfileMenu(true)}
+                onMouseLeave={() => setShowProfileMenu(false)}
+              >
+                <div className="bg-white rounded-lg shadow-xl border border-orange-100 py-2 text-sm z-50">
+                <button
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    navigate("/UserProfile");
+                  }}
+                  className="w-full text-left px-4 py-2 hover:bg-orange-50 text-gray-700"
+                >
+                  View Profile
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-4 py-2 hover:bg-orange-50 text-red-600"
+                >
+                  Log Out
+                </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

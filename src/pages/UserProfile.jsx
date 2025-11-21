@@ -7,6 +7,8 @@ import {
   Phone, TrendingUp, Check, Cloud
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "../lib/supabase";
+import toast from "react-hot-toast";
 
 // ---------------- Enhanced Card Component ----------------
 function EnhancedCard({ children, className = "" }) {
@@ -411,8 +413,17 @@ export default function UserProfile() {
     }
   }, [navigate]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error("Logout failed:", error);
+      toast.error("Could not log out. Please try again.");
+      return;
+    }
+
     localStorage.removeItem("loggedInUser");
+    toast.success("Logged out successfully");
     navigate("/login");
   };
 

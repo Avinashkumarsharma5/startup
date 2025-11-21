@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
@@ -8,8 +9,7 @@ import BottomNavbar from "./components/layout/BottomNavbar";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import PujaKits from "./pages/PujaKits";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import Auth from "./components/auth/Auth";
 import PanditBooking from "./pages/PanditBooking";
 import EventsPage from "./pages/EventsPage";
 import BookingsPage from "./pages/BookingsPage";
@@ -34,6 +34,7 @@ export default function App() {
 
   // Pages where navbar & footer should NOT appear
   const noLayoutRoutes = [
+    "/auth",
     "/login",
     "/signup",
     "/forget-password",
@@ -51,6 +52,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Toaster position="top-right" />
       {!hideLayout && <Navbar onMicClick={handleMicClick} />}
 
       <main className="flex-grow relative">
@@ -61,8 +63,9 @@ export default function App() {
           <Route path="/pujakits" element={<PujaKits />} />
 
           {/* Auth */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/login" element={<Auth />} />
+          <Route path="/signup" element={<Auth />} />
           <Route path="/forget-password" element={<ForgetPassword />} />
 
           {/* Pages */}
