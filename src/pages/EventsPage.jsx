@@ -28,10 +28,11 @@ import {
   FiHeart,
   FiMenu,
   FiChevronDown,
+  FiAlertTriangle,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ========== RENTAL PRODUCTS DATA (UNCHANGED) ==========
+// ========== RENTAL PRODUCTS DATA ==========
 const rentalProducts = [
   // ========== SOUND & AUDIO EQUIPMENT ==========
   {
@@ -40,12 +41,13 @@ const rentalProducts = [
     price: 3000,
     category: "Sound & Audio",
     unit: "per day",
-    img: "images/dj1.png",
+    img: "https://images.unsplash.com/photo-1571974599782-87624638275f?w=400&h=300&fit=crop",
     description: "Professional DJ controllers from Pioneer or Numark for seamless mixing",
     minRentalDays: 1,
     deposit: 15000,
     features: ["Professional Grade", "USB Connectivity", "Multi-channel Mixing"],
     popular: true,
+    minQuantity: 1,
   },
   {
     id: 106,
@@ -59,6 +61,7 @@ const rentalProducts = [
     deposit: 5000,
     features: ["Dual Handheld Mics", "100m Range", "Battery Backup"],
     popular: true,
+    minQuantity: 1,
   },
   {
     id: 113,
@@ -72,6 +75,7 @@ const rentalProducts = [
     deposit: 20000,
     features: ["All-in-One System", "Easy Operation", "Clear Announcements"],
     popular: true,
+    minQuantity: 1,
   },
   // ========== LIGHTING & EFFECTS ==========
   {
@@ -86,6 +90,7 @@ const rentalProducts = [
     deposit: 9000,
     features: ["360° Movement", "Pattern Effects", "Sound Activation"],
     popular: true,
+    minQuantity: 1,
   },
   // ========== WEDDING & EVENT DECORATION ==========
   {
@@ -100,6 +105,7 @@ const rentalProducts = [
     deposit: 15000,
     features: ["Instant Printing", "Props Included", "Backdrop Options"],
     popular: true,
+    minQuantity: 1,
   },
   // ========== FURNITURE & SEATING ==========
   {
@@ -114,6 +120,7 @@ const rentalProducts = [
     deposit: 8000,
     features: ["Premium Upholstery", "Comfortable", "Elegant Design"],
     popular: true,
+    minQuantity: 1,
   },
   {
     id: 411,
@@ -127,6 +134,7 @@ const rentalProducts = [
     deposit: 25000,
     features: ["Waterproof", "Side Walls", "Professional Setup"],
     popular: true,
+    minQuantity: 1,
   },
   // ========== CATERING EQUIPMENT ==========
   {
@@ -141,6 +149,7 @@ const rentalProducts = [
     deposit: 4000,
     features: ["Plates + Bowls", "Quality Ceramic", "Complete Set"],
     popular: true,
+    minQuantity: 1,
   },
   // ========== PHOTOGRAPHY & VIDEOGRAPHY ==========
   {
@@ -155,6 +164,7 @@ const rentalProducts = [
     deposit: 30000,
     features: ["4K Video", "GPS Stabilization", "Long Flight Time"],
     popular: true,
+    minQuantity: 1,
   },
   // ========== STAGE & EVENT STRUCTURES ==========
   {
@@ -169,8 +179,8 @@ const rentalProducts = [
     deposit: 50000,
     features: ["High Resolution", "Bright Display", "Professional Quality"],
     popular: true,
+    minQuantity: 1,
   },
-  ...rentalProducts.filter(p => ![101, 106, 113, 202, 304, 401, 411, 504, 606, 905].includes(p.id)),
 ];
 
 const rentalCategories = [
@@ -181,8 +191,6 @@ const rentalCategories = [
   "Furniture & Seating",
   "Catering Equipment",
   "Photography & Videography",
-  "Power & Electricity",
-  "Puja & Ritual",
   "Stage & Structures",
 ];
 
@@ -194,7 +202,6 @@ const calculateDays = (start, end) => {
   const startDate = new Date(start);
   const endDate = new Date(end);
   const diffTime = Math.abs(endDate - startDate);
-  // Add 1 to include the return day in the calculation (standard practice for equipment rental)
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
   return diffDays > 0 ? diffDays : 0;
 };
@@ -206,9 +213,8 @@ const getTomorrowDate = () => {
   return t.toISOString().split("T")[0];
 };
 
-// ========== MOBILE FILTERS MODAL (UNCHANGED) ==========
+// ========== MOBILE FILTERS MODAL ==========
 const MobileFiltersModal = ({ isOpen, onClose, selectedCategory, onCategoryChange }) => {
-  // ... (unchanged)
   return (
     <AnimatePresence>
       {isOpen && (
@@ -259,7 +265,7 @@ const MobileFiltersModal = ({ isOpen, onClose, selectedCategory, onCategoryChang
   );
 };
 
-// ========== NEW: PRODUCT DETAIL MODAL COMPONENT ==========
+// ========== PRODUCT DETAIL MODAL COMPONENT ==========
 const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNow }) => {
   return (
     <motion.div
@@ -296,7 +302,7 @@ const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNo
               alt={product.name}
               className="w-full h-full object-cover"
               onError={(e) => {
-                e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FFF8E7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='10' fill='%235A3E2B'%3E${product.name.split(' ')[0]}%3C/text%3E%3C/svg%3E";
+                e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FFF8E7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='10' fill='%235A3E2B'%3EImage%3C/text%3E%3C/svg%3E";
               }}
             />
             <div className="absolute bottom-2 left-2 bg-brown text-white px-3 py-1 rounded-full text-xs font-semibold">
@@ -364,8 +370,7 @@ const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNo
   );
 };
 
-
-// ========== RENTAL ORDER WIZARD MODAL (UPDATED) ==========
+// ========== RENTAL ORDER WIZARD MODAL ==========
 const RentalOrderWizardModal = ({
   mode,
   product,
@@ -374,7 +379,7 @@ const RentalOrderWizardModal = ({
   cartItems,
   onClose,
   onConfirm,
-  rentalDuration, // New prop
+  rentalDuration,
 }) => {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
@@ -386,7 +391,6 @@ const RentalOrderWizardModal = ({
     pincode: "",
     eventType: "",
     guestCount: "",
-    // Initialize dates from global rentalDuration
     eventDate: rentalDuration.eventDate || "",
     deliveryDate: rentalDuration.deliveryDate || "",
     returnDate: rentalDuration.returnDate || "",
@@ -401,9 +405,6 @@ const RentalOrderWizardModal = ({
   }, [mode, product, qty, rentalDays, cartItems]);
 
   const pricing = useMemo(() => {
-    // Re-calculating pricing based on items and their *individual* days.
-    // NOTE: In the current structure, single rental days are passed as a prop,
-    // but when using the cart, the days must be correctly calculated based on the form dates later if needed.
     const rentalTotal = items.reduce(
       (sum, item) => sum + item.price * item.qty * item.rentalDays,
       0
@@ -430,13 +431,7 @@ const RentalOrderWizardModal = ({
 
   const handleNext = () => {
     if (step === 1) {
-      if (
-        !form.name ||
-        !form.phone ||
-        !form.address ||
-        !form.city ||
-        !form.pincode
-      ) {
+      if (!form.name || !form.phone || !form.address || !form.city || !form.pincode) {
         alert("Please fill all required fields (Name, Phone, Address, City, Pincode)");
         return;
       }
@@ -446,16 +441,10 @@ const RentalOrderWizardModal = ({
       }
     }
     if (step === 2) {
-      if (
-        !form.eventDate ||
-        !form.deliveryDate ||
-        !form.returnDate ||
-        !form.deliverySlot
-      ) {
+      if (!form.eventDate || !form.deliveryDate || !form.returnDate || !form.deliverySlot) {
         alert("Please select all date fields and time slot");
         return;
       }
-      // Date Logic Check
       const daysCheck = calculateDays(form.deliveryDate, form.returnDate);
       if (daysCheck <= 0) {
         alert("Return Date must be after Delivery Date.");
@@ -569,7 +558,7 @@ const RentalOrderWizardModal = ({
         {/* Steps */}
         <div className="min-h-[300px] sm:min-h-[320px]">
           <AnimatePresence mode="wait">
-            {/* STEP 1: Event Details (UNCHANGED) */}
+            {/* STEP 1: Event Details */}
             {step === 1 && (
               <motion.div
                 key="step1"
@@ -595,9 +584,7 @@ const RentalOrderWizardModal = ({
                         className="w-full text-sm outline-none bg-transparent"
                         placeholder="Your good name"
                         value={form.name}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, name: e.target.value }))
-                        }
+                        onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                       />
                     </div>
                   </div>
@@ -613,9 +600,7 @@ const RentalOrderWizardModal = ({
                         className="w-full text-sm outline-none bg-transparent"
                         placeholder="10 digit mobile"
                         value={form.phone}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, phone: e.target.value }))
-                        }
+                        onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
                       />
                     </div>
                   </div>
@@ -629,9 +614,7 @@ const RentalOrderWizardModal = ({
                     <select
                       className="w-full border border-brown/20 rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
                       value={form.eventType}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, eventType: e.target.value }))
-                      }
+                      onChange={(e) => setForm((f) => ({ ...f, eventType: e.target.value }))}
                     >
                       <option value="">Select event type</option>
                       <option value="Wedding">Wedding</option>
@@ -639,7 +622,6 @@ const RentalOrderWizardModal = ({
                       <option value="Corporate">Corporate Event</option>
                       <option value="Religious">Religious Ceremony</option>
                       <option value="Anniversary">Anniversary</option>
-                      <option value="Engagement">Engagement</option>
                       <option value="Other">Other</option>
                     </select>
                   </div>
@@ -653,9 +635,7 @@ const RentalOrderWizardModal = ({
                       className="w-full border border-brown/20 rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
                       placeholder="Approximate count"
                       value={form.guestCount}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, guestCount: e.target.value }))
-                      }
+                      onChange={(e) => setForm((f) => ({ ...f, guestCount: e.target.value }))}
                     />
                   </div>
                 </div>
@@ -669,9 +649,7 @@ const RentalOrderWizardModal = ({
                     className="w-full border border-brown/20 rounded-lg px-3 py-2.5 text-sm outline-none bg-white resize-none"
                     placeholder="Venue address with landmark..."
                     value={form.address}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, address: e.target.value }))
-                    }
+                    onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
                   />
                 </div>
 
@@ -685,9 +663,7 @@ const RentalOrderWizardModal = ({
                       className="w-full border border-brown/20 rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
                       placeholder="Near temple / hall"
                       value={form.landmark}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, landmark: e.target.value }))
-                      }
+                      onChange={(e) => setForm((f) => ({ ...f, landmark: e.target.value }))}
                     />
                   </div>
 
@@ -700,9 +676,7 @@ const RentalOrderWizardModal = ({
                       className="w-full border border-brown/20 rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
                       placeholder="Your city"
                       value={form.city}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, city: e.target.value }))
-                      }
+                      onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
                     />
                   </div>
 
@@ -715,9 +689,7 @@ const RentalOrderWizardModal = ({
                       className="w-full border border-brown/20 rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
                       placeholder="Pincode"
                       value={form.pincode}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, pincode: e.target.value }))
-                      }
+                      onChange={(e) => setForm((f) => ({ ...f, pincode: e.target.value }))}
                     />
                   </div>
                 </div>
@@ -725,14 +697,13 @@ const RentalOrderWizardModal = ({
                 <div className="bg-saffron/10 border border-saffron/20 rounded-xl px-3 py-2 text-xs text-brown flex items-center gap-2">
                   <FiShield className="text-saffron flex-shrink-0" />
                   <span className="text-xs">
-                    Your details are secure. We'll contact to confirm event
-                    details.
+                    Your details are secure. We'll contact to confirm event details.
                   </span>
                 </div>
               </motion.div>
             )}
 
-            {/* STEP 2: Schedule (UPDATED - now uses initial dates from global state) */}
+            {/* STEP 2: Schedule */}
             {step === 2 && (
               <motion.div
                 key="step2"
@@ -756,9 +727,7 @@ const RentalOrderWizardModal = ({
                       min={getTomorrowDate()}
                       className="w-full border border-brown/20 rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
                       value={form.eventDate}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, eventDate: e.target.value }))
-                      }
+                      onChange={(e) => setForm((f) => ({ ...f, eventDate: e.target.value }))}
                     />
                   </div>
 
@@ -771,9 +740,7 @@ const RentalOrderWizardModal = ({
                       min={getTomorrowDate()}
                       className="w-full border border-brown/20 rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
                       value={form.deliveryDate}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, deliveryDate: e.target.value }))
-                      }
+                      onChange={(e) => setForm((f) => ({ ...f, deliveryDate: e.target.value }))}
                     />
                   </div>
 
@@ -786,9 +753,7 @@ const RentalOrderWizardModal = ({
                       min={form.deliveryDate || getTomorrowDate()}
                       className="w-full border border-brown/20 rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
                       value={form.returnDate}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, returnDate: e.target.value }))
-                      }
+                      onChange={(e) => setForm((f) => ({ ...f, returnDate: e.target.value }))}
                     />
                   </div>
                 </div>
@@ -800,9 +765,7 @@ const RentalOrderWizardModal = ({
                   <select
                     className="w-full border border-brown/20 rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
                     value={form.deliverySlot}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, deliverySlot: e.target.value }))
-                    }
+                    onChange={(e) => setForm((f) => ({ ...f, deliverySlot: e.target.value }))}
                   >
                     <option value="">Select slot</option>
                     <option value="6 AM - 9 AM">6 AM - 9 AM</option>
@@ -823,7 +786,7 @@ const RentalOrderWizardModal = ({
               </motion.div>
             )}
 
-            {/* STEP 3: Review (UNCHANGED) */}
+            {/* STEP 3: Review */}
             {step === 3 && (
               <motion.div
                 key="step3"
@@ -861,9 +824,7 @@ const RentalOrderWizardModal = ({
                   <div className="bg-white border border-brown/10 rounded-xl p-3 sm:p-4 text-sm">
                     <div className="flex items-center gap-2 mb-2">
                       <FiUser className="text-saffron" />
-                      <span className="font-semibold text-brown">
-                        Event Details
-                      </span>
+                      <span className="font-semibold text-brown">Event Details</span>
                     </div>
                     <p className="font-medium text-brown text-sm">{form.name}</p>
                     <p className="text-brown/70 text-sm">{form.phone}</p>
@@ -874,39 +835,28 @@ const RentalOrderWizardModal = ({
                     <p className="text-brown/70 text-xs mt-1 leading-tight">
                       {form.address}
                       {form.landmark && `, ${form.landmark}`}
-                      {form.city && `, ${form.city}`}{" "}
-                      {form.pincode && `- ${form.pincode}`}
+                      {form.city && `, ${form.city}`} {form.pincode && `- ${form.pincode}`}
                     </p>
                   </div>
 
                   <div className="bg-white border border-brown/10 rounded-xl p-3 sm:p-4 text-sm">
                     <div className="flex items-center gap-2 mb-2">
                       <FiCalendar className="text-saffron" />
-                      <span className="font-semibold text-brown">
-                        Rental Schedule
-                      </span>
+                      <span className="font-semibold text-brown">Rental Schedule</span>
                     </div>
                     <p className="text-brown/80 text-sm">
                       Event:{" "}
-                      {form.eventDate
-                        ? new Date(form.eventDate).toLocaleDateString("en-IN")
-                        : "-"}
+                      {form.eventDate ? new Date(form.eventDate).toLocaleDateString("en-IN") : "-"}
                     </p>
                     <p className="text-brown/80 text-sm">
                       Delivery:{" "}
-                      {form.deliveryDate
-                        ? new Date(form.deliveryDate).toLocaleDateString("en-IN")
-                        : "-"}
+                      {form.deliveryDate ? new Date(form.deliveryDate).toLocaleDateString("en-IN") : "-"}
                     </p>
                     <p className="text-brown/80 text-sm">
                       Return:{" "}
-                      {form.returnDate
-                        ? new Date(form.returnDate).toLocaleDateString("en-IN")
-                        : "-"}
+                      {form.returnDate ? new Date(form.returnDate).toLocaleDateString("en-IN") : "-"}
                     </p>
-                    <p className="text-brown/80 text-sm">
-                      Slot: {form.deliverySlot || "-"}
-                    </p>
+                    <p className="text-brown/80 text-sm">Slot: {form.deliverySlot || "-"}</p>
                     <p className="text-brown/80 text-sm font-semibold mt-1">
                       Total Rental Days: {calculateDays(form.deliveryDate, form.returnDate)}
                     </p>
@@ -937,9 +887,7 @@ const RentalOrderWizardModal = ({
                   </div>
                   <div className="flex justify-between text-green-600 border-t border-brown/20 pt-2 text-sm">
                     <span>Refundable Deposit</span>
-                    <span className="font-semibold">
-                      {formatINR(pricing.refundable)}
-                    </span>
+                    <span className="font-semibold">{formatINR(pricing.refundable)}</span>
                   </div>
                   <div className="flex justify-between text-saffron font-semibold text-sm">
                     <span>Pay Now (Taxes + Delivery)</span>
@@ -994,10 +942,8 @@ const RentalOrderWizardModal = ({
   );
 };
 
-
-// ========== RENTAL SUCCESS PAGE (UNCHANGED) ==========
+// ========== RENTAL SUCCESS PAGE ==========
 const RentalSuccessPage = ({ order, onBack }) => {
-  // ... (unchanged)
   const [showAnim, setShowAnim] = useState(true);
 
   useEffect(() => {
@@ -1029,18 +975,12 @@ ${itemsText}
 *Refundable Deposit:* ₹${order.pricing.refundable}
 
 *Schedule:*
-• Event Date: ${new Date(order.schedule.eventDate).toLocaleDateString(
-      "en-IN"
-    )}
-• Delivery: ${new Date(order.schedule.deliveryDate).toLocaleDateString(
-      "en-IN"
-    )} (${order.schedule.slot})
-• Return: ${new Date(order.schedule.returnDate).toLocaleDateString(
-      "en-IN"
-    )}
-• Address: ${order.customer.address}, ${order.customer.city} - ${
-      order.customer.pincode
-    }
+• Event Date: ${new Date(order.schedule.eventDate).toLocaleDateString("en-IN")}
+• Delivery: ${new Date(order.schedule.deliveryDate).toLocaleDateString("en-IN")} (${
+      order.schedule.slot
+    })
+• Return: ${new Date(order.schedule.returnDate).toLocaleDateString("en-IN")}
+• Address: ${order.customer.address}, ${order.customer.city} - ${order.customer.pincode}
 
 _Sent automatically from Sanskaraa Rental Service._`;
 
@@ -1063,7 +1003,7 @@ _Sent automatically from Sanskaraa Rental Service._`;
           <div className="absolute bottom-0 left-0 w-20 h-20 sm:w-24 sm:h-24 bg-[url('data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20100%20100%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M20%2C50%20L80%2C50%20M50%2C20%20L50%2C80%22%20stroke%3D%22%235A3E2B%20%22%20stroke-width%3D%222%22/%3E%3C/svg%3E')]"></div>
         </div>
 
-        {/* Big Animated Tick (AnimatePresence needs to be handled on the top level if needed, simplified here) */}
+        {/* Big Animated Tick */}
         {showAnim && (
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.div
@@ -1107,9 +1047,7 @@ _Sent automatically from Sanskaraa Rental Service._`;
         <div className="bg-white rounded-xl p-3 sm:p-4 mb-3 sm:mb-4 text-xs sm:text-sm border border-brown/10">
           <div className="flex justify-between mb-1 text-brown">
             <span>Order ID</span>
-            <span className="font-mono font-semibold">
-              #R{order.id.toString().slice(-6)}
-            </span>
+            <span className="font-mono font-semibold">#R{order.id.toString().slice(-6)}</span>
           </div>
           <div className="flex justify-between mb-1 text-brown">
             <span>Rental Items</span>
@@ -1123,15 +1061,11 @@ _Sent automatically from Sanskaraa Rental Service._`;
           </div>
           <div className="flex justify-between mb-1 text-brown">
             <span>Total Amount</span>
-            <span className="font-bold text-saffron">
-              {formatINR(order.pricing.total)}
-            </span>
+            <span className="font-bold text-saffron">{formatINR(order.pricing.total)}</span>
           </div>
           <div className="flex justify-between mb-1 text-brown">
             <span>Refundable Deposit</span>
-            <span className="font-bold text-green-600">
-              {formatINR(order.pricing.refundable)}
-            </span>
+            <span className="font-bold text-green-600">{formatINR(order.pricing.refundable)}</span>
           </div>
           <div className="flex justify-between text-brown">
             <span>Event Date</span>
@@ -1160,15 +1094,14 @@ _Sent automatically from Sanskaraa Rental Service._`;
         </div>
 
         <p className="text-[10px] sm:text-xs text-center text-brown/60 italic mt-2 leading-tight">
-          "We ensure your event shines with quality equipment and professional
-          service."
+          "We ensure your event shines with quality equipment and professional service."
         </p>
       </motion.div>
     </div>
   );
 };
 
-// ========== MAIN RENTAL STORE PAGE (UPDATED) ==========
+// ========== MAIN RENTAL STORE PAGE ==========
 export default function RentalStore() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -1176,14 +1109,14 @@ export default function RentalStore() {
   const [showCart, setShowCart] = useState(false);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   
-  // NEW STATE: Global rental duration for products
+  // Global rental duration for products
   const [rentalDuration, setRentalDuration] = useState({
     deliveryDate: getTomorrowDate(),
     returnDate: getTomorrowDate(),
     rentalDays: 1,
   });
 
-  // STATE: To track the currently selected product for detail/quick order
+  // State for product details modal
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showProductDetails, setShowProductDetails] = useState(false);
 
@@ -1208,8 +1141,7 @@ export default function RentalStore() {
   const filteredProducts = useMemo(() => {
     const q = search.trim().toLowerCase();
     return rentalProducts.filter((p) => {
-      const matchCat =
-        selectedCategory === "All" || p.category === selectedCategory;
+      const matchCat = selectedCategory === "All" || p.category === selectedCategory;
       const matchSearch =
         q === "" ||
         p.name.toLowerCase().includes(q) ||
@@ -1219,7 +1151,7 @@ export default function RentalStore() {
     });
   }, [search, selectedCategory]);
 
-  // Quantity handlers (unchanged)
+  // Quantity handlers
   const changeQty = (id, delta) => {
     setQuantities((prev) => {
       const current = prev[id] || 1;
@@ -1254,8 +1186,6 @@ export default function RentalStore() {
       updated[idx] = {
         ...updated[idx],
         qty: updated[idx].qty + qty,
-        // Since we are using global dates, ensure days are updated on cart item for accurate display, 
-        // but the final rentalDays will be re-calculated in the wizard based on cart/single item.
         rentalDays: days, 
       };
       return updated;
@@ -1273,7 +1203,6 @@ export default function RentalStore() {
     );
   };
   
-  // Update cart days based on global days (optional, but ensures cart reflects current selection)
   const updateCartRentalDays = (id, days) => {
     const product = rentalProducts.find(p => p.id === id);
     const minDays = product?.minRentalDays || 1;
@@ -1287,7 +1216,7 @@ export default function RentalStore() {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
-  // Pricing calculation (now uses the latest state of `cart`)
+  // Pricing calculation
   const pricing = useMemo(() => {
     const rentalTotal = cart.reduce(
       (sum, item) => sum + item.price * item.qty * item.rentalDays,
@@ -1320,7 +1249,6 @@ export default function RentalStore() {
   const [orderQty, setOrderQty] = useState(1);
   const [orderRentalDays, setOrderRentalDays] = useState(1);
   const [orderSuccess, setOrderSuccess] = useState(null);
-
 
   // Start order from cart
   const startCartOrder = () => {
@@ -1357,7 +1285,6 @@ export default function RentalStore() {
       createdAt: new Date().toISOString(),
     };
 
-    // (WhatsApp & Local Storage logic remains the same)
     const itemsText = order.items
       .map(
         (item) =>
@@ -1381,18 +1308,12 @@ ${itemsText}
 *Refundable Deposit:* ₹${order.pricing.refundable}
 
 *Schedule:*
-• Event Date: ${new Date(order.schedule.eventDate).toLocaleDateString(
-      "en-IN"
-    )}
-• Delivery: ${new Date(order.schedule.deliveryDate).toLocaleDateString(
-      "en-IN"
-    )} (${order.schedule.slot})
-• Return: ${new Date(order.schedule.returnDate).toLocaleDateString(
-      "en-IN"
-    )}
-• Address: ${order.customer.address}, ${order.customer.city} - ${
-      order.customer.pincode
-    }
+• Event Date: ${new Date(order.schedule.eventDate).toLocaleDateString("en-IN")}
+• Delivery: ${new Date(order.schedule.deliveryDate).toLocaleDateString("en-IN")} (${
+      order.schedule.slot
+    })
+• Return: ${new Date(order.schedule.returnDate).toLocaleDateString("en-IN")}
+• Address: ${order.customer.address}, ${order.customer.city} - ${order.customer.pincode}
 
 _Sent automatically from Sanskaraa Rental Service_`;
 
@@ -1402,13 +1323,8 @@ _Sent automatically from Sanskaraa Rental Service_`;
 
     // Save to localStorage
     try {
-      const prev = JSON.parse(
-        localStorage.getItem("sanskaraa_rental_orders") || "[]"
-      );
-      localStorage.setItem(
-        "sanskaraa_rental_orders",
-        JSON.stringify([...prev, order])
-      );
+      const prev = JSON.parse(localStorage.getItem("sanskaraa_rental_orders") || "[]");
+      localStorage.setItem("sanskaraa_rental_orders", JSON.stringify([...prev, order]));
     } catch (e) {
       console.error(e);
     }
@@ -1439,16 +1355,6 @@ _Sent automatically from Sanskaraa Rental Service_`;
     }
   }, []);
 
-  // If success page active, show only that
-  if (orderSuccess) {
-    return (
-      <RentalSuccessPage
-        order={orderSuccess}
-        onBack={() => setOrderSuccess(null)}
-      />
-    );
-  }
-
   // Handle date change for global rental period
   const handleDateChange = (key, value) => {
     setRentalDuration((prev) => {
@@ -1456,7 +1362,6 @@ _Sent automatically from Sanskaraa Rental Service_`;
       
       // Enforce Delivery <= Return
       if (key === 'deliveryDate' && newDates.returnDate && new Date(value) > new Date(newDates.returnDate)) {
-        // If delivery date is after return date, move return date one day after delivery date
         const nextDay = new Date(value);
         nextDay.setDate(nextDay.getDate() + 1);
         newDates.returnDate = nextDay.toISOString().split("T")[0];
@@ -1474,9 +1379,13 @@ _Sent automatically from Sanskaraa Rental Service_`;
     });
   };
 
+  // If success page active, show only that
+  if (orderSuccess) {
+    return <RentalSuccessPage order={orderSuccess} onBack={() => setOrderSuccess(null)} />;
+  }
 
   return (
-    <div className="min-h-screen bg-cream pt-16 sm:pt-20 pb-6 px-3 sm:px-4 lg:px-6 relative">
+    <div className="min-h-screen bg-cream pt-16 sm:pt-20 pb-20 sm:pb-6 px-3 sm:px-4 lg:px-6 relative">
       {/* Cultural Background Pattern */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute top-10 left-10 w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 bg-[url('data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20100%20100%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M20%2C50%20Q50%2C20%2080%2C50%20Q50%2C80%2020%2C50%22%20fill%3D%22none%22%20stroke%3D%22%235A3E2B%22%20stroke-width%3D%222%22/%3E%3C/svg%3E')]"></div>
@@ -1484,16 +1393,35 @@ _Sent automatically from Sanskaraa Rental Service_`;
         <div className="absolute bottom-20 left-20 w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 bg-[url('data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20100%20100%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M30%2C30%20L70%2C70%20M70%2C30%20L30%2C70%22%20stroke%3D%22%235A3E2B%22%20stroke-width%3D%222%22/%3E%3C/svg%3E')]"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header (UNCHANGED) */}
+ {/* Fixed Cart Button - Top Right */}
+<button
+  onClick={() => setShowCart((s) => !s)}
+  className="fixed top-[40rem] right-6 z-20 bg-gradient-to-r from-saffron to-temple text-white p-3 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 flex items-center justify-center"
+  style={{
+    boxShadow: '0 10px 25px -5px rgba(249, 115, 22, 0.4), 0 10px 10px -5px rgba(249, 115, 22, 0.2)'
+  }}
+>
+  <FiShoppingCart className="w-6 h-6 sm:w-7 sm:h-7" />
+  {cart.length > 0 && (
+    <motion.span
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[22px] text-center border-2 border-white"
+    >
+      {cart.length}
+    </motion.span>
+  )}
+</button>
+
+<div className="max-w-7xl mx-auto relative z-10">
+  {/*header*/}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-4 sm:mt-6 lg:mt-10">
           <div className="flex-1 min-w-0">
             <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-brown font-serif truncate">
               Sanskaraa Rentals
             </h1>
             <p className="text-xs sm:text-sm text-brown/70 mt-1 truncate">
-              Complete event equipment rental – DJ, Lights, Furniture, Decor &
-              more
+              Complete event equipment rental – DJ, Lights, Furniture, Decor & more
             </p>
           </div>
 
@@ -1517,12 +1445,12 @@ _Sent automatically from Sanskaraa Rental Service_`;
               <FiMenu className="w-4 h-4" />
             </button>
 
-            {/* Cart Button (Sticky on Mobile/Tablet) */}
+            {/* Desktop Cart Button - Hidden on mobile since we have fixed button */}
             <button
               onClick={() => setShowCart((s) => !s)}
-              className="relative bg-gradient-to-r from-saffron to-temple text-white p-2.5 rounded-full shadow-lg hover:scale-105 transition-transform flex-shrink-0 fixed bottom-4 right-4 sm:static z-40"
+              className="hidden sm:flex relative bg-gradient-to-r from-saffron to-temple text-white p-2.5 rounded-full shadow-lg hover:scale-105 transition-transform flex-shrink-0"
             >
-              <FiShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
+              <FiShoppingCart className="w-5 h-5" />
               {cart.length > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
@@ -1536,92 +1464,75 @@ _Sent automatically from Sanskaraa Rental Service_`;
           </div>
         </div>
 
-        {/* NEW: Global Rental Date Picker */}
+        {/* Global Rental Date Picker */}
         <div className="mt-4 sm:mt-6 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border border-saffron/20 p-3 sm:p-4">
-            <h3 className="text-sm font-bold text-brown flex items-center gap-2 mb-2">
-                <FiCalendar className="text-saffron w-4 h-4" /> Select Rental Duration
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 items-center">
-                <div className="col-span-1">
-                    <label className="text-xs text-brown/70 mb-1 block">
-                        Delivery Date
-                    </label>
-                    <input
-                        type="date"
-                        min={getTomorrowDate()}
-                        value={rentalDuration.deliveryDate}
-                        onChange={(e) => handleDateChange('deliveryDate', e.target.value)}
-                        className="w-full border border-brown/20 rounded-lg px-3 py-2 text-sm outline-none bg-white"
-                    />
-                </div>
-                <div className="col-span-1">
-                    <label className="text-xs text-brown/70 mb-1 block">
-                        Return Date
-                    </label>
-                    <input
-                        type="date"
-                        min={rentalDuration.deliveryDate || getTomorrowDate()}
-                        value={rentalDuration.returnDate}
-                        onChange={(e) => handleDateChange('returnDate', e.target.value)}
-                        className="w-full border border-brown/20 rounded-lg px-3 py-2 text-sm outline-none bg-white"
-                    />
-                </div>
-                <div className="col-span-2 md:col-span-1 text-center bg-saffron/10 rounded-lg p-2 border border-saffron/20">
-                    <p className="text-lg font-bold text-saffron leading-tight">
-                        {rentalDuration.rentalDays}
-                    </p>
-                    <p className="text-xs text-brown/70 leading-tight">
-                        Total Rental Days
-                    </p>
-                </div>
+          <h3 className="text-sm font-bold text-brown flex items-center gap-2 mb-2">
+            <FiCalendar className="text-saffron w-4 h-4" /> Select Rental Duration
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 items-center">
+            <div className="col-span-1">
+              <label className="text-xs text-brown/70 mb-1 block">Delivery Date</label>
+              <input
+                type="date"
+                min={getTomorrowDate()}
+                value={rentalDuration.deliveryDate}
+                onChange={(e) => handleDateChange('deliveryDate', e.target.value)}
+                className="w-full border border-brown/20 rounded-lg px-3 py-2 text-sm outline-none bg-white"
+              />
             </div>
-            {rentalDuration.rentalDays === 0 && (
-                 <p className="text-xs text-red-500 mt-2 flex items-center gap-1">
-                    <FiAlertTriangle className="w-3 h-3"/> Please select a valid delivery and return date.
-                 </p>
-            )}
+            <div className="col-span-1">
+              <label className="text-xs text-brown/70 mb-1 block">Return Date</label>
+              <input
+                type="date"
+                min={rentalDuration.deliveryDate || getTomorrowDate()}
+                value={rentalDuration.returnDate}
+                onChange={(e) => handleDateChange('returnDate', e.target.value)}
+                className="w-full border border-brown/20 rounded-lg px-3 py-2 text-sm outline-none bg-white"
+              />
+            </div>
+            <div className="col-span-2 md:col-span-1 text-center bg-saffron/10 rounded-lg p-2 border border-saffron/20">
+              <p className="text-lg font-bold text-saffron leading-tight">{rentalDuration.rentalDays}</p>
+              <p className="text-xs text-brown/70 leading-tight">Total Rental Days</p>
+            </div>
+          </div>
+          {rentalDuration.rentalDays === 0 && (
+            <p className="text-xs text-red-500 mt-2 flex items-center gap-1">
+              <FiAlertTriangle className="w-3 h-3"/> Please select a valid delivery and return date.
+            </p>
+          )}
         </div>
 
-
-        {/* Hero Section (UNCHANGED) */}
+        {/* Hero Section */}
         <div className="mt-4 sm:mt-6 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border border-saffron/20 p-3 sm:p-4 lg:p-6">
           <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             <div className="flex items-center gap-3 p-3 bg-saffron/10 rounded-xl border border-saffron/20">
               <FiPackage className="text-saffron w-5 h-5 sm:w-6 sm:h-6" />
               <div>
-                <p className="font-semibold text-brown text-xs sm:text-sm">
-                  80+ Equipment Types
-                </p>
+                <p className="font-semibold text-brown text-xs sm:text-sm">80+ Equipment Types</p>
                 <p className="text-xs text-brown/70">Complete event solutions</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-green-50 rounded-xl border border-green-200">
               <FiTruck className="text-green-600 w-5 h-5 sm:w-6 sm:h-6" />
               <div>
-                <p className="font-semibold text-brown text-xs sm:text-sm">
-                  Free Delivery
-                </p>
+                <p className="font-semibold text-brown text-xs sm:text-sm">Free Delivery</p>
                 <p className="text-xs text-brown/70">Above ₹4999 rental</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-amber-50 rounded-xl border border-amber-200">
               <FiShield className="text-amber-600 w-5 h-5 sm:w-6 sm:h-6" />
               <div>
-                <p className="font-semibold text-brown text-xs sm:text-sm">
-                  Quality Guaranteed
-                </p>
+                <p className="font-semibold text-brown text-xs sm:text-sm">Quality Guaranteed</p>
                 <p className="text-xs text-brown/70">Professional equipment</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Category Icons & Filters (SIMPLIFIED/UNCHANGED) */}
+        {/* Category Icons & Filters */}
         <div className="mt-4 sm:mt-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-saffron/20 px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            <span className="text-xs sm:text-sm font-medium text-brown hidden sm:block">
-              Category:
-            </span>
+            <span className="text-xs sm:text-sm font-medium text-brown hidden sm:block">Category:</span>
             <div className="flex gap-2 overflow-x-auto pb-1 flex-1 hide-scrollbar">
               {rentalCategories.map((cat) => (
                 <button
@@ -1640,23 +1551,18 @@ _Sent automatically from Sanskaraa Rental Service_`;
           </div>
         </div>
 
-        {/* Products Grid (UPDATED) */}
+        {/* Products Grid */}
         <div className="mt-4 sm:mt-6 lg:mt-8">
           {filteredProducts.length === 0 ? (
             <div className="text-center py-12 sm:py-16 bg-white/80 rounded-2xl shadow border border-saffron/20">
               <div className="text-4xl mb-4">🎪</div>
-              <p className="text-sm text-brown mb-2">
-                No rental items found matching your search.
-              </p>
-              <p className="text-xs text-brown/60">
-                Try changing category or search term
-              </p>
+              <p className="text-sm text-brown mb-2">No rental items found matching your search.</p>
+              <p className="text-xs text-brown/60">Try changing category or search term</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
               {filteredProducts.map((product) => {
                 const qty = quantities[product.id] || (product.minQuantity || 1);
-                // Use global rental days
                 const days = rentalDuration.rentalDays;
                 const rentalCost = product.price * qty * days;
                 const deposit = product.deposit * qty;
@@ -1685,7 +1591,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                         alt={product.name}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          e.currentTarget.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FFF8E7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='10' fill='%235A3E2B'%3E${product.name.split(' ')[0]}%3C/text%3E%3C/svg%3E`;
+                          e.currentTarget.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FFF8E7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='10' fill='%235A3E2B'%3EImage%3C/text%3E%3C/svg%3E`;
                         }}
                       />
                     </div>
@@ -1715,13 +1621,9 @@ _Sent automatically from Sanskaraa Rental Service_`;
                         <div>
                           <p className="text-saffron font-bold text-base sm:text-lg">
                             {formatINR(product.price)}
-                            <span className="text-xs text-brown/50 font-normal">
-                              / day
-                            </span>
+                            <span className="text-xs text-brown/50 font-normal">/ day</span>
                           </p>
-                          <p className="text-[11px] text-green-600">
-                            Deposit: {formatINR(product.deposit)}
-                          </p>
+                          <p className="text-[11px] text-green-600">Deposit: {formatINR(product.deposit)}</p>
                         </div>
                         {product.minQuantity > 1 && (
                           <p className="text-[10px] text-amber-600 bg-amber-50 px-2 py-1 rounded border border-amber-200">
@@ -1732,9 +1634,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
 
                       {/* Quantity Selector */}
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs text-brown/70 font-medium">
-                          Quantity:
-                        </span>
+                        <span className="text-xs text-brown/70 font-medium">Quantity:</span>
                         <div className="flex items-center gap-1 bg-saffron/5 rounded-full px-2 py-1 border border-saffron/20">
                           <button
                             onClick={() => changeQty(product.id, -1)}
@@ -1758,27 +1658,19 @@ _Sent automatically from Sanskaraa Rental Service_`;
                         </div>
                       </div>
 
-                      {/* Cost Summary (UPDATED: displays total cost for the selected days) */}
+                      {/* Cost Summary */}
                       <div className="mt-2 p-2 sm:p-3 bg-saffron/5 rounded-lg border border-saffron/20">
                         <div className="flex justify-between text-xs mb-1">
-                          <span className="text-brown/70">
-                            Total Rental Cost ({days} days):
-                          </span>
-                          <span className="font-semibold text-saffron">
-                            {formatINR(rentalCost)}
-                          </span>
+                          <span className="text-brown/70">Total Rental Cost ({days} days):</span>
+                          <span className="font-semibold text-saffron">{formatINR(rentalCost)}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-green-600">
-                            Total Deposit:
-                          </span>
-                          <span className="font-semibold text-green-600">
-                            {formatINR(deposit)}
-                          </span>
+                          <span className="text-green-600">Total Deposit:</span>
+                          <span className="font-semibold text-green-600">{formatINR(deposit)}</span>
                         </div>
                       </div>
 
-                      {/* Buttons (UPDATED: Added View Details/Product Detail Modal Logic) */}
+                      {/* Buttons */}
                       <div className="mt-2 flex flex-col gap-2">
                         <button
                           onClick={() => addToCart(product, qty, days)}
@@ -1790,10 +1682,10 @@ _Sent automatically from Sanskaraa Rental Service_`;
                         </button>
 
                         <button
-                            onClick={() => {
-                                setSelectedProduct(product);
-                                setShowProductDetails(true);
-                            }}
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            setShowProductDetails(true);
+                          }}
                           className="w-full py-2 border border-saffron text-saffron rounded-lg text-sm font-medium hover:bg-saffron/5 transition-colors"
                         >
                           View Details
@@ -1807,7 +1699,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
           )}
         </div>
 
-        {/* Cart Sidebar (UPDATED: Cart items now show `rentalDays` based on global state) */}
+        {/* Cart Sidebar */}
         <AnimatePresence>
           {showCart && (
             <motion.div
@@ -1833,12 +1725,8 @@ _Sent automatically from Sanskaraa Rental Service_`;
                 {cart.length === 0 ? (
                   <div className="text-center py-16">
                     <div className="text-4xl mb-2">🎪</div>
-                    <p className="text-sm text-brown mb-1">
-                      Your rental cart is empty
-                    </p>
-                    <p className="text-xs text-brown/60 mb-3">
-                      Add equipment for your event
-                    </p>
+                    <p className="text-sm text-brown mb-1">Your rental cart is empty</p>
+                    <p className="text-xs text-brown/60 mb-3">Add equipment for your event</p>
                     <button
                       onClick={() => setShowCart(false)}
                       className="bg-gradient-to-r from-saffron to-temple text-white px-4 py-2 rounded-lg text-sm font-semibold hover:shadow-lg transition-all"
@@ -1850,16 +1738,15 @@ _Sent automatically from Sanskaraa Rental Service_`;
                   <>
                     <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
                       {cart.map((item) => {
-                          const minQty = item.minQuantity || 1;
-                          const currentDays = rentalDuration.rentalDays;
-                          const currentCost = item.price * item.qty * currentDays;
-                          
-                          // Ensure cart days are updated to global days for pricing accuracy
-                          if(item.rentalDays !== currentDays && currentDays > 0) {
-                              updateCartRentalDays(item.id, currentDays);
-                          }
+                        const minQty = item.minQuantity || 1;
+                        const currentDays = rentalDuration.rentalDays;
+                        const currentCost = item.price * item.qty * currentDays;
+                        
+                        if(item.rentalDays !== currentDays && currentDays > 0) {
+                          updateCartRentalDays(item.id, currentDays);
+                        }
 
-                          return (
+                        return (
                           <div
                             key={item.id}
                             className="flex gap-2 items-start p-3 bg-white rounded-lg border border-saffron/20"
@@ -1869,21 +1756,18 @@ _Sent automatically from Sanskaraa Rental Service_`;
                               alt={item.name}
                               className="h-12 w-12 object-cover rounded flex-shrink-0 bg-saffron/5"
                               onError={(e) => {
-                                e.currentTarget.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%23FFF8E7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='6' fill='%235A3E2B'%3E${item.name.split(' ')[0]}%3C/text%3E%3C/svg%3E`;
+                                e.currentTarget.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%23FFF8E7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='6' fill='%235A3E2B'%3EImage%3C/text%3E%3C/svg%3E`;
                               }}
                             />
                             <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-brown text-sm truncate">
-                                {item.name}
-                              </p>
+                              <p className="font-semibold text-brown text-sm truncate">{item.name}</p>
                               <p className="text-xs text-brown/60 mb-1">
-                                {formatINR(item.price)}/day x {currentDays} days = <span className="text-saffron font-bold">{formatINR(currentCost)}</span>
+                                {formatINR(item.price)}/day x {currentDays} days ={" "}
+                                <span className="text-saffron font-bold">{formatINR(currentCost)}</span>
                               </p>
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1">
-                                  <span className="text-xs text-brown/70">
-                                    Qty:
-                                  </span>
+                                  <span className="text-xs text-brown/70">Qty:</span>
                                   <div className="flex items-center gap-0.5">
                                     <button
                                       onClick={() => updateCartQty(item.id, item.qty - 1)}
@@ -1892,9 +1776,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                                     >
                                       <FiMinus className="w-2.5 h-2.5" />
                                     </button>
-                                    <span className="px-1 text-xs font-medium text-brown">
-                                      {item.qty}
-                                    </span>
+                                    <span className="px-1 text-xs font-medium text-brown">{item.qty}</span>
                                     <button
                                       onClick={() => updateCartQty(item.id, item.qty + 1)}
                                       className="w-5 h-5 flex items-center justify-center rounded bg-white border border-brown/20 text-brown text-xs hover:bg-saffron/10"
@@ -1913,53 +1795,39 @@ _Sent automatically from Sanskaraa Rental Service_`;
                             </div>
                           </div>
                         );
-                        })}
+                      })}
                     </div>
 
                     {/* Price Summary */}
                     <div className="border-t border-saffron/20 pt-4 mt-6 space-y-3 text-sm">
                       <div className="flex justify-between text-brown">
                         <span>Rental Charges</span>
-                        <span className="font-medium">
-                          {formatINR(pricing.rentalTotal)}
-                        </span>
+                        <span className="font-medium">{formatINR(pricing.rentalTotal)}</span>
                       </div>
                       <div className="flex justify-between text-brown">
                         <span>GST (18%)</span>
-                        <span className="font-medium">
-                          {formatINR(pricing.gst)}
-                        </span>
+                        <span className="font-medium">{formatINR(pricing.gst)}</span>
                       </div>
                       <div className="flex justify-between text-brown">
                         <span>
                           Delivery Charges
                           {pricing.delivery === 0 && (
-                            <span className="text-green-600 text-xs ml-1">
-                              (FREE above ₹4999)
-                            </span>
+                            <span className="text-green-600 text-xs ml-1">(FREE above ₹4999)</span>
                           )}
                         </span>
-                        <span className="font-medium">
-                          {formatINR(pricing.delivery)}
-                        </span>
+                        <span className="font-medium">{formatINR(pricing.delivery)}</span>
                       </div>
                       <div className="flex justify-between text-brown">
                         <span>Pickup Charges</span>
-                        <span className="font-medium">
-                          {formatINR(pricing.pickup)}
-                        </span>
+                        <span className="font-medium">{formatINR(pricing.pickup)}</span>
                       </div>
                       <div className="flex justify-between font-bold text-lg border-t border-saffron/20 pt-3 text-brown">
                         <span>Total Payable</span>
-                        <span className="text-saffron">
-                          {formatINR(pricing.total)}
-                        </span>
+                        <span className="text-saffron">{formatINR(pricing.total)}</span>
                       </div>
                       <div className="flex justify-between text-green-600 border-t border-saffron/20 pt-3">
                         <span>Refundable Deposit</span>
-                        <span className="font-semibold">
-                          {formatINR(pricing.refundable)}
-                        </span>
+                        <span className="font-semibold">{formatINR(pricing.refundable)}</span>
                       </div>
 
                       <button
@@ -1973,10 +1841,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
 
                       <div className="flex items-center gap-2 mt-3 text-xs text-brown/60">
                         <FiShield className="text-green-600 w-4 h-4" />
-                        <span>
-                          Deposit refunded after equipment return in good
-                          condition
-                        </span>
+                        <span>Deposit refunded after equipment return in good condition</span>
                       </div>
                     </div>
                   </>
@@ -1986,7 +1851,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
           )}
         </AnimatePresence>
 
-        {/* Mobile Filters Modal (UNCHANGED) */}
+        {/* Mobile Filters Modal */}
         <MobileFiltersModal
           isOpen={showMobileFilters}
           onClose={() => setShowMobileFilters(false)}
@@ -1994,7 +1859,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
           onCategoryChange={setSelectedCategory}
         />
 
-        {/* NEW: Product Detail Modal */}
+        {/* Product Detail Modal */}
         <AnimatePresence>
           {showProductDetails && selectedProduct && (
             <ProductDetailModal
@@ -2008,20 +1873,18 @@ _Sent automatically from Sanskaraa Rental Service_`;
           )}
         </AnimatePresence>
 
-
-        {/* Rental Order Wizard Modal (UPDATED to pass global rentalDuration) */}
+        {/* Rental Order Wizard Modal */}
         <AnimatePresence>
           {showOrderWizard && (
             <RentalOrderWizardModal
               mode={orderMode}
               product={orderProduct}
               qty={orderQty}
-              // Pass the final days calculated for the single item flow
-              rentalDays={orderRentalDays || rentalDuration.rentalDays} 
+              rentalDays={orderRentalDays || rentalDuration.rentalDays}
               cartItems={cart}
               onClose={() => setShowOrderWizard(false)}
               onConfirm={handleOrderConfirm}
-              rentalDuration={rentalDuration} // Pass global dates to initialize step 2
+              rentalDuration={rentalDuration}
             />
           )}
         </AnimatePresence>
