@@ -40,7 +40,7 @@ const rentalProducts = [
     price: 3000,
     category: "Sound & Audio",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=400&h=300&fit=crop",
+    img: "images/dj1.png",
     description: "Professional DJ controllers from Pioneer or Numark for seamless mixing",
     minRentalDays: 1,
     deposit: 15000,
@@ -53,7 +53,7 @@ const rentalProducts = [
     price: 2000,
     category: "Sound & Audio",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=400&h=300&fit=crop",
+    img: "images/dj1.png",
     description: "Powered DJ speakers with built-in amplification",
     minRentalDays: 1,
     deposit: 10000,
@@ -2871,16 +2871,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
         </AnimatePresence>
       </div>  
 
-      {/* Custom CSS for hiding scrollbar */}
-      <style jsx>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
+      
     </div>
   );
 }
