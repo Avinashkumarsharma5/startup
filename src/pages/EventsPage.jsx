@@ -29,6 +29,7 @@ import {
   FiMenu,
   FiChevronDown,
   FiAlertTriangle,
+  FiPlay,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -41,7 +42,12 @@ const rentalProducts = [
     price: 3000,
     category: "Sound & Audio",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1571974599782-87624638275f?w=400&h=300&fit=crop",
+    imgGallery: [
+      "https://images.unsplash.com/photo-1571974599782-87624638275f?w=400",
+      "https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=400",
+      "https://images.unsplash.com/photo-1601312247853-0637f7a22c89?w=400"
+    ],
+    video: "https://assets.mixkit.co/videos/preview/mixkit-dj-mixing-in-a-night-club-5-large.mp4",
     description: "Professional DJ controllers from Pioneer or Numark for seamless mixing",
     minRentalDays: 1,
     deposit: 15000,
@@ -55,7 +61,12 @@ const rentalProducts = [
     price: 800,
     category: "Sound & Audio",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400&h=300&fit=crop",
+    imgGallery: [
+      "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400",
+      "https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=400",
+      "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400"
+    ],
+    video: null,
     description: "Dual handheld wireless microphone system",
     minRentalDays: 1,
     deposit: 5000,
@@ -69,7 +80,12 @@ const rentalProducts = [
     price: 3500,
     category: "Sound & Audio",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1571330663919-a5c0cfe3c8e9?w=400&h=300&fit=crop",
+    imgGallery: [
+      "https://images.unsplash.com/photo-1571330663919-a5c0cfe3c8e9?w=400",
+      "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400",
+      "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=400"
+    ],
+    video: "https://assets.mixkit.co/videos/preview/mixkit-audience-in-a-concert-venue-43559-large.mp4",
     description: "Complete public announcement system with speakers and mixer",
     minRentalDays: 1,
     deposit: 20000,
@@ -84,7 +100,12 @@ const rentalProducts = [
     price: 1800,
     category: "Lighting & Effects",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop",
+    imgGallery: [
+      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400",
+      "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=400",
+      "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400"
+    ],
+    video: "https://assets.mixkit.co/videos/preview/mixkit-light-effects-on-a-dark-background-42951-large.mp4",
     description: "Professional moving head lights for dynamic effects",
     minRentalDays: 1,
     deposit: 9000,
@@ -99,7 +120,12 @@ const rentalProducts = [
     price: 3000,
     category: "Wedding & Decor",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1521334884684-d80222895322?w=400&h=300&fit=crop",
+    imgGallery: [
+      "https://images.unsplash.com/photo-1521334884684-d80222895322?w=400",
+      "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400",
+      "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400"
+    ],
+    video: null,
     description: "Complete photo booth with props and backdrop",
     minRentalDays: 1,
     deposit: 15000,
@@ -114,7 +140,12 @@ const rentalProducts = [
     price: 1500,
     category: "Furniture & Seating",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop",
+    imgGallery: [
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400",
+      "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400"
+    ],
+    video: null,
     description: "Elegant wedding sofa for couple seating",
     minRentalDays: 1,
     deposit: 8000,
@@ -128,7 +159,12 @@ const rentalProducts = [
     price: 4500,
     category: "Furniture & Seating",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&h=300&fit=crop",
+    imgGallery: [
+      "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400",
+      "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=400",
+      "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400"
+    ],
+    video: "https://assets.mixkit.co/videos/preview/mixkit-wedding-ceremony-outdoors-43563-large.mp4",
     description: "Large tent or shamiyana for outdoor events",
     minRentalDays: 1,
     deposit: 25000,
@@ -143,7 +179,12 @@ const rentalProducts = [
     price: 800,
     category: "Catering Equipment",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    imgGallery: [
+      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400",
+      "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400",
+      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400"
+    ],
+    video: null,
     description: "Complete crockery set for 100 people",
     minRentalDays: 1,
     deposit: 4000,
@@ -158,7 +199,12 @@ const rentalProducts = [
     price: 2000,
     category: "Photography & Videography",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+    imgGallery: [
+      "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400",
+      "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400",
+      "https://images.unsplash.com/photo-1472145246862-b24cf25c4a36?w=400"
+    ],
+    video: "https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-river-and-a-forest-34455-large.mp4",
     description: "Professional drone for aerial photography",
     minRentalDays: 1,
     deposit: 30000,
@@ -173,7 +219,12 @@ const rentalProducts = [
     price: 8000,
     category: "Stage & Structures",
     unit: "per day",
-    img: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&h=300&fit=crop",
+    imgGallery: [
+      "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400",
+      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400",
+      "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=400"
+    ],
+    video: "https://assets.mixkit.co/videos/preview/mixkit-modern-stage-with-laser-light-show-43558-large.mp4",
     description: "High-resolution LED video wall",
     minRentalDays: 1,
     deposit: 50000,
@@ -211,6 +262,183 @@ const getTomorrowDate = () => {
   const t = new Date();
   t.setDate(t.getDate() + 1);
   return t.toISOString().split("T")[0];
+};
+
+// ========== PRODUCT CAROUSEL COMPONENT ==========
+const ProductCarousel = ({ gallery = [], video, productName }) => {
+  const [index, setIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+  const [isHovering, setIsHovering] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+
+  const total = (video && !videoError) ? gallery.length + 1 : gallery.length;
+
+  // Auto slide with hover pause
+  useEffect(() => {
+    if (isHovering || total <= 1) return;
+    
+    const t = setInterval(() => {
+      setIndex((prev) => (prev + 1) % total);
+    }, 3000);
+    return () => clearInterval(t);
+  }, [total, isHovering]);
+
+  // Swipe support
+  const handleSwipe = (dir) => {
+    if (dir === "left") {
+      setIndex((prev) => (prev + 1) % total);
+    } else {
+      setIndex((prev) => (prev - 1 + total) % total);
+    }
+  };
+
+  const handleTouchStart = (e) => {
+    setTouchStart(e.changedTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!touchStart) return;
+    
+    const touchEnd = e.changedTouches[0].clientX;
+    const diff = touchStart - touchEnd;
+
+    if (Math.abs(diff) > 50) { // Minimum swipe distance
+      if (diff > 0) {
+        handleSwipe("left");
+      } else {
+        handleSwipe("right");
+      }
+    }
+    setTouchStart(null);
+  };
+
+  const handleVideoError = () => {
+    setVideoError(true);
+    // If we're currently on the video and it fails, move to first image
+    if (index === 0 && video) {
+      setIndex(0);
+    }
+  };
+
+  const currentMedia = () => {
+    if (video && !videoError && index === 0) {
+      return { type: "video", src: video };
+    }
+    const imgIndex = video && !videoError ? index - 1 : index;
+    return { type: "image", src: gallery[imgIndex] || gallery[0] };
+  };
+
+  const active = currentMedia();
+
+  // Handle dot click
+  const handleDotClick = (i) => {
+    setIndex(i);
+  };
+
+  // Handle hover over dots to preview
+  const handleDotHover = (i) => {
+    if (isHovering) {
+      setIndex(i);
+    }
+  };
+
+  if (total === 0) {
+    return (
+      <div className="h-40 sm:h-48 rounded-xl overflow-hidden bg-saffron/10 flex items-center justify-center">
+        <span className="text-brown/40 text-sm">No images available</span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="relative h-40 sm:h-48 rounded-xl overflow-hidden bg-saffron/10 group"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
+      {/* Media Display */}
+      <div className="w-full h-full relative">
+        {active.type === "image" ? (
+          <img
+            src={active.src}
+            alt={`${productName} - Image ${index + 1}`}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={(e) => {
+              e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FFF8E7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='10' fill='%235A3E2B'%3EImage%3C/text%3E%3C/svg%3E";
+            }}
+          />
+        ) : (
+          <video
+            className="w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            onError={handleVideoError}
+          >
+            <source src={active.src} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        )}
+        
+        {/* Video Indicator */}
+        {active.type === "video" && (
+          <div className="absolute top-2 right-2 bg-black/60 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+            <FiPlay className="w-3 h-3" />
+            Video
+          </div>
+        )}
+      </div>
+
+      {/* Navigation Arrows - Show on hover */}
+      {total > 1 && (
+        <>
+          <button
+            onClick={() => handleSwipe("right")}
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-lg hover:bg-white hover:scale-110"
+            aria-label="Previous image"
+          >
+            <FiArrowLeft className="w-4 h-4 text-brown" />
+          </button>
+          <button
+            onClick={() => handleSwipe("left")}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-lg hover:bg-white hover:scale-110"
+            aria-label="Next image"
+          >
+            <FiArrowLeft className="w-4 h-4 text-brown rotate-180" />
+          </button>
+        </>
+      )}
+
+      {/* Dots Indicator */}
+      {total > 1 && (
+        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 px-2">
+          {[...Array(total)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => handleDotClick(i)}
+              onMouseEnter={() => handleDotHover(i)}
+              className={`flex-1 max-w-[20px] h-2 rounded-full cursor-pointer transition-all duration-300 ${
+                index === i
+                  ? "bg-saffron scale-110 shadow-sm"
+                  : "bg-white/70 hover:bg-white/90"
+              }`}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Slide Counter */}
+      {total > 1 && (
+        <div className="absolute top-2 left-2 bg-black/60 text-white px-2 py-1 rounded-full text-xs font-semibold">
+          {index + 1} / {total}
+        </div>
+      )}
+    </div>
+  );
 };
 
 // ========== MOBILE FILTERS MODAL ==========
@@ -297,13 +525,10 @@ const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNo
         {/* Product Info */}
         <div className="space-y-4">
           <div className="h-40 sm:h-56 overflow-hidden bg-saffron/5 rounded-xl relative">
-            <img
-              src={product.img}
-              alt={product.name}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FFF8E7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='10' fill='%235A3E2B'%3EImage%3C/text%3E%3C/svg%3E";
-              }}
+            <ProductCarousel
+              gallery={product.imgGallery || [product.img]}
+              video={product.video}
+              productName={product.name}
             />
             <div className="absolute bottom-2 left-2 bg-brown text-white px-3 py-1 rounded-full text-xs font-semibold">
               {product.category}
@@ -1393,10 +1618,10 @@ _Sent automatically from Sanskaraa Rental Service_`;
         <div className="absolute bottom-20 left-20 w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 bg-[url('data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20100%20100%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M30%2C30%20L70%2C70%20M70%2C30%20L30%2C70%22%20stroke%3D%22%235A3E2B%22%20stroke-width%3D%222%22/%3E%3C/svg%3E')]"></div>
       </div>
 
- {/* Fixed Cart Button - Top Right */}
+      {/* Fixed Cart Button - Bottom Right */}
 <button
   onClick={() => setShowCart((s) => !s)}
-  className="fixed top-[40rem] right-6 z-20 bg-gradient-to-r from-saffron to-temple text-white p-3 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 flex items-center justify-center"
+  className="fixed bottom-16 right-6 z-20 bg-gradient-to-r from-saffron to-temple text-white p-3 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 flex items-center justify-center"
   style={{
     boxShadow: '0 10px 25px -5px rgba(249, 115, 22, 0.4), 0 10px 10px -5px rgba(249, 115, 22, 0.2)'
   }}
@@ -1413,8 +1638,9 @@ _Sent automatically from Sanskaraa Rental Service_`;
   )}
 </button>
 
-<div className="max-w-7xl mx-auto relative z-10">
-  {/*header*/}
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-4 sm:mt-6 lg:mt-10">
           <div className="flex-1 min-w-0">
             <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-brown font-serif truncate">
@@ -1575,8 +1801,13 @@ _Sent automatically from Sanskaraa Rental Service_`;
                     whileHover={{ y: -4 }}
                     transition={{ type: "spring", stiffness: 260, damping: 20 }}
                   >
-                    {/* Image */}
+                    {/* Image with Carousel */}
                     <div className="h-36 sm:h-40 lg:h-48 overflow-hidden bg-saffron/5 relative">
+                      <ProductCarousel
+                        gallery={product.imgGallery || [product.img]}
+                        video={product.video}
+                        productName={product.name}
+                      />
                       {product.popular && (
                         <div className="absolute top-2 left-2 bg-gradient-to-r from-saffron to-temple text-white px-2 py-1 rounded-full text-[10px] font-semibold flex items-center gap-1">
                           <FiStar className="w-3 h-3" />
@@ -1586,14 +1817,6 @@ _Sent automatically from Sanskaraa Rental Service_`;
                       <div className="absolute top-2 right-2 bg-brown text-white px-2 py-1 rounded-full text-[10px] font-semibold">
                         {product.category.split(" ")[0]}
                       </div>
-                      <img
-                        src={product.img}
-                        alt={product.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FFF8E7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='10' fill='%235A3E2B'%3EImage%3C/text%3E%3C/svg%3E`;
-                        }}
-                      />
                     </div>
 
                     {/* Content */}
@@ -1639,6 +1862,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                           <button
                             onClick={() => changeQty(product.id, -1)}
                             className="w-6 h-6 flex items-center justify-center rounded-full bg-white border border-brown/20 text-brown text-xs hover:bg-saffron/10 transition-colors"
+                            disabled={qty <= (product.minQuantity || 1)}
                           >
                             <FiMinus className="w-3 h-3" />
                           </button>
@@ -1752,7 +1976,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                             className="flex gap-2 items-start p-3 bg-white rounded-lg border border-saffron/20"
                           >
                             <img
-                              src={item.img}
+                              src={item.imgGallery?.[0] || item.img}
                               alt={item.name}
                               className="h-12 w-12 object-cover rounded flex-shrink-0 bg-saffron/5"
                               onError={(e) => {
