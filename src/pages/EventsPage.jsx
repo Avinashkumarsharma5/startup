@@ -465,14 +465,14 @@ const ProductCarousel = ({ gallery = [], video, productName }) => {
         <>
           <button
             onClick={() => handleSwipe("right")}
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-lg hover:bg-white hover:scale-110"
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg hover:scale-110"
             aria-label="Previous image"
           >
             <FiArrowLeft className="w-4 h-4" style={{color: colors.culturalRed}} />
           </button>
           <button
             onClick={() => handleSwipe("left")}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-lg hover:bg-white hover:scale-110"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg hover:scale-110"
             aria-label="Next image"
           >
             <FiArrowLeft className="w-4 h-4 rotate-180" style={{color: colors.culturalRed}} />
@@ -533,7 +533,7 @@ const MobileFiltersModal = ({ isOpen, onClose, selectedCategory, onCategoryChang
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold font-serif" style={{color: colors.culturalRed}}>Filter Categories</h3>
-              <button onClick={onClose} style={{color: colors.culturalRed + 'A0'}} className="p-2">
+              <button onClick={onClose} style={{color: colors.culturalRed + 'A0'}} className="p-2 hover:scale-110 transition-transform">
                 <FiX className="w-5 h-5" />
               </button>
             </div>
@@ -546,13 +546,13 @@ const MobileFiltersModal = ({ isOpen, onClose, selectedCategory, onCategoryChang
                     onCategoryChange(cat);
                     onClose();
                   }}
-                  className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${
+                  className={`p-3 rounded-xl border-2 text-sm font-medium transition-all duration-300 hover:scale-105 ${
                     selectedCategory === cat
                       ? "text-white shadow-lg"
                       : "bg-white hover:border-saffron/50"
                   }`}
                   style={{
-                    backgroundColor: selectedCategory === cat ? `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})` : colors.white,
+                    backgroundColor: selectedCategory === cat ? colors.saffron : colors.white,
                     borderColor: selectedCategory === cat ? colors.saffron : colors.culturalRed + '20',
                     color: selectedCategory === cat ? colors.white : colors.culturalRed
                   }}
@@ -593,7 +593,7 @@ const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNo
           <button
             onClick={onClose}
             style={{color: colors.culturalRed + 'A0'}}
-            className="hover:text-brown text-xl p-1 flex-shrink-0"
+            className="hover:text-brown text-xl p-1 flex-shrink-0 hover:scale-110 transition-transform"
           >
             <FiX />
           </button>
@@ -655,7 +655,7 @@ const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNo
           </p>
           <button
             onClick={() => onAddToCart(product, qty, days)}
-            className="w-full py-3 text-white rounded-xl text-base font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2"
+            className="w-full py-3 text-white rounded-xl text-base font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
             style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
           >
             <FiShoppingCart className="w-5 h-5" />
@@ -663,7 +663,7 @@ const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNo
           </button>
           <button
             onClick={() => onRentNow(product, qty, days)}
-            className="w-full py-3 border rounded-xl text-base font-medium hover:bg-saffron/5 transition-colors"
+            className="w-full py-3 border rounded-xl text-base font-medium hover:opacity-80 transition-all duration-300"
             style={{borderColor: colors.saffron, color: colors.saffron}}
           >
             Rent Now (Quick Checkout)
@@ -814,7 +814,7 @@ const RentalOrderWizardModal = ({
           <button
             onClick={onClose}
             style={{color: colors.culturalRed + 'A0'}}
-            className="hover:text-brown text-xl p-1 flex-shrink-0 ml-2"
+            className="hover:text-brown text-xl p-1 flex-shrink-0 ml-2 hover:scale-110 transition-transform"
           >
             <FiX />
           </button>
@@ -889,7 +889,7 @@ const RentalOrderWizardModal = ({
                     <label className="text-xs mb-1 block" style={{color: colors.culturalRed + 'B0'}}>
                       Full Name <span style={{color: colors.error}}>*</span>
                     </label>
-                    <div className="flex items-center gap-2 border rounded-lg px-3 py-2.5 bg-white" style={{borderColor: colors.culturalRed + '20'}}>
+                    <div className="flex items-center gap-2 border rounded-lg px-3 py-2.5 bg-white hover:border-saffron transition-colors" style={{borderColor: colors.culturalRed + '20'}}>
                       <FiUser className="text-sm" style={{color: colors.culturalRed + '66'}} />
                       <input
                         type="text"
@@ -906,7 +906,7 @@ const RentalOrderWizardModal = ({
                     <label className="text-xs mb-1 block" style={{color: colors.culturalRed + 'B0'}}>
                       Mobile Number <span style={{color: colors.error}}>*</span>
                     </label>
-                    <div className="flex items-center gap-2 border rounded-lg px-3 py-2.5 bg-white" style={{borderColor: colors.culturalRed + '20'}}>
+                    <div className="flex items-center gap-2 border rounded-lg px-3 py-2.5 bg-white hover:border-saffron transition-colors" style={{borderColor: colors.culturalRed + '20'}}>
                       <FiPhone className="text-sm" style={{color: colors.culturalRed + '66'}} />
                       <input
                         type="tel"
@@ -926,7 +926,7 @@ const RentalOrderWizardModal = ({
                       Event Type
                     </label>
                     <select
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
+                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       value={form.eventType}
                       onChange={(e) => setForm((f) => ({ ...f, eventType: e.target.value }))}
@@ -947,7 +947,7 @@ const RentalOrderWizardModal = ({
                     </label>
                     <input
                       type="number"
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
+                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       placeholder="Approximate count"
                       value={form.guestCount}
@@ -962,7 +962,7 @@ const RentalOrderWizardModal = ({
                   </label>
                   <textarea
                     rows={3}
-                    className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white resize-none"
+                    className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white resize-none hover:border-saffron transition-colors"
                     style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                     placeholder="Venue address with landmark..."
                     value={form.address}
@@ -977,7 +977,7 @@ const RentalOrderWizardModal = ({
                     </label>
                     <input
                       type="text"
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
+                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       placeholder="Near temple / hall"
                       value={form.landmark}
@@ -991,7 +991,7 @@ const RentalOrderWizardModal = ({
                     </label>
                     <input
                       type="text"
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
+                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       placeholder="Your city"
                       value={form.city}
@@ -1005,7 +1005,7 @@ const RentalOrderWizardModal = ({
                     </label>
                     <input
                       type="number"
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
+                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       placeholder="Pincode"
                       value={form.pincode}
@@ -1045,7 +1045,7 @@ const RentalOrderWizardModal = ({
                     <input
                       type="date"
                       min={getTomorrowDate()}
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
+                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       value={form.eventDate}
                       onChange={(e) => setForm((f) => ({ ...f, eventDate: e.target.value }))}
@@ -1059,7 +1059,7 @@ const RentalOrderWizardModal = ({
                     <input
                       type="date"
                       min={getTomorrowDate()}
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
+                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       value={form.deliveryDate}
                       onChange={(e) => setForm((f) => ({ ...f, deliveryDate: e.target.value }))}
@@ -1073,7 +1073,7 @@ const RentalOrderWizardModal = ({
                     <input
                       type="date"
                       min={form.deliveryDate || getTomorrowDate()}
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
+                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       value={form.returnDate}
                       onChange={(e) => setForm((f) => ({ ...f, returnDate: e.target.value }))}
@@ -1086,7 +1086,7 @@ const RentalOrderWizardModal = ({
                     Delivery Slot <span style={{color: colors.error}}>*</span>
                   </label>
                   <select
-                    className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white"
+                    className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
                     style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                     value={form.deliverySlot}
                     onChange={(e) => setForm((f) => ({ ...f, deliverySlot: e.target.value }))}
@@ -1238,7 +1238,7 @@ const RentalOrderWizardModal = ({
             {step > 1 && (
               <button
                 onClick={() => setStep((s) => s - 1)}
-                className="px-3 sm:px-4 py-2.5 rounded-lg border text-sm flex items-center gap-1 hover:bg-white transition-colors flex-1 sm:flex-none justify-center"
+                className="px-3 sm:px-4 py-2.5 rounded-lg border text-sm flex items-center gap-1 hover:opacity-80 transition-all duration-300 flex-1 sm:flex-none justify-center"
                 style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
               >
                 <FiArrowLeft className="w-4 h-4" />
@@ -1249,7 +1249,7 @@ const RentalOrderWizardModal = ({
             {/* NEXT / CONFIRM BUTTON */}
             <button
               onClick={step === 3 ? handleConfirm : handleNext}
-              className="flex-1 py-2.5 rounded-lg text-white text-sm font-semibold hover:shadow-lg flex items-center justify-center gap-2 transition-all"
+              className="flex-1 py-2.5 rounded-lg text-white text-sm font-semibold hover:shadow-lg flex items-center justify-center gap-2 transition-all duration-300 hover:scale-105"
               style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
             >
               {step === 3 ? (
@@ -1408,7 +1408,7 @@ _Sent automatically from Sanskaraa Rental Service._`;
         <div className="grid grid-cols-2 gap-2 mb-3 sm:mb-4">
           <button
             onClick={handleShare}
-            className="flex items-center justify-center gap-1 sm:gap-2 text-white py-2.5 rounded-xl text-xs sm:text-sm font-medium hover:shadow-lg transition-all"
+            className="flex items-center justify-center gap-1 sm:gap-2 text-white py-2.5 rounded-xl text-xs sm:text-sm font-medium hover:shadow-lg transition-all duration-300 hover:scale-105"
             style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
           >
             <FiShare2 className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -1416,7 +1416,7 @@ _Sent automatically from Sanskaraa Rental Service._`;
           </button>
           <button
             onClick={onBack}
-            className="flex items-center justify-center gap-1 sm:gap-2 border py-2.5 rounded-xl text-xs sm:text-sm font-medium hover:bg-white transition-colors"
+            className="flex items-center justify-center gap-1 sm:gap-2 border py-2.5 rounded-xl text-xs sm:text-sm font-medium hover:opacity-80 transition-all duration-300"
             style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
           >
             <FiHome className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -1458,6 +1458,14 @@ export default function RentalStore() {
     });
     return initial;
   });
+
+  // Rental order flow states
+  const [showOrderWizard, setShowOrderWizard] = useState(false);
+  const [orderMode, setOrderMode] = useState(null);
+  const [orderProduct, setOrderProduct] = useState(null);
+  const [orderQty, setOrderQty] = useState(1);
+  const [orderRentalDays, setOrderRentalDays] = useState(1);
+  const [orderSuccess, setOrderSuccess] = useState(null);
 
   // Calculate global rental days based on dates
   useEffect(() => {
@@ -1572,14 +1580,6 @@ export default function RentalStore() {
       refundable: depositTotal,
     };
   }, [cart]);
-
-  // Rental order flow states
-  const [showOrderWizard, setShowOrderWizard] = useState(false);
-  const [orderMode, setOrderMode] = useState(null);
-  const [orderProduct, setOrderProduct] = useState(null);
-  const [orderQty, setOrderQty] = useState(1);
-  const [orderRentalDays, setOrderRentalDays] = useState(1);
-  const [orderSuccess, setOrderSuccess] = useState(null);
 
   // Start order from cart
   const startCartOrder = () => {
@@ -1764,13 +1764,11 @@ _Sent automatically from Sanskaraa Rental Service_`;
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 pr-4 py-2 sm:py-2.5 w-full rounded-full border-2 shadow-sm focus:ring-2 transition-all text-sm placeholder-brown/50"
+                className="pl-9 pr-4 py-2 sm:py-2.5 w-full rounded-full border-2 shadow-sm focus:ring-2 transition-all text-sm placeholder-brown/50 hover:border-saffron"
                 style={{
                   borderColor: colors.saffron + '30',
                   backgroundColor: colors.white,
-                  color: colors.culturalRed,
-                  focusBorderColor: colors.saffron,
-                  focusRingColor: colors.saffron + '20'
+                  color: colors.culturalRed
                 }}
                 placeholder="Search equipment..."
               />
@@ -1820,7 +1818,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                 min={getTomorrowDate()}
                 value={rentalDuration.deliveryDate}
                 onChange={(e) => handleDateChange('deliveryDate', e.target.value)}
-                className="w-full border rounded-lg px-3 py-2 text-sm outline-none bg-white"
+                className="w-full border rounded-lg px-3 py-2 text-sm outline-none bg-white hover:border-saffron transition-colors"
                 style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
               />
             </div>
@@ -1831,7 +1829,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                 min={rentalDuration.deliveryDate || getTomorrowDate()}
                 value={rentalDuration.returnDate}
                 onChange={(e) => handleDateChange('returnDate', e.target.value)}
-                className="w-full border rounded-lg px-3 py-2 text-sm outline-none bg-white"
+                className="w-full border rounded-lg px-3 py-2 text-sm outline-none bg-white hover:border-saffron transition-colors"
                 style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
               />
             </div>
@@ -1850,21 +1848,21 @@ _Sent automatically from Sanskaraa Rental Service_`;
         {/* Hero Section */}
         <div className="mt-4 sm:mt-6 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border p-3 sm:p-4 lg:p-6" style={{backgroundColor: colors.white + 'CC', borderColor: colors.saffron + '20'}}>
           <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-            <div className="flex items-center gap-3 p-3 rounded-xl border" style={{backgroundColor: colors.saffron + '10', borderColor: colors.saffron + '20'}}>
+            <div className="flex items-center gap-3 p-3 rounded-xl border hover:scale-105 transition-transform" style={{backgroundColor: colors.saffron + '10', borderColor: colors.saffron + '20'}}>
               <FiPackage className="w-5 h-5 sm:w-6 sm:h-6" style={{color: colors.saffron}} />
               <div>
                 <p className="font-semibold text-xs sm:text-sm" style={{color: colors.culturalRed}}>80+ Equipment Types</p>
                 <p className="text-xs" style={{color: colors.culturalRed + 'B0'}}>Complete event solutions</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 rounded-xl border" style={{backgroundColor: colors.success + '10', borderColor: colors.success + '20'}}>
+            <div className="flex items-center gap-3 p-3 rounded-xl border hover:scale-105 transition-transform" style={{backgroundColor: colors.success + '10', borderColor: colors.success + '20'}}>
               <FiTruck className="w-5 h-5 sm:w-6 sm:h-6" style={{color: colors.success}} />
               <div>
                 <p className="font-semibold text-xs sm:text-sm" style={{color: colors.culturalRed}}>Free Delivery</p>
                 <p className="text-xs" style={{color: colors.culturalRed + 'B0'}}>Above ₹4999 rental</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 rounded-xl border" style={{backgroundColor: colors.warning + '10', borderColor: colors.warning + '20'}}>
+            <div className="flex items-center gap-3 p-3 rounded-xl border hover:scale-105 transition-transform" style={{backgroundColor: colors.warning + '10', borderColor: colors.warning + '20'}}>
               <FiShield className="w-5 h-5 sm:w-6 sm:h-6" style={{color: colors.warning}} />
               <div>
                 <p className="font-semibold text-xs sm:text-sm" style={{color: colors.culturalRed}}>Quality Guaranteed</p>
@@ -1883,13 +1881,13 @@ _Sent automatically from Sanskaraa Rental Service_`;
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-full text-xs sm:text-sm whitespace-nowrap border transition-all ${
+                  className={`px-3 py-1.5 rounded-full text-xs sm:text-sm whitespace-nowrap border transition-all duration-300 hover:scale-105 ${
                     selectedCategory === cat
                       ? "text-white shadow-md"
-                      : "bg-white hover:bg-saffron/5"
+                      : "bg-white hover:opacity-80"
                   }`}
                   style={{
-                    backgroundColor: selectedCategory === cat ? `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})` : colors.white,
+                    backgroundColor: selectedCategory === cat ? colors.saffron : colors.white,
                     borderColor: selectedCategory === cat ? colors.saffron : colors.culturalRed + '20',
                     color: selectedCategory === cat ? colors.white : colors.culturalRed
                   }}
@@ -1921,7 +1919,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                   <motion.div
                     key={product.id}
                     layout
-                    className="bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl border overflow-hidden flex flex-col"
+                    className="bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl border overflow-hidden flex flex-col transition-all duration-300"
                     style={{borderColor: colors.saffron + '20'}}
                     whileHover={{ y: -4 }}
                     transition={{ type: "spring", stiffness: 260, damping: 20 }}
@@ -1987,7 +1985,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                         <div className="flex items-center gap-1 rounded-full px-2 py-1 border" style={{backgroundColor: colors.saffron + '05', borderColor: colors.saffron + '20'}}>
                           <button
                             onClick={() => changeQty(product.id, -1)}
-                            className="w-6 h-6 flex items-center justify-center rounded-full bg-white border text-xs hover:bg-saffron/10 transition-colors"
+                            className="w-6 h-6 flex items-center justify-center rounded-full bg-white border text-xs hover:scale-110 transition-all duration-200"
                             style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                             disabled={qty <= (product.minQuantity || 1)}
                           >
@@ -2003,7 +2001,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                           />
                           <button
                             onClick={() => changeQty(product.id, 1)}
-                            className="w-6 h-6 flex items-center justify-center rounded-full bg-white border text-xs hover:bg-saffron/10 transition-colors"
+                            className="w-6 h-6 flex items-center justify-center rounded-full bg-white border text-xs hover:scale-110 transition-all duration-200"
                             style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                           >
                             <FiPlus className="w-3 h-3" />
@@ -2027,7 +2025,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                       <div className="mt-2 flex flex-col gap-2">
                         <button
                           onClick={() => addToCart(product, qty, days)}
-                          className="w-full py-2 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                          className="w-full py-2 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
                           style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
                           disabled={rentalDuration.rentalDays === 0}
                         >
@@ -2040,7 +2038,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                             setSelectedProduct(product);
                             setShowProductDetails(true);
                           }}
-                          className="w-full py-2 border rounded-lg text-sm font-medium hover:bg-saffron/5 transition-colors"
+                          className="w-full py-2 border rounded-lg text-sm font-medium hover:opacity-80 transition-all duration-300"
                           style={{borderColor: colors.saffron, color: colors.saffron}}
                         >
                           View Details
@@ -2071,7 +2069,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                 </h2>
                 <button
                   onClick={() => setShowCart(false)}
-                  className="text-white hover:text-amber-100"
+                  className="text-white hover:scale-110 transition-transform"
                 >
                   <FiX className="w-5 h-5" />
                 </button>
@@ -2085,7 +2083,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                     <p className="text-xs mb-3" style={{color: colors.culturalRed + '99'}}>Add equipment for your event</p>
                     <button
                       onClick={() => setShowCart(false)}
-                      className="text-white px-4 py-2 rounded-lg text-sm font-semibold hover:shadow-lg transition-all"
+                      className="text-white px-4 py-2 rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105"
                       style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
                     >
                       Browse Equipment
@@ -2106,7 +2104,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                         return (
                           <div
                             key={item.id}
-                            className="flex gap-2 items-start p-3 bg-white rounded-lg border"
+                            className="flex gap-2 items-start p-3 bg-white rounded-lg border hover:shadow-md transition-all"
                             style={{borderColor: colors.saffron + '20'}}
                           >
                             <img
@@ -2130,7 +2128,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                                   <div className="flex items-center gap-0.5">
                                     <button
                                       onClick={() => updateCartQty(item.id, item.qty - 1)}
-                                      className="w-5 h-5 flex items-center justify-center rounded bg-white border text-xs hover:bg-saffron/10"
+                                      className="w-5 h-5 flex items-center justify-center rounded bg-white border text-xs hover:scale-110 transition-all"
                                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                                       disabled={item.qty <= minQty}
                                     >
@@ -2139,7 +2137,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                                     <span className="px-1 text-xs font-medium" style={{color: colors.culturalRed}}>{item.qty}</span>
                                     <button
                                       onClick={() => updateCartQty(item.id, item.qty + 1)}
-                                      className="w-5 h-5 flex items-center justify-center rounded bg-white border text-xs hover:bg-saffron/10"
+                                      className="w-5 h-5 flex items-center justify-center rounded bg-white border text-xs hover:scale-110 transition-all"
                                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                                     >
                                       <FiPlus className="w-2.5 h-2.5" />
@@ -2148,7 +2146,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                                 </div>
                                 <button
                                   onClick={() => removeFromCart(item.id)}
-                                  className="ml-auto p-0.5 text-sm"
+                                  className="ml-auto p-0.5 text-sm hover:scale-110 transition-transform"
                                   style={{color: colors.error}}
                                 >
                                   <FiX />
@@ -2194,7 +2192,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
 
                       <button
                         onClick={startCartOrder}
-                        className="w-full mt-4 text-white py-3.5 rounded-xl font-semibold hover:shadow-lg transition-all text-sm flex items-center justify-center gap-3"
+                        className="w-full mt-4 text-white py-3.5 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm flex items-center justify-center gap-3"
                         style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
                         disabled={rentalDuration.rentalDays === 0}
                       >
