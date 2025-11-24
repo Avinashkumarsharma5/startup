@@ -8,11 +8,9 @@ import {
   FiX,
   FiCheckCircle,
   FiShield,
-  FiMapPin,
   FiPhone,
   FiUser,
   FiCalendar,
-  FiClock,
   FiHome,
   FiArrowLeft,
   FiShare2,
@@ -20,14 +18,7 @@ import {
   FiStar,
   FiPackage,
   FiTruck,
-  FiMusic,
-  FiSun,
-  FiCoffee,
-  FiCamera,
-  FiZap,
-  FiHeart,
   FiMenu,
-  FiChevronDown,
   FiAlertTriangle,
   FiPlay,
 } from "react-icons/fi";
@@ -460,19 +451,19 @@ const ProductCarousel = ({ gallery = [], video, productName }) => {
         )}
       </div>
 
-      {/* Navigation Arrows - Show on hover */}
+      {/* Navigation Arrows - Show on hover (Hidden on touch devices via group-hover usually) */}
       {total > 1 && (
         <>
           <button
             onClick={() => handleSwipe("right")}
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg hover:scale-110"
+            className="hidden sm:flex absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-lg hover:bg-white hover:scale-110"
             aria-label="Previous image"
           >
             <FiArrowLeft className="w-4 h-4" style={{color: colors.culturalRed}} />
           </button>
           <button
             onClick={() => handleSwipe("left")}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg hover:scale-110"
+            className="hidden sm:flex absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-lg hover:bg-white hover:scale-110"
             aria-label="Next image"
           >
             <FiArrowLeft className="w-4 h-4 rotate-180" style={{color: colors.culturalRed}} />
@@ -519,7 +510,7 @@ const MobileFiltersModal = ({ isOpen, onClose, selectedCategory, onCategoryChang
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/50 z-50 lg:hidden"
           onClick={onClose}
         >
           <motion.div
@@ -533,7 +524,7 @@ const MobileFiltersModal = ({ isOpen, onClose, selectedCategory, onCategoryChang
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold font-serif" style={{color: colors.culturalRed}}>Filter Categories</h3>
-              <button onClick={onClose} style={{color: colors.culturalRed + 'A0'}} className="p-2 hover:scale-110 transition-transform">
+              <button onClick={onClose} style={{color: colors.culturalRed + 'A0'}} className="p-2">
                 <FiX className="w-5 h-5" />
               </button>
             </div>
@@ -546,13 +537,13 @@ const MobileFiltersModal = ({ isOpen, onClose, selectedCategory, onCategoryChang
                     onCategoryChange(cat);
                     onClose();
                   }}
-                  className={`p-3 rounded-xl border-2 text-sm font-medium transition-all duration-300 hover:scale-105 ${
+                  className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${
                     selectedCategory === cat
                       ? "text-white shadow-lg"
                       : "bg-white hover:border-saffron/50"
                   }`}
                   style={{
-                    backgroundColor: selectedCategory === cat ? colors.saffron : colors.white,
+                    backgroundColor: selectedCategory === cat ? `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})` : colors.white,
                     borderColor: selectedCategory === cat ? colors.saffron : colors.culturalRed + '20',
                     color: selectedCategory === cat ? colors.white : colors.culturalRed
                   }}
@@ -587,13 +578,13 @@ const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNo
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-start mb-4">
-          <h2 className="text-lg sm:text-xl font-bold font-serif flex-1 pr-4" style={{color: colors.culturalRed}}>
+          <h2 className="text-lg sm:text-xl font-bold font-serif flex-1 pr-4 leading-tight" style={{color: colors.culturalRed}}>
             {product.name}
           </h2>
           <button
             onClick={onClose}
             style={{color: colors.culturalRed + 'A0'}}
-            className="hover:text-brown text-xl p-1 flex-shrink-0 hover:scale-110 transition-transform"
+            className="hover:text-brown text-xl p-1 flex-shrink-0"
           >
             <FiX />
           </button>
@@ -601,7 +592,7 @@ const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNo
 
         {/* Product Info */}
         <div className="space-y-4">
-          <div className="h-40 sm:h-56 overflow-hidden rounded-xl relative" style={{backgroundColor: colors.saffron + '10'}}>
+          <div className="h-48 sm:h-56 overflow-hidden rounded-xl relative" style={{backgroundColor: colors.saffron + '10'}}>
             <ProductCarousel
               gallery={product.imgGallery || [product.img]}
               video={product.video}
@@ -612,13 +603,13 @@ const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNo
             </div>
           </div>
 
-          <p className="text-sm" style={{color: colors.culturalRed + 'CC'}}>{product.description}</p>
+          <p className="text-sm leading-relaxed" style={{color: colors.culturalRed + 'CC'}}>{product.description}</p>
 
           <div className="rounded-xl p-3 border" style={{backgroundColor: colors.white, borderColor: colors.culturalRed + '10'}}>
             <h3 className="font-semibold mb-2 text-sm flex items-center gap-1" style={{color: colors.culturalRed}}>
               <FiInfo className="w-4 h-4" style={{color: colors.saffron}} /> Key Features
             </h3>
-            <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               {product.features.map((feature, idx) => (
                 <div key={idx} className="flex items-start gap-2" style={{color: colors.culturalRed + 'CC'}}>
                   <FiCheckCircle className="w-3 h-3 mt-1 flex-shrink-0" style={{color: colors.success}} />
@@ -628,7 +619,7 @@ const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNo
             </div>
           </div>
 
-          <div className="flex justify-between items-center p-3 rounded-xl border" style={{backgroundColor: colors.saffron + '10', borderColor: colors.saffron + '20'}}>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 rounded-xl border gap-2 sm:gap-0" style={{backgroundColor: colors.saffron + '10', borderColor: colors.saffron + '20'}}>
             <div>
               <p className="text-xl font-bold" style={{color: colors.saffron}}>
                 {formatINR(product.price)}
@@ -637,7 +628,7 @@ const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNo
                 {product.unit} Price
               </p>
             </div>
-            <div className="text-right">
+            <div className="text-left sm:text-right">
               <p className="text-sm font-semibold" style={{color: colors.success}}>
                 Refundable Deposit: {formatINR(product.deposit)}
               </p>
@@ -651,11 +642,11 @@ const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNo
         {/* Action Buttons */}
         <div className="mt-6 border-t pt-4 flex flex-col gap-3" style={{borderColor: colors.culturalRed + '10'}}>
           <p className="text-sm font-semibold" style={{color: colors.culturalRed}}>
-             Currently Selected: <span style={{color: colors.saffron}}>{qty} Qty</span> for <span style={{color: colors.saffron}}>{days} Days</span>
+              Currently Selected: <span style={{color: colors.saffron}}>{qty} Qty</span> for <span style={{color: colors.saffron}}>{days} Days</span>
           </p>
           <button
             onClick={() => onAddToCart(product, qty, days)}
-            className="w-full py-3 text-white rounded-xl text-base font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+            className="w-full py-3 text-white rounded-xl text-base font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2"
             style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
           >
             <FiShoppingCart className="w-5 h-5" />
@@ -663,7 +654,7 @@ const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNo
           </button>
           <button
             onClick={() => onRentNow(product, qty, days)}
-            className="w-full py-3 border rounded-xl text-base font-medium hover:opacity-80 transition-all duration-300"
+            className="w-full py-3 border rounded-xl text-base font-medium hover:bg-saffron/5 transition-colors"
             style={{borderColor: colors.saffron, color: colors.saffron}}
           >
             Rent Now (Quick Checkout)
@@ -799,7 +790,7 @@ const RentalOrderWizardModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex justify-between items-center mb-4 sm:mb-5 mt-4 sm:mt-12">
+        <div className="flex justify-between items-center mb-4 sm:mb-5 mt-2 sm:mt-4">
           <div className="flex-1 min-w-0">
             <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2 truncate" style={{color: colors.culturalRed}}>
               <FiShoppingCart style={{color: colors.saffron}} className="flex-shrink-0" />
@@ -814,15 +805,15 @@ const RentalOrderWizardModal = ({
           <button
             onClick={onClose}
             style={{color: colors.culturalRed + 'A0'}}
-            className="hover:text-brown text-xl p-1 flex-shrink-0 ml-2 hover:scale-110 transition-transform"
+            className="hover:text-brown text-xl p-1 flex-shrink-0 ml-2"
           >
             <FiX />
           </button>
         </div>
 
         {/* Step Indicator */}
-        <div className="mb-4 sm:mb-6">
-          <div className="flex items-center justify-between mb-2">
+        <div className="mb-4 sm:mb-6 relative">
+          <div className="flex items-center justify-between mb-2 relative z-10">
             {[
               { no: 1, label: "Details" },
               { no: 2, label: "Schedule" },
@@ -830,24 +821,25 @@ const RentalOrderWizardModal = ({
             ].map((s) => (
               <div key={s.no} className="flex-1 flex flex-col items-center">
                 <div
-                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 text-xs sm:text-sm ${
+                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 text-xs sm:text-sm transition-colors duration-300 ${
                     step >= s.no
                       ? "text-white"
                       : "text-brown/30"
                   }`}
                   style={{
-                    backgroundColor: step >= s.no ? colors.saffron : 'transparent',
+                    backgroundColor: step >= s.no ? colors.saffron : colors.cream,
                     borderColor: step >= s.no ? colors.saffron : colors.culturalRed + '20'
                   }}
                 >
                   {step > s.no ? <FiCheckCircle /> : s.no}
                 </div>
+                {/* Hide labels on very small screens if not active, to prevent overlap */}
                 <span
                   className={`mt-1 text-[11px] sm:text-xs text-center ${
                     step >= s.no
                       ? "font-semibold"
                       : "text-brown/40"
-                  }`}
+                  } ${step === s.no ? 'block' : 'hidden sm:block'}`}
                   style={{color: step >= s.no ? colors.culturalRed : colors.culturalRed + '66'}}
                 >
                   {s.label}
@@ -856,7 +848,7 @@ const RentalOrderWizardModal = ({
             ))}
           </div>
 
-          <div className="h-1.5 rounded-full overflow-hidden" style={{backgroundColor: colors.culturalRed + '10'}}>
+          <div className="absolute top-4 sm:top-5 left-0 right-0 h-1 rounded-full overflow-hidden z-0" style={{backgroundColor: colors.culturalRed + '10'}}>
             <motion.div
               className="h-full"
               style={{backgroundColor: colors.saffron}}
@@ -874,9 +866,9 @@ const RentalOrderWizardModal = ({
             {step === 1 && (
               <motion.div
                 key="step1"
-                initial={{ opacity: 0, x: 40 }}
+                initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
+                exit={{ opacity: 0, x: -20 }}
                 className="space-y-3 sm:space-y-4"
               >
                 <h3 className="text-sm sm:text-base font-semibold flex items-center gap-2" style={{color: colors.culturalRed}}>
@@ -885,15 +877,15 @@ const RentalOrderWizardModal = ({
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="sm:col-span-2">
+                  <div className="col-span-1 sm:col-span-2">
                     <label className="text-xs mb-1 block" style={{color: colors.culturalRed + 'B0'}}>
                       Full Name <span style={{color: colors.error}}>*</span>
                     </label>
-                    <div className="flex items-center gap-2 border rounded-lg px-3 py-2.5 bg-white hover:border-saffron transition-colors" style={{borderColor: colors.culturalRed + '20'}}>
+                    <div className="flex items-center gap-2 border rounded-lg px-3 py-2.5 bg-white" style={{borderColor: colors.culturalRed + '20'}}>
                       <FiUser className="text-sm" style={{color: colors.culturalRed + '66'}} />
                       <input
                         type="text"
-                        className="w-full text-sm outline-none bg-transparent"
+                        className="w-full text-base sm:text-sm outline-none bg-transparent"
                         style={{color: colors.culturalRed}}
                         placeholder="Your good name"
                         value={form.name}
@@ -902,15 +894,15 @@ const RentalOrderWizardModal = ({
                     </div>
                   </div>
 
-                  <div className="sm:col-span-2">
+                  <div className="col-span-1 sm:col-span-2">
                     <label className="text-xs mb-1 block" style={{color: colors.culturalRed + 'B0'}}>
                       Mobile Number <span style={{color: colors.error}}>*</span>
                     </label>
-                    <div className="flex items-center gap-2 border rounded-lg px-3 py-2.5 bg-white hover:border-saffron transition-colors" style={{borderColor: colors.culturalRed + '20'}}>
+                    <div className="flex items-center gap-2 border rounded-lg px-3 py-2.5 bg-white" style={{borderColor: colors.culturalRed + '20'}}>
                       <FiPhone className="text-sm" style={{color: colors.culturalRed + '66'}} />
                       <input
                         type="tel"
-                        className="w-full text-sm outline-none bg-transparent"
+                        className="w-full text-base sm:text-sm outline-none bg-transparent"
                         style={{color: colors.culturalRed}}
                         placeholder="10 digit mobile"
                         value={form.phone}
@@ -921,12 +913,12 @@ const RentalOrderWizardModal = ({
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="sm:col-span-1">
+                  <div className="col-span-1">
                     <label className="text-xs mb-1 block" style={{color: colors.culturalRed + 'B0'}}>
                       Event Type
                     </label>
                     <select
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
+                      className="w-full border rounded-lg px-3 py-2.5 text-base sm:text-sm outline-none bg-white"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       value={form.eventType}
                       onChange={(e) => setForm((f) => ({ ...f, eventType: e.target.value }))}
@@ -941,13 +933,13 @@ const RentalOrderWizardModal = ({
                     </select>
                   </div>
 
-                  <div className="sm:col-span-1">
+                  <div className="col-span-1">
                     <label className="text-xs mb-1 block" style={{color: colors.culturalRed + 'B0'}}>
                       Expected Guests
                     </label>
                     <input
                       type="number"
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
+                      className="w-full border rounded-lg px-3 py-2.5 text-base sm:text-sm outline-none bg-white"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       placeholder="Approximate count"
                       value={form.guestCount}
@@ -962,7 +954,7 @@ const RentalOrderWizardModal = ({
                   </label>
                   <textarea
                     rows={3}
-                    className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white resize-none hover:border-saffron transition-colors"
+                    className="w-full border rounded-lg px-3 py-2.5 text-base sm:text-sm outline-none bg-white resize-none"
                     style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                     placeholder="Venue address with landmark..."
                     value={form.address}
@@ -971,13 +963,13 @@ const RentalOrderWizardModal = ({
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="sm:col-span-3">
+                  <div className="col-span-1 sm:col-span-3">
                     <label className="text-xs mb-1 block" style={{color: colors.culturalRed + 'B0'}}>
                       Landmark
                     </label>
                     <input
                       type="text"
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
+                      className="w-full border rounded-lg px-3 py-2.5 text-base sm:text-sm outline-none bg-white"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       placeholder="Near temple / hall"
                       value={form.landmark}
@@ -985,13 +977,13 @@ const RentalOrderWizardModal = ({
                     />
                   </div>
 
-                  <div className="sm:col-span-2">
+                  <div className="col-span-1 sm:col-span-2">
                     <label className="text-xs mb-1 block" style={{color: colors.culturalRed + 'B0'}}>
                       City <span style={{color: colors.error}}>*</span>
                     </label>
                     <input
                       type="text"
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
+                      className="w-full border rounded-lg px-3 py-2.5 text-base sm:text-sm outline-none bg-white"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       placeholder="Your city"
                       value={form.city}
@@ -999,13 +991,13 @@ const RentalOrderWizardModal = ({
                     />
                   </div>
 
-                  <div className="sm:col-span-1">
+                  <div className="col-span-1">
                     <label className="text-xs mb-1 block" style={{color: colors.culturalRed + 'B0'}}>
                       Pincode <span style={{color: colors.error}}>*</span>
                     </label>
                     <input
                       type="number"
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
+                      className="w-full border rounded-lg px-3 py-2.5 text-base sm:text-sm outline-none bg-white"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       placeholder="Pincode"
                       value={form.pincode}
@@ -1027,9 +1019,9 @@ const RentalOrderWizardModal = ({
             {step === 2 && (
               <motion.div
                 key="step2"
-                initial={{ opacity: 0, x: 40 }}
+                initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
+                exit={{ opacity: 0, x: -20 }}
                 className="space-y-3 sm:space-y-4"
               >
                 <h3 className="text-sm sm:text-base font-semibold flex items-center gap-2" style={{color: colors.culturalRed}}>
@@ -1038,42 +1030,42 @@ const RentalOrderWizardModal = ({
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="sm:col-span-2">
+                  <div className="col-span-1 sm:col-span-2">
                     <label className="text-xs mb-1 block" style={{color: colors.culturalRed + 'B0'}}>
                       Event Date <span style={{color: colors.error}}>*</span>
                     </label>
                     <input
                       type="date"
                       min={getTomorrowDate()}
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
+                      className="w-full border rounded-lg px-3 py-2.5 text-base sm:text-sm outline-none bg-white"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       value={form.eventDate}
                       onChange={(e) => setForm((f) => ({ ...f, eventDate: e.target.value }))}
                     />
                   </div>
 
-                  <div className="sm:col-span-1">
+                  <div className="col-span-1">
                     <label className="text-xs mb-1 block" style={{color: colors.culturalRed + 'B0'}}>
                       Delivery Date <span style={{color: colors.error}}>*</span>
                     </label>
                     <input
                       type="date"
                       min={getTomorrowDate()}
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
+                      className="w-full border rounded-lg px-3 py-2.5 text-base sm:text-sm outline-none bg-white"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       value={form.deliveryDate}
                       onChange={(e) => setForm((f) => ({ ...f, deliveryDate: e.target.value }))}
                     />
                   </div>
 
-                  <div className="sm:col-span-1">
+                  <div className="col-span-1">
                     <label className="text-xs mb-1 block" style={{color: colors.culturalRed + 'B0'}}>
                       Return Date <span style={{color: colors.error}}>*</span>
                     </label>
                     <input
                       type="date"
                       min={form.deliveryDate || getTomorrowDate()}
-                      className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
+                      className="w-full border rounded-lg px-3 py-2.5 text-base sm:text-sm outline-none bg-white"
                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                       value={form.returnDate}
                       onChange={(e) => setForm((f) => ({ ...f, returnDate: e.target.value }))}
@@ -1086,7 +1078,7 @@ const RentalOrderWizardModal = ({
                     Delivery Slot <span style={{color: colors.error}}>*</span>
                   </label>
                   <select
-                    className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white hover:border-saffron transition-colors"
+                    className="w-full border rounded-lg px-3 py-2.5 text-base sm:text-sm outline-none bg-white"
                     style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                     value={form.deliverySlot}
                     onChange={(e) => setForm((f) => ({ ...f, deliverySlot: e.target.value }))}
@@ -1114,9 +1106,9 @@ const RentalOrderWizardModal = ({
             {step === 3 && (
               <motion.div
                 key="step3"
-                initial={{ opacity: 0, x: 40 }}
+                initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
+                exit={{ opacity: 0, x: -20 }}
                 className="space-y-3 sm:space-y-4"
               >
                 <h3 className="text-sm sm:text-base font-semibold" style={{color: colors.culturalRed}}>
@@ -1232,13 +1224,13 @@ const RentalOrderWizardModal = ({
         </div>
 
         {/* Footer Buttons */}
-        <div className="mt-6 pb-4 sm:pb-6 border-t pt-4" style={{borderColor: colors.culturalRed + '10'}}>
+        <div className="mt-6 pb-2 sm:pb-4 border-t pt-4" style={{borderColor: colors.culturalRed + '10'}}>
           <div className="flex gap-2 sm:gap-3">
             {/* BACK BUTTON */}
             {step > 1 && (
               <button
                 onClick={() => setStep((s) => s - 1)}
-                className="px-3 sm:px-4 py-2.5 rounded-lg border text-sm flex items-center gap-1 hover:opacity-80 transition-all duration-300 flex-1 sm:flex-none justify-center"
+                className="px-3 sm:px-4 py-2.5 rounded-lg border text-sm flex items-center gap-1 hover:bg-white transition-colors flex-1 sm:flex-none justify-center"
                 style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
               >
                 <FiArrowLeft className="w-4 h-4" />
@@ -1249,7 +1241,7 @@ const RentalOrderWizardModal = ({
             {/* NEXT / CONFIRM BUTTON */}
             <button
               onClick={step === 3 ? handleConfirm : handleNext}
-              className="flex-1 py-2.5 rounded-lg text-white text-sm font-semibold hover:shadow-lg flex items-center justify-center gap-2 transition-all duration-300 hover:scale-105"
+              className="flex-1 py-2.5 rounded-lg text-white text-sm font-semibold hover:shadow-lg flex items-center justify-center gap-2 transition-all"
               style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
             >
               {step === 3 ? (
@@ -1408,7 +1400,7 @@ _Sent automatically from Sanskaraa Rental Service._`;
         <div className="grid grid-cols-2 gap-2 mb-3 sm:mb-4">
           <button
             onClick={handleShare}
-            className="flex items-center justify-center gap-1 sm:gap-2 text-white py-2.5 rounded-xl text-xs sm:text-sm font-medium hover:shadow-lg transition-all duration-300 hover:scale-105"
+            className="flex items-center justify-center gap-1 sm:gap-2 text-white py-2.5 rounded-xl text-xs sm:text-sm font-medium hover:shadow-lg transition-all"
             style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
           >
             <FiShare2 className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -1416,7 +1408,7 @@ _Sent automatically from Sanskaraa Rental Service._`;
           </button>
           <button
             onClick={onBack}
-            className="flex items-center justify-center gap-1 sm:gap-2 border py-2.5 rounded-xl text-xs sm:text-sm font-medium hover:opacity-80 transition-all duration-300"
+            className="flex items-center justify-center gap-1 sm:gap-2 border py-2.5 rounded-xl text-xs sm:text-sm font-medium hover:bg-white transition-colors"
             style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
           >
             <FiHome className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -1458,14 +1450,6 @@ export default function RentalStore() {
     });
     return initial;
   });
-
-  // Rental order flow states
-  const [showOrderWizard, setShowOrderWizard] = useState(false);
-  const [orderMode, setOrderMode] = useState(null);
-  const [orderProduct, setOrderProduct] = useState(null);
-  const [orderQty, setOrderQty] = useState(1);
-  const [orderRentalDays, setOrderRentalDays] = useState(1);
-  const [orderSuccess, setOrderSuccess] = useState(null);
 
   // Calculate global rental days based on dates
   useEffect(() => {
@@ -1580,6 +1564,14 @@ export default function RentalStore() {
       refundable: depositTotal,
     };
   }, [cart]);
+
+  // Rental order flow states
+  const [showOrderWizard, setShowOrderWizard] = useState(false);
+  const [orderMode, setOrderMode] = useState(null);
+  const [orderProduct, setOrderProduct] = useState(null);
+  const [orderQty, setOrderQty] = useState(1);
+  const [orderRentalDays, setOrderRentalDays] = useState(1);
+  const [orderSuccess, setOrderSuccess] = useState(null);
 
   // Start order from cart
   const startCartOrder = () => {
@@ -1719,21 +1711,21 @@ _Sent automatically from Sanskaraa Rental Service_`;
     <div className="min-h-screen pt-16 sm:pt-20 pb-20 sm:pb-6 px-3 sm:px-4 lg:px-6 relative" style={{backgroundColor: colors.cream}}>
       {/* Cultural Background Pattern */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div className="absolute top-10 left-10 w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 bg-[url('data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20100%20100%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M20%2C50%20Q50%2C20%2080%2C50%20Q50%2C80%2020%2C50%22%20fill%3D%22none%22%20stroke%3D%22%235A3E2B%22%20stroke-width%3D%222%22/%3E%3C/svg%3E')]"></div>
-        <div className="absolute top-40 right-4 sm:right-20 w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-[url('data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20100%20100%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2230%22%20fill%3D%22none%22%20stroke%3D%22%235A3E2B%22%20stroke-width%3D%222%22/%3E%3C/svg%3E')]"></div>
-        <div className="absolute bottom-20 left-20 w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 bg-[url('data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20100%20100%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M30%2C30%20L70%2C70%20M70%2C30%20L30%2C70%22%20stroke%3D%22%235A3E2B%22%20stroke-width%3D%222%22/%3E%3C/svg%3E')]"></div>
+        <div className="absolute top-10 left-10 w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 bg-[url('data:image/svg+xml,%3Csvg%20viewBox%3D%20%220%200%20100%20100%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M20%2C50%20Q50%2C20%2080%2C50%20Q50%2C80%2020%2C50%22%20fill%3D%22none%22%20stroke%3D%22%235A3E2B%22%20stroke-width%3D%222%22/%3E%3C/svg%3E')]"></div>
+        <div className="absolute top-40 right-4 sm:right-20 w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-[url('data:image/svg+xml,%3Csvg%20viewBox%3D%20%220%200%20100%20100%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2230%22%20fill%3D%22none%22%20stroke%3D%22%235A3E2B%22%20stroke-width%3D%222%22/%3E%3C/svg%3E')]"></div>
+        <div className="absolute bottom-20 left-20 w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 bg-[url('data:image/svg+xml,%3Csvg%20viewBox%3D%20%220%200%20100%20100%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M30%2C30%20L70%2C70%20M70%2C30%20L30%2C70%22%20stroke%3D%22%235A3E2B%22%20stroke-width%3D%222%22/%3E%3C/svg%3E')]"></div>
       </div>
 
-      {/* Fixed Cart Button - Bottom Right */}
+      {/* Fixed Cart Button - Bottom Right (Mobile only) */}
       <button
         onClick={() => setShowCart((s) => !s)}
-        className="fixed bottom-16 right-6 z-20 text-white p-3 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 flex items-center justify-center"
+        className="sm:hidden fixed bottom-4 right-4 z-40 text-white p-3 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 flex items-center justify-center"
         style={{
           background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`,
           boxShadow: '0 10px 25px -5px rgba(249, 115, 22, 0.4), 0 10px 10px -5px rgba(249, 115, 22, 0.2)'
         }}
       >
-        <FiShoppingCart className="w-6 h-6 sm:w-7 sm:h-7" />
+        <FiShoppingCart className="w-6 h-6" />
         {cart.length > 0 && (
           <motion.span
             initial={{ scale: 0 }}
@@ -1764,11 +1756,13 @@ _Sent automatically from Sanskaraa Rental Service_`;
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 pr-4 py-2 sm:py-2.5 w-full rounded-full border-2 shadow-sm focus:ring-2 transition-all text-sm placeholder-brown/50 hover:border-saffron"
+                className="pl-9 pr-4 py-2 sm:py-2.5 w-full rounded-full border-2 shadow-sm focus:ring-2 transition-all text-base sm:text-sm placeholder-brown/50 outline-none"
                 style={{
                   borderColor: colors.saffron + '30',
                   backgroundColor: colors.white,
-                  color: colors.culturalRed
+                  color: colors.culturalRed,
+                  focusBorderColor: colors.saffron,
+                  focusRingColor: colors.saffron + '20'
                 }}
                 placeholder="Search equipment..."
               />
@@ -1781,10 +1775,10 @@ _Sent automatically from Sanskaraa Rental Service_`;
               className="sm:hidden text-white p-2.5 rounded-full shadow-lg hover:scale-105 transition-transform flex-shrink-0"
               style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
             >
-              <FiMenu className="w-4 h-4" />
+              <FiMenu className="w-5 h-5" />
             </button>
 
-            {/* Desktop Cart Button - Hidden on mobile since we have fixed button */}
+            {/* Desktop Cart Button */}
             <button
               onClick={() => setShowCart((s) => !s)}
               className="hidden sm:flex relative text-white p-2.5 rounded-full shadow-lg hover:scale-105 transition-transform flex-shrink-0"
@@ -1811,25 +1805,25 @@ _Sent automatically from Sanskaraa Rental Service_`;
             <FiCalendar className="w-4 h-4" style={{color: colors.saffron}} /> Select Rental Duration
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 items-center">
-            <div className="col-span-1">
+            <div className="col-span-2 sm:col-span-1">
               <label className="text-xs mb-1 block" style={{color: colors.culturalRed + 'B0'}}>Delivery Date</label>
               <input
                 type="date"
                 min={getTomorrowDate()}
                 value={rentalDuration.deliveryDate}
                 onChange={(e) => handleDateChange('deliveryDate', e.target.value)}
-                className="w-full border rounded-lg px-3 py-2 text-sm outline-none bg-white hover:border-saffron transition-colors"
+                className="w-full border rounded-lg px-3 py-2 text-base sm:text-sm outline-none bg-white"
                 style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
               />
             </div>
-            <div className="col-span-1">
+            <div className="col-span-2 sm:col-span-1">
               <label className="text-xs mb-1 block" style={{color: colors.culturalRed + 'B0'}}>Return Date</label>
               <input
                 type="date"
                 min={rentalDuration.deliveryDate || getTomorrowDate()}
                 value={rentalDuration.returnDate}
                 onChange={(e) => handleDateChange('returnDate', e.target.value)}
-                className="w-full border rounded-lg px-3 py-2 text-sm outline-none bg-white hover:border-saffron transition-colors"
+                className="w-full border rounded-lg px-3 py-2 text-base sm:text-sm outline-none bg-white"
                 style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
               />
             </div>
@@ -1847,25 +1841,25 @@ _Sent automatically from Sanskaraa Rental Service_`;
 
         {/* Hero Section */}
         <div className="mt-4 sm:mt-6 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border p-3 sm:p-4 lg:p-6" style={{backgroundColor: colors.white + 'CC', borderColor: colors.saffron + '20'}}>
-          <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-            <div className="flex items-center gap-3 p-3 rounded-xl border hover:scale-105 transition-transform" style={{backgroundColor: colors.saffron + '10', borderColor: colors.saffron + '20'}}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <div className="flex items-center gap-3 p-3 rounded-xl border" style={{backgroundColor: colors.saffron + '10', borderColor: colors.saffron + '20'}}>
               <FiPackage className="w-5 h-5 sm:w-6 sm:h-6" style={{color: colors.saffron}} />
               <div>
-                <p className="font-semibold text-xs sm:text-sm" style={{color: colors.culturalRed}}>80+ Equipment Types</p>
+                <p className="font-semibold text-sm" style={{color: colors.culturalRed}}>80+ Equipment Types</p>
                 <p className="text-xs" style={{color: colors.culturalRed + 'B0'}}>Complete event solutions</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 rounded-xl border hover:scale-105 transition-transform" style={{backgroundColor: colors.success + '10', borderColor: colors.success + '20'}}>
+            <div className="flex items-center gap-3 p-3 rounded-xl border" style={{backgroundColor: colors.success + '10', borderColor: colors.success + '20'}}>
               <FiTruck className="w-5 h-5 sm:w-6 sm:h-6" style={{color: colors.success}} />
               <div>
-                <p className="font-semibold text-xs sm:text-sm" style={{color: colors.culturalRed}}>Free Delivery</p>
+                <p className="font-semibold text-sm" style={{color: colors.culturalRed}}>Free Delivery</p>
                 <p className="text-xs" style={{color: colors.culturalRed + 'B0'}}>Above ₹4999 rental</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 rounded-xl border hover:scale-105 transition-transform" style={{backgroundColor: colors.warning + '10', borderColor: colors.warning + '20'}}>
+            <div className="flex items-center gap-3 p-3 rounded-xl border" style={{backgroundColor: colors.warning + '10', borderColor: colors.warning + '20'}}>
               <FiShield className="w-5 h-5 sm:w-6 sm:h-6" style={{color: colors.warning}} />
               <div>
-                <p className="font-semibold text-xs sm:text-sm" style={{color: colors.culturalRed}}>Quality Guaranteed</p>
+                <p className="font-semibold text-sm" style={{color: colors.culturalRed}}>Quality Guaranteed</p>
                 <p className="text-xs" style={{color: colors.culturalRed + 'B0'}}>Professional equipment</p>
               </div>
             </div>
@@ -1881,13 +1875,13 @@ _Sent automatically from Sanskaraa Rental Service_`;
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-full text-xs sm:text-sm whitespace-nowrap border transition-all duration-300 hover:scale-105 ${
+                  className={`px-3 py-1.5 rounded-full text-xs sm:text-sm whitespace-nowrap border transition-all ${
                     selectedCategory === cat
                       ? "text-white shadow-md"
-                      : "bg-white hover:opacity-80"
+                      : "bg-white hover:bg-saffron/5"
                   }`}
                   style={{
-                    backgroundColor: selectedCategory === cat ? colors.saffron : colors.white,
+                    backgroundColor: selectedCategory === cat ? `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})` : colors.white,
                     borderColor: selectedCategory === cat ? colors.saffron : colors.culturalRed + '20',
                     color: selectedCategory === cat ? colors.white : colors.culturalRed
                   }}
@@ -1908,7 +1902,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
               <p className="text-xs" style={{color: colors.culturalRed + '99'}}>Try changing category or search term</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
               {filteredProducts.map((product) => {
                 const qty = quantities[product.id] || (product.minQuantity || 1);
                 const days = rentalDuration.rentalDays;
@@ -1919,13 +1913,13 @@ _Sent automatically from Sanskaraa Rental Service_`;
                   <motion.div
                     key={product.id}
                     layout
-                    className="bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl border overflow-hidden flex flex-col transition-all duration-300"
+                    className="bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl border overflow-hidden flex flex-col"
                     style={{borderColor: colors.saffron + '20'}}
                     whileHover={{ y: -4 }}
                     transition={{ type: "spring", stiffness: 260, damping: 20 }}
                   >
                     {/* Image with Carousel */}
-                    <div className="h-36 sm:h-40 lg:h-48 overflow-hidden relative" style={{backgroundColor: colors.saffron + '05'}}>
+                    <div className="h-40 sm:h-48 overflow-hidden relative" style={{backgroundColor: colors.saffron + '05'}}>
                       <ProductCarousel
                         gallery={product.imgGallery || [product.img]}
                         video={product.video}
@@ -1985,7 +1979,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                         <div className="flex items-center gap-1 rounded-full px-2 py-1 border" style={{backgroundColor: colors.saffron + '05', borderColor: colors.saffron + '20'}}>
                           <button
                             onClick={() => changeQty(product.id, -1)}
-                            className="w-6 h-6 flex items-center justify-center rounded-full bg-white border text-xs hover:scale-110 transition-all duration-200"
+                            className="w-6 h-6 flex items-center justify-center rounded-full bg-white border text-xs hover:bg-saffron/10 transition-colors"
                             style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                             disabled={qty <= (product.minQuantity || 1)}
                           >
@@ -2001,7 +1995,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                           />
                           <button
                             onClick={() => changeQty(product.id, 1)}
-                            className="w-6 h-6 flex items-center justify-center rounded-full bg-white border text-xs hover:scale-110 transition-all duration-200"
+                            className="w-6 h-6 flex items-center justify-center rounded-full bg-white border text-xs hover:bg-saffron/10 transition-colors"
                             style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                           >
                             <FiPlus className="w-3 h-3" />
@@ -2025,7 +2019,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                       <div className="mt-2 flex flex-col gap-2">
                         <button
                           onClick={() => addToCart(product, qty, days)}
-                          className="w-full py-2 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                          className="w-full py-2 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2"
                           style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
                           disabled={rentalDuration.rentalDays === 0}
                         >
@@ -2038,7 +2032,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                             setSelectedProduct(product);
                             setShowProductDetails(true);
                           }}
-                          className="w-full py-2 border rounded-lg text-sm font-medium hover:opacity-80 transition-all duration-300"
+                          className="w-full py-2 border rounded-lg text-sm font-medium hover:bg-saffron/5 transition-colors"
                           style={{borderColor: colors.saffron, color: colors.saffron}}
                         >
                           View Details
@@ -2069,7 +2063,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                 </h2>
                 <button
                   onClick={() => setShowCart(false)}
-                  className="text-white hover:scale-110 transition-transform"
+                  className="text-white hover:text-amber-100"
                 >
                   <FiX className="w-5 h-5" />
                 </button>
@@ -2083,7 +2077,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                     <p className="text-xs mb-3" style={{color: colors.culturalRed + '99'}}>Add equipment for your event</p>
                     <button
                       onClick={() => setShowCart(false)}
-                      className="text-white px-4 py-2 rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105"
+                      className="text-white px-4 py-2 rounded-lg text-sm font-semibold hover:shadow-lg transition-all"
                       style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
                     >
                       Browse Equipment
@@ -2104,7 +2098,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                         return (
                           <div
                             key={item.id}
-                            className="flex gap-2 items-start p-3 bg-white rounded-lg border hover:shadow-md transition-all"
+                            className="flex gap-2 items-start p-3 bg-white rounded-lg border"
                             style={{borderColor: colors.saffron + '20'}}
                           >
                             <img
@@ -2128,7 +2122,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                                   <div className="flex items-center gap-0.5">
                                     <button
                                       onClick={() => updateCartQty(item.id, item.qty - 1)}
-                                      className="w-5 h-5 flex items-center justify-center rounded bg-white border text-xs hover:scale-110 transition-all"
+                                      className="w-5 h-5 flex items-center justify-center rounded bg-white border text-xs hover:bg-saffron/10"
                                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                                       disabled={item.qty <= minQty}
                                     >
@@ -2137,7 +2131,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                                     <span className="px-1 text-xs font-medium" style={{color: colors.culturalRed}}>{item.qty}</span>
                                     <button
                                       onClick={() => updateCartQty(item.id, item.qty + 1)}
-                                      className="w-5 h-5 flex items-center justify-center rounded bg-white border text-xs hover:scale-110 transition-all"
+                                      className="w-5 h-5 flex items-center justify-center rounded bg-white border text-xs hover:bg-saffron/10"
                                       style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
                                     >
                                       <FiPlus className="w-2.5 h-2.5" />
@@ -2146,7 +2140,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
                                 </div>
                                 <button
                                   onClick={() => removeFromCart(item.id)}
-                                  className="ml-auto p-0.5 text-sm hover:scale-110 transition-transform"
+                                  className="ml-auto p-0.5 text-sm"
                                   style={{color: colors.error}}
                                 >
                                   <FiX />
@@ -2192,7 +2186,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
 
                       <button
                         onClick={startCartOrder}
-                        className="w-full mt-4 text-white py-3.5 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm flex items-center justify-center gap-3"
+                        className="w-full mt-4 text-white py-3.5 rounded-xl font-semibold hover:shadow-lg transition-all text-sm flex items-center justify-center gap-3"
                         style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
                         disabled={rentalDuration.rentalDays === 0}
                       >
