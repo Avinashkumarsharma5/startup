@@ -1718,25 +1718,28 @@ _Sent automatically from Sanskaraa Rental Service_`;
 
       {/* Fixed Cart Button - Bottom Right (Mobile only) */}
       <button
-        onClick={() => setShowCart((s) => !s)}
-        className="sm:hidden fixed bottom-4 right-4 z-40 text-white p-3 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 flex items-center justify-center"
-        style={{
-          background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`,
-          boxShadow: '0 10px 25px -5px rgba(249, 115, 22, 0.4), 0 10px 10px -5px rgba(249, 115, 22, 0.2)'
-        }}
-      >
-        <FiShoppingCart className="w-6 h-6" />
-        {cart.length > 0 && (
-          <motion.span
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="absolute -top-2 -right-2 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[22px] text-center border-2 border-white"
-            style={{backgroundColor: colors.maroon}}
-          >
-            {cart.length}
-          </motion.span>
-        )}
-      </button>
+  onClick={() => setShowCart((s) => !s)}
+  className="sm:hidden fixed bottom-20 right-4 z-40 text-white p-3 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 flex items-center justify-center"
+  style={{
+    background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`,
+    boxShadow: '0 10px 25px -5px rgba(249, 115, 22, 0.4), 0 10px 10px -5px rgba(249, 115, 22, 0.2)'
+  }}
+>
+  <FiShoppingCart className="w-6 h-6" />
+
+  {cart.length > 0 && (
+    <motion.span
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      className="absolute -top-2 -right-2 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[22px] text-center border-2 border-white"
+      style={{ backgroundColor: colors.maroon }}
+    >
+      {cart.length}
+    </motion.span>
+  )}
+</button>
+
+
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
