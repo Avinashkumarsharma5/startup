@@ -518,7 +518,8 @@ const MobileFiltersModal = ({ isOpen, onClose, selectedCategory, onCategoryChang
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="absolute bottom-0 left-0 right-0 rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto"
+            className="absolute bottom-16 left-0 right-0 rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto"
+
             style={{backgroundColor: colors.cream}}
             onClick={(e) => e.stopPropagation()}
           >
@@ -543,10 +544,13 @@ const MobileFiltersModal = ({ isOpen, onClose, selectedCategory, onCategoryChang
                       : "bg-white hover:border-saffron/50"
                   }`}
                   style={{
-                    backgroundColor: selectedCategory === cat ? `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})` : colors.white,
-                    borderColor: selectedCategory === cat ? colors.saffron : colors.culturalRed + '20',
-                    color: selectedCategory === cat ? colors.white : colors.culturalRed
-                  }}
+  background: selectedCategory === cat
+    ? `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`
+    : colors.white,
+  borderColor: selectedCategory === cat ? colors.saffron : colors.culturalRed + '20',
+  color: selectedCategory === cat ? colors.white : colors.culturalRed
+}}
+
                 >
                   {cat}
                 </button>
@@ -559,111 +563,164 @@ const MobileFiltersModal = ({ isOpen, onClose, selectedCategory, onCategoryChang
   );
 };
 
-// ========== PRODUCT DETAIL MODAL COMPONENT ==========
+// ========== PRODUCT DETAIL MODAL COMPONENT (Premium Upgrade) ==========
 const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNow }) => {
   return (
     <motion.div
-      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-3 sm:p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
     >
       <motion.div
-        className="rounded-2xl sm:rounded-3xl w-full max-w-lg max-h-[90dvh] overflow-y-auto p-4 sm:p-6 border"
-        style={{backgroundColor: colors.cream, borderColor: colors.saffron + '20'}}
-        initial={{ y: 40, opacity: 0, scale: 0.95 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        exit={{ y: 40, opacity: 0, scale: 0.95 }}
+        className="rounded-2xl sm:rounded-3xl w-full max-w-md sm:max-w-lg max-h-[92vh] overflow-y-auto"
+        style={{
+          background: colors.cream,
+          border: `2px solid ${colors.saffron}20`,
+          boxShadow: "0 12px 40px rgba(0,0,0,0.25)"
+        }}
+        initial={{ y: 80, scale: 0.95, opacity: 0 }}
+        animate={{ y: 0, scale: 1, opacity: 1 }}
+        exit={{ y: 40, opacity: 0 }}
+        transition={{ type: "spring", stiffness: 120, damping: 22 }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-start mb-4">
-          <h2 className="text-lg sm:text-xl font-bold font-serif flex-1 pr-4 leading-tight" style={{color: colors.culturalRed}}>
+        {/* Header */}
+        <div
+          className="px-4 py-3 flex items-center justify-between sticky top-0 z-20 backdrop-blur-lg"
+          style={{
+            background: `linear-gradient(to bottom, ${colors.white}DD, ${colors.white}AA)`,
+            borderBottom: `1px solid ${colors.saffron}30`
+          }}
+        >
+          <h2
+            className="text-lg sm:text-xl font-bold font-serif line-clamp-2 pr-4"
+            style={{ color: colors.culturalRed }}
+          >
             {product.name}
           </h2>
           <button
             onClick={onClose}
-            style={{color: colors.culturalRed + 'A0'}}
-            className="hover:text-brown text-xl p-1 flex-shrink-0"
+            className="w-9 h-9 rounded-full flex items-center justify-center shadow-sm hover:scale-105 transition-transform"
+            style={{
+              backgroundColor: colors.saffron + "20",
+              color: colors.culturalRed
+            }}
           >
-            <FiX />
+            <FiX className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Product Info */}
-        <div className="space-y-4">
-          <div className="h-48 sm:h-56 overflow-hidden rounded-xl relative" style={{backgroundColor: colors.saffron + '10'}}>
+        <div className="p-4 space-y-4">
+          {/* Media Carousel */}
+          <div className="relative rounded-2xl overflow-hidden shadow-xl">
             <ProductCarousel
               gallery={product.imgGallery || [product.img]}
               video={product.video}
               productName={product.name}
             />
-            <div className="absolute bottom-2 left-2 text-white px-3 py-1 rounded-full text-xs font-semibold" style={{backgroundColor: colors.culturalRed}}>
+            <div
+              className="absolute bottom-2 left-2 text-xs font-semibold rounded-full px-3 py-1"
+              style={{ backgroundColor: colors.culturalRed, color: colors.white }}
+            >
               {product.category}
             </div>
           </div>
 
-          <p className="text-sm leading-relaxed" style={{color: colors.culturalRed + 'CC'}}>{product.description}</p>
+          {/* Price Card */}
+          <div
+            className="rounded-xl p-4 shadow-lg"
+            style={{
+              background: `linear-gradient(135deg, ${colors.white}, ${colors.lightCream})`,
+              border: `1px solid ${colors.saffron}30`
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xl font-bold" style={{ color: colors.saffron }}>
+                  {formatINR(product.price)}
+                </p>
+                <p className="text-xs" style={{ color: colors.culturalRed + "80" }}>
+                  {product.unit}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-semibold" style={{ color: colors.success }}>
+                  Deposit: {formatINR(product.deposit)}
+                </p>
+                <p className="text-[11px]" style={{ color: colors.warning }}>
+                  Min: {product.minQuantity} qty • {product.minRentalDays} days
+                </p>
+              </div>
+            </div>
+          </div>
 
-          <div className="rounded-xl p-3 border" style={{backgroundColor: colors.white, borderColor: colors.culturalRed + '10'}}>
-            <h3 className="font-semibold mb-2 text-sm flex items-center gap-1" style={{color: colors.culturalRed}}>
-              <FiInfo className="w-4 h-4" style={{color: colors.saffron}} /> Key Features
+          {/* Description */}
+          <p className="text-sm leading-relaxed" style={{ color: colors.culturalRed + "CC" }}>
+            {product.description}
+          </p>
+
+          {/* Features */}
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold flex items-center gap-1" style={{ color: colors.culturalRed }}>
+              <FiCheckCircle className="w-4 h-4" style={{ color: colors.saffron }} />
+              Features
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div className="flex flex-wrap gap-2">
               {product.features.map((feature, idx) => (
-                <div key={idx} className="flex items-start gap-2" style={{color: colors.culturalRed + 'CC'}}>
-                  <FiCheckCircle className="w-3 h-3 mt-1 flex-shrink-0" style={{color: colors.success}} />
-                  <span>{feature}</span>
-                </div>
+                <span
+                  key={idx}
+                  className="px-3 py-1 text-xs rounded-full"
+                  style={{
+                    backgroundColor: colors.saffron + "15",
+                    color: colors.culturalRed,
+                    border: `1px solid ${colors.saffron}30`
+                  }}
+                >
+                  {feature}
+                </span>
               ))}
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 rounded-xl border gap-2 sm:gap-0" style={{backgroundColor: colors.saffron + '10', borderColor: colors.saffron + '20'}}>
-            <div>
-              <p className="text-xl font-bold" style={{color: colors.saffron}}>
-                {formatINR(product.price)}
-              </p>
-              <p className="text-xs" style={{color: colors.culturalRed + '99'}}>
-                {product.unit} Price
-              </p>
-            </div>
-            <div className="text-left sm:text-right">
-              <p className="text-sm font-semibold" style={{color: colors.success}}>
-                Refundable Deposit: {formatINR(product.deposit)}
-              </p>
-              <p className="text-xs" style={{color: colors.warning}}>
-                Min Qty: {product.minQuantity || 1} • Min Days: {product.minRentalDays || 1}
-              </p>
-            </div>
-          </div>
-        </div>
+          {/* Floating Footer Actions */}
+          <div className="space-y-2 pt-4">
+            <p className="text-xs flex justify-between font-semibold px-1"
+              style={{ color: colors.culturalRed }}
+            >
+              <span>Selected:</span>
+              <span style={{ color: colors.saffron }}>{qty} qty • {days} days</span>
+            </p>
 
-        {/* Action Buttons */}
-        <div className="mt-6 border-t pt-4 flex flex-col gap-3" style={{borderColor: colors.culturalRed + '10'}}>
-          <p className="text-sm font-semibold" style={{color: colors.culturalRed}}>
-              Currently Selected: <span style={{color: colors.saffron}}>{qty} Qty</span> for <span style={{color: colors.saffron}}>{days} Days</span>
-          </p>
-          <button
-            onClick={() => onAddToCart(product, qty, days)}
-            className="w-full py-3 text-white rounded-xl text-base font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2"
-            style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
-          >
-            <FiShoppingCart className="w-5 h-5" />
-            Add {qty} Item(s) to Cart
-          </button>
-          <button
-            onClick={() => onRentNow(product, qty, days)}
-            className="w-full py-3 border rounded-xl text-base font-medium hover:bg-saffron/5 transition-colors"
-            style={{borderColor: colors.saffron, color: colors.saffron}}
-          >
-            Rent Now (Quick Checkout)
-          </button>
+            <button
+              onClick={() => onAddToCart(product, qty, days)}
+              className="w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-md hover:scale-105 transition-transform"
+              style={{
+                background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`,
+                color: colors.white
+              }}
+            >
+              <FiShoppingCart /> Add to Cart
+            </button>
+
+            <button
+              onClick={() => onRentNow(product, qty, days)}
+              className="w-full py-3 rounded-xl text-sm font-semibold border hover:bg-saffron/10 transition-all"
+              style={{
+                borderColor: colors.saffron,
+                color: colors.saffron
+              }}
+            >
+              Quick Rent Now
+            </button>
+          </div>
         </div>
       </motion.div>
     </motion.div>
   );
 };
+
 
 // ========== RENTAL ORDER WIZARD MODAL ==========
 const RentalOrderWizardModal = ({
@@ -1883,11 +1940,14 @@ _Sent automatically from Sanskaraa Rental Service_`;
                       ? "text-white shadow-md"
                       : "bg-white hover:bg-saffron/5"
                   }`}
-                  style={{
-                    backgroundColor: selectedCategory === cat ? `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})` : colors.white,
-                    borderColor: selectedCategory === cat ? colors.saffron : colors.culturalRed + '20',
-                    color: selectedCategory === cat ? colors.white : colors.culturalRed
-                  }}
+                 style={{
+  background: selectedCategory === cat
+    ? `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`
+    : colors.white,
+  borderColor: selectedCategory === cat ? colors.saffron : colors.culturalRed + '20',
+  color: selectedCategory === cat ? colors.white : colors.culturalRed
+}}
+
                 >
                   {cat}
                 </button>
@@ -2050,164 +2110,135 @@ _Sent automatically from Sanskaraa Rental Service_`;
         </div>
 
         {/* Cart Sidebar */}
-        <AnimatePresence>
-          {showCart && (
+<AnimatePresence>
+  {showCart && (
+    <motion.div
+      initial={{ x: "100%", opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: "100%", opacity: 0 }}
+      transition={{ type: "spring", stiffness: 140, damping: 20 }}
+      className="fixed right-0 top-0 h-full w-full sm:w-96 z-50 backdrop-blur-xl"
+      style={{
+        background: `linear-gradient(135deg, ${colors.white}CC, ${colors.cream}EE)`,
+        boxShadow: "0 0 35px rgba(0,0,0,0.25)"
+      }}
+    >
+      {/* Header */}
+      <div
+        className="p-4 flex items-center justify-between border-b shadow-sm"
+        style={{ 
+          background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`,
+          borderColor: colors.saffron + "30"
+        }}
+      >
+        <h2 className="font-bold text-lg text-white flex items-center gap-2 font-serif">
+          <FiShoppingCart className="text-white" />
+          Your Cart
+        </h2>
+        <button
+          onClick={() => setShowCart(false)}
+          className="p-1 rounded-full hover:bg-white/20 transition"
+        >
+          <FiX className="w-6 h-6 text-white" />
+        </button>
+      </div>
+
+      {/* Items List */}
+      <div
+        className="flex-1 overflow-y-auto p-4 space-y-4"
+        style={{ backgroundColor: colors.cream }}
+      >
+        {cart.length === 0 ? (
+          <div className="text-center py-20 opacity-70">
+            <div className="text-5xl mb-3">🪔</div>
+            <p className="font-semibold" style={{color: colors.culturalRed}}>Your cart is empty</p>
+          </div>
+        ) : (
+          cart.map((item) => (
             <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              className="fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 overflow-y-auto border-l"
-              style={{borderColor: colors.saffron + '20'}}
+              key={item.id}
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 200 }}
+              className="p-3 flex gap-3 items-start rounded-xl shadow-lg border"
+              style={{
+                backgroundColor: colors.white,
+                borderColor: colors.saffron + "30"
+              }}
             >
-              <div className="p-4 border-b flex items-center justify-between text-white" style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`, borderColor: colors.saffron + '20'}}>
-                <h2 className="font-bold text-lg flex items-center gap-2 font-serif">
-                  <FiShoppingCart />
-                  Rental Cart
-                </h2>
-                <button
-                  onClick={() => setShowCart(false)}
-                  className="text-white hover:text-amber-100"
-                >
-                  <FiX className="w-5 h-5" />
-                </button>
-              </div>
+              <img
+                src={item.imgGallery?.[0]}
+                className="h-16 w-16 rounded-lg object-cover border"
+                style={{ borderColor: colors.saffron + "40" }}
+              />
+              <div className="flex-1">
+                <p className="font-bold text-sm" style={{color: colors.culturalRed}}>
+                  {item.name}
+                </p>
+                <p className="text-xs mb-2" style={{color: colors.culturalRed + "99"}}>
+                  {item.qty} × {formatINR(item.price)} × {item.rentalDays} days
+                </p>
 
-              <div className="p-4 min-h-full" style={{backgroundColor: colors.cream}}>
-                {cart.length === 0 ? (
-                  <div className="text-center py-16">
-                    <div className="text-4xl mb-2">🎪</div>
-                    <p className="text-sm mb-1" style={{color: colors.culturalRed}}>Your rental cart is empty</p>
-                    <p className="text-xs mb-3" style={{color: colors.culturalRed + '99'}}>Add equipment for your event</p>
-                    <button
-                      onClick={() => setShowCart(false)}
-                      className="text-white px-4 py-2 rounded-lg text-sm font-semibold hover:shadow-lg transition-all"
-                      style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
-                    >
-                      Browse Equipment
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
-                      {cart.map((item) => {
-                        const minQty = item.minQuantity || 1;
-                        const currentDays = rentalDuration.rentalDays;
-                        const currentCost = item.price * item.qty * currentDays;
-                        
-                        if(item.rentalDays !== currentDays && currentDays > 0) {
-                          updateCartRentalDays(item.id, currentDays);
-                        }
+                {/* Quantity */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => updateCartQty(item.id, item.qty - 1)}
+                    disabled={item.qty <= 1}
+                    className="bg-white border rounded-full w-6 h-6 flex items-center justify-center"
+                    style={{borderColor: colors.saffron, color: colors.culturalRed}}
+                  >
+                    <FiMinus className="text-xs" />
+                  </button>
+                  <span className="font-semibold">{item.qty}</span>
+                  <button
+                    onClick={() => updateCartQty(item.id, item.qty + 1)}
+                    className="bg-white border rounded-full w-6 h-6 flex items-center justify-center"
+                    style={{borderColor: colors.saffron, color: colors.culturalRed}}
+                  >
+                    <FiPlus className="text-xs" />
+                  </button>
 
-                        return (
-                          <div
-                            key={item.id}
-                            className="flex gap-2 items-start p-3 bg-white rounded-lg border"
-                            style={{borderColor: colors.saffron + '20'}}
-                          >
-                            <img
-                              src={item.imgGallery?.[0] || item.img}
-                              alt={item.name}
-                              className="h-12 w-12 object-cover rounded flex-shrink-0"
-                              style={{backgroundColor: colors.saffron + '05'}}
-                              onError={(e) => {
-                                e.currentTarget.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%23FFF8E7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='6' fill='%235A3E2B'%3EImage%3C/text%3E%3C/svg%3E`;
-                              }}
-                            />
-                            <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-sm truncate" style={{color: colors.culturalRed}}>{item.name}</p>
-                              <p className="text-xs mb-1" style={{color: colors.culturalRed + '99'}}>
-                                {formatINR(item.price)}/day x {currentDays} days ={" "}
-                                <span className="font-bold" style={{color: colors.saffron}}>{formatINR(currentCost)}</span>
-                              </p>
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-1">
-                                  <span className="text-xs" style={{color: colors.culturalRed + 'B0'}}>Qty:</span>
-                                  <div className="flex items-center gap-0.5">
-                                    <button
-                                      onClick={() => updateCartQty(item.id, item.qty - 1)}
-                                      className="w-5 h-5 flex items-center justify-center rounded bg-white border text-xs hover:bg-saffron/10"
-                                      style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
-                                      disabled={item.qty <= minQty}
-                                    >
-                                      <FiMinus className="w-2.5 h-2.5" />
-                                    </button>
-                                    <span className="px-1 text-xs font-medium" style={{color: colors.culturalRed}}>{item.qty}</span>
-                                    <button
-                                      onClick={() => updateCartQty(item.id, item.qty + 1)}
-                                      className="w-5 h-5 flex items-center justify-center rounded bg-white border text-xs hover:bg-saffron/10"
-                                      style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
-                                    >
-                                      <FiPlus className="w-2.5 h-2.5" />
-                                    </button>
-                                  </div>
-                                </div>
-                                <button
-                                  onClick={() => removeFromCart(item.id)}
-                                  className="ml-auto p-0.5 text-sm"
-                                  style={{color: colors.error}}
-                                >
-                                  <FiX />
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Price Summary */}
-                    <div className="border-t pt-4 mt-6 space-y-3 text-sm" style={{borderColor: colors.saffron + '20'}}>
-                      <div className="flex justify-between" style={{color: colors.culturalRed}}>
-                        <span>Rental Charges</span>
-                        <span className="font-medium">{formatINR(pricing.rentalTotal)}</span>
-                      </div>
-                      <div className="flex justify-between" style={{color: colors.culturalRed}}>
-                        <span>GST (18%)</span>
-                        <span className="font-medium">{formatINR(pricing.gst)}</span>
-                      </div>
-                      <div className="flex justify-between" style={{color: colors.culturalRed}}>
-                        <span>
-                          Delivery Charges
-                          {pricing.delivery === 0 && (
-                            <span className="text-xs ml-1" style={{color: colors.success}}>(FREE above ₹4999)</span>
-                          )}
-                        </span>
-                        <span className="font-medium">{formatINR(pricing.delivery)}</span>
-                      </div>
-                      <div className="flex justify-between" style={{color: colors.culturalRed}}>
-                        <span>Pickup Charges</span>
-                        <span className="font-medium">{formatINR(pricing.pickup)}</span>
-                      </div>
-                      <div className="flex justify-between font-bold text-lg border-t pt-3" style={{borderColor: colors.saffron + '20', color: colors.culturalRed}}>
-                        <span>Total Payable</span>
-                        <span style={{color: colors.saffron}}>{formatINR(pricing.total)}</span>
-                      </div>
-                      <div className="flex justify-between border-t pt-3" style={{borderColor: colors.saffron + '20', color: colors.success}}>
-                        <span>Refundable Deposit</span>
-                        <span className="font-semibold">{formatINR(pricing.refundable)}</span>
-                      </div>
-
-                      <button
-                        onClick={startCartOrder}
-                        className="w-full mt-4 text-white py-3.5 rounded-xl font-semibold hover:shadow-lg transition-all text-sm flex items-center justify-center gap-3"
-                        style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
-                        disabled={rentalDuration.rentalDays === 0}
-                      >
-                        <FiCheckCircle className="w-5 h-5" />
-                        Proceed to Rental
-                      </button>
-
-                      <div className="flex items-center gap-2 mt-3 text-xs" style={{color: colors.culturalRed + '99'}}>
-                        <FiShield className="w-4 h-4" style={{color: colors.success}} />
-                        <span>Deposit refunded after equipment return in good condition</span>
-                      </div>
-                    </div>
-                  </>
-                )}
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="ml-auto text-error"
+                    style={{ color: colors.error }}
+                  >
+                    <FiX />
+                  </button>
+                </div>
               </div>
             </motion.div>
-          )}
-        </AnimatePresence>
+          ))
+        )}
+      </div>
+
+      {/* Price Summary Footer */}
+      {cart.length > 0 && (
+        <div
+          className="p-4 border-t space-y-3 shadow-inner"
+          style={{
+            backgroundColor: colors.white,
+            borderColor: colors.saffron + "30"
+          }}
+        >
+          <div className="flex justify-between text-sm font-medium" style={{color: colors.culturalRed}}>
+            <span>Total Payable:</span>
+            <span style={{color: colors.saffron}}>{formatINR(pricing.total)}</span>
+          </div>
+
+          <button
+            onClick={startCartOrder}
+            className="w-full py-3 text-white font-semibold rounded-xl shadow-lg hover:scale-105 transition-transform flex items-center justify-center gap-2"
+            style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
+          >
+            <FiCheckCircle /> Proceed to Rent
+          </button>
+
+        </div>
+      )}
+    </motion.div>
+  )}
+</AnimatePresence>
+
 
         {/* Mobile Filters Modal */}
         <MobileFiltersModal
