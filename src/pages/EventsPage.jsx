@@ -563,93 +563,110 @@ const MobileFiltersModal = ({ isOpen, onClose, selectedCategory, onCategoryChang
   );
 };
 
-// ========== PRODUCT DETAIL MODAL COMPONENT (Premium Upgrade) ==========
+// ========== PRODUCT DETAIL MODAL COMPONENT (Fully Responsive Upgrade) ==========
 const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNow }) => {
   return (
     <motion.div
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
     >
       <motion.div
-        className="rounded-2xl sm:rounded-3xl w-full max-w-md sm:max-w-lg max-h-[92vh] overflow-y-auto"
+        className="
+          rounded-xl sm:rounded-3xl
+          w-full max-w-[95%] sm:max-w-md md:max-w-lg lg:max-w-xl
+          max-h-[92vh] overflow-y-auto
+          shadow-2xl relative
+        "
         style={{
           background: colors.cream,
           border: `2px solid ${colors.saffron}20`,
-          boxShadow: "0 12px 40px rgba(0,0,0,0.25)"
         }}
-        initial={{ y: 80, scale: 0.95, opacity: 0 }}
+        initial={{ y: 60, scale: 0.95, opacity: 0 }}
         animate={{ y: 0, scale: 1, opacity: 1 }}
-        exit={{ y: 40, opacity: 0 }}
+        exit={{ y: 30, opacity: 0 }}
         transition={{ type: "spring", stiffness: 120, damping: 22 }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div
-          className="px-4 py-3 flex items-center justify-between sticky top-0 z-20 backdrop-blur-lg"
+          className="
+            px-3 sm:px-4 py-3
+            flex items-center justify-between
+            sticky top-0 z-20
+            backdrop-blur-md
+          "
           style={{
-            background: `linear-gradient(to bottom, ${colors.white}DD, ${colors.white}AA)`,
+            background: `linear-gradient(to bottom, ${colors.white}EE, ${colors.white}99)`,
             borderBottom: `1px solid ${colors.saffron}30`
           }}
         >
           <h2
-            className="text-lg sm:text-xl font-bold font-serif line-clamp-2 pr-4"
+            className="text-base sm:text-lg md:text-xl font-bold font-serif line-clamp-2 pr-3"
             style={{ color: colors.culturalRed }}
           >
             {product.name}
           </h2>
+
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full flex items-center justify-center shadow-sm hover:scale-105 transition-transform"
+            className="
+              w-9 h-9 sm:w-10 sm:h-10
+              rounded-full flex items-center justify-center
+              hover:scale-110 transition-transform
+            "
             style={{
-              backgroundColor: colors.saffron + "20",
+              backgroundColor: colors.saffron + "25",
               color: colors.culturalRed
             }}
           >
-            <FiX className="w-5 h-5" />
+            <FiX className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
 
-        <div className="p-4 space-y-4">
+        {/* Body */}
+        <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
+
           {/* Media Carousel */}
-          <div className="relative rounded-2xl overflow-hidden shadow-xl">
+          <div className="relative rounded-xl overflow-hidden shadow-lg">
             <ProductCarousel
               gallery={product.imgGallery || [product.img]}
               video={product.video}
               productName={product.name}
             />
+
             <div
-              className="absolute bottom-2 left-2 text-xs font-semibold rounded-full px-3 py-1"
+              className="absolute bottom-2 left-2 text-[10px] sm:text-xs font-semibold rounded-full px-2 sm:px-3 py-1"
               style={{ backgroundColor: colors.culturalRed, color: colors.white }}
             >
               {product.category}
             </div>
           </div>
 
-          {/* Price Card */}
+          {/* Pricing */}
           <div
-            className="rounded-xl p-4 shadow-lg"
+            className="rounded-lg sm:rounded-xl p-3 sm:p-4 shadow"
             style={{
               background: `linear-gradient(135deg, ${colors.white}, ${colors.lightCream})`,
-              border: `1px solid ${colors.saffron}30`
+              border: `1px solid ${colors.saffron}30`,
             }}
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-start justify-between gap-2">
               <div>
-                <p className="text-xl font-bold" style={{ color: colors.saffron }}>
+                <p className="text-lg sm:text-xl font-bold" style={{ color: colors.saffron }}>
                   {formatINR(product.price)}
                 </p>
-                <p className="text-xs" style={{ color: colors.culturalRed + "80" }}>
+                <p className="text-[10px] sm:text-xs" style={{ color: colors.culturalRed + "90" }}>
                   {product.unit}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold" style={{ color: colors.success }}>
+                <p className="text-xs sm:text-sm font-semibold" style={{ color: colors.success }}>
                   Deposit: {formatINR(product.deposit)}
                 </p>
-                <p className="text-[11px]" style={{ color: colors.warning }}>
+                <p className="text-[10px] sm:text-[11px]" style={{ color: colors.warning }}>
                   Min: {product.minQuantity} qty • {product.minRentalDays} days
                 </p>
               </div>
@@ -657,69 +674,78 @@ const ProductDetailModal = ({ product, qty, days, onClose, onAddToCart, onRentNo
           </div>
 
           {/* Description */}
-          <p className="text-sm leading-relaxed" style={{ color: colors.culturalRed + "CC" }}>
+          <p className="text-xs sm:text-sm leading-relaxed" style={{ color: colors.culturalRed + "CC" }}>
             {product.description}
           </p>
 
           {/* Features */}
-          <div className="space-y-2">
-            <h3 className="text-sm font-semibold flex items-center gap-1" style={{ color: colors.culturalRed }}>
-              <FiCheckCircle className="w-4 h-4" style={{ color: colors.saffron }} />
-              Features
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {product.features.map((feature, idx) => (
-                <span
-                  key={idx}
-                  className="px-3 py-1 text-xs rounded-full"
-                  style={{
-                    backgroundColor: colors.saffron + "15",
-                    color: colors.culturalRed,
-                    border: `1px solid ${colors.saffron}30`
-                  }}
-                >
-                  {feature}
-                </span>
-              ))}
+          {product?.features?.length > 0 && (
+            <div className="space-y-2">
+              <h3
+                className="text-xs sm:text-sm font-semibold flex items-center gap-1"
+                style={{ color: colors.culturalRed }}
+              >
+                <FiCheckCircle className="w-4 h-4" style={{ color: colors.saffron }} />
+                Features
+              </h3>
+
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                {product.features.map((feature, idx) => (
+                  <span
+                    key={idx}
+                    className="px-2 sm:px-3 py-1 text-[10px] sm:text-xs rounded-full"
+                    style={{
+                      backgroundColor: colors.saffron + "10",
+                      color: colors.culturalRed,
+                      border: `1px solid ${colors.saffron}25`,
+                    }}
+                  >
+                    {feature}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Floating Footer Actions */}
-          <div className="space-y-2 pt-4">
-            <p className="text-xs flex justify-between font-semibold px-1"
-              style={{ color: colors.culturalRed }}
-            >
-              <span>Selected:</span>
-              <span style={{ color: colors.saffron }}>{qty} qty • {days} days</span>
-            </p>
+        </div>
 
-            <button
-              onClick={() => onAddToCart(product, qty, days)}
-              className="w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-md hover:scale-105 transition-transform"
-              style={{
-                background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`,
-                color: colors.white
-              }}
-            >
-              <FiShoppingCart /> Add to Cart
-            </button>
+        {/* Footer Buttons */}
+        <div className="px-3 sm:px-4 pb-4 space-y-2 sticky bottom-0 bg-white/70 backdrop-blur-lg border-t border-saffron/20 pt-2">
+          <p className="text-[11px] sm:text-xs flex justify-between font-semibold"
+            style={{ color: colors.culturalRed }}
+          >
+            <span>Selected:</span>
+            <span style={{ color: colors.saffron }}>{qty} qty • {days} days</span>
+          </p>
 
-            <button
-              onClick={() => onRentNow(product, qty, days)}
-              className="w-full py-3 rounded-xl text-sm font-semibold border hover:bg-saffron/10 transition-all"
-              style={{
-                borderColor: colors.saffron,
-                color: colors.saffron
-              }}
-            >
-              Quick Rent Now
-            </button>
-          </div>
+          <button
+            onClick={() => onAddToCart(product, qty, days)}
+            className="w-full py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-md hover:scale-105 transition"
+            style={{
+              background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`,
+              color: colors.white,
+            }}
+          >
+            <FiShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
+            Add to Cart
+          </button>
+
+          <button
+            onClick={() => onRentNow(product, qty, days)}
+            className="w-full py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold border hover:bg-saffron/10 transition"
+            style={{
+              borderColor: colors.saffron,
+              color: colors.saffron,
+            }}
+          >
+            Quick Rent Now
+          </button>
         </div>
       </motion.div>
     </motion.div>
   );
 };
+
 
 
 // ========== RENTAL ORDER WIZARD MODAL ==========
