@@ -1951,7 +1951,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
             </div>
           </div>
         </div>
-
+        
         {/* Category Icons & Filters */}
         <div className="mt-4 sm:mt-6 backdrop-blur-sm rounded-xl shadow-lg border px-3 sm:px-4 py-3 sm:py-4" style={{backgroundColor: colors.white + 'CC', borderColor: colors.saffron + '20'}}>
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
@@ -1981,159 +1981,181 @@ _Sent automatically from Sanskaraa Rental Service_`;
             </div>
           </div>
         </div>
+<div className="mt-4 sm:mt-6 lg:mt-8">
+  {filteredProducts.length === 0 ? (
+    <div className="text-center py-12 sm:py-16 rounded-2xl shadow border"
+      style={{ backgroundColor: colors.white + 'CC', borderColor: colors.saffron + '20' }}>
+      <div className="text-4xl mb-4">🎪</div>
+      <p className="text-sm mb-2" style={{ color: colors.culturalRed }}>
+        No rental items found matching your search.
+      </p>
+      <p className="text-xs" style={{ color: colors.culturalRed + '99' }}>
+        Try changing category or search term
+      </p>
+    </div>
+  ) : (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
+      {filteredProducts.map((product) => {
+        const qty = quantities[product.id] || (product.minQuantity || 1);
+        const days = rentalDuration.rentalDays;
+        const rentalCost = product.price * qty * days;
+        const deposit = product.deposit * qty;
 
-        {/* Products Grid */}
-        <div className="mt-4 sm:mt-6 lg:mt-8">
-          {filteredProducts.length === 0 ? (
-            <div className="text-center py-12 sm:py-16 rounded-2xl shadow border" style={{backgroundColor: colors.white + 'CC', borderColor: colors.saffron + '20'}}>
-              <div className="text-4xl mb-4">🎪</div>
-              <p className="text-sm mb-2" style={{color: colors.culturalRed}}>No rental items found matching your search.</p>
-              <p className="text-xs" style={{color: colors.culturalRed + '99'}}>Try changing category or search term</p>
+        return (
+          <motion.div
+            key={product.id}
+            layout
+            className="bg-white rounded-2xl overflow-hidden shadow-lg border relative group flex flex-col transition-all"
+            style={{ borderColor: colors.saffron + '25' }}
+            whileHover={{ y: -6 }}
+            transition={{ type: "spring", stiffness: 250, damping: 20 }}
+          >
+            {/* Wishlist */}
+            <button
+              className="absolute top-2 right-2 z-30 bg-white w-8 h-8 rounded-full shadow flex items-center justify-center transition hover:scale-110"
+              style={{ color: colors.culturalRed }}
+            >
+              ❤️
+            </button>
+
+            {/* Carousel */}
+            <div className="h-40 sm:h-48 relative bg-saffron/5 overflow-hidden">
+              <ProductCarousel
+                gallery={product.imgGallery || [product.img]}
+                video={product.video}
+                productName={product.name}
+              />
+
+              {product.popular && (
+                <span className="absolute top-2 left-2 bg-gradient-to-r from-yellow-500 to-amber-600 text-white text-[10px] px-2 py-1 rounded-full shadow font-semibold">
+                  ⭐ Popular
+                </span>
+              )}
             </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-              {filteredProducts.map((product) => {
-                const qty = quantities[product.id] || (product.minQuantity || 1);
-                const days = rentalDuration.rentalDays;
-                const rentalCost = product.price * qty * days;
-                const deposit = product.deposit * qty;
 
-                return (
-                  <motion.div
-                    key={product.id}
-                    layout
-                    className="bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl border overflow-hidden flex flex-col"
-                    style={{borderColor: colors.saffron + '20'}}
-                    whileHover={{ y: -4 }}
-                    transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            {/* Content */}
+            <div className="p-4 flex flex-col gap-3 flex-grow">
+
+              <h2
+                className="font-bold text-sm sm:text-base line-clamp-2 font-serif"
+                style={{ color: colors.culturalRed }}
+              >
+                {product.name}
+              </h2>
+
+              <p className="text-[11px] line-clamp-2 leading-snug"
+                style={{ color: colors.culturalRed + 'AA' }}>
+                {product.description}
+              </p>
+
+              {/* Features */}
+              <div className="flex flex-wrap gap-1">
+                {product.features.slice(0, 2).map((f, i) => (
+                  <span
+                    key={i}
+                    className="px-2 py-1 text-[10px] rounded-full border"
+                    style={{
+                      backgroundColor: colors.saffron + '10',
+                      borderColor: colors.saffron + '25',
+                      color: colors.culturalRed
+                    }}
                   >
-                    {/* Image with Carousel */}
-                    <div className="h-40 sm:h-48 overflow-hidden relative" style={{backgroundColor: colors.saffron + '05'}}>
-                      <ProductCarousel
-                        gallery={product.imgGallery || [product.img]}
-                        video={product.video}
-                        productName={product.name}
-                      />
-                      {product.popular && (
-                        <div className="absolute top-2 left-2 text-white px-2 py-1 rounded-full text-[10px] font-semibold flex items-center gap-1" style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}>
-                          <FiStar className="w-3 h-3" />
-                          Popular
-                        </div>
-                      )}
-                      <div className="absolute top-2 right-2 text-white px-2 py-1 rounded-full text-[10px] font-semibold" style={{backgroundColor: colors.culturalRed}}>
-                        {product.category.split(" ")[0]}
-                      </div>
-                    </div>
+                    {f}
+                  </span>
+                ))}
+              </div>
 
-                    {/* Content */}
-                    <div className="p-3 sm:p-4 flex flex-col gap-2 sm:gap-3 flex-grow">
-                      <h2 className="font-bold text-sm sm:text-base line-clamp-2 leading-tight font-serif" style={{color: colors.culturalRed}}>
-                        {product.name}
-                      </h2>
-                      <p className="text-xs sm:text-sm line-clamp-2 leading-relaxed" style={{color: colors.culturalRed + 'CC'}}>
-                        {product.description}
-                      </p>
+              {/* Price */}
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="font-bold text-lg" style={{ color: colors.saffron }}>
+                    {formatINR(product.price)}
+                    <span className="text-[11px]" style={{ color: colors.culturalRed }}>
+                      /day
+                    </span>
+                  </p>
+                  <p className="text-[11px] font-semibold" style={{ color: colors.success }}>
+                    Deposit: {formatINR(product.deposit)}
+                  </p>
+                </div>
 
-                      {/* Features */}
-                      <div className="flex flex-wrap gap-1">
-                        {product.features.slice(0, 2).map((feature, idx) => (
-                          <span
-                            key={idx}
-                            className="inline-block px-2 py-1 rounded text-[10px] border"
-                            style={{backgroundColor: colors.saffron + '10', borderColor: colors.saffron + '20', color: colors.culturalRed}}
-                          >
-                            {feature}
-                          </span>
-                        ))}
-                      </div>
+                {product.minQuantity > 1 && (
+                  <span className="text-[10px] px-2 py-1 border rounded-full"
+                    style={{
+                      backgroundColor: colors.warning + '10',
+                      borderColor: colors.warning + '30',
+                      color: colors.warning
+                    }}>
+                    Min {product.minQuantity}
+                  </span>
+                )}
+              </div>
 
-                      <div className="flex items-center justify-between mt-2">
-                        <div>
-                          <p className="font-bold text-base sm:text-lg" style={{color: colors.saffron}}>
-                            {formatINR(product.price)}
-                            <span className="text-xs font-normal" style={{color: colors.culturalRed + '80'}}>/ day</span>
-                          </p>
-                          <p className="text-[11px]" style={{color: colors.success}}>Deposit: {formatINR(product.deposit)}</p>
-                        </div>
-                        {product.minQuantity > 1 && (
-                          <p className="text-[10px] px-2 py-1 rounded border" style={{color: colors.warning, backgroundColor: colors.warning + '10', borderColor: colors.warning + '20'}}>
-                            Min: {product.minQuantity}
-                          </p>
-                        )}
-                      </div>
+              {/* Quantity */}
+              <div className="flex justify-between items-center">
+                <span className="text-xs" style={{ color: colors.culturalRed }}>Qty:</span>
 
-                      {/* Quantity Selector */}
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs font-medium" style={{color: colors.culturalRed + 'B0'}}>Quantity:</span>
-                        <div className="flex items-center gap-1 rounded-full px-2 py-1 border" style={{backgroundColor: colors.saffron + '05', borderColor: colors.saffron + '20'}}>
-                          <button
-                            onClick={() => changeQty(product.id, -1)}
-                            className="w-6 h-6 flex items-center justify-center rounded-full bg-white border text-xs hover:bg-saffron/10 transition-colors"
-                            style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
-                            disabled={qty <= (product.minQuantity || 1)}
-                          >
-                            <FiMinus className="w-3 h-3" />
-                          </button>
-                          <input
-                            type="number"
-                            min={product.minQuantity || 1}
-                            value={qty}
-                            onChange={(e) => setQty(product.id, e.target.value)}
-                            className="w-8 text-center text-xs bg-transparent outline-none font-medium"
-                            style={{color: colors.culturalRed}}
-                          />
-                          <button
-                            onClick={() => changeQty(product.id, 1)}
-                            className="w-6 h-6 flex items-center justify-center rounded-full bg-white border text-xs hover:bg-saffron/10 transition-colors"
-                            style={{borderColor: colors.culturalRed + '20', color: colors.culturalRed}}
-                          >
-                            <FiPlus className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </div>
+                <div className="flex items-center px-2 py-1 rounded-full border shadow-sm gap-2"
+                  style={{ borderColor: colors.saffron + "30" }}>
 
-                      {/* Cost Summary */}
-                      <div className="mt-2 p-2 sm:p-3 rounded-lg border" style={{backgroundColor: colors.saffron + '05', borderColor: colors.saffron + '20'}}>
-                        <div className="flex justify-between text-xs mb-1">
-                          <span style={{color: colors.culturalRed + 'B0'}}>Total Rental Cost ({days} days):</span>
-                          <span className="font-semibold" style={{color: colors.saffron}}>{formatINR(rentalCost)}</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                          <span style={{color: colors.success}}>Total Deposit:</span>
-                          <span className="font-semibold" style={{color: colors.success}}>{formatINR(deposit)}</span>
-                        </div>
-                      </div>
+                  <button
+                    onClick={() => changeQty(product.id, -1)}
+                    disabled={qty <= (product.minQuantity || 1)}
+                    className="w-6 h-6 rounded-full border flex items-center justify-center hover:scale-110 transition"
+                    style={{ borderColor: colors.culturalRed + "40", color: colors.culturalRed }}
+                  >
+                    <FiMinus className="w-3 h-3" />
+                  </button>
 
-                      {/* Buttons */}
-                      <div className="mt-2 flex flex-col gap-2">
-                        <button
-                          onClick={() => addToCart(product, qty, days)}
-                          className="w-full py-2 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2"
-                          style={{background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})`}}
-                          disabled={rentalDuration.rentalDays === 0}
-                        >
-                          <FiShoppingCart className="w-4 h-4" />
-                          Add to Cart
-                        </button>
+                  <span className="text-sm font-bold" style={{ color: colors.culturalRed }}>
+                    {qty}
+                  </span>
 
-                        <button
-                          onClick={() => {
-                            setSelectedProduct(product);
-                            setShowProductDetails(true);
-                          }}
-                          className="w-full py-2 border rounded-lg text-sm font-medium hover:bg-saffron/5 transition-colors"
-                          style={{borderColor: colors.saffron, color: colors.saffron}}
-                        >
-                          View Details
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
+                  <button
+                    onClick={() => changeQty(product.id, 1)}
+                    className="w-6 h-6 rounded-full border flex items-center justify-center hover:scale-110 transition"
+                    style={{ borderColor: colors.culturalRed + "40", color: colors.culturalRed }}
+                  >
+                    <FiPlus className="w-3 h-3" />
+                  </button>
+
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="grid grid-cols-2 gap-2 mt-auto pt-2">
+
+                <button
+                  onClick={() => {
+                    setSelectedProduct(product);
+                    setShowProductDetails(true);
+                  }}
+                  className="py-2 border rounded-lg text-xs font-semibold hover:bg-saffron/10 transition"
+                  style={{ borderColor: colors.saffron, color: colors.saffron }}
+                >
+                  Details
+                </button>
+
+                <button
+                  onClick={() => addToCart(product, qty, days)}
+                  disabled={!days}
+                  className="py-2 text-white rounded-lg text-xs font-bold shadow hover:scale-105 transition flex items-center justify-center gap-1"
+                  style={{ background: `linear-gradient(135deg, ${colors.saffron}, ${colors.deepSaffron})` }}
+                >
+                  <FiShoppingCart className="w-4 h-4" />
+                  Add
+                </button>
+
+              </div>
+
             </div>
-          )}
-        </div>
+          </motion.div>
+        );
+      })}
+    </div>
+  )}
+</div>
+
 
         {/* Cart Sidebar */}
 <AnimatePresence>
