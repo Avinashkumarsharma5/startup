@@ -57,9 +57,9 @@ const upcomingEvents = [
 
 // Sample testimonials
 const testimonials = [
-  { id: 1, name: "Rajesh Kumar", rating: 5, review: "Excellent service, very satisfied with the puja arrangements.", image: "https://randomuser.me/api/portraits/men/32.jpg" },
-  { id: 2, name: "Priya Singh", rating: 4, review: "Pandit ji was very knowledgeable and punctual.", image: "https://randomuser.me/api/portraits/women/44.jpg" },
-  { id: 3, name: "Vikram Mehta", rating: 5, review: "The puja kit was complete and of good quality.", image: "https://randomuser.me/api/portraits/men/67.jpg" }
+  { id: 1, name: "Rajesh Kumar", rating: 5, review: "Excellent service, very satisfied with the puja arrangements.", image: "" },
+  { id: 2, name: "Priya Singh", rating: 4, review: "Pandit ji was very knowledgeable and punctual.", image: "" },
+  { id: 3, name: "Vikram Mehta", rating: 5, review: "The puja kit was complete and of good quality.", image: "" }
 ];
 
 // Sample offers
