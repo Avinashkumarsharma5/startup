@@ -883,7 +883,7 @@ const HeroSection = ({ query, setQuery, location, setLocation }) => {
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
   return (
-    <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[600px] xl:h-[700px] overflow-hidden flex flex-col items-center justify-center text-center px-2 sm:px-4 bg-[#1a0505]">
+    <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[600px] xl:h-[700px] overflow-hidden flex flex-col items-center justify-center text-center px-2 sm:px-4 bg-[#1a0505] mt-11">
       {/* Background */}
       <motion.div style={{ y: y1, opacity }} className="absolute inset-0 z-0">
         <img 
@@ -902,7 +902,7 @@ const HeroSection = ({ query, setQuery, location, setLocation }) => {
         initial={{ y: -50, opacity: 0 }} 
         animate={{ y: 0, opacity: 1 }} 
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="absolute top-3 sm:top-4 lg:top-6 left-0 w-full flex justify-center z-20 px-2"
+        className="absolute top-3 sm:top-4 lg:top-6 left-0 w-full flex justify-center z-20 px-2 "
       >
          <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 bg-white/10 backdrop-blur-md px-2 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-2 rounded-full border border-white/20 shadow-2xl">
             <div className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 bg-[#800000] rounded-full flex items-center justify-center shadow-inner border border-[#FFD700]/50">
@@ -1146,7 +1146,7 @@ export default function App() {
               <section className="mb-12 sm:mb-16 lg:mb-20 pt-4 sm:pt-6 lg:pt-8">
                   <div className="flex items-end justify-between mb-4 sm:mb-6 lg:mb-8 px-1">
                     <div>
-                      <h2 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-serif font-bold text-[#800000] flex items-center gap-1.5 sm:gap-2 lg:gap-3">
+                      <h2 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-serif font-bold text-[#800000] flex items-center gap-1.5 sm:gap-2 lg:gap-3 mt-12">
                         Sanskaraa Shop 
                         <span className="bg-[#FFD700] text-[#800000] text-[8px] sm:text-[9px] lg:text-[10px] px-1 sm:px-1.5 lg:px-2 py-0.5 rounded font-sans font-bold tracking-widest uppercase shadow-sm">
                           Store
