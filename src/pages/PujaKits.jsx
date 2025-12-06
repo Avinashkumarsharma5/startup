@@ -23,6 +23,19 @@ import {
   FiPackage,
   FiGrid,
   FiList,
+  FiFilter,
+  FiDollarSign,
+  FiTrendingUp,
+  FiBookOpen,
+  FiVideo,
+  FiHeadphones,
+  FiTruck,
+  FiAward,
+  FiSun,
+  FiMoon,
+  FiGift,
+  FiPercent,
+  FiChevronRight,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -384,7 +397,7 @@ const singleItems = [
   {
     id: 101,
     name: "Nariyal / नारियल",
-    price: 40,
+    price: 25,
     category: "Single Items",
     subcategory: "Fruits & Offerings",
     type: "single",
@@ -394,21 +407,21 @@ const singleItems = [
   {
     id: 102,
     name: "Banana / केला",
-    price: 10,
+    price: 50,
     category: "Single Items",
     subcategory: "Fruits & Offerings",
     type: "single",
-    unit: "पीस",
+    unit: "dozon",
     img: "images/banana.png",
   },
   {
     id: 103,
     name: "Apple / सेब",
-    price: 30,
+    price: 200,
     category: "Single Items",
     subcategory: "Fruits & Offerings",
     type: "single",
-    unit: "पीस",
+    unit: "kg",
     img: "images/apple.png",
   },
   {
@@ -424,7 +437,7 @@ const singleItems = [
   {
     id: 105,
     name: "Flower Garland / फूल माला",
-    price: 80,
+    price: 40,
     category: "Single Items",
     subcategory: "Fruits & Offerings",
     type: "single",
@@ -434,7 +447,7 @@ const singleItems = [
   {
     id: 106,
     name: "Marigold Flowers / गेंदे के फूल",
-    price: 50,
+    price: 40,
     category: "Single Items",
     subcategory: "Fruits & Offerings",
     type: "single",
@@ -456,7 +469,7 @@ const singleItems = [
   {
     id: 108,
     name: "Agarbatti / अगरबत्ती",
-    price: 30,
+    price: 15,
     category: "Single Items",
     subcategory: "Fragrance",
     type: "single",
@@ -466,17 +479,17 @@ const singleItems = [
   {
     id: 109,
     name: "Dhoop Sticks / धूप",
-    price: 35,
+    price: 60,
     category: "Single Items",
     subcategory: "Fragrance",
     type: "single",
-    unit: "पैक",
+    unit: "kg",
     img: "images/dhup.png",
   },
   {
     id: 110,
     name: "Guggal / गुग्गुल",
-    price: 40,
+    price: 10,
     category: "Single Items",
     subcategory: "Fragrance",
     type: "single",
@@ -486,7 +499,7 @@ const singleItems = [
   {
     id: 111,
     name: "Loban / लोबान",
-    price: 30,
+    price: 45,
     category: "Single Items",
     subcategory: "Fragrance",
     type: "single",
@@ -902,76 +915,970 @@ const pujaKitItems = {
   1: {
     name: "Griha Pravesh / गृह प्रवेश",
     items: [
-      "Kalash (पीतल का कलश)",
-      "Nariyal (नारियल)",
-      "Moli (मोली) - 2 पीस",
-      "Chawal (चावल)",
-      "Haldi (हल्दी)",
+      "Kalash (पीतल/ताम्बा)",
+      "Nariyal (नारियल) - 2 to 5",
+      "Moli / Kalawa (मोली) - 1 रोल",
+      "Chawal / Akshat (चावल/अक्षत)",
+      "Haldi (हल्दी) - पैकेट",
       "Kumkum (कुमकुम)",
       "Sindoor (सिंदूर)",
       "Gangajal (गंगाजल)",
-      "Dhoop (धूप)",
-      "Deepak (दीपक)",
+      "Ghee / Oil Diya (घी/तेल का दिया)",
+      "Deepak (दीपक) - 2",
       "Kapoor (कपूर)",
       "Agarbatti (अगरबत्ती)",
-      "Flowers (फूल)",
-      "Fruits (फल)",
-      "Mishri (मिश्री)",
-      "Panchamrit (पंचामृत)",
-      "Vastu Purush Photo (वास्तु पुरुष फोटो)",
-      "Puja Vidhi Booklet (पूजा विधि बुकलेट)",
+      "Matchbox (माचिस)",
+      "Flowers / Garland (फूल/माला)",
+      "Fruits (फल) - 5 प्रकार",
+      "Dry Fruits (सूखा मेवा)",
+      "Mishri (मिश्री / शक्कर)",
+      "Doodh (दूध)",
+      "Dahi (दही)",
+      "Ghee (घी)",
+      "Honey (शहद)",
+      "Sugar (शक्कर)",
+      "Mango Leaves (आम के पत्ते) - 11",
+      "Vastu Purush Photo (वास्तु पुरुष चित्र)",
+      "Swastik Sticker / Rangoli (स्वस्तिक स्टिकर/रंगोली)",
+      "Toran (तोरण) - मुख्य द्वार हेतु",
+      "Red & Yellow Cloth (लाल व पीला कपड़ा)",
+      "Havan Kund (हवन कुंड)",
+      "Havan Samagri (हवन सामग्री)",
+      "Samidha (समिधा / लकड़ी की जलावन)",
+      "Ghee for Havan (हवन घी)",
+      "Jau / Til (जौ/तिल)",
+      "Ganesh Ji Murti / Photo (गणेश जी)",
+      "Lakshmi Photo / Coin (लक्ष्मी जी)",
+      "Puja Vidhi Booklet (पूजा विधि पुस्तक)"
     ],
     benefits: [
-      "नए घर में सकारात्मक ऊर्जा का प्रवेश",
-      "परिवार के सदस्यों के बीच सौहार्द",
-      "धन और समृद्धि की प्राप्ति",
-      "सुरक्षा और शांति का वातावरण",
+      "नए घर में शुभता, सकारात्मक ऊर्जा और मंगल की स्थापना",
+      "परिवार में सुख-समृद्धि और वैभव की वृद्धि",
+      "घर में वास्तु दोषों का निवारण",
+      "नकारात्मक ऊर्जा और बाधाओं को दूर करना",
+      "परिवार के सदस्यों के बीच प्रेम और सौहार्द बनाए रखना"
+    ]
+  },
+  4: {
+    name: "Sundarkand Path / सुंदरकांड पाठ",
+    items: [
+      "Hanuman Ji Photo / Idol",
+      "Sundarkand Path Book",
+      "Ram Darbar Photo - शुद्ध वातावरण हेतु",
+      "Chandan, Haldi, Kumkum, Sindoor",
+      "Akshat (चावल)",
+      "Gangajal (गंगाजल)",
+      "Kalash + Nariyal + Mango Leaves",
+      "Ghee/Oil Diya",
+      "Kapoor (कपूर)",
+      "Agarbatti (अगरबत्ती)",
+      "Dhoop (धूप)",
+      "Flowers, Garland",
+      "Tulsi Leaves",
+      "Fruits (5 प्रकार)",
+      "Boondi / Ladoo / Panjeeri",
+      "Havan Kund, Samidha, Havan Samagri, Ghee",
+      "Ghanti (Bell)",
+      "Puja Thali Set"
     ],
+    benefits: [
+      "बाधाओं, शत्रुओं व नकारात्मक शक्तियों से रक्षा",
+      "भय, संकट, रोगों का निवारण",
+      "शौर्य, आत्मविश्वास, साहस की प्राप्ति",
+      "व्यक्तित्व में तेज व सकारात्मकता का उदय"
+    ]
+  },
+  5: {
+    name: "Ramayan Path / रामायण पाठ",
+    items: [
+      "Ramayan Book (Valmiki / Tulsi)",
+      "Ram Darbar Photo",
+      "Kalash + Nariyal + Mango Leaves",
+      "Chandan, Haldi, Kumkum, Sindoor, Akshat",
+      "Red Cloth",
+      "Gangajal",
+      "Ghee Diya, Agarbatti, Kapoor, Dhoop",
+      "Flowers, Garland",
+      "Panchamrit सामग्री",
+      "Fruits + Mishri + Dry Fruits",
+      "Havan Samagri + Samidha + Ghee",
+      "Ghanti + Puja Thali"
+    ],
+    benefits: [
+      "घर में शांति, सद्भाव और सकारात्मक ऊर्जा",
+      "धर्म, मर्यादा और सदाचार की स्थापना",
+      "परिवार में अन्न-वस्त्र-धन की वृद्धि",
+      "संकटों से मुक्ति और ईश्वर की कृपा प्राप्ति"
+    ]
+  },
+  6: {
+    name: "Satyanarayan Katha / सत्यनारायण कथा",
+    items: [
+      "Satyanarayan Ji Photo/Idol",
+      "Katha Book",
+      "Banana Leaves (5)",
+      "Kalash + Coconut + Mango Leaves",
+      "Paan + Supari + Coin",
+      "Chandan, Haldi, Kumkum, Akshat",
+      "Sindoor, Mauli",
+      "Gangajal",
+      "Ghee Diya, Agarbatti, Kapoor, Dhoop",
+      "Flowers + Garland",
+      "Panchamrit सामग्री",
+      "Suji Halwa / Prasad सामग्री",
+      "Fruits (5 Prakar)",
+      "Havan Samagri + Samidha + Ghee",
+      "Ghanti + Puja Thali"
+    ],
+    benefits: [
+      "सौभाग्य में वृद्धि और मनोकामना पूर्ण होती है",
+      "धन, संतति और सुख-समृद्धि की प्राप्ति",
+      "घर में शांति और स्थिरता बनी रहती है",
+      "कठिनाइयों और अवरोधों का समाधान"
+    ]
   },
   7: {
     name: "Lakshmi Puja / लक्ष्मी पूजा",
     items: [
-      "Lakshmi Ji Idol (लक्ष्मी जी प्रतिमा)",
-      "Gold Coin (सोने का सिक्का)",
-      "Red Cloth (लाल कपड़ा)",
-      "Kalash (कलश)",
-      "Scented Diya (सुगंधित दीया)",
-      "Incense Sticks (अगरबत्ती)",
-      "Flowers (फूल)",
-      "Fruits (फल)",
-      "Mishri (मिश्री)",
-      "Batasha (बताशा)",
+      "Lakshmi Ji Idol / Photo (लक्ष्मी जी प्रतिमा/चित्र)",
+      "Ganesh Ji Idol / Photo (गणेश जी) - शुभारंभ हेतु",
+      "Gold / Silver Coin (सोने/चाँदी का सिक्का)",
+      "Red Cloth (लाल कपड़ा) - आसन हेतु",
+      "Kumkum (कुमकुम)",
+      "Haldi (हल्दी)",
+      "Akshat / Chawal (अक्षत/चावल)",
+      "Sindoor (सिंदूर)",
+      "Panchamrit Ingredients (दूध, दही, घी, शहद, शक्कर)",
+      "Gangajal (गंगाजल)",
+      "Diya (तेल/घी का दिया)",
+      "Scented/Traditional Diya (सुगंधित/साधारण दिया)",
+      "Kapoor (कपूर)",
+      "Agarbatti / Dhoop (अगरबत्ती/धूप)",
       "Lotus Flower (कमल का फूल)",
-      "Lakshmi Mantra Booklet (लक्ष्मी मंत्र बुकलेट)",
+      "Fresh Flowers / Mala (फूल/माला)",
+      "Batasha (बताशा)",
+      "Mishri / Sugar (मिश्री/चीनी)",
+      "Dry Fruits (सूखा मेवा)",
+      "Fruits (फल) - कम से कम 5 प्रकार",
+      "Red Thread / Moli (मोली/कलावा)",
+      "New Broom (नई झाड़ू - लक्ष्मी का वास हेतु)",
+      "Rice Flour & Rangoli Colors (रंगोली के लिए)",
+      "Kalash (कलश) + Mango Leaves (आम के पत्ते)",
+      "Cowrie Shells (कौड़ी) - ऐच्छिक",
+      "Shree Yantra (श्री यंत्र) - ऐच्छिक",
+      "Coin Box / Bahi-Khata (व्यापारिक पुस्तिका)",
+      "Lakshmi Mantra / Aarti Booklet (बुकलेट)",
+      "Ghanti (घंटी)"
     ],
     benefits: [
-      "धन और समृद्धि की प्राप्ति",
-      "व्यापार में सफलता",
-      "आर्थिक स्थिरता",
-      "घर में सुख-शांति",
-    ],
+      "धन, ऐश्वर्य और समृद्धि में निरंतर वृद्धि",
+      "व्यापार एवं नौकरी में सफलता",
+      "घर में लक्ष्मी का स्थिर वास",
+      "कर्ज और आर्थिक बाधाओं से मुक्ति",
+      "परिवार में शांति, सौभाग्य और सकारात्मक ऊर्जा"
+    ]
   },
   8: {
     name: "Ganesh Puja / गणेश पूजा",
     items: [
-      "Ganesh Ji Idol (गणेश जी प्रतिमा)",
-      "Modak (मोदक)",
-      "Durva Grass (दूर्वा घास)",
+      "Ganesh Ji Idol / Photo (गणेश जी प्रतिमा/चित्र)",
+      "Durva Grass (दूर्वा घास) - 21 तिनके",
+      "Modak / Laddu (मोदक / लड्डू) - प्रसाद हेतु",
       "Red Cloth (लाल कपड़ा)",
-      "Scented Diya (सुगंधित दीया)",
-      "Incense Sticks (अगरबत्ती)",
-      "Flowers (फूल)",
-      "Fruits (फल)",
+      "Red / Yellow Thread (मोली/कलावा)",
+      "Haldi (हल्दी)",
+      "Kumkum / Roli (कुमकुम / रोली)",
+      "Akshat (चावल)",
+      "Sindoor (सिंदूर)",
+      "Gangajal (गंगाजल)",
+      "Ghee / Oil Diya (घी/तेल का दिया)",
+      "Scented Diya (सुगंधित दिया) - ऐच्छिक",
+      "Agarbatti (अगरबत्ती)",
+      "Dhoop (धूप)",
+      "Kapoor (कपूर)",
+      "Fresh Flowers (फूल)",
+      "Flower Garland (फूलों की माला)",
+      "Fruits (फल) - 5 प्रकार",
       "Coconut (नारियल)",
-      "Ganesh Mantra Booklet (गणेश मंत्र बुकलेट)",
+      "Betel Leaves & Supari (पान व सुपारी)",
+      "Havan Samagri (हवन सामग्री) - ऐच्छिक",
+      "Samidha (लकड़ी) - ऐच्छिक",
+      "Ghee for Havan (हवन घी) - ऐच्छिक",
+      "Ganesh Mantra / Aarti Booklet (गणेश मंत्र/आरती पुस्तक)",
+      "Bell (घंटी)",
+      "Kalash + Mango Leaves (कलश + आम के पत्ते)",
+      "Rice Flour or Rangoli Colors (रंगोली हेतु)"
     ],
     benefits: [
-      "विघ्नों का नाश",
-      "नए कार्यों में सफलता",
-      "बुद्धि और ज्ञान में वृद्धि",
-      "सुख और समृद्धि",
-    ],
+      "सभी प्रकार के विघ्न, बाधा, नकारात्मकता का नाश",
+      "नए कार्यों, व्यापार और परीक्षाओं में सफलता",
+      "बुद्धि, विवेक और ज्ञान की वृद्धि",
+      "घर और परिवार में सुख-समृद्धि एवं मंगल की स्थिरता",
+      "सौभाग्य और सकारात्मक ऊर्जा में वृद्धि"
+    ]
   },
+  9: {
+    name: "Durga Saptashati / दुर्गा सप्तशती पाठ",
+    items: [
+      "Durga Mata Idol/Photo",
+      "Saptashati Book",
+      "Red Cloth + Chunari",
+      "Sindoor, Haldi, Kumkum, Akshat",
+      "Bangali Sindoor (ऐच्छिक)",
+      "Kalash + Coconut + Mango Leaves",
+      "Gangajal",
+      "Ghee Diya, Agarbatti, Kapoor, Dhoop",
+      "Flowers, Garland",
+      "Panchamrit सामग्री",
+      "Fruits + Mishri + Dry Fruits",
+      "Naivedyam (Kheer/Poha)",
+      "Havan Samagri + Samidha + Ghee",
+      "Trishul / Shankh (ऐच्छिक)",
+      "Puja Thali + Ghanti"
+    ],
+    benefits: [
+      "दुश्मनों पर विजय और रक्षा",
+      "कठिन परिस्थितियों में माता का साथ",
+      "साहस, आत्मविश्वास और शक्ति की प्राप्ति",
+      "कुल-कुटुम्ब पर देवी की विशेष कृपा"
+    ]
+  },
+  10: {
+    name: "Hanuman Chalisa Path / हनुमान चालीसा पाठ",
+    items: [
+      "Hanuman Ji Photo",
+      "Hanuman Chalisa Book",
+      "Sindoor (Orange)",
+      "Jasmine Oil (ऐच्छिक)",
+      "Chandan, Haldi, Kumkum, Akshat",
+      "Tulsi Leaves",
+      "Kalash + Coconut + Mango Leaves",
+      "Gangajal",
+      "Ghee Diya, Agarbatti, Kapoor",
+      "Flowers, Garland",
+      "Fruits + Boondi + Prasad सामग्री",
+      "Havan Samagri + Samidha + Ghee",
+      "Puja Thali + Bell"
+    ],
+    benefits: [
+      "भय, रोग, संकट और शत्रुओं से मुक्ति",
+      "मन में शक्ति, तेज व साहस की वृद्धि",
+      "नकारात्मक उर्जा का निवारण",
+      "घर में शुभ और मंगल का वास"
+    ]
+  },
+  12: {
+    name: "Annaprashan / अन्नप्राशन",
+    items: [
+      "Baby Feeding Bowl & Spoon (चांदी/स्टील)",
+      "Kheer / Rice Prasad Ingredients (खीर सामग्री)",
+      "Banana Leaves (केले का पत्ता)",
+      "New Baby Dress (नए वस्त्र)",
+      "Kalash + Coconut + Mango Leaves",
+      "Chandan, Haldi, Kumkum, Sindoor",
+      "Akshat (चावल)",
+      "Gangajal",
+      "Red Cloth",
+      "Roli / Mauli",
+      "Ghee / Oil Diya",
+      "Kapoor",
+      "Agarbatti",
+      "Dhoop",
+      "Fresh Flowers / Garland",
+      "Dry Fruits (सूखा मेवा)",
+      "Fruits (5 Prakar)",
+      "Mishri (मिश्री)",
+      "Havan Kund",
+      "Havan Samagri",
+      "Samidha",
+      "Ghee for Havan",
+      "Puja Thali",
+      "Ghanti (Bell)",
+      "Swastik Sticker",
+      "Baby's Name Chant Card (ऐच्छिक)"
+    ],
+    benefits: [
+      "शिशु के लिए मंगल, स्वास्थ्य और दीर्घायु का आशीर्वाद",
+      "शिशु का अन्न ग्रहण आरंभ शुभ मुहूर्त में होता है",
+      "बुद्धि, बल और रोग प्रतिरोधक क्षमता में वृद्धि",
+      "माता-पिता व परिवार के आशीर्वाद का संचार"
+    ]
+  },
+  14: {
+    name: "Janamdin Puja / जन्मदिन पूजा",
+    items: [
+      "Birthday Kalash Setup (कुंडली/राशि अनुसार)",
+      "Janamdin Puja Booklet (पूजा विधि)",
+      "Navgrah Puja Samagri",
+      "Chandan, Haldi, Kumkum, Sindoor, Akshat",
+      "Gangajal",
+      "Moli / Kalawa",
+      "Red Cloth",
+      "Ghee / Oil Diya",
+      "Agarbatti",
+      "Kapoor",
+      "Dhoop",
+      "Fresh Flowers / Garland",
+      "Fruits (5 Prakar)",
+      "Dry Fruits",
+      "Mishri / Sweets / Birthday Cake",
+      "Havan Kund",
+      "Havan Samagri",
+      "Samidha",
+      "Ghee for Havan",
+      "Balloon Decoration (Traditional + Modern Mix)",
+      "Family Tilak Plate",
+      "Ghanti + Puja Thali"
+    ],
+    benefits: [
+      "आयु, स्वास्थ्य और सौभाग्य की वृद्धि",
+      "बुरे ग्रहों का प्रभाव कम होता है",
+      "नए वर्ष में सफलता और समृद्धि का आशीर्वाद",
+      "घर में खुशी और उत्साह का वातावरण"
+    ]
+  },
+  15: {
+    name: "Vivah / विवाह",
+    items: [
+      "Mandap Setup Items (मंडप सामग्री)",
+      "Varmala (वरमाला) - 2",
+      "Mangal Sutra / Thaali",
+      "Sindoor",
+      "Wedding Garland",
+      "Kalash + Coconut + Mango Leaves",
+      "Chandan, Haldi, Kumkum, Akshat",
+      "Mauli / Kalawa",
+      "Gangajal",
+      "Havan Kund",
+      "Havan Samagri",
+      "Samidha",
+      "Ghee for Havan",
+      "Ghee/Oil Diya",
+      "Jau / Til / Rice",
+      "Saath Phere Wood & Ghee Setup",
+      "Supari",
+      "Paan Patta",
+      "Fruits (5 Types)",
+      "Dry Fruits",
+      "Mishri / Sweets",
+      "Aarti Thali Set",
+      "Ghanti",
+      "Agarbatti / Dhoop / Kapoor",
+      "Tying Cloth (Gathbandhan Dupatta)",
+      "Rice Flour / Rangoli Colors"
+    ],
+    benefits: [
+      "पवित्र वैवाहिक बंधन की स्थापना",
+      "परिवार में प्रेम, विश्वास और सामंजस्य",
+      "दंपत्ति के जीवन में सुख-समृद्धि",
+      "संतान सौभाग्य और गृहस्थ जीवन की उन्नति"
+    ]
+  },
+  17: {
+    name: "Sagai / सगाई",
+    items: [
+      "Engagement Rings (अंगूठियां)",
+      "Tilak Thali Setup",
+      "Roli, Chawal, Haldi",
+      "Sindoor",
+      "Kalash + Nariyal",
+      "Ghee / Oil Diya",
+      "Kapoor",
+      "Agarbatti / Dhoop",
+      "Flowers + Garland",
+      "Fruits (5 प्रकार)",
+      "Sweet Box / Mishri",
+      "Supari",
+      "Paan Patta",
+      "Coin / Dakshina",
+      "Ghanti",
+      "Puja Thali",
+      "Swastik Sticker / Rangoli"
+    ],
+    benefits: [
+      "दोनों परिवारों में प्रेम और सौहार्द बढ़ता है",
+      "दंपत्ति के भविष्य को शुभता का आशीर्वाद",
+      "नई शुरुआत में मंगल कार्य की स्थापना"
+    ]
+  },
+  18: {
+    name: "Haldi / हल्दी रस्म",
+    items: [
+      "Organic Haldi (हल्दी)",
+      "Rose Water (गुलाब जल)",
+      "Chandan Powder",
+      "Milk / Curd",
+      "Haldi Thali + Bowl",
+      "New Cloth for Bride/Groom",
+      "Turmeric Garland Decor",
+      "Flower Petals",
+      "Genda Phool Decoration",
+      "Rangoli Powder",
+      "Roli, Akshat",
+      "Coconut",
+      "Kalash + Water",
+      "Ghee/Oil Diya",
+      "Kapoor",
+      "Agarbatti"
+    ],
+    benefits: [
+      "शरीर को पवित्र और मन को शांत रखना",
+      "त्वचा की चमक और सौंदर्य बढ़ाना",
+      "दृष्टि दोष और नकारात्मक ऊर्जा से रक्षा"
+    ]
+  },
+  21: {
+    name: "Reception / रिसेप्शन",
+    items: [
+      "Diya (घी/तेल)",
+      "Flowers / Garland",
+      "Fruits",
+      "Sweet Box",
+      "Tilak Kit (Roli + Akshat)",
+      "Aarti Thali",
+      "Kalash Setup",
+      "Rose Petals",
+      "Entrance Toran",
+      "Lighting & Sound Setup"
+    ],
+    benefits: [
+      "नवविवाहित दंपत्ति के स्वागत और सम्मान हेतु",
+      "नए जीवन के शुभारम्भ में मंगल आशीर्वाद",
+      "परिवार और समाज में स्नेह की वृद्धि"
+    ]
+  },
+  22: {
+    name: "Wedding Anniversary Puja / विवाह वर्षगांठ पूजा",
+    items: [
+      "Kalash + Coconut",
+      "Chandan, Haldi, Kumkum, Akshat",
+      "Mauli",
+      "Gangajal",
+      "Flowers, Garland",
+      "Ghee/Oil Diya",
+      "Kapoor",
+      "Agarbatti/Dhoop",
+      "Fruits (5 प्रकार)",
+      "Sweet Prasad",
+      "Ghanti + Puja Thali",
+      "Swastik/Rangoli Colors"
+    ],
+    benefits: [
+      "दंपत्ति के बीच प्रेम और विश्वास बढ़ता है",
+      "जीवन में शांति, स्वास्थ्य और दीर्घायु",
+      "विवाह बंधन और अधिक सुदृढ़ होता है"
+    ]
+  },
+  23: {
+    name: "Antim Sanskar / अंतिम संस्कार",
+    items: [
+      "Chandan / Sandalwood",
+      "Dhoop / Agarbatti",
+      "Kapoor",
+      "Deepak",
+      "Ganga Jal",
+      "Kafan / White Cloth",
+      "Moksha Path (Garuda Puran) Book",
+      "Wood (Patcha Khaad)",
+      "Ghee",
+      "Havan Samagri",
+      "Til, Jau, Akshat",
+      "Darbha Grass",
+      "Earthen Pot (Matka)",
+      "Pind Daan Bowl",
+      "Black Sesame (Kale Til)",
+      "Rice Flour",
+      "Barley",
+      "Pinda for donation",
+      "Flowers / Garland",
+      "Clothes Donation Items",
+      "Dakshina / Coins"
+    ],
+    benefits: [
+      "आत्मा की शांति और सद्गति हेतु",
+      "कर्म बंधन से मुक्ति",
+      "पूर्ण विधि से अंतिम संस्कार होने पर मोक्ष मार्ग प्रशस्त"
+    ]
+  },
+  24: {
+    name: "Pind Daan / पिंडदान",
+    items: [
+      "Black Sesame (काले तिल)",
+      "Rice (चावल)",
+      "Jau (जौ)",
+      "Pind Daan Atta / Boiled Rice",
+      "Banana Leaves",
+      "Tulsi Leaves",
+      "Kalash + Water",
+      "Chandan, Haldi, Kumkum",
+      "Flowers",
+      "Akshat (चावल)",
+      "Ghee Diya",
+      "Agarbatti / Kapoor",
+      "Havan Samagri + Samidha + Ghee",
+      "Clothes",
+      "Blanket",
+      "Dakshina"
+    ],
+    benefits: [
+      "पितृ दोष से मुक्ति",
+      "पितरों को तृप्ति और संतुष्टि प्राप्त होती है",
+      "परिवार में शांति, स्वास्थ्य और संतोष"
+    ]
+  },
+  25: {
+    name: "Shraddh / श्राद्ध पूजा",
+    items: [
+      "Pitru Photo / Symbol",
+      "Black Sesame (काले तिल)",
+      "Rice (चावल)",
+      "Jau (जौ)",
+      "Pinda (चावल के गोले)",
+      "Chandan, Haldi, Kumkum, Akshat",
+      "Gangajal",
+      "Kalash + Coconut",
+      "White Cloth",
+      "Flowers + Garland",
+      "Panchamrit सामग्री",
+      "Fruits + Prasad",
+      "Ghee/Oil Diya",
+      "Kapoor",
+      "Agarbatti",
+      "Havan Kund + Havan Samagri + Samidha + Ghee",
+      "Brahman Bhoj Samagri",
+      "Vastra Daan (कपड़े दान)",
+      "Dakshina"
+    ],
+    benefits: [
+      "पितरों की आत्मा की शांति और मोक्ष मार्ग",
+      "पितरों का आशीर्वाद परिवार पर बना रहता है",
+      "धन, स्वास्थ्य एवं समृद्धि में वृद्धि"
+    ]
+  },
+  27: {
+    name: "Tehravin / तेरहवीं संस्कार",
+    items: [
+      "Pitru Photo",
+      "White Cloth",
+      "Chawal, Akshat",
+      "Black Til",
+      "Flowers / Garland",
+      "Kalash Setup",
+      "Ganga Jal",
+      "Panchamrit सामग्री",
+      "Prasad Items",
+      "Fruits & Sweets",
+      "Ghee Diya",
+      "Kapoor",
+      "Agarbatti / Dhoop",
+      "Havan Samagri + Samidha + Ghee",
+      "Brahmin Bhoj Items",
+      "Vastra Daan",
+      "Anna Daan (Food donation)"
+    ],
+    benefits: [
+      "पितरों की आत्मा को शांति और तृप्ति",
+      "परिवार में अशांति व बाधाओं का निवारण",
+      "जीवन में सकारात्मक ऊर्जा का आगमन"
+    ]
+  },
+  28: {
+    name: "Karwa Chauth Puja / करवा चौथ पूजा",
+    items: [
+      "Karwa Set (मिट्टी/स्टील का करवा + ढक्कन)",
+      "Sieve / Channi (छलनी)",
+      "Lota / Kalash",
+      "Roli, Chawal, Haldi, Kumkum",
+      "Mehndi Cone + Alta",
+      "Sindoor (सिंदूर)",
+      "Red Cloth (लाल कपड़ा)",
+      "Gangajal",
+      "Ghee Diya",
+      "Agarbatti & Kapoor",
+      "Flowers",
+      "Sargi Thali Items",
+      "Mathri / Sweet Prasad",
+      "Havan Samagri + Samidha + Ghee",
+      "Karwa Chauth Katha Book",
+      "Chandrama Arghya Samagri",
+      "Rice Flour for Rangoli",
+      "Puja Thali & Ghanti"
+    ],
+    benefits: [
+      "पति की दीर्घायु और आरोग्य",
+      "विवाह में प्रेम, विश्वास और मजबूती",
+      "घर में समृद्धि और मंगल का आशीर्वाद"
+    ]
+  },
+  29: {
+    name: "Diwali Lakshmi Ganesh Puja / दिवाली लक्ष्मी गणेश पूजा",
+    items: [
+      "Lakshmi Ji Idol",
+      "Ganesh Ji Idol",
+      "Kuber Idol (ऐच्छिक)",
+      "Gold/Silver Coin",
+      "Bahi-Khata / Account Book",
+      "Shree Yantra / Cowrie Shells",
+      "Chandan, Haldi, Kumkum, Sindoor, Akshat",
+      "Panchamrit सामग्री",
+      "Kalash + Coconut + Mango Leaves",
+      "Scented Diya + Ghee Diya",
+      "Agarbatti, Dhoop, Kapoor",
+      "Gangajal",
+      "Diyas (21+) Lights",
+      "Torans",
+      "Rangoli Colors",
+      "Batasha, Mishri, Dry Fruits, Sweets",
+      "Fruits (5 Types)",
+      "Havan Kund, Samagri, Samidha, Ghee",
+      "Lakshmi Puja Book",
+      "Ghanti"
+    ],
+    benefits: [
+      "धन-समृद्धि एवं ऐश्वर्य की प्राप्ति",
+      "व्यापार और नौकरी में सफलता",
+      "घर में देवी लक्ष्मी का स्थायी वास"
+    ]
+  },
+  30: {
+    name: "Raksha Bandhan Puja / रक्षा बंधन पूजा",
+    items: [
+      "Rakhi (राखी)",
+      "Tilak Samagri (Roli + Akshat)",
+      "Aarti Diya",
+      "Kalawa (कलावा)",
+      "Kalash",
+      "Flowers & Garland",
+      "Gangajal",
+      "Mishri / Sweets",
+      "Dry Fruits",
+      "Fruits",
+      "Kapoor + Agarbatti",
+      "Puja Thali"
+    ],
+    benefits: [
+      "भाई की रक्षा और दीर्घायु",
+      "भाई-बहन के प्रेम में वृद्धि",
+      "परिवार में सौहार्द और खुशहाली"
+    ]
+  },
+  31: {
+    name: "Navratri Puja / नवरात्रि पूजा",
+    items: [
+      "Durga Mata Idol",
+      "Chunri",
+      "Sindoor",
+      "Chandan, Haldi, Kumkum, Akshat",
+      "Flowers, Garland",
+      "Ghee Diya, Agarbatti, Kapoor",
+      "Dhoop",
+      "Kalash + Coconut + Mango Leaves",
+      "Sapta Dhanya (7 Anaj)",
+      "Panchamrit सामग्री",
+      "Fruits + Dry Fruits",
+      "Kanya Puja Samagri",
+      "Havan Setup (Kanya Pujan Day)",
+      "Ghat Sthapana Samagri",
+      "Rangoli Colors"
+    ],
+    benefits: [
+      "दुर्गा शक्ति की कृपा, साहस और बल में वृद्धि",
+      "नकारात्मक शक्तियों से सुरक्षा",
+      "घर में सुख-शांति और सम्पन्नता"
+    ]
+  },
+  32: {
+    name: "Saraswati Puja / सरस्वती पूजा",
+    items: [
+      "Maa Saraswati Idol / Photo",
+      "Books & Stationery",
+      "Veena Symbol (ऐच्छिक)",
+      "Chandan, Haldi, Kumkum, Akshat",
+      "White Cloth",
+      "Kalash + Coconut",
+      "Gangajal",
+      "Ghee Diya",
+      "Kapoor, Agarbatti",
+      "Flowers + Garland",
+      "Sweet + Fruits",
+      "Panchamrit सामग्री",
+      "Ghanti + Thali",
+      "Rangoli"
+    ],
+    benefits: [
+      "अध्ययन, बुद्धि और कला में उन्नति",
+      "विद्यार्थियों के लिए विशेष शुभ",
+      "ज्ञान और विवेक की प्राप्ति"
+    ]
+  },
+  33: {
+    name: "Mahashivratri Puja / महाशिवरात्रि पूजा",
+    items: [
+      "Shivling (शिवलिंग)",
+      "Bilva Patra (बेल पत्र)",
+      "Bhasma / Vibhuti",
+      "Panchamrit सामग्री",
+      "Ganga Jal + Milk",
+      "Chandan, Haldi, Kumkum, Akshat",
+      "White Cloth",
+      "Dhatura + Bael Fruit",
+      "Flowers + Garland",
+      "Ghee Diya + Kapoor",
+      "Agarbatti + Dhoop",
+      "Havan Setup (optional)",
+      "Puja Thali + Ghanti"
+    ],
+    benefits: [
+      "कष्टों का नाश, रोगों से मुक्ति",
+      "सुख-शांति और आध्यात्मिक उन्नति",
+      "परिवार में स्वास्थ्य और समृद्धि"
+    ]
+  },
+  34: {
+    name: "Chhath Puja / छठ पूजा",
+    items: [
+      "Arghya Lota",
+      "Milk",
+      "Ganga Jal",
+      "Sugarcane",
+      "Coconut",
+      "Thekua Prasad",
+      "Seasonal Fruits (11 Types)",
+      "Banana Leaves",
+      "Flowers + Garland",
+      "Diya",
+      "Soop + Daura Set",
+      "Gangajali Bottle",
+      "Havan Setup"
+    ],
+    benefits: [
+      "आरोग्य, संतान और परिवार की समृद्धि",
+      "सूर्य देव की कृपा और उन्नति",
+      "जीवन में सकारात्मक ऊर्जा"
+    ]
+  },
+  36: {
+    name: "Janmashtami Puja / जन्माष्टमी पूजा",
+    items: [
+      "Baal Krishna Idol",
+      "Jhula Setup",
+      "Makhana, Mishri, Makhan",
+      "Panchamrit सामग्री",
+      "Chandan, Haldi, Kumkum, Akshat",
+      "Gangajal",
+      "Ghee Diya",
+      "Agarbatti, Dhoop",
+      "Flowers, Garland",
+      "Rangoli",
+      "Dry Fruits + Fruits",
+      "Laddu Gopal Vastra"
+    ],
+    benefits: [
+      "घर में सुख-समृद्धि और सौभाग्य",
+      "नवीन ऊर्जा और धन की वृद्धि",
+      "परिवार में खुशियां और प्रेम"
+    ]
+  },
+  37: {
+    name: "Rudrabhishek / रुद्राभिषेक",
+    items: [
+      "Shivling",
+      "Bilva Patra",
+      "Raw Milk",
+      "Curd",
+      "Honey",
+      "Ghee",
+      "Sugar",
+      "Gangajal",
+      "Bhasma / Vibhuti",
+      "Chandan, Haldi, Kumkum, Akshat",
+      "Dhatura / Bael Fruit",
+      "White Cloth",
+      "Flowers + Garland",
+      "Ghee Diya + Kapoor",
+      "Agarbatti + Dhoop",
+      "Havan Kund + Samagri + Samidha + Ghee",
+      "Rudra Mantra Booklet",
+      "Puja Thali + Ghanti"
+    ],
+    benefits: [
+      "कठिन रोगों और बाधाओं का निवारण",
+      "धन, सफलता और मानसिक शांति",
+      "पापों का नाश और आध्यात्मिक उन्नति"
+    ]
+  },
+  38: {
+    name: "Mahamrityunjaya Jaap / महामृत्युंजय जाप",
+    items: [
+      "Shivling",
+      "Rudraksha Mala",
+      "Bilva Patra",
+      "Milk, Curd, Honey, Sugar, Ghee",
+      "Gangajal",
+      "Haldi, Kumkum, Akshat",
+      "Flowers & Garland",
+      "Bhasma",
+      "Ghee Diya, Kapoor",
+      "Agarbatti, Dhoop",
+      "Havan Kund + Samagri + Samidha + Ghee",
+      "Pandit Asan Cloth",
+      "Mantra Book / Jaap Mala",
+      "Puja Thali + Ghanti"
+    ],
+    benefits: [
+      "दीर्घायु, स्वास्थ्य और दुर्घटना शमन",
+      "भय, रोग और संकटों से मुक्ति",
+      "जीवन में सकारात्मक उर्जा और शांति"
+    ]
+  },
+  39: {
+    name: "Bhumi Pujan / भूमि पूजन",
+    items: [
+      "Shankh",
+      "Bhumi Devi Idol",
+      "Kalash + Coconut + Mango Leaves",
+      "Durva Grass",
+      "Haldi, Kumkum, Akshat, Sindoor",
+      "Gangajal",
+      "Havan Kund",
+      "Samidha",
+      "Havan Samagri",
+      "Ghee",
+      "Flowers, Garland",
+      "Ghee Diya, Kapoor, Dhoop",
+      "Navgrah Anaj",
+      "Copper Nail",
+      "Brick / Stone Placement",
+      "Puja Thali, Ghanti",
+      "Swastik Sticker"
+    ],
+    benefits: [
+      "भूमि दोषों का निवारण",
+      "निर्माण कार्य में सफलता",
+      "घर में शांति, सकारात्मक ऊर्जा और समृद्धि"
+    ]
+  },
+  40: {
+    name: "Kundali Shanti / कुंडली शांति",
+    items: [
+      "Navgrah Photo / Yantra",
+      "Kalash + Coconut",
+      "Saptdhanya (7 Anaj)",
+      "Haldi, Kumkum, Akshat",
+      "Sindoor",
+      "Ghee Diya",
+      "Kapoor",
+      "Agarbatti, Dhoop",
+      "Dry Fruits",
+      "Honey",
+      "Fruits",
+      "Havan Kund + Samagri + Samidha + Ghee",
+      "Pandit Booklet for Grah Shanti",
+      "Puja Thali + Ghanti"
+    ],
+    benefits: [
+      "ग्रह दोषों का निवारण",
+      "स्वास्थ्य और आर्थिक लाभ",
+      "भागय में वृद्धि और सफलता"
+    ]
+  },
+  41: {
+    name: "Upanayan Sanskar / उपनयन संस्कार",
+    items: [
+      "Janeu / Sacred Thread",
+      "Yajyopavit Vidhi Book",
+      "Kalash + Coconut",
+      "Haldi, Kumkum, Akshat",
+      "Mauli",
+      "Gangajal",
+      "Havan Kund + Samagri + Samidha + Ghee",
+      "Flowers + Garland",
+      "Ghee Diya",
+      "Kapoor + Agarbatti",
+      "Guru Dakshina",
+      "Puja Thali + Ghanti"
+    ],
+    benefits: [
+      "बालक को धर्म, संस्कार और कर्तव्य ज्ञान की प्राप्ति",
+      "आत्मिक, मानसिक और शारीरिक विकास"
+    ]
+  },
+  42: {
+    name: "Kalash Sthapana / कलश स्थापना",
+    items: [
+      "Kalash",
+      "Coconut",
+      "Mango Leaves",
+      "Turmeric Powder",
+      "Chandan, Kumkum, Akshat",
+      "Gangajal",
+      "Flowers",
+      "Ghee Diya + Kapoor",
+      "Agarbatti + Dhoop",
+      "Panchamrit Items",
+      "Puja Thali + Ghanti"
+    ],
+    benefits: [
+      "घर और ऑफिस में सकारात्मक ऊर्जा का आगमन",
+      "देवी-देवताओं का आह्वान",
+      "दोष निवारण और सुख-समृद्धि"
+    ]
+  },
+  44: {
+    name: "Personalized Puja Package / व्यक्तिगत पूजा पैकेज",
+    items: [
+      "Custom Puja Samagri as per requirement",
+      "Personalized Idol/Photo",
+      "Special Ritual Items",
+      "Custom Mantra Booklet",
+      "Personalized Prasad Items",
+      "Custom Decoration Items",
+      "Special Havan Samagri",
+      "Personalized Puja Vidhi Book"
+    ],
+    benefits: [
+      "Completely customized as per your needs",
+      "Perfect for specific requirements",
+      "Tailored to your preferences",
+      "Flexible and adaptable"
+    ]
+  },
+  45: {
+    name: "Online Puja Seva / ऑनलाइन पूजा सेवा",
+    items: [
+      "Virtual Puja Setup",
+      "Online Streaming Access",
+      "Digital Prasad Delivery",
+      "E-Puja Booklet",
+      "Virtual Darshan",
+      "Online Consultation",
+      "Digital Receipt & Certificate"
+    ],
+    benefits: [
+      "Participate from anywhere in the world",
+      "Convenient and accessible",
+      "Live streaming of rituals",
+      "Digital records and certificates"
+    ]
+  },
+  46: {
+    name: "Customized Event Plan / कस्टम इवेंट प्लान",
+    items: [
+      "Event Planning Consultation",
+      "Custom Puja Schedule",
+      "Special Decoration Items",
+      "Guest Management Setup",
+      "Catering Coordination",
+      "Photography/Videography",
+      "Complete Event Management"
+    ],
+    benefits: [
+      "Stress-free event planning",
+      "Professional management",
+      "Customized to your event",
+      "Complete end-to-end service"
+    ]
+  }
 };
 
 // ---------- Helper Functions ----------
@@ -1000,9 +1907,199 @@ const DiyaAnimation = () => (
   </motion.div>
 );
 
+// ---------- Product Card Component ----------
+const ProductCard = ({ product, qty, isPackage, wishlist, onWishlistToggle, onAddToCart, onBookPuja, onViewDetails, onBuyNow, onQuantityChange }) => {
+  return (
+    <motion.div
+      layout
+      className="bg-white rounded-xl shadow-lg hover:shadow-xl cursor-pointer relative overflow-hidden border border-rose-100 group flex flex-col h-full"
+      whileHover={{ y: -8 }}
+      transition={{ type: "spring", stiffness: 300 }}
+    >
+      {/* Top Badges */}
+      <div className="absolute top-3 left-3 right-3 flex justify-between items-start z-10">
+        <div className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+          isPackage 
+            ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' 
+            : 'bg-gradient-to-r from-green-500 to-green-600 text-white'
+        }`}>
+          {isPackage ? 'Puja Package' : 'Single Item'}
+        </div>
+        
+        <button
+          onClick={onWishlistToggle}
+          className="p-1.5 bg-white/90 backdrop-blur-sm rounded-full shadow-sm hover:scale-110 transition-transform"
+        >
+          <FiHeart
+            className={`w-3.5 h-3.5 ${
+              wishlist
+                ? "text-rose-500 fill-rose-500"
+                : "text-gray-400 hover:text-rose-400"
+            }`}
+          />
+        </button>
+      </div>
+
+      {/* Image Container */}
+      <div className="h-36 overflow-hidden bg-gradient-to-br from-amber-50 to-rose-50 relative">
+        <img
+          src={product.img}
+          alt={product.name}
+          className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700"
+          onError={(e) => {
+            e.currentTarget.style.display = "none";
+            e.currentTarget.parentElement.innerHTML = `
+              <div class="w-full h-full flex items-center justify-center">
+                <div class="text-center">
+                  <div class="text-4xl mb-2">${isPackage ? '📦' : '🛒'}</div>
+                  <div class="text-xs text-gray-500">${product.name}</div>
+                </div>
+              </div>
+            `;
+          }}
+        />
+        
+        {/* Overlay Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      </div>
+
+      {/* Content */}
+      <div className="p-4 flex flex-col flex-grow">
+        {/* Category Tag */}
+        <div className="mb-2">
+          <span className="inline-block px-2 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-medium rounded-full">
+            {product.subcategory}
+          </span>
+        </div>
+
+        {/* Product Name */}
+        <h3 className="font-bold text-sm text-gray-800 group-hover:text-rose-900 transition-colors line-clamp-2 leading-tight mb-1">
+          {product.name}
+        </h3>
+
+        {/* Unit/Type Info */}
+        <p className="text-[11px] text-gray-500 mb-3 flex items-center gap-1">
+          {!isPackage && (
+            <>
+              <span>Unit:</span>
+              <span className="font-medium text-gray-700">{product.unit}</span>
+            </>
+          )}
+        </p>
+
+        {/* Price & Rating */}
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <div className="flex items-baseline gap-1">
+              <span className="text-lg font-bold text-amber-700">
+                ₹{product.price}
+              </span>
+              {!isPackage && (
+                <span className="text-xs text-gray-500">/ {product.unit}</span>
+              )}
+            </div>
+            {!isPackage && qty > 1 && (
+              <div className="text-xs text-gray-600 mt-0.5">
+                Total: <span className="font-semibold text-rose-700">
+                  ₹{product.price * qty}
+                </span>
+              </div>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-1">
+            <div className="flex text-amber-400">
+              {"★".repeat(5)}
+            </div>
+            <span className="text-xs text-gray-500">(4.8)</span>
+          </div>
+        </div>
+
+        {/* Quantity Selector for Single Items */}
+        {!isPackage && (
+          <div className="mb-4">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-medium text-gray-700">Quantity:</label>
+              <div className="flex items-center gap-1 bg-gray-50 rounded-full px-1 py-1 border border-gray-200">
+                <button
+                  onClick={() => onQuantityChange(product.id, -1)}
+                  className="w-7 h-7 flex items-center justify-center rounded-full bg-white border text-sm hover:bg-gray-50 transition-colors"
+                >
+                  <FiMinus className="w-3 h-3" />
+                </button>
+                <input
+                  type="number"
+                  min={1}
+                  value={qty}
+                  onChange={(e) => onQuantityChange(product.id, parseInt(e.target.value) || 1)}
+                  className="w-12 text-center text-sm bg-transparent outline-none font-medium"
+                />
+                <button
+                  onClick={() => onQuantityChange(product.id, 1)}
+                  className="w-7 h-7 flex items-center justify-center rounded-full bg-white border text-sm hover:bg-gray-50 transition-colors"
+                >
+                  <FiPlus className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        <div className="mt-auto space-y-2">
+          {isPackage ? (
+            <>
+              <div className="flex gap-2">
+                <button
+                  onClick={onViewDetails}
+                  className="flex-1 py-2 border border-blue-500 text-blue-700 rounded-lg hover:bg-blue-50 transition-colors text-xs font-medium flex items-center justify-center gap-1"
+                >
+                  <FiInfo className="w-3.5 h-3.5" />
+                  Details
+                </button>
+                <button
+                  onClick={onBookPuja}
+                  className="flex-1 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:shadow-lg transition-all text-xs font-medium"
+                >
+                  Book Now
+                </button>
+              </div>
+              <button
+                onClick={onAddToCart}
+                className="w-full py-2 border border-amber-300 text-amber-700 rounded-lg hover:bg-amber-50 transition-colors text-xs font-medium"
+              >
+                Add Kit to Cart
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={onAddToCart}
+                className="w-full py-2.5 bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2"
+              >
+                <FiShoppingCart className="w-4 h-4" />
+                Add to Cart
+              </button>
+              <button
+                onClick={onBuyNow}
+                className="w-full py-2.5 border border-amber-400 text-amber-700 rounded-lg text-sm font-medium hover:bg-amber-50 transition-colors"
+              >
+                Buy Now
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Hover Effect Border */}
+      <div className="absolute inset-0 border-2 border-transparent group-hover:border-amber-300 rounded-xl pointer-events-none transition-colors duration-300"></div>
+    </motion.div>
+  );
+};
+
 // ---------- Unified Order Wizard Modal ----------
 const UnifiedOrderWizardModal = ({
-  mode, // 'single' | 'package' | 'cart'
+  mode,
   product,
   qty,
   cartItems,
@@ -2111,7 +3208,7 @@ export default function UnifiedPujaStore() {
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [sortBy, setSortBy] = useState("popular");
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState("all"); // 'all', 'packages', 'single'
+  const [viewMode, setViewMode] = useState("all");
   const [quantities, setQuantities] = useState(() => {
     const initial = {};
     allProducts.forEach((p) => {
@@ -2129,7 +3226,6 @@ export default function UnifiedPujaStore() {
   );
 
   // Modal + order flow
-  const [detailKit, setDetailKit] = useState(null);
   const [showCart, setShowCart] = useState(false);
   const [coupon, setCoupon] = useState("");
   const [couponApplied, setCouponApplied] = useState(null);
@@ -2137,18 +3233,12 @@ export default function UnifiedPujaStore() {
 
   // Order flow states
   const [showOrderWizard, setShowOrderWizard] = useState(false);
-  const [orderMode, setOrderMode] = useState(null); // 'single', 'package', 'cart'
+  const [orderMode, setOrderMode] = useState(null);
   const [orderProduct, setOrderProduct] = useState(null);
   const [orderQty, setOrderQty] = useState(1);
   const [showKitItemsModal, setShowKitItemsModal] = useState(false);
   const [selectedKitForDetails, setSelectedKitForDetails] = useState(null);
   const [orderSuccess, setOrderSuccess] = useState(null);
-
-  // Festival calendar
-  const [nextFestival, setNextFestival] = useState({
-    name: "Navratri",
-    days: 12,
-  });
 
   // Simulate loading
   useEffect(() => {
@@ -2415,15 +3505,15 @@ export default function UnifiedPujaStore() {
             <motion.div
               whileHover={{ scale: 1.05 }}
               className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-orange-700 to-amber-700 text-white px-3 sm:px-4 py-2 rounded-full cursor-pointer flex-shrink-0"
-              onClick={() => setSelectedFestival(nextFestival.name)}
+              onClick={() => setSelectedFestival("Diwali")}
             >
               <FiCalendar className="text-yellow-200 w-4 h-4" />
               <div className="text-xs">
                 <div className="font-semibold">
-                  Next: {nextFestival.name}
+                  Upcoming: Diwali
                 </div>
                 <div className="text-yellow-200">
-                  {nextFestival.days} days
+                  12 days left
                 </div>
               </div>
             </motion.div>
@@ -2459,86 +3549,107 @@ export default function UnifiedPujaStore() {
         </div>
 
         {/* View Mode Tabs + Filters */}
-        <div className="sticky top-14 sm:top-16 z-20 bg-white/90 backdrop-blur-sm py-3 sm:py-4 mt-4 sm:mt-6 rounded-xl shadow-lg border border-orange-100 mx-2 sm:mx-0">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4 px-2 sm:px-4">
+        <div className="sticky top-14 sm:top-16 z-20 bg-white/95 backdrop-blur-md py-4 sm:py-5 mt-4 sm:mt-6 rounded-2xl shadow-xl border border-amber-100 mx-2 sm:mx-0">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 px-3 sm:px-4">
+            
             {/* View Mode Tabs */}
-            <div className="flex items-center gap-2 border-b lg:border-none overflow-x-auto pb-2 lg:pb-0">
-              <div className="flex gap-1 sm:gap-2">
+            <div className="flex items-center gap-1">
+              <div className="text-xs font-semibold text-gray-500 mr-3">View:</div>
+              <div className="flex bg-gray-100 p-1 rounded-xl">
                 {[
-                  { key: "all", label: "All Items", icon: FiGrid },
-                  { key: "packages", label: "Puja Packages", icon: FiPackage },
-                  { key: "single", label: "Single Items", icon: FiList },
+                  { key: "all", label: "All", icon: FiGrid },
+                  { key: "packages", label: "Packages", icon: FiPackage },
+                  { key: "single", label: "Items", icon: FiList },
                 ].map((tab) => (
                   <button
                     key={tab.key}
-                    className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap capitalize flex-shrink-0 flex items-center gap-1 ${
+                    className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-2 transition-all ${
                       viewMode === tab.key
-                        ? "bg-orange-600 text-white shadow-md"
-                        : "bg-white text-gray-600 hover:bg-orange-50 border border-gray-200"
+                        ? "bg-white text-rose-700 shadow-md"
+                        : "text-gray-600 hover:text-rose-600"
                     }`}
                     onClick={() => setViewMode(tab.key)}
                   >
-                    <tab.icon className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <tab.icon className="w-4 h-4" />
                     {tab.label}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Filters and Sorting */}
-            <div className="flex flex-wrap lg:flex-nowrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-2 sm:px-3 py-2 rounded-lg border border-rose-200 text-xs sm:text-sm bg-white flex-1 min-w-[120px] sm:min-w-[150px]"
-              >
-                {categories.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
+            {/* Category & Festival Filters */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="relative">
+                <FiGrid className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                >
+                  <option value="All">All Categories</option>
+                  {categories.filter(c => c !== "All").map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
 
-              <select
-                value={selectedFestival}
-                onChange={(e) => setSelectedFestival(e.target.value)}
-                className="px-2 sm:px-3 py-2 rounded-lg border border-rose-200 text-xs sm:text-sm bg-white flex-1 min-w-[120px] sm:min-w-[150px]"
-              >
-                {festivals.map((f) => (
-                  <option key={f} value={f}>
-                    {f}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <FiCalendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <select
+                  value={selectedFestival}
+                  onChange={(e) => setSelectedFestival(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                >
+                  <option value="All Festivals">All Festivals</option>
+                  {festivals.filter(f => f !== "All Festivals").map((f) => (
+                    <option key={f} value={f}>{f}</option>
+                  ))}
+                </select>
+              </div>
 
-              <div className="flex items-center gap-2 w-full lg:w-auto">
-                <span className="text-xs sm:text-sm text-rose-700 whitespace-nowrap">
-                  Max Price:
-                </span>
+              {/* Price Range */}
+              <div className="col-span-2">
+                <div className="flex items-center gap-3 bg-gray-50 px-4 py-2.5 rounded-xl border border-gray-200">
+                  <span className="text-xs font-medium text-gray-700 whitespace-nowrap">
+                    Price: ₹0 - ₹{priceRange[1]}
+                  </span>
+                  <input
+                    type="range"
+                    min="0"
+                    max="5000"
+                    step="100"
+                    value={priceRange[1]}
+                    onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
+                    className="flex-1 h-1.5 bg-gray-300 rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-amber-600"
+                  />
+                  <span className="text-sm font-bold text-amber-700">
+                    ₹{priceRange[1]}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Sort & Search */}
+            <div className="flex items-center gap-3">
+              <div className="relative flex-1 sm:flex-initial sm:w-48">
+                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-amber-500 w-4 h-4" />
                 <input
-                  type="range"
-                  min="0"
-                  max="5000"
-                  value={priceRange[1]}
-                  onChange={(e) =>
-                    setPriceRange([0, parseInt(e.target.value)])
-                  }
-                  className="w-20 sm:w-24 md:w-32"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-10 pr-4 py-2.5 w-full rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  placeholder="Search..."
                 />
-                <span className="text-xs text-rose-600 font-medium">
-                  ₹{priceRange[1]}
-                </span>
               </div>
 
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-2 sm:px-3 py-2 rounded-lg border border-rose-200 text-xs sm:text-sm bg-white flex-1 min-w-[120px] sm:min-w-[150px]"
+                className="px-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
               >
-                <option value="popular">Popular</option>
-                <option value="price-low">Price: Low → High</option>
-                <option value="price-high">Price: High → Low</option>
-                <option value="newest">Newest</option>
+                <option value="popular">Sort: Popular</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="newest">Newest First</option>
               </select>
             </div>
           </div>
@@ -2552,208 +3663,136 @@ export default function UnifiedPujaStore() {
         {/* Product Grid */}
         <div className="mt-6 sm:mt-8 px-2 sm:px-0">
           {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="animate-pulse h-48 sm:h-60 md:h-64 bg-gradient-to-br from-rose-100 to-amber-100 rounded-2xl"
-                ></div>
+                <div key={i} className="animate-pulse">
+                  <div className="h-48 bg-gradient-to-br from-rose-100 to-amber-100 rounded-2xl mb-3"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-2/3 mb-3"></div>
+                  <div className="h-6 bg-gray-200 rounded w-1/2"></div>
+                </div>
               ))}
             </div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-10 bg-white/80 rounded-2xl shadow">
-              <p className="text-sm text-gray-600">
-                No items found. Try changing filters or search term.
+            <div className="text-center py-16 bg-gradient-to-br from-white to-amber-50 rounded-2xl shadow-lg border border-amber-100">
+              <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-amber-100 to-rose-100 rounded-full flex items-center justify-center">
+                <FiSearch className="w-10 h-10 text-amber-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                No items found
+              </h3>
+              <p className="text-gray-500 text-sm max-w-md mx-auto mb-6">
+                Try adjusting your filters or search term. We have plenty of puja items for you!
               </p>
+              <button
+                onClick={() => {
+                  setSelectedCategory("All");
+                  setSearch("");
+                  setPriceRange([0, 5000]);
+                }}
+                className="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors text-sm font-medium"
+              >
+                Reset Filters
+              </button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-              {filtered.map((product) => {
-                const qty = quantities[product.id] || 1;
-                const isPackage = product.type === 'package';
-                
-                return (
-                  <motion.div
-                    layout
+            <>
+              {/* Results Count */}
+              <div className="flex items-center justify-between mb-4 px-2">
+                <div className="text-sm text-gray-600">
+                  Showing <span className="font-semibold">{filtered.length}</span> items
+                </div>
+                <div className="text-xs text-gray-500">
+                  {viewMode === 'all' ? 'All Items' : viewMode === 'packages' ? 'Puja Packages Only' : 'Single Items Only'}
+                </div>
+              </div>
+
+              {/* Products Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                {filtered.map((product) => (
+                  <ProductCard
                     key={product.id}
-                    className="bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl cursor-pointer relative overflow-hidden border border-rose-100 group flex flex-col"
-                    whileHover={{ y: -4 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    {/* Product Type Badge */}
-                    <div className={`absolute top-2 left-2 z-10 px-2 py-1 rounded-full text-xs font-medium ${
-                      isPackage 
-                        ? 'bg-rose-100 text-rose-800 border border-rose-200' 
-                        : 'bg-blue-100 text-blue-800 border border-blue-200'
-                    }`}>
-                      {isPackage ? 'Package' : 'Single'}
-                    </div>
-
-                    {/* Wishlist Button */}
-                    <button
-                      onClick={() => toggleWishlist(product.id)}
-                      className="absolute top-2 right-2 z-10 p-1.5 sm:p-2 bg-white/80 rounded-full backdrop-blur-sm hover:scale-110 transition-transform"
-                    >
-                      <FiHeart
-                        className={`w-3 h-3 sm:w-4 sm:h-4 ${
-                          wishlist.includes(product.id)
-                            ? "text-rose-500 fill-rose-500"
-                            : "text-gray-400"
-                        }`}
-                      />
-                    </button>
-
-                    {/* Image */}
-                    <div className="h-24 sm:h-32 md:h-36 overflow-hidden bg-amber-50">
-                      <img
-                        src={product.img}
-                        alt={product.name}
-                        className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                          e.currentTarget.parentElement.classList.add("bg-gradient-to-br", "from-amber-100", "to-rose-100");
-                        }}
-                      />
-                    </div>
-
-                    <div className="p-2 sm:p-3 md:p-4 flex flex-col gap-1 sm:gap-2 flex-grow">
-                      <h2 className="font-semibold text-xs sm:text-sm text-rose-800 group-hover:text-rose-900 transition-colors line-clamp-2 leading-tight">
-                        {product.name}
-                      </h2>
-
-                      <p className="text-[11px] sm:text-xs text-gray-500">
-                        {isPackage ? product.subcategory : `${product.subcategory} • ${product.unit}`}
-                      </p>
-
-                      <div className="flex items-center justify-between mt-1">
-                        <p className="text-amber-700 font-bold text-sm sm:text-base">
-                          ₹{product.price}
-                          {!isPackage && <span className="text-[11px] text-gray-500"> / {product.unit}</span>}
-                        </p>
-                        <div className="flex items-center gap-1 text-amber-500">
-                          <FiStar className="fill-amber-500 w-2 h-2 sm:w-3 sm:h-3" />
-                          <span className="text-xs">4.8</span>
-                        </div>
-                      </div>
-
-                      {/* Quantity Selector for Single Items */}
-                      {!isPackage && (
-                        <div className="mt-2 flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-1 bg-rose-50 rounded-full px-1 py-1 border border-rose-100">
-                            <button
-                              onClick={() => changeQty(product.id, -1)}
-                              className="w-6 h-6 flex items-center justify-center rounded-full bg-white border text-xs hover:bg-gray-50"
-                            >
-                              <FiMinus className="w-3 h-3" />
-                            </button>
-                            <input
-                              type="number"
-                              min={1}
-                              value={qty}
-                              onChange={(e) =>
-                                setQty(product.id, e.target.value)
-                              }
-                              className="w-10 text-center text-xs bg-transparent outline-none"
-                            />
-                            <button
-                              onClick={() => changeQty(product.id, 1)}
-                              className="w-6 h-6 flex items-center justify-center rounded-full bg-white border text-xs hover:bg-gray-50"
-                            >
-                              <FiPlus className="w-3 h-3" />
-                            </button>
-                          </div>
-                          <p className="text-[11px] text-gray-500 text-right">
-                            Total:{" "}
-                            <span className="font-semibold text-rose-700">
-                              {formatINR(product.price * qty)}
-                            </span>
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Action Buttons */}
-                      <div className="mt-2 flex flex-col gap-1">
-                        {isPackage ? (
-                          <>
-                            <button
-                              onClick={() => showKitDetails(product)}
-                              className="w-full py-1.5 sm:py-2 border border-blue-300 text-blue-700 rounded-lg hover:bg-blue-50 transition-colors text-xs font-medium flex items-center justify-center gap-1"
-                            >
-                              <FiInfo className="w-3 h-3" />
-                              View Details
-                            </button>
-                            <button
-                              onClick={() => bookPuja(product)}
-                              className="w-full py-1.5 sm:py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:shadow-lg transition-all text-xs font-medium"
-                            >
-                              Book Puja
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              onClick={() => addToCart(product, qty)}
-                              className="w-full py-1.5 sm:py-2 bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-lg text-xs sm:text-sm font-medium hover:shadow-lg transition-all flex items-center justify-center gap-1"
-                            >
-                              <FiShoppingCart className="w-3 h-3" />
-                              Add {qty} to Cart
-                            </button>
-                            <button
-                              onClick={() => startSingleOrder(product, qty)}
-                              className="w-full py-1.5 sm:py-2 border border-amber-400 text-amber-700 rounded-lg text-[11px] sm:text-xs font-medium hover:bg-amber-50 transition-colors"
-                            >
-                              Buy Now
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
+                    product={product}
+                    qty={quantities[product.id] || 1}
+                    isPackage={product.type === 'package'}
+                    wishlist={wishlist.includes(product.id)}
+                    onWishlistToggle={() => toggleWishlist(product.id)}
+                    onAddToCart={() => addToCart(product, quantities[product.id] || 1)}
+                    onBookPuja={() => bookPuja(product)}
+                    onViewDetails={() => showKitDetails(product)}
+                    onBuyNow={() => startSingleOrder(product, quantities[product.id] || 1)}
+                    onQuantityChange={(id, delta) => changeQty(id, delta)}
+                  />
+                ))}
+              </div>
+            </>
           )}
         </div>
 
         {/* How-to Section */}
-        <div className="mt-8 sm:mt-12 md:mt-16 bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-xl border border-rose-100 mx-2 sm:mx-0">
-          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-rose-800 mb-4 sm:mb-6 text-center">
-            Complete Puja Solutions
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+        <div className="mt-8 sm:mt-12 md:mt-16 bg-gradient-to-br from-white to-amber-50 rounded-2xl p-4 sm:p-6 md:p-8 shadow-xl border border-amber-100 mx-2 sm:mx-0">
+          <div className="text-center mb-6 sm:mb-8">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-rose-800 mb-2">
+              Complete Puja Solutions
+            </h3>
+            <p className="text-gray-600 text-sm sm:text-base">
+              Everything you need for a perfect puja experience
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             {[
               {
                 title: "Ready Puja Packages",
                 desc: "Complete kits for all rituals with optional pandit service",
                 icon: "📦",
-                color: "rose",
+                features: ["Complete Samagri", "Pandit Service Available", "Step-by-step Guide"],
+                color: "from-blue-500 to-blue-600",
+                bg: "bg-blue-50"
               },
               {
                 title: "Individual Puja Items",
-                desc: "Nariyal, Agarbatti, Kapoor, and all daily essentials",
+                desc: "Fresh fruits, agarbatti, kapoor and all daily essentials",
                 icon: "🛒",
-                color: "amber",
+                features: ["Fresh & Authentic", "Multiple Units", "Same Day Delivery"],
+                color: "from-green-500 to-green-600",
+                bg: "bg-green-50"
               },
               {
                 title: "Expert Guidance",
                 desc: "Video guides and pandit support for perfect puja",
                 icon: "🎓",
-                color: "green",
+                features: ["Video Tutorials", "Pandit Support", "Custom Solutions"],
+                color: "from-amber-500 to-amber-600",
+                bg: "bg-amber-50"
               },
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="text-center p-3 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-rose-100"
+                className={`${item.bg} rounded-xl p-5 hover:shadow-lg transition-all duration-300`}
               >
-                <div className="text-2xl sm:text-3xl md:text-4xl mb-2 sm:mb-3">
-                  {item.icon}
+                <div className="flex items-center gap-4 mb-4">
+                  <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${item.color} flex items-center justify-center text-2xl`}>
+                    {item.icon}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-lg text-gray-800">{item.title}</h4>
+                    <p className="text-sm text-gray-600">{item.desc}</p>
+                  </div>
                 </div>
-                <h4 className="font-semibold text-sm sm:text-base md:text-lg text-rose-700 mb-1 sm:mb-2">
-                  {item.title}
-                </h4>
-                <p className="text-xs sm:text-sm text-gray-600">
-                  {item.desc}
-                </p>
+                
+                <ul className="space-y-2">
+                  {item.features.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm text-gray-700">
+                      <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${item.color}`}></div>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                
+                <button className="mt-5 w-full py-2.5 text-sm font-medium rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors">
+                  Explore Now
+                </button>
               </div>
             ))}
           </div>
@@ -2822,149 +3861,248 @@ export default function UnifiedPujaStore() {
               exit={{ x: "100%" }}
               className="fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 overflow-y-auto mt-16"
             >
-              <div className="p-3 sm:p-4 border-b border-rose-100 flex items-center justify-between">
-                <h2 className="font-bold text-lg sm:text-xl text-rose-800">
-                  Your Cart
-                </h2>
+              {/* Header */}
+              <div className="sticky top-0 bg-white z-10 p-4 border-b border-rose-100 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <FiShoppingCart className="w-6 h-6 text-rose-600" />
+                    {cart.length > 0 && (
+                      <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute -top-2 -right-2 bg-rose-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
+                      >
+                        {cart.length}
+                      </motion.span>
+                    )}
+                  </div>
+                  <div>
+                    <h2 className="font-bold text-lg text-rose-800">Your Cart</h2>
+                    <p className="text-xs text-gray-500">{cart.length} items</p>
+                  </div>
+                </div>
                 <button
                   onClick={() => setShowCart(false)}
-                  className="text-gray-500 hover:text-rose-600"
+                  className="p-2 hover:bg-rose-50 rounded-lg transition-colors"
                 >
-                  <FiX className="w-5 h-5" />
+                  <FiX className="w-5 h-5 text-gray-500 hover:text-rose-600" />
                 </button>
               </div>
 
-              <div className="p-3 sm:p-4">
+              {/* Cart Items */}
+              <div className="p-4">
                 {cart.length === 0 ? (
-                  <div className="text-center py-8 sm:py-12">
-                    <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">🛒</div>
-                    <p className="text-gray-500 text-sm sm:text-base">
+                  <div className="text-center py-12">
+                    <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-amber-100 to-rose-100 rounded-full flex items-center justify-center">
+                      <FiShoppingCart className="w-10 h-10 text-gray-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">
                       Your cart is empty
+                    </h3>
+                    <p className="text-gray-500 text-sm mb-6">
+                      Add some puja items to get started
                     </p>
                     <button
                       onClick={() => setShowCart(false)}
-                      className="mt-3 sm:mt-4 bg-rose-600 text-white px-4 sm:px-6 py-2 rounded-xl hover:bg-rose-700 transition-colors text-sm sm:text-base"
+                      className="px-6 py-3 bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-xl hover:shadow-lg transition-all font-medium"
                     >
                       Continue Shopping
                     </button>
                   </div>
                 ) : (
                   <>
-                    {cart.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex gap-2 sm:gap-3 items-center mb-3 p-2 sm:p-3 bg-rose-50 rounded-xl"
-                      >
-                        <img
-                          src={item.img}
-                          alt={item.name}
-                          className="h-12 w-12 sm:h-16 sm:w-16 object-cover rounded-lg flex-shrink-0 bg-amber-50"
-                          onError={(e) => {
-                            e.currentTarget.style.display = "none";
-                            e.currentTarget.parentElement.classList.add("bg-gradient-to-br", "from-amber-100", "to-rose-100");
-                          }}
-                        />
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-rose-800 text-xs sm:text-sm truncate">
-                            {item.name}
-                          </p>
-                          <p className="text-[11px] text-gray-500">
-                            {item.type === 'single' ? `${item.unit}` : 'Package'}
-                          </p>
-                          <p className="text-amber-700 font-bold text-xs sm:text-sm">
-                            ₹{item.price} × {item.qty}
-                          </p>
-                          <div className="flex items-center gap-1 sm:gap-2 mt-1 text-xs sm:text-sm">
-                            <button
-                              onClick={() =>
-                                updateCartQty(item.id, item.qty - 1)
-                              }
-                              className="px-1.5 sm:px-2 bg-white rounded-lg border hover:bg-gray-100 transition-colors"
-                            >
-                              <FiMinus className="w-3 h-3" />
-                            </button>
-                            <span className="px-1">{item.qty}</span>
-                            <button
-                              onClick={() =>
-                                updateCartQty(item.id, item.qty + 1)
-                              }
-                              className="px-1.5 sm:px-2 bg-white rounded-lg border hover:bg-gray-100 transition-colors"
-                            >
-                              <FiPlus className="w-3 h-3" />
-                            </button>
-                            <button
-                              onClick={() => removeFromCart(item.id)}
-                              className="ml-auto text-rose-500 hover:text-rose-700 text-base"
-                            >
-                              <FiX />
-                            </button>
+                    {/* Items List */}
+                    <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2">
+                      {cart.map((item) => (
+                        <motion.div
+                          key={item.id}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          className="flex gap-3 items-start p-3 bg-white rounded-xl border border-gray-100 hover:border-rose-200 transition-colors"
+                        >
+                          <div className="relative">
+                            <img
+                              src={item.img}
+                              alt={item.name}
+                              className="w-16 h-16 object-cover rounded-lg bg-amber-50 flex-shrink-0"
+                              onError={(e) => {
+                                e.currentTarget.style.display = "none";
+                                e.currentTarget.parentElement.classList.add(
+                                  "bg-gradient-to-br",
+                                  "from-amber-100",
+                                  "to-rose-100"
+                                );
+                              }}
+                            />
+                            {item.type === 'package' && (
+                              <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-600 text-white text-[10px] rounded-full flex items-center justify-center">
+                                📦
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <div className="flex justify-between">
+                              <h4 className="font-semibold text-sm text-gray-800 truncate">
+                                {item.name}
+                              </h4>
+                              <button
+                                onClick={() => removeFromCart(item.id)}
+                                className="text-gray-400 hover:text-rose-600 ml-2"
+                              >
+                                <FiX className="w-4 h-4" />
+                              </button>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-xs text-gray-500 bg-gray-50 px-2 py-0.5 rounded">
+                                {item.type === 'single' ? item.unit : 'Package'}
+                              </span>
+                              <span className="text-amber-700 font-bold text-sm">
+                                ₹{item.price}
+                              </span>
+                            </div>
+
+                            {/* Quantity Controls */}
+                            <div className="flex items-center justify-between mt-3">
+                              <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-2 py-1">
+                                <button
+                                  onClick={() => updateCartQty(item.id, item.qty - 1)}
+                                  className="w-6 h-6 flex items-center justify-center rounded hover:bg-white transition-colors"
+                                >
+                                  <FiMinus className="w-3 h-3" />
+                                </button>
+                                <span className="w-8 text-center text-sm font-medium">
+                                  {item.qty}
+                                </span>
+                                <button
+                                  onClick={() => updateCartQty(item.id, item.qty + 1)}
+                                  className="w-6 h-6 flex items-center justify-center rounded hover:bg-white transition-colors"
+                                >
+                                  <FiPlus className="w-3 h-3" />
+                                </button>
+                              </div>
+                              <span className="font-bold text-rose-700">
+                                ₹{item.price * item.qty}
+                              </span>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* Price Summary */}
+                    <div className="mt-6 border-t border-gray-100 pt-4">
+                      {/* Coupon Section */}
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Apply Coupon
+                        </label>
+                        <div className="flex gap-2">
+                          <input
+                            value={coupon}
+                            onChange={(e) => setCoupon(e.target.value)}
+                            placeholder="Enter coupon code"
+                            className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                          />
+                          <button
+                            onClick={applyCoupon}
+                            className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors text-sm font-medium whitespace-nowrap"
+                          >
+                            Apply
+                          </button>
+                        </div>
+                        {couponApplied && (
+                          <div className="mt-2 text-green-600 text-sm flex items-center gap-1">
+                            <FiCheckCircle className="w-4 h-4" />
+                            Coupon {couponApplied} applied successfully!
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Price Breakdown */}
+                      <div className="space-y-2 bg-gray-50 rounded-xl p-4">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Subtotal</span>
+                          <span className="font-medium">₹{subtotal}</span>
+                        </div>
+                        
+                        {couponApplied && (
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Coupon Discount</span>
+                            <span className="text-green-600 font-medium">
+                              -₹{Math.round(couponDiscount)}
+                            </span>
+                          </div>
+                        )}
+                        
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">GST (18%)</span>
+                          <span className="font-medium">₹{Math.round(gst)}</span>
+                        </div>
+                        
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">
+                            Delivery Charges
+                            {delivery === 0 && (
+                              <span className="text-green-600 ml-1">(FREE)</span>
+                            )}
+                          </span>
+                          <span className={`font-medium ${delivery === 0 ? 'text-green-600' : ''}`}>
+                            {delivery === 0 ? 'FREE' : `₹${delivery}`}
+                          </span>
+                        </div>
+                        
+                        <div className="border-t border-gray-200 pt-3 mt-2">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <span className="font-bold text-lg text-gray-900">Total</span>
+                              <p className="text-xs text-gray-500">Inclusive of all taxes</p>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-bold text-2xl text-rose-700">
+                                ₹{total}
+                              </div>
+                              <p className="text-xs text-gray-500">Payable amount</p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    ))}
 
-                    {/* Price Summary */}
-                    <div className="border-t border-rose-100 pt-3 sm:pt-4 mt-2 space-y-2 text-xs sm:text-sm">
-                      <div className="flex justify-between">
-                        <span>Subtotal</span>
-                        <span>{formatINR(subtotal)}</span>
-                      </div>
-                      {couponApplied && (
-                        <div className="flex justify-between text-green-600">
-                          <span>Coupon ({couponApplied})</span>
-                          <span>
-                            -₹{Math.round(couponDiscount)}
-                          </span>
-                        </div>
-                      )}
-                      <div className="flex justify-between">
-                        <span>GST 18%</span>
-                        <span>₹{Math.round(gst)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>
-                          Delivery{" "}
-                          {delivery === 0 && (
-                            <span className="text-green-600">
-                              (FREE above ₹999)
-                            </span>
-                          )}
-                        </span>
-                        <span>₹{delivery}</span>
-                      </div>
-                      <div className="flex justify-between font-bold text-base sm:text-lg border-t border-rose-100 pt-2 sm:pt-3">
-                        <span>Total</span>
-                        <span>₹{total}</span>
-                      </div>
-
-                      {/* Coupon Input */}
-                      <div className="flex gap-2 mt-3 sm:mt-4">
-                        <input
-                          value={coupon}
-                          onChange={(e) => setCoupon(e.target.value)}
-                          placeholder="Enter coupon"
-                          className="flex-1 border border-rose-200 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm"
-                        />
+                      {/* Action Buttons */}
+                      <div className="mt-6 space-y-3">
                         <button
-                          onClick={applyCoupon}
-                          className="bg-rose-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg hover:bg-rose-700 transition-colors text-xs sm:text-sm font-medium flex-shrink-0"
+                          onClick={startCartOrder}
+                          className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2"
                         >
-                          Apply
+                          <FiCheckCircle className="w-5 h-5" />
+                          Proceed to Checkout
                         </button>
+                        
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setShowCart(false)}
+                            className="flex-1 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                          >
+                            Continue Shopping
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (window.confirm('Are you sure you want to clear cart?')) {
+                                setCart([]);
+                              }
+                            }}
+                            className="flex-1 py-2.5 border border-rose-200 text-rose-700 rounded-lg font-medium hover:bg-rose-50 transition-colors"
+                          >
+                            Clear Cart
+                          </button>
+                        </div>
                       </div>
 
-                      {/* Order Button */}
-                      <button
-                        onClick={startCartOrder}
-                        className="w-full mt-3 sm:mt-4 bg-gradient-to-r from-amber-500 to-amber-600 text-white py-2 sm:py-3 rounded-xl font-medium hover:shadow-lg transition-all text-sm flex items-center justify-center gap-2"
-                      >
-                        <FiCheckCircle className="w-4 h-4" />
-                        Place Order
-                      </button>
-
-                      <div className="flex items-center gap-2 mt-3 text-[11px] sm:text-xs text-gray-500">
-                        <FiShield className="text-green-600 w-3 h-3" />
-                        <span>Secure checkout • UPI/Wallet/Card</span>
+                      {/* Security Badge */}
+                      <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-center gap-2 text-xs text-gray-500">
+                        <FiShield className="text-green-600 w-4 h-4" />
+                        <span>100% Secure • SSL Encrypted</span>
                       </div>
                     </div>
                   </>
