@@ -43,7 +43,6 @@ import { useNavigate } from "react-router-dom";
 // ---------- Mock Data ----------
 // Package Kits
 const kits = [
-  // 🏡 Ghar ke Sanskaar
   {
     id: 1,
     name: "Griha Pravesh / गृह प्रवेश",
@@ -116,8 +115,6 @@ const kits = [
     type: "package",
     img: "images/pujakit.jpg",
   },
-
-  // 👶 Bacchon ke Sanskaar
   {
     id: 12,
     name: "Annaprashan / अन्नप्राशन",
@@ -136,8 +133,6 @@ const kits = [
     type: "package",
     img: "images/pujakit2.jpg",
   },
-
-  // 💑 Vivah Sanskar
   {
     id: 15,
     name: "Vivah / विवाह",
@@ -183,8 +178,6 @@ const kits = [
     type: "package",
     img: "images/pujakit2.jpg",
   },
-
-  // ⚰ Pitrakarya
   {
     id: 23,
     name: "Antim Sanskar / अंतिम संस्कार",
@@ -221,8 +214,6 @@ const kits = [
     type: "package",
     img: "images/pujakit2.jpg",
   },
-
-  // 📿 Festival Pujas
   {
     id: 28,
     name: "Karwa Chauth Puja / करवा चौथ पूजा",
@@ -295,8 +286,6 @@ const kits = [
     type: "package",
     img: "images/pujakit.jpg",
   },
-
-  // 🛕 Temple / Special Pujas
   {
     id: 37,
     name: "Rudrabhishek / रुद्राभिषेक",
@@ -360,8 +349,6 @@ const kits = [
     type: "package",
     img: "images/pujakit.jpg",
   },
-
-  // 🧾 Others / Custom Options
   {
     id: 44,
     name: "Personalized Puja Package / व्यक्तिगत पूजा पैकेज",
@@ -393,7 +380,6 @@ const kits = [
 
 // Single Items (Alpha Store Products)
 const singleItems = [
-  // -------- Fruits & Offerings --------
   {
     id: 101,
     name: "Nariyal / नारियल",
@@ -464,8 +450,6 @@ const singleItems = [
     unit: "पैक",
     img: "images/rose.png",
   },
-
-  // -------- Fragrance --------
   {
     id: 108,
     name: "Agarbatti / अगरबत्ती",
@@ -506,8 +490,6 @@ const singleItems = [
     unit: "पैक",
     img: "images/loban.png",
   },
-
-  // -------- Havan & Aarti --------
   {
     id: 112,
     name: "Kapoor / कपूर",
@@ -558,8 +540,6 @@ const singleItems = [
     unit: "पैक",
     img: "images/capoor-table.png",
   },
-
-  // -------- Deepak & Diya --------
   {
     id: 117,
     name: "Ghee Batti / घी बत्ती",
@@ -600,8 +580,6 @@ const singleItems = [
     unit: "पीस",
     img: "images/pital-diya.png",
   },
-
-  // -------- Tilak & Kumkum --------
   {
     id: 121,
     name: "Roli / रोली",
@@ -652,8 +630,6 @@ const singleItems = [
     unit: "पैक",
     img: "images/kumkum.png",
   },
-
-  // -------- Prasad --------
   {
     id: 126,
     name: "Panchamrit Pack / पंचामृत",
@@ -704,8 +680,6 @@ const singleItems = [
     unit: "पैक",
     img: "images/jaggery.png",
   },
-
-  // -------- Puja Cloth Items --------
   {
     id: 131,
     name: "Red Cloth / लाल कपड़ा",
@@ -736,8 +710,6 @@ const singleItems = [
     unit: "पीस",
     img: "images/chunri.png",
   },
-
-  // -------- Puja Utensils --------
   {
     id: 134,
     name: "Puja Bell / घंटी",
@@ -768,8 +740,6 @@ const singleItems = [
     unit: "पीस",
     img: "images/steel-plate.png",
   },
-
-  // -------- Special Puja Items --------
   {
     id: 137,
     name: "Gangajal / गंगाजल",
@@ -810,8 +780,6 @@ const singleItems = [
     unit: "पैक",
     img: "images/suger.png",
   },
-
-  // -------- Miscellaneous --------
   {
     id: 141,
     name: "Matchbox / माचिस",
@@ -1912,13 +1880,13 @@ const ProductCard = ({ product, qty, isPackage, wishlist, onWishlistToggle, onAd
   return (
     <motion.div
       layout
-      className="bg-white rounded-xl shadow-lg hover:shadow-xl cursor-pointer relative overflow-hidden border border-rose-100 group flex flex-col h-full"
-      whileHover={{ y: -8 }}
+      className="bg-white rounded-lg sm:rounded-xl shadow-md hover:shadow-lg cursor-pointer relative overflow-hidden border border-rose-100 group flex flex-col h-full"
+      whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 300 }}
     >
       {/* Top Badges */}
-      <div className="absolute top-3 left-3 right-3 flex justify-between items-start z-10">
-        <div className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+      <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10">
+        <div className={`px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider ${
           isPackage 
             ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' 
             : 'bg-gradient-to-r from-green-500 to-green-600 text-white'
@@ -1928,10 +1896,10 @@ const ProductCard = ({ product, qty, isPackage, wishlist, onWishlistToggle, onAd
         
         <button
           onClick={onWishlistToggle}
-          className="p-1.5 bg-white/90 backdrop-blur-sm rounded-full shadow-sm hover:scale-110 transition-transform"
+          className="p-1 bg-white/90 backdrop-blur-sm rounded-full shadow-sm hover:scale-110 transition-transform"
         >
           <FiHeart
-            className={`w-3.5 h-3.5 ${
+            className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${
               wishlist
                 ? "text-rose-500 fill-rose-500"
                 : "text-gray-400 hover:text-rose-400"
@@ -1941,7 +1909,7 @@ const ProductCard = ({ product, qty, isPackage, wishlist, onWishlistToggle, onAd
       </div>
 
       {/* Image Container */}
-      <div className="h-36 overflow-hidden bg-gradient-to-br from-amber-50 to-rose-50 relative">
+      <div className="h-28 sm:h-36 overflow-hidden bg-gradient-to-br from-amber-50 to-rose-50 relative">
         <img
           src={product.img}
           alt={product.name}
@@ -1951,8 +1919,8 @@ const ProductCard = ({ product, qty, isPackage, wishlist, onWishlistToggle, onAd
             e.currentTarget.parentElement.innerHTML = `
               <div class="w-full h-full flex items-center justify-center">
                 <div class="text-center">
-                  <div class="text-4xl mb-2">${isPackage ? '📦' : '🛒'}</div>
-                  <div class="text-xs text-gray-500">${product.name}</div>
+                  <div class="text-3xl sm:text-4xl mb-1 sm:mb-2">${isPackage ? '📦' : '🛒'}</div>
+                  <div class="text-xs text-gray-500 px-1">${product.name}</div>
                 </div>
               </div>
             `;
@@ -1964,21 +1932,21 @@ const ProductCard = ({ product, qty, isPackage, wishlist, onWishlistToggle, onAd
       </div>
 
       {/* Content */}
-      <div className="p-4 flex flex-col flex-grow">
+      <div className="p-3 sm:p-4 flex flex-col flex-grow">
         {/* Category Tag */}
-        <div className="mb-2">
-          <span className="inline-block px-2 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-medium rounded-full">
+        <div className="mb-1 sm:mb-2">
+          <span className="inline-block px-1.5 py-0.5 sm:px-2 sm:py-0.5 bg-amber-100 text-amber-800 text-[9px] sm:text-[10px] font-medium rounded-full">
             {product.subcategory}
           </span>
         </div>
 
         {/* Product Name */}
-        <h3 className="font-bold text-sm text-gray-800 group-hover:text-rose-900 transition-colors line-clamp-2 leading-tight mb-1">
+        <h3 className="font-bold text-xs sm:text-sm text-gray-800 group-hover:text-rose-900 transition-colors line-clamp-2 leading-tight mb-1 h-8 sm:h-10">
           {product.name}
         </h3>
 
         {/* Unit/Type Info */}
-        <p className="text-[11px] text-gray-500 mb-3 flex items-center gap-1">
+        <p className="text-[10px] sm:text-[11px] text-gray-500 mb-2 sm:mb-3 flex items-center gap-1">
           {!isPackage && (
             <>
               <span>Unit:</span>
@@ -1988,18 +1956,18 @@ const ProductCard = ({ product, qty, isPackage, wishlist, onWishlistToggle, onAd
         </p>
 
         {/* Price & Rating */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
           <div>
             <div className="flex items-baseline gap-1">
-              <span className="text-lg font-bold text-amber-700">
+              <span className="text-base sm:text-lg font-bold text-amber-700">
                 ₹{product.price}
               </span>
               {!isPackage && (
-                <span className="text-xs text-gray-500">/ {product.unit}</span>
+                <span className="text-[10px] sm:text-xs text-gray-500">/ {product.unit}</span>
               )}
             </div>
             {!isPackage && qty > 1 && (
-              <div className="text-xs text-gray-600 mt-0.5">
+              <div className="text-[10px] sm:text-xs text-gray-600 mt-0.5">
                 Total: <span className="font-semibold text-rose-700">
                   ₹{product.price * qty}
                 </span>
@@ -2008,37 +1976,37 @@ const ProductCard = ({ product, qty, isPackage, wishlist, onWishlistToggle, onAd
           </div>
           
           <div className="flex items-center gap-1">
-            <div className="flex text-amber-400">
+            <div className="flex text-amber-400 text-[10px] sm:text-xs">
               {"★".repeat(5)}
             </div>
-            <span className="text-xs text-gray-500">(4.8)</span>
+            <span className="text-[10px] sm:text-xs text-gray-500">(4.8)</span>
           </div>
         </div>
 
         {/* Quantity Selector for Single Items */}
         {!isPackage && (
-          <div className="mb-4">
+          <div className="mb-3 sm:mb-4">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-medium text-gray-700">Quantity:</label>
+              <label className="text-[10px] sm:text-xs font-medium text-gray-700">Qty:</label>
               <div className="flex items-center gap-1 bg-gray-50 rounded-full px-1 py-1 border border-gray-200">
                 <button
                   onClick={() => onQuantityChange(product.id, -1)}
-                  className="w-7 h-7 flex items-center justify-center rounded-full bg-white border text-sm hover:bg-gray-50 transition-colors"
+                  className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-full bg-white border text-sm hover:bg-gray-50 transition-colors"
                 >
-                  <FiMinus className="w-3 h-3" />
+                  <FiMinus className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                 </button>
                 <input
                   type="number"
                   min={1}
                   value={qty}
                   onChange={(e) => onQuantityChange(product.id, parseInt(e.target.value) || 1)}
-                  className="w-12 text-center text-sm bg-transparent outline-none font-medium"
+                  className="w-8 sm:w-12 text-center text-xs sm:text-sm bg-transparent outline-none font-medium"
                 />
                 <button
                   onClick={() => onQuantityChange(product.id, 1)}
-                  className="w-7 h-7 flex items-center justify-center rounded-full bg-white border text-sm hover:bg-gray-50 transition-colors"
+                  className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-full bg-white border text-sm hover:bg-gray-50 transition-colors"
                 >
-                  <FiPlus className="w-3 h-3" />
+                  <FiPlus className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                 </button>
               </div>
             </div>
@@ -2046,27 +2014,27 @@ const ProductCard = ({ product, qty, isPackage, wishlist, onWishlistToggle, onAd
         )}
 
         {/* Action Buttons */}
-        <div className="mt-auto space-y-2">
+        <div className="mt-auto space-y-1.5 sm:space-y-2">
           {isPackage ? (
             <>
-              <div className="flex gap-2">
+              <div className="flex gap-1.5 sm:gap-2">
                 <button
                   onClick={onViewDetails}
-                  className="flex-1 py-2 border border-blue-500 text-blue-700 rounded-lg hover:bg-blue-50 transition-colors text-xs font-medium flex items-center justify-center gap-1"
+                  className="flex-1 py-1.5 sm:py-2 border border-blue-500 text-blue-700 rounded-lg hover:bg-blue-50 transition-colors text-[10px] sm:text-xs font-medium flex items-center justify-center gap-1"
                 >
-                  <FiInfo className="w-3.5 h-3.5" />
+                  <FiInfo className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   Details
                 </button>
                 <button
                   onClick={onBookPuja}
-                  className="flex-1 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:shadow-lg transition-all text-xs font-medium"
+                  className="flex-1 py-1.5 sm:py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:shadow-lg transition-all text-[10px] sm:text-xs font-medium"
                 >
                   Book Now
                 </button>
               </div>
               <button
                 onClick={onAddToCart}
-                className="w-full py-2 border border-amber-300 text-amber-700 rounded-lg hover:bg-amber-50 transition-colors text-xs font-medium"
+                className="w-full py-1.5 sm:py-2 border border-amber-300 text-amber-700 rounded-lg hover:bg-amber-50 transition-colors text-[10px] sm:text-xs font-medium"
               >
                 Add Kit to Cart
               </button>
@@ -2075,14 +2043,14 @@ const ProductCard = ({ product, qty, isPackage, wishlist, onWishlistToggle, onAd
             <>
               <button
                 onClick={onAddToCart}
-                className="w-full py-2.5 bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                className="w-full py-2 sm:py-2.5 bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-lg text-xs sm:text-sm font-medium hover:shadow-lg transition-all flex items-center justify-center gap-1 sm:gap-2"
               >
-                <FiShoppingCart className="w-4 h-4" />
+                <FiShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 Add to Cart
               </button>
               <button
                 onClick={onBuyNow}
-                className="w-full py-2.5 border border-amber-400 text-amber-700 rounded-lg text-sm font-medium hover:bg-amber-50 transition-colors"
+                className="w-full py-2 sm:py-2.5 border border-amber-400 text-amber-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-amber-50 transition-colors"
               >
                 Buy Now
               </button>
@@ -2092,7 +2060,7 @@ const ProductCard = ({ product, qty, isPackage, wishlist, onWishlistToggle, onAd
       </div>
 
       {/* Hover Effect Border */}
-      <div className="absolute inset-0 border-2 border-transparent group-hover:border-amber-300 rounded-xl pointer-events-none transition-colors duration-300"></div>
+      <div className="absolute inset-0 border-2 border-transparent group-hover:border-amber-300 rounded-lg sm:rounded-xl pointer-events-none transition-colors duration-300"></div>
     </motion.div>
   );
 };
@@ -2223,27 +2191,27 @@ const UnifiedOrderWizardModal = ({
 
   return (
     <motion.div
-      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-3 sm:p-4"
+      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-2 sm:p-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
     >
       <motion.div
-        className="bg-white rounded-2xl sm:rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6"
+        className="bg-white rounded-xl sm:rounded-2xl w-full max-w-lg sm:max-w-2xl max-h-[90vh] overflow-y-auto"
         initial={{ y: 40, opacity: 0, scale: 0.95 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
         exit={{ y: 40, opacity: 0, scale: 0.95 }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex justify-between items-center mb-4 sm:mb-5">
+        <div className="sticky top-0 bg-white z-10 p-3 sm:p-4 border-b border-rose-100 flex justify-between items-center">
           <div>
-            <h2 className="text-lg sm:text-xl font-bold text-rose-800 flex items-center gap-2">
+            <h2 className="text-base sm:text-lg font-bold text-rose-800 flex items-center gap-1 sm:gap-2">
               {isPackage ? <FiCalendar /> : <FiShoppingCart />}
               {isPackage ? "Book Puja Package" : "Place Order"}
             </h2>
-            <p className="text-xs sm:text-sm text-gray-500">
+            <p className="text-xs text-gray-500 hidden sm:block">
               {isPackage 
                 ? "Complete puja service booking" 
                 : "Daily puja items home delivery"}
@@ -2258,16 +2226,16 @@ const UnifiedOrderWizardModal = ({
         </div>
 
         {/* Step Indicator */}
-        <div className="mb-4 sm:mb-6">
+        <div className="px-3 sm:px-4 py-3">
           <div className="flex items-center justify-between mb-2">
             {[
               { no: 1, label: "Address" },
-              { no: 2, label: isPackage ? "Puja Date & Time" : "Delivery Slot" },
+              { no: 2, label: isPackage ? "Date & Time" : "Delivery Slot" },
               { no: 3, label: "Review" },
             ].map((s) => (
               <div key={s.no} className="flex-1 flex flex-col items-center">
                 <div
-                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 text-xs sm:text-sm ${
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border-2 text-xs sm:text-sm ${
                     step >= s.no
                       ? "bg-rose-600 border-rose-600 text-white"
                       : "border-gray-300 text-gray-300"
@@ -2276,7 +2244,7 @@ const UnifiedOrderWizardModal = ({
                   {step > s.no ? <FiCheckCircle /> : s.no}
                 </div>
                 <span
-                  className={`mt-1 text-[11px] sm:text-xs ${
+                  className={`mt-1 text-[10px] sm:text-xs text-center ${
                     step >= s.no
                       ? "text-rose-700 font-semibold"
                       : "text-gray-400"
@@ -2299,7 +2267,7 @@ const UnifiedOrderWizardModal = ({
         </div>
 
         {/* Steps */}
-        <div className="min-h-[260px] sm:min-h-[320px]">
+        <div className="px-3 sm:px-4 pb-3 min-h-[280px]">
           <AnimatePresence mode="wait">
             {/* STEP 1: Address */}
             {step === 1 && (
@@ -2308,15 +2276,15 @@ const UnifiedOrderWizardModal = ({
                 initial={{ opacity: 0, x: 40 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -40 }}
-                className="space-y-3 sm:space-y-4"
+                className="space-y-3"
               >
                 <h3 className="text-sm sm:text-base font-semibold text-rose-800 flex items-center gap-2">
                   <FiMapPin />
                   {isPackage ? "Puja Address Details" : "Delivery Address"}
                 </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                  <div className="col-span-1 sm:col-span-2">
                     <label className="text-xs text-gray-600 mb-1 block">
                       Full Name <span className="text-red-500">*</span>
                     </label>
@@ -2336,7 +2304,7 @@ const UnifiedOrderWizardModal = ({
 
                   <div>
                     <label className="text-xs text-gray-600 mb-1 block">
-                      Mobile Number <span className="text-red-500">*</span>
+                      Mobile <span className="text-red-500">*</span>
                     </label>
                     <div className="flex items-center gap-2 border rounded-lg px-2 py-1.5">
                       <FiPhone className="text-gray-400 text-xs" />
@@ -2350,6 +2318,36 @@ const UnifiedOrderWizardModal = ({
                         }
                       />
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-gray-600 mb-1 block">
+                      City <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
+                      placeholder="Your city"
+                      value={form.city}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, city: e.target.value }))
+                      }
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-gray-600 mb-1 block">
+                      Pincode <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
+                      placeholder="Pincode"
+                      value={form.pincode}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, pincode: e.target.value }))
+                      }
+                    />
                   </div>
                 </div>
 
@@ -2368,49 +2366,19 @@ const UnifiedOrderWizardModal = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      Landmark
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                      placeholder="Near temple / chowk"
-                      value={form.landmark}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, landmark: e.target.value }))
-                      }
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      City <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                      placeholder="Your city"
-                      value={form.city}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, city: e.target.value }))
-                      }
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      Pincode <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                      placeholder="Pincode"
-                      value={form.pincode}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, pincode: e.target.value }))
-                      }
-                    />
-                  </div>
+                <div>
+                  <label className="text-xs text-gray-600 mb-1 block">
+                    Landmark
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
+                    placeholder="Near temple / chowk"
+                    value={form.landmark}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, landmark: e.target.value }))
+                    }
+                  />
                 </div>
 
                 {isPackage && (
@@ -2421,7 +2389,7 @@ const UnifiedOrderWizardModal = ({
                     <textarea
                       rows={2}
                       className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                      placeholder="Any special requirements, dietary restrictions for prasad..."
+                      placeholder="Any special requirements..."
                       value={form.additionalNotes}
                       onChange={(e) =>
                         setForm((f) => ({ ...f, additionalNotes: e.target.value }))
@@ -2430,8 +2398,8 @@ const UnifiedOrderWizardModal = ({
                   </div>
                 )}
 
-                <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs text-amber-800 flex items-center gap-2">
-                  <FiShield className="text-amber-500" />
+                <div className="bg-amber-50 border border-amber-200 rounded-lg px-2 py-2 text-[11px] text-amber-800 flex items-start gap-2">
+                  <FiShield className="text-amber-500 mt-0.5" />
                   <span>
                     Your details are used only for service. No spam, no sharing.
                   </span>
@@ -2446,7 +2414,7 @@ const UnifiedOrderWizardModal = ({
                 initial={{ opacity: 0, x: 40 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -40 }}
-                className="space-y-3 sm:space-y-4"
+                className="space-y-3"
               >
                 <h3 className="text-sm sm:text-base font-semibold text-rose-800 flex items-center gap-2">
                   <FiCalendar />
@@ -2481,7 +2449,7 @@ const UnifiedOrderWizardModal = ({
                           setForm((f) => ({ ...f, deliverySlot: e.target.value }))
                         }
                       >
-                        <option value="">Choose your preferred time</option>
+                        <option value="">Choose preferred time</option>
                         {timeSlots.map((slot) => (
                           <option key={slot} value={slot}>{slot}</option>
                         ))}
@@ -2506,11 +2474,11 @@ const UnifiedOrderWizardModal = ({
                 </div>
 
                 {isPackage && product && (
-                  <div className="flex items-start gap-3 p-3 border border-amber-300 rounded-xl bg-amber-50">
+                  <div className="flex items-start gap-3 p-3 border border-amber-300 rounded-lg bg-amber-50">
                     <input
                       type="checkbox"
                       id="includePandit"
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-rose-600 focus:ring-rose-500 rounded mt-1"
+                      className="w-4 h-4 sm:w-5 sm:h-5 text-rose-600 focus:ring-rose-500 rounded mt-0.5"
                       checked={form.includePandit}
                       onChange={(e) =>
                         setForm((prev) => ({
@@ -2523,7 +2491,7 @@ const UnifiedOrderWizardModal = ({
                       htmlFor="includePandit"
                       className="text-sm text-gray-700 flex-1"
                     >
-                      <div className="font-semibold">
+                      <div className="font-semibold text-xs sm:text-sm">
                         Include Pandit Service (+₹500)
                       </div>
                       <div className="text-xs text-gray-600 mt-1">
@@ -2533,13 +2501,13 @@ const UnifiedOrderWizardModal = ({
                   </div>
                 )}
 
-                <div className={`border rounded-xl px-3 py-2 text-[11px] sm:text-xs flex items-start gap-2 ${
+                <div className={`border rounded-lg px-2 py-2 text-[11px] flex items-start gap-2 ${
                   isPackage ? "bg-green-50 border-green-200 text-green-800" : "bg-blue-50 border-blue-200 text-blue-800"
                 }`}>
                   <FiClock className="mt-0.5" />
                   <span>
                     {isPackage 
-                      ? "For best spiritual benefits, consider morning hours (5:00 AM - 9:00 AM) or evening hours (4:00 PM - 7:00 PM)"
+                      ? "For best spiritual benefits, consider morning hours (5:00 AM - 9:00 AM)"
                       : "We always try to deliver in selected slot. In rare cases, there can be +/- 30 minutes variation."}
                   </span>
                 </div>
@@ -2553,26 +2521,28 @@ const UnifiedOrderWizardModal = ({
                 initial={{ opacity: 0, x: 40 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -40 }}
-                className="space-y-3 sm:space-y-4"
+                className="space-y-3"
               >
                 <h3 className="text-sm sm:text-base font-semibold text-rose-800">
                   Review Your {isPackage ? "Booking" : "Order"}
                 </h3>
 
                 {/* Items Summary */}
-                <div className="bg-rose-50 rounded-xl p-3 sm:p-4 max-h-48 sm:max-h-56 overflow-y-auto">
+                <div className="bg-rose-50 rounded-lg p-3 max-h-40 sm:max-h-48 overflow-y-auto">
                   {items.map((item) => (
                     <div
                       key={item.id}
                       className="flex items-center justify-between text-xs sm:text-sm mb-2 last:mb-0"
                     >
                       <span className="flex-1 pr-2">
-                        {item.name}
-                        {item.type === 'single' && ` (${item.unit})`}
-                        {item.type === 'package' && item.includePandit && " + Pandit"}
-                        <span className="text-gray-500 ml-1">
-                          ({item.qty} × {formatINR(item.type === 'package' && item.includePandit ? item.price + 500 : item.price)})
-                        </span>
+                        <div className="font-medium">{item.name}</div>
+                        <div className="text-gray-500 text-[10px] sm:text-xs">
+                          {item.type === 'single' && ` (${item.unit})`}
+                          {item.type === 'package' && item.includePandit && " + Pandit"}
+                          <span className="ml-1">
+                            ({item.qty} × {formatINR(item.type === 'package' && item.includePandit ? item.price + 500 : item.price)})
+                          </span>
+                        </div>
                       </span>
                       <span className="font-semibold text-rose-700">
                         {formatINR((item.type === 'package' && item.includePandit ? item.price + 500 : item.price) * item.qty)}
@@ -2582,8 +2552,8 @@ const UnifiedOrderWizardModal = ({
                 </div>
 
                 {/* Address & Delivery Summary */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="bg-white border border-gray-100 rounded-xl p-3 sm:p-4 text-xs sm:text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                  <div className="bg-white border border-gray-100 rounded-lg p-3 text-xs sm:text-sm">
                     <div className="flex items-center gap-2 mb-2">
                       <FiHome className="text-rose-600" />
                       <span className="font-semibold text-gray-800">
@@ -2592,7 +2562,7 @@ const UnifiedOrderWizardModal = ({
                     </div>
                     <p className="font-medium text-gray-800">{form.name}</p>
                     <p className="text-gray-600">{form.phone}</p>
-                    <p className="text-gray-600 text-[11px] sm:text-xs mt-1">
+                    <p className="text-gray-600 text-[11px] mt-1">
                       {form.address}
                       {form.landmark && `, ${form.landmark}`}
                       {form.city && `, ${form.city}`}{" "}
@@ -2600,14 +2570,14 @@ const UnifiedOrderWizardModal = ({
                     </p>
                   </div>
 
-                  <div className="bg-white border border-gray-100 rounded-xl p-3 sm:p-4 text-xs sm:text-sm">
+                  <div className="bg-white border border-gray-100 rounded-lg p-3 text-xs sm:text-sm">
                     <div className="flex items-center gap-2 mb-2">
                       <FiCalendar className="text-rose-600" />
                       <span className="font-semibold text-gray-800">
-                        {isPackage ? "Puja Schedule" : "Delivery Schedule"}
+                        {isPackage ? "Schedule" : "Delivery"}
                       </span>
                     </div>
-                    <p className="text-gray-700">
+                    <p className="text-gray-700 text-sm">
                       Date:{" "}
                       {form.deliveryDate
                         ? new Date(form.deliveryDate).toLocaleDateString("en-IN", {
@@ -2617,17 +2587,17 @@ const UnifiedOrderWizardModal = ({
                           })
                         : "-"}
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-gray-700 text-sm">
                       {isPackage ? "Time" : "Slot"}: {form.deliverySlot || "-"}
                     </p>
                     {isPackage && form.includePandit && (
-                      <p className="text-green-600 mt-1">✓ Pandit Service Included</p>
+                      <p className="text-green-600 mt-1 text-xs">✓ Pandit Service Included</p>
                     )}
                   </div>
                 </div>
 
                 {/* Price Summary */}
-                <div className="bg-gray-50 rounded-xl p-3 sm:p-4 text-xs sm:text-sm space-y-1">
+                <div className="bg-gray-50 rounded-lg p-3 text-xs sm:text-sm space-y-1">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
                     <span>{formatINR(pricing.subtotal)}</span>
@@ -2640,18 +2610,18 @@ const UnifiedOrderWizardModal = ({
                     <span>
                       {isPackage ? "Service Charges" : "Delivery"}{" "}
                       {!isPackage && pricing.delivery === 0 && (
-                        <span className="text-green-600 text-[11px]">(FREE above ₹999)</span>
+                        <span className="text-green-600 text-[10px]">(FREE)</span>
                       )}
                     </span>
                     <span>{formatINR(pricing.delivery)}</span>
                   </div>
-                  <div className="flex justify-between font-bold text-base sm:text-lg border-t border-gray-200 pt-2 sm:pt-3">
+                  <div className="flex justify-between font-bold text-base sm:text-lg border-t border-gray-200 pt-2 sm:pt-3 mt-2">
                     <span>Total Payable</span>
                     <span>{formatINR(pricing.total)}</span>
                   </div>
                 </div>
 
-                <div className="bg-green-50 border border-green-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs text-green-800 flex items-start gap-2">
+                <div className="bg-green-50 border border-green-200 rounded-lg px-2 py-2 text-[11px] text-green-800 flex items-start gap-2">
                   <FiShield className="mt-0.5" />
                   <span>
                     Secure checkout. {isPackage ? "Booking" : "Order"} confirmation will be sent via WhatsApp.
@@ -2663,12 +2633,12 @@ const UnifiedOrderWizardModal = ({
         </div>
 
         {/* Footer Buttons */}
-        <div className="mt-6 pb-6 sm:pb-8 border-t border-gray-100 pt-4">
+        <div className="sticky bottom-0 bg-white border-t border-gray-100 p-3 sm:p-4">
           <div className="flex gap-2 sm:gap-3">
             {step > 1 && (
               <button
                 onClick={() => setStep((s) => s - 1)}
-                className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg border text-xs sm:text-sm text-gray-700 flex items-center gap-1 hover:bg-gray-50"
+                className="px-3 sm:px-4 py-2 rounded-lg border text-xs sm:text-sm text-gray-700 flex items-center gap-1 hover:bg-gray-50"
               >
                 <FiArrowLeft className="hidden sm:inline" />
                 Back
@@ -2677,7 +2647,7 @@ const UnifiedOrderWizardModal = ({
 
             <button
               onClick={step === 3 ? handleConfirm : handleNext}
-              className="flex-1 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-rose-600 to-rose-700 text-white text-xs sm:text-sm font-semibold hover:shadow-lg flex items-center justify-center gap-2"
+              className="flex-1 py-2.5 sm:py-3 rounded-lg bg-gradient-to-r from-rose-600 to-rose-700 text-white text-xs sm:text-sm font-semibold hover:shadow-lg flex items-center justify-center gap-2"
             >
               {step === 3 ? (
                 <>
@@ -2746,11 +2716,11 @@ _This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-8 text-center relative overflow-hidden"
+        className="bg-white rounded-xl sm:rounded-2xl shadow-lg max-w-md w-full p-4 sm:p-6 text-center relative overflow-hidden"
       >
         {/* Background Glow */}
-        <div className="absolute -top-10 -right-10 w-24 h-24 bg-amber-200 rounded-full blur-3xl opacity-60" />
-        <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-green-200 rounded-full blur-3xl opacity-60" />
+        <div className="absolute -top-10 -right-10 w-20 h-20 sm:w-24 sm:h-24 bg-amber-200 rounded-full blur-3xl opacity-60" />
+        <div className="absolute -bottom-10 -left-10 w-20 h-20 sm:w-24 sm:h-24 bg-green-200 rounded-full blur-3xl opacity-60" />
 
         {/* Success Animation */}
         <AnimatePresence>
@@ -2761,14 +2731,14 @@ _This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete
               exit={{ scale: 1.4, opacity: 0 }}
               className="absolute inset-0 flex items-center justify-center"
             >
-              <div className="w-24 h-24 sm:w-28 sm:h-28 bg-green-100 rounded-full flex items-center justify-center">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-green-100 rounded-full flex items-center justify-center">
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="w-16 h-16 sm:w-20 sm:h-20 bg-green-200 rounded-full flex items-center justify-center"
+                  className="w-12 h-12 sm:w-16 sm:h-16 bg-green-200 rounded-full flex items-center justify-center"
                 >
-                  <FiCheckCircle className="w-8 h-8 sm:w-12 sm:h-12 text-green-600" />
+                  <FiCheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
                 </motion.div>
               </div>
             </motion.div>
@@ -2776,11 +2746,11 @@ _This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete
         </AnimatePresence>
 
         {/* Success Icon */}
-        <div className="relative mb-4 sm:mb-6 mt-4">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-            <FiCheckCircle className="w-8 h-8 sm:w-10 sm:h-10 text-green-600" />
+        <div className="relative mb-4 mt-4">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
+            <FiCheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
           </div>
-          <div className="mt-2 text-xs sm:text-sm text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full inline-block">
+          <div className="mt-2 text-xs sm:text-sm text-amber-700 bg-amber-50 border border-amber-200 px-2 sm:px-3 py-1 rounded-full inline-block">
             Sanskaraa • {isPackage ? 'Complete Puja Service' : 'Puja Essentials'}
           </div>
         </div>
@@ -2790,7 +2760,7 @@ _This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-xl sm:text-2xl font-bold text-gray-800 mb-2"
+          className="text-lg sm:text-xl font-bold text-gray-800 mb-2"
         >
           {isPackage ? 'Puja Booked Successfully!' : 'Order Confirmed!'}
         </motion.h1>
@@ -2799,7 +2769,7 @@ _This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="text-gray-600 text-sm sm:text-base mb-4 sm:mb-6"
+          className="text-gray-600 text-sm mb-3 sm:mb-4"
         >
           {isPackage 
             ? 'Your puja has been scheduled. May God bless you with happiness and prosperity.'
@@ -2811,13 +2781,13 @@ _This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="bg-gray-50 rounded-xl p-4 mb-4 sm:mb-6 text-left"
+          className="bg-gray-50 rounded-lg p-3 mb-3 text-left"
         >
-          <h3 className="font-semibold text-gray-800 mb-3 border-b pb-2 text-sm sm:text-base">
+          <h3 className="font-semibold text-gray-800 mb-2 border-b pb-2 text-sm">
             {isPackage ? 'Booking' : 'Order'} Details
           </h3>
 
-          <div className="space-y-2 text-xs sm:text-sm">
+          <div className="space-y-1.5 text-xs sm:text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600">{isPackage ? 'Puja' : 'Items'}:</span>
               <span className="font-medium text-right">
@@ -2855,11 +2825,11 @@ _This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="grid grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4"
+          className="grid grid-cols-2 gap-2 mb-3"
         >
           <button
             onClick={handleShare}
-            className="flex items-center justify-center gap-1 sm:gap-2 bg-green-600 text-white py-2 sm:py-3 rounded-xl font-medium hover:bg-green-700 transition-colors text-xs sm:text-sm"
+            className="flex items-center justify-center gap-1 sm:gap-2 bg-green-600 text-white py-2 sm:py-2.5 rounded-lg font-medium hover:bg-green-700 transition-colors text-xs sm:text-sm"
           >
             <FiShare2 className="w-3 h-3 sm:w-4 sm:h-4" />
             Share
@@ -2867,7 +2837,7 @@ _This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete
 
           <button
             onClick={handleDownloadReceipt}
-            className="flex items-center justify-center gap-1 sm:gap-2 border border-gray-300 text-gray-700 py-2 sm:py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors text-xs sm:text-sm"
+            className="flex items-center justify-center gap-1 sm:gap-2 border border-gray-300 text-gray-700 py-2 sm:py-2.5 rounded-lg font-medium hover:bg-gray-50 transition-colors text-xs sm:text-sm"
           >
             <FiDownload className="w-3 h-3 sm:w-4 sm:h-4" />
             PDF Receipt
@@ -2881,7 +2851,7 @@ _This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete
         >
           <button
             onClick={onBackToHome}
-            className="w-full flex items-center justify-center gap-2 bg-rose-600 text-white py-2 sm:py-3 rounded-xl font-medium hover:bg-rose-700 transition-colors text-sm"
+            className="w-full flex items-center justify-center gap-2 bg-rose-600 text-white py-2.5 sm:py-3 rounded-lg font-medium hover:bg-rose-700 transition-colors text-sm"
           >
             <FiHome className="w-4 h-4" />
             Back to Store
@@ -2893,7 +2863,7 @@ _This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
-          className="text-xs text-gray-500 mt-4 sm:mt-6 italic"
+          className="text-xs text-gray-500 mt-3 sm:mt-4 italic"
         >
           "सर्वे भवन्तु सुखिनः, सर्वे सन्तु निरामयाः"
           <br />
@@ -2940,11 +2910,11 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.8, opacity: 0 }}
-          className="bg-white rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+          className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-rose-800">Kit Details</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg sm:text-xl font-bold text-rose-800">Kit Details</h2>
             <button
               onClick={onClose}
               className="text-gray-500 hover:text-rose-600 text-xl p-1"
@@ -2965,28 +2935,28 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
+      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-2 sm:p-4"
       onClick={onClose}
     >
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.8, opacity: 0 }}
-        className="bg-white rounded-2xl p-4 sm:p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center mb-4 sm:mb-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-rose-800">
+        <div className="flex justify-between items-center mb-3 sm:mb-4">
+          <h2 className="text-base sm:text-lg font-bold text-rose-800">
             {kitDetails.name} - Complete Details
           </h2>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <button
               onClick={handleAddToWishlist}
-              className={`p-2 rounded-full ${
+              className={`p-1.5 sm:p-2 rounded-full ${
                 wishlisted ? "bg-rose-100 text-rose-600" : "bg-gray-100 text-gray-600"
               }`}
             >
-              <FiHeart className={wishlisted ? "fill-rose-600" : ""} />
+              <FiHeart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${wishlisted ? "fill-rose-600" : ""}`} />
             </button>
             <button
               onClick={onClose}
@@ -2997,49 +2967,49 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+          <div className="lg:col-span-2 space-y-3 sm:space-y-4">
             {/* Option Selection */}
-            <div className="bg-amber-50 rounded-xl p-3 sm:p-4">
-              <h3 className="font-semibold text-amber-800 mb-2 sm:mb-3 text-sm sm:text-base">
+            <div className="bg-amber-50 rounded-lg sm:rounded-xl p-3">
+              <h3 className="font-semibold text-amber-800 mb-2 text-sm sm:text-base">
                 Select Service Type
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <button
                   onClick={() => setSelectedOption("fullPuja")}
-                  className={`p-3 rounded-lg border-2 text-left ${
+                  className={`p-2 sm:p-3 rounded-lg border-2 text-left ${
                     selectedOption === "fullPuja"
                       ? "border-rose-500 bg-rose-50"
                       : "border-gray-200"
                   }`}
                 >
-                  <div className="font-semibold text-sm sm:text-base">
+                  <div className="font-semibold text-xs sm:text-sm">
                     Book Full Puja
                   </div>
-                  <div className="text-xs sm:text-sm text-gray-600">
+                  <div className="text-xs text-gray-600">
                     Kit + Pandit Service
                   </div>
-                  <div className="text-rose-600 font-bold mt-1 text-sm sm:text-base">
+                  <div className="text-rose-600 font-bold mt-1 text-sm">
                     ₹{kit.price + 500}
                   </div>
                 </button>
 
                 <button
                   onClick={() => setSelectedOption("kitOnly")}
-                  className={`p-3 rounded-lg border-2 text-left ${
+                  className={`p-2 sm:p-3 rounded-lg border-2 text-left ${
                     selectedOption === "kitOnly"
                       ? "border-rose-500 bg-rose-50"
                       : "border-gray-200"
                   }`}
                 >
-                  <div className="font-semibold text-sm sm:text-base">
+                  <div className="font-semibold text-xs sm:text-sm">
                     Buy Kit Only
                   </div>
-                  <div className="text-xs sm:text-sm text-gray-600">
+                  <div className="text-xs text-gray-600">
                     DIY Puja Kit
                   </div>
-                  <div className="text-rose-600 font-bold mt-1 text-sm sm:text-base">
+                  <div className="text-rose-600 font-bold mt-1 text-sm">
                     ₹{kit.price}
                   </div>
                 </button>
@@ -3047,24 +3017,24 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
             </div>
 
             {/* Kit Items & Benefits */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <h3 className="text-lg sm:text-xl font-semibold text-rose-800 mb-3 sm:mb-4 flex items-center gap-2">
-                  <FiCheckCircle className="text-green-500 w-4 h-4 sm:w-5 sm:h-5" />
+                <h3 className="text-sm sm:text-base font-semibold text-rose-800 mb-2 flex items-center gap-2">
+                  <FiCheckCircle className="text-green-500 w-4 h-4" />
                   What's Included
                 </h3>
-                <div className="bg-green-50 rounded-xl p-3 sm:p-4">
-                  <ul className="space-y-2 sm:space-y-3">
+                <div className="bg-green-50 rounded-lg sm:rounded-xl p-2 sm:p-3">
+                  <ul className="space-y-1.5 sm:space-y-2 max-h-60 overflow-y-auto pr-2">
                     {kitDetails.items.map((item, index) => (
                       <motion.li
                         key={index}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="flex items-center gap-2 sm:gap-3 p-2 bg-white rounded-lg shadow-sm"
+                        transition={{ delay: index * 0.05 }}
+                        className="flex items-center gap-2 p-1.5 sm:p-2 bg-white rounded-lg shadow-sm"
                       >
-                        <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-green-600 font-bold text-xs sm:text-sm">
+                        <div className="w-5 h-5 sm:w-6 sm:h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-green-600 font-bold text-xs">
                             {index + 1}
                           </span>
                         </div>
@@ -3078,21 +3048,21 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
               </div>
 
               <div>
-                <h3 className="text-lg sm:text-xl font-semibold text-rose-800 mb-3 sm:mb-4 flex items-center gap-2">
-                  <FiStar className="text-amber-500 w-4 h-4 sm:w-5 sm:h-5" />
+                <h3 className="text-sm sm:text-base font-semibold text-rose-800 mb-2 flex items-center gap-2">
+                  <FiStar className="text-amber-500 w-4 h-4" />
                   Benefits
                 </h3>
-                <div className="bg-amber-50 rounded-xl p-3 sm:p-4">
-                  <ul className="space-y-2 sm:space-y-3">
+                <div className="bg-amber-50 rounded-lg sm:rounded-xl p-2 sm:p-3">
+                  <ul className="space-y-1.5 sm:space-y-2">
                     {kitDetails.benefits.map((benefit, index) => (
                       <motion.li
                         key={index}
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="flex items-center gap-2 sm:gap-3 p-2 bg-white rounded-lg shadow-sm"
+                        transition={{ delay: index * 0.05 }}
+                        className="flex items-center gap-2 p-1.5 sm:p-2 bg-white rounded-lg shadow-sm"
                       >
-                        <div className="w-6 h-6 sm:w-8 sm:h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div className="w-5 h-5 sm:w-6 sm:h-6 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
                           <span className="text-amber-600 text-xs">✨</span>
                         </div>
                         <span className="text-gray-700 text-xs sm:text-sm">
@@ -3107,16 +3077,16 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-3 sm:space-y-4">
             {/* Quick Actions */}
-            <div className="bg-white border border-gray-200 rounded-xl p-3 sm:p-4 shadow-sm">
-              <h4 className="font-semibold text-gray-800 mb-2 sm:mb-3 text-sm sm:text-base">
+            <div className="bg-white border border-gray-200 rounded-lg sm:rounded-xl p-3 shadow-sm">
+              <h4 className="font-semibold text-gray-800 mb-2 text-sm">
                 Quick Actions
               </h4>
 
               <button
                 onClick={handleQuickAction}
-                className="w-full bg-gradient-to-r from-rose-600 to-rose-700 text-white py-2 sm:py-3 rounded-lg font-semibold mb-2 sm:mb-3 hover:shadow-lg transition-all text-sm sm:text-base"
+                className="w-full bg-gradient-to-r from-rose-600 to-rose-700 text-white py-2 sm:py-2.5 rounded-lg font-semibold mb-2 hover:shadow-lg transition-all text-sm"
               >
                 {selectedOption === "fullPuja"
                   ? "Book Now"
@@ -3128,14 +3098,14 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
                   onAddToCart(kit);
                   onClose();
                 }}
-                className="w-full border border-rose-400 text-rose-700 py-2 rounded-lg font-medium hover:bg-rose-50 transition-colors mb-2 text-sm"
+                className="w-full border border-rose-400 text-rose-700 py-2 rounded-lg font-medium hover:bg-rose-50 transition-colors mb-2 text-xs sm:text-sm"
               >
                 Add to Cart
               </button>
 
               <button
                 onClick={handleAddToWishlist}
-                className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors text-sm"
+                className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors text-xs sm:text-sm"
               >
                 {wishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
               </button>
@@ -3143,23 +3113,21 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
 
             {/* Recommended Add-ons */}
             {relatedKits.length > 0 && (
-              <div className="bg-blue-50 rounded-xl p-3 sm:p-4">
-                <h4 className="font-semibold text-blue-800 mb-2 sm:mb-3 text-sm sm:text-base">
+              <div className="bg-blue-50 rounded-lg sm:rounded-xl p-3">
+                <h4 className="font-semibold text-blue-800 mb-2 text-sm">
                   Recommended Add-ons
                 </h4>
-                <div className="space-y-2 sm:space-y-3">
+                <div className="space-y-2">
                   {relatedKits.map((relatedKit) => (
                     <div
                       key={relatedKit.id}
-                      className="flex items-center gap-2 sm:gap-3 p-2 bg-white rounded-lg"
+                      className="flex items-center gap-2 p-2 bg-white rounded-lg"
                     >
-                      <img
-                        src={relatedKit.img}
-                        alt={relatedKit.name}
-                        className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded flex-shrink-0"
-                      />
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded flex-shrink-0 flex items-center justify-center">
+                        <span className="text-blue-600">📦</span>
+                      </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs sm:text-sm font-medium text-gray-800 truncate">
+                        <p className="text-xs font-medium text-gray-800 truncate">
                           {relatedKit.name}
                         </p>
                         <p className="text-xs text-rose-600 font-semibold">
@@ -3179,8 +3147,8 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
             )}
 
             {/* Trust Badges */}
-            <div className="bg-gray-50 rounded-xl p-3 sm:p-4">
-              <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
+            <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3">
+              <h4 className="font-semibold text-gray-800 mb-2 text-sm">
                 Why Choose Sanskaraa?
               </h4>
               <ul className="text-xs text-gray-600 space-y-1">
@@ -3462,27 +3430,27 @@ export default function UnifiedPujaStore() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] pt-16 sm:pt-20 pb-6 px-2 sm:px-4 lg:px-6 relative">
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] pt-16 pb-4 px-2 sm:px-4 lg:px-6 relative">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div className="absolute top-10 left-10 w-24 sm:w-32 h-24 sm:h-32 bg-orange-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-bounce"></div>
-        <div className="absolute top-40 right-4 sm:right-20 w-20 sm:w-24 h-20 sm:h-24 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
-        <div className="absolute bottom-20 left-20 w-24 sm:w-28 h-24 sm:h-28 bg-amber-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-bounce"></div>
+        <div className="absolute top-10 left-10 w-20 h-20 sm:w-24 sm:h-24 bg-orange-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-bounce"></div>
+        <div className="absolute top-40 right-4 sm:right-20 w-16 h-16 sm:w-20 sm:h-20 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
+        <div className="absolute bottom-20 left-20 w-20 h-20 sm:w-24 sm:h-24 bg-amber-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-bounce"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto mt-4 sm:mt-6 lg:mt-10 relative z-10">
+      <div className="max-w-7xl mx-auto mt-4 sm:mt-6 lg:mt-8 relative z-10">
         {/* Trust Badges */}
-        <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-4 sm:mb-6 px-2">
+        <div className="flex flex-wrap justify-center gap-2 mb-3 sm:mb-4 px-1">
           {trustBadges.map((badge, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="flex items-center gap-1 sm:gap-2 bg-white px-2 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-sm border"
+              className="flex items-center gap-1 bg-white px-2 py-1 rounded-full shadow-sm border text-xs"
             >
-              <span className="text-sm">{badge.icon}</span>
-              <span className="text-xs font-medium text-[#800000]">
+              <span>{badge.icon}</span>
+              <span className="font-medium text-[#800000] hidden xs:inline">
                 {badge.text}
               </span>
             </motion.div>
@@ -3490,40 +3458,23 @@ export default function UnifiedPujaStore() {
         </div>
 
         {/* Topbar (Logo, Search, Cart) */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-6 sm:mt-10 p-2 sm:p-0">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-4 sm:mt-6 p-2 bg-white/80 rounded-xl sm:rounded-2xl shadow-lg backdrop-blur-sm">
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#800000] font-serif">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#800000] font-serif">
               Sanskaraa
             </h1>
-            <p className="text-xs sm:text-sm text-[#800000] mt-1">
+            <p className="text-xs sm:text-sm text-[#800000] mt-0.5 hidden sm:block">
               Complete Puja Solutions - Packages & Single Items
             </p>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
-            {/* Festival Calendar Widget */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-orange-700 to-amber-700 text-white px-3 sm:px-4 py-2 rounded-full cursor-pointer flex-shrink-0"
-              onClick={() => setSelectedFestival("Diwali")}
-            >
-              <FiCalendar className="text-yellow-200 w-4 h-4" />
-              <div className="text-xs">
-                <div className="font-semibold">
-                  Upcoming: Diwali
-                </div>
-                <div className="text-yellow-200">
-                  12 days left
-                </div>
-              </div>
-            </motion.div>
-
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             {/* Search Input */}
-            <div className="relative flex-1 sm:flex-initial sm:w-64">
+            <div className="relative flex-1 sm:flex-initial sm:w-48 lg:w-64">
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 pr-4 py-2 sm:py-2.5 w-full rounded-full border-2 border-orange-200 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition-all text-sm"
+                className="pl-8 pr-3 py-2 w-full rounded-full border border-orange-200 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition-all text-sm"
                 placeholder="Search puja kits or items..."
               />
               <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-400 w-4 h-4" />
@@ -3532,9 +3483,9 @@ export default function UnifiedPujaStore() {
             {/* Cart Button */}
             <button
               onClick={() => setShowCart((s) => !s)}
-              className="relative bg-orange-600 text-white p-2 sm:p-2.5 rounded-full shadow-lg hover:scale-105 transition-transform flex-shrink-0"
+              className="relative bg-orange-600 text-white p-2 rounded-full shadow-lg hover:scale-105 transition-transform flex-shrink-0"
             >
-              <FiShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
+              <FiShoppingCart className="w-5 h-5" />
               {cart.length > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
@@ -3549,13 +3500,13 @@ export default function UnifiedPujaStore() {
         </div>
 
         {/* View Mode Tabs + Filters */}
-        <div className="sticky top-14 sm:top-16 z-20 bg-white/95 backdrop-blur-md py-4 sm:py-5 mt-4 sm:mt-6 rounded-2xl shadow-xl border border-amber-100 mx-2 sm:mx-0">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 px-3 sm:px-4">
+        <div className="sticky top-14 sm:top-16 z-20 bg-white/95 backdrop-blur-md py-3 sm:py-4 mt-3 sm:mt-4 rounded-xl sm:rounded-2xl shadow-lg border border-amber-100">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 px-2 sm:px-4">
             
             {/* View Mode Tabs */}
-            <div className="flex items-center gap-1">
-              <div className="text-xs font-semibold text-gray-500 mr-3">View:</div>
-              <div className="flex bg-gray-100 p-1 rounded-xl">
+            <div className="flex items-center gap-1 overflow-x-auto pb-2">
+              <div className="text-xs font-semibold text-gray-500 mr-2 hidden sm:block">View:</div>
+              <div className="flex bg-gray-100 p-1 rounded-lg">
                 {[
                   { key: "all", label: "All", icon: FiGrid },
                   { key: "packages", label: "Packages", icon: FiPackage },
@@ -3563,14 +3514,14 @@ export default function UnifiedPujaStore() {
                 ].map((tab) => (
                   <button
                     key={tab.key}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-2 transition-all ${
+                    className={`px-3 py-1.5 rounded text-xs font-medium whitespace-nowrap flex items-center gap-1 transition-all ${
                       viewMode === tab.key
                         ? "bg-white text-rose-700 shadow-md"
                         : "text-gray-600 hover:text-rose-600"
                     }`}
                     onClick={() => setViewMode(tab.key)}
                   >
-                    <tab.icon className="w-4 h-4" />
+                    <tab.icon className="w-3.5 h-3.5" />
                     {tab.label}
                   </button>
                 ))}
@@ -3578,13 +3529,13 @@ export default function UnifiedPujaStore() {
             </div>
 
             {/* Category & Festival Filters */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-2">
               <div className="relative">
                 <FiGrid className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                 >
                   <option value="All">All Categories</option>
                   {categories.filter(c => c !== "All").map((c) => (
@@ -3598,7 +3549,7 @@ export default function UnifiedPujaStore() {
                 <select
                   value={selectedFestival}
                   onChange={(e) => setSelectedFestival(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                 >
                   <option value="All Festivals">All Festivals</option>
                   {festivals.filter(f => f !== "All Festivals").map((f) => (
@@ -3608,8 +3559,8 @@ export default function UnifiedPujaStore() {
               </div>
 
               {/* Price Range */}
-              <div className="col-span-2">
-                <div className="flex items-center gap-3 bg-gray-50 px-4 py-2.5 rounded-xl border border-gray-200">
+              <div className="col-span-1 xs:col-span-2">
+                <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200">
                   <span className="text-xs font-medium text-gray-700 whitespace-nowrap">
                     Price: ₹0 - ₹{priceRange[1]}
                   </span>
@@ -3630,21 +3581,11 @@ export default function UnifiedPujaStore() {
             </div>
 
             {/* Sort & Search */}
-            <div className="flex items-center gap-3">
-              <div className="relative flex-1 sm:flex-initial sm:w-48">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-amber-500 w-4 h-4" />
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="pl-10 pr-4 py-2.5 w-full rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                  placeholder="Search..."
-                />
-              </div>
-
+            <div className="flex items-center gap-2">
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                className="px-3 py-2 rounded-lg border border-gray-200 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
               >
                 <option value="popular">Sort: Popular</option>
                 <option value="price-low">Price: Low to High</option>
@@ -3661,27 +3602,27 @@ export default function UnifiedPujaStore() {
         </AnimatePresence>
 
         {/* Product Grid */}
-        <div className="mt-6 sm:mt-8 px-2 sm:px-0">
+        <div className="mt-4 sm:mt-6">
           {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div key={i} className="animate-pulse">
-                  <div className="h-48 bg-gradient-to-br from-rose-100 to-amber-100 rounded-2xl mb-3"></div>
-                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-2/3 mb-3"></div>
-                  <div className="h-6 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-36 sm:h-48 bg-gradient-to-br from-rose-100 to-amber-100 rounded-xl sm:rounded-2xl mb-2 sm:mb-3"></div>
+                  <div className="h-3 sm:h-4 bg-gray-200 rounded mb-1 sm:mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-2/3 mb-2 sm:mb-3"></div>
+                  <div className="h-5 sm:h-6 bg-gray-200 rounded w-1/2"></div>
                 </div>
               ))}
             </div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-16 bg-gradient-to-br from-white to-amber-50 rounded-2xl shadow-lg border border-amber-100">
-              <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-amber-100 to-rose-100 rounded-full flex items-center justify-center">
-                <FiSearch className="w-10 h-10 text-amber-400" />
+            <div className="text-center py-12 bg-gradient-to-br from-white to-amber-50 rounded-xl sm:rounded-2xl shadow-lg border border-amber-100">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 bg-gradient-to-br from-amber-100 to-rose-100 rounded-full flex items-center justify-center">
+                <FiSearch className="w-8 h-8 sm:w-10 sm:h-10 text-amber-400" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-1 sm:mb-2">
                 No items found
               </h3>
-              <p className="text-gray-500 text-sm max-w-md mx-auto mb-6">
+              <p className="text-gray-500 text-xs sm:text-sm max-w-md mx-auto mb-4 sm:mb-6 px-4">
                 Try adjusting your filters or search term. We have plenty of puja items for you!
               </p>
               <button
@@ -3690,7 +3631,7 @@ export default function UnifiedPujaStore() {
                   setSearch("");
                   setPriceRange([0, 5000]);
                 }}
-                className="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors text-sm font-medium"
+                className="px-4 sm:px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors text-sm font-medium"
               >
                 Reset Filters
               </button>
@@ -3698,8 +3639,8 @@ export default function UnifiedPujaStore() {
           ) : (
             <>
               {/* Results Count */}
-              <div className="flex items-center justify-between mb-4 px-2">
-                <div className="text-sm text-gray-600">
+              <div className="flex items-center justify-between mb-3 px-1">
+                <div className="text-xs sm:text-sm text-gray-600">
                   Showing <span className="font-semibold">{filtered.length}</span> items
                 </div>
                 <div className="text-xs text-gray-500">
@@ -3708,7 +3649,7 @@ export default function UnifiedPujaStore() {
               </div>
 
               {/* Products Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
                 {filtered.map((product) => (
                   <ProductCard
                     key={product.id}
@@ -3730,17 +3671,17 @@ export default function UnifiedPujaStore() {
         </div>
 
         {/* How-to Section */}
-        <div className="mt-8 sm:mt-12 md:mt-16 bg-gradient-to-br from-white to-amber-50 rounded-2xl p-4 sm:p-6 md:p-8 shadow-xl border border-amber-100 mx-2 sm:mx-0">
-          <div className="text-center mb-6 sm:mb-8">
-            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-rose-800 mb-2">
+        <div className="mt-6 sm:mt-8 md:mt-12 bg-gradient-to-br from-white to-amber-50 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-lg border border-amber-100">
+          <div className="text-center mb-4 sm:mb-6">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-rose-800 mb-1 sm:mb-2">
               Complete Puja Solutions
             </h3>
-            <p className="text-gray-600 text-sm sm:text-base">
+            <p className="text-gray-600 text-xs sm:text-sm">
               Everything you need for a perfect puja experience
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
             {[
               {
                 title: "Ready Puja Packages",
@@ -3769,28 +3710,28 @@ export default function UnifiedPujaStore() {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className={`${item.bg} rounded-xl p-5 hover:shadow-lg transition-all duration-300`}
+                className={`${item.bg} rounded-lg sm:rounded-xl p-3 sm:p-4 hover:shadow-lg transition-all duration-300`}
               >
-                <div className="flex items-center gap-4 mb-4">
-                  <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${item.color} flex items-center justify-center text-2xl`}>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-r ${item.color} flex items-center justify-center text-xl`}>
                     {item.icon}
                   </div>
                   <div>
-                    <h4 className="font-bold text-lg text-gray-800">{item.title}</h4>
-                    <p className="text-sm text-gray-600">{item.desc}</p>
+                    <h4 className="font-bold text-sm sm:text-base text-gray-800">{item.title}</h4>
+                    <p className="text-xs text-gray-600">{item.desc}</p>
                   </div>
                 </div>
                 
-                <ul className="space-y-2">
+                <ul className="space-y-1.5">
                   {item.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm text-gray-700">
+                    <li key={i} className="flex items-center gap-2 text-xs text-gray-700">
                       <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${item.color}`}></div>
                       {feature}
                     </li>
                   ))}
                 </ul>
                 
-                <button className="mt-5 w-full py-2.5 text-sm font-medium rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors">
+                <button className="mt-3 sm:mt-4 w-full py-2 text-xs sm:text-sm font-medium rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors">
                   Explore Now
                 </button>
               </div>
@@ -3799,11 +3740,11 @@ export default function UnifiedPujaStore() {
         </div>
 
         {/* Customer Reviews */}
-        <div className="mt-8 sm:mt-12 md:mt-16 px-2 sm:px-0">
-          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-rose-800 mb-4 sm:mb-6 text-center">
+        <div className="mt-6 sm:mt-8 md:mt-12">
+          <h3 className="text-base sm:text-lg md:text-xl font-bold text-rose-800 mb-3 sm:mb-4 text-center">
             Customer Experiences
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
             {[
               {
                 name: "Rajesh Sharma",
@@ -3828,9 +3769,9 @@ export default function UnifiedPujaStore() {
             ].map((review, i) => (
               <div
                 key={i}
-                className="bg-white rounded-xl p-3 sm:p-4 shadow-lg border border-rose-100"
+                className="bg-white rounded-lg sm:rounded-xl p-3 shadow-md border border-rose-100"
               >
-                <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                <div className="flex items-center gap-2 mb-2">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-amber-400 to-rose-400 rounded-full flex-shrink-0"></div>
                   <div>
                     <p className="font-semibold text-rose-800 text-xs sm:text-sm">
@@ -3841,10 +3782,10 @@ export default function UnifiedPujaStore() {
                     </div>
                   </div>
                 </div>
-                <p className="text-xs text-gray-600 mb-2 sm:mb-3">
+                <p className="text-xs text-gray-600 mb-2 line-clamp-3">
                   "{review.review}"
                 </p>
-                <div className="text-[11px] text-rose-600 font-medium">
+                <div className="text-[10px] text-rose-600 font-medium">
                   {review.type}
                 </div>
               </div>
@@ -3862,10 +3803,10 @@ export default function UnifiedPujaStore() {
               className="fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 overflow-y-auto mt-16"
             >
               {/* Header */}
-              <div className="sticky top-0 bg-white z-10 p-4 border-b border-rose-100 flex items-center justify-between">
-                <div className="flex items-center gap-3">
+              <div className="sticky top-0 bg-white z-10 p-3 border-b border-rose-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
                   <div className="relative">
-                    <FiShoppingCart className="w-6 h-6 text-rose-600" />
+                    <FiShoppingCart className="w-5 h-5 text-rose-600" />
                     {cart.length > 0 && (
                       <motion.span
                         initial={{ scale: 0 }}
@@ -3877,34 +3818,34 @@ export default function UnifiedPujaStore() {
                     )}
                   </div>
                   <div>
-                    <h2 className="font-bold text-lg text-rose-800">Your Cart</h2>
+                    <h2 className="font-bold text-base text-rose-800">Your Cart</h2>
                     <p className="text-xs text-gray-500">{cart.length} items</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setShowCart(false)}
-                  className="p-2 hover:bg-rose-50 rounded-lg transition-colors"
+                  className="p-1 hover:bg-rose-50 rounded-lg transition-colors"
                 >
                   <FiX className="w-5 h-5 text-gray-500 hover:text-rose-600" />
                 </button>
               </div>
 
               {/* Cart Items */}
-              <div className="p-4">
+              <div className="p-3">
                 {cart.length === 0 ? (
-                  <div className="text-center py-12">
-                    <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-amber-100 to-rose-100 rounded-full flex items-center justify-center">
-                      <FiShoppingCart className="w-10 h-10 text-gray-400" />
+                  <div className="text-center py-10">
+                    <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-amber-100 to-rose-100 rounded-full flex items-center justify-center">
+                      <FiShoppingCart className="w-8 h-8 text-gray-400" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                    <h3 className="text-base font-semibold text-gray-700 mb-2">
                       Your cart is empty
                     </h3>
-                    <p className="text-gray-500 text-sm mb-6">
+                    <p className="text-gray-500 text-xs mb-4">
                       Add some puja items to get started
                     </p>
                     <button
                       onClick={() => setShowCart(false)}
-                      className="px-6 py-3 bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-xl hover:shadow-lg transition-all font-medium"
+                      className="px-5 py-2.5 bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm"
                     >
                       Continue Shopping
                     </button>
@@ -3912,30 +3853,22 @@ export default function UnifiedPujaStore() {
                 ) : (
                   <>
                     {/* Items List */}
-                    <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2">
+                    <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
                       {cart.map((item) => (
                         <motion.div
                           key={item.id}
                           initial={{ opacity: 0, x: 20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          className="flex gap-3 items-start p-3 bg-white rounded-xl border border-gray-100 hover:border-rose-200 transition-colors"
+                          className="flex gap-2 items-start p-2 bg-white rounded-lg border border-gray-100 hover:border-rose-200 transition-colors"
                         >
                           <div className="relative">
-                            <img
-                              src={item.img}
-                              alt={item.name}
-                              className="w-16 h-16 object-cover rounded-lg bg-amber-50 flex-shrink-0"
-                              onError={(e) => {
-                                e.currentTarget.style.display = "none";
-                                e.currentTarget.parentElement.classList.add(
-                                  "bg-gradient-to-br",
-                                  "from-amber-100",
-                                  "to-rose-100"
-                                );
-                              }}
-                            />
+                            <div className="w-12 h-12 bg-gradient-to-br from-amber-100 to-rose-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                              <span className="text-xl">
+                                {item.type === 'package' ? '📦' : '🛒'}
+                              </span>
+                            </div>
                             {item.type === 'package' && (
-                              <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-600 text-white text-[10px] rounded-full flex items-center justify-center">
+                              <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 text-white text-[9px] rounded-full flex items-center justify-center">
                                 📦
                               </div>
                             )}
@@ -3943,46 +3876,46 @@ export default function UnifiedPujaStore() {
 
                           <div className="flex-1 min-w-0">
                             <div className="flex justify-between">
-                              <h4 className="font-semibold text-sm text-gray-800 truncate">
+                              <h4 className="font-semibold text-xs text-gray-800 line-clamp-2">
                                 {item.name}
                               </h4>
                               <button
                                 onClick={() => removeFromCart(item.id)}
-                                className="text-gray-400 hover:text-rose-600 ml-2"
+                                className="text-gray-400 hover:text-rose-600 ml-1"
                               >
-                                <FiX className="w-4 h-4" />
+                                <FiX className="w-3.5 h-3.5" />
                               </button>
                             </div>
                             
-                            <div className="flex items-center gap-2 mt-1">
-                              <span className="text-xs text-gray-500 bg-gray-50 px-2 py-0.5 rounded">
+                            <div className="flex items-center gap-1 mt-1">
+                              <span className="text-xs text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded">
                                 {item.type === 'single' ? item.unit : 'Package'}
                               </span>
-                              <span className="text-amber-700 font-bold text-sm">
+                              <span className="text-amber-700 font-bold text-xs">
                                 ₹{item.price}
                               </span>
                             </div>
 
                             {/* Quantity Controls */}
-                            <div className="flex items-center justify-between mt-3">
-                              <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-2 py-1">
+                            <div className="flex items-center justify-between mt-2">
+                              <div className="flex items-center gap-1 bg-gray-50 rounded-lg px-1.5 py-1">
                                 <button
                                   onClick={() => updateCartQty(item.id, item.qty - 1)}
-                                  className="w-6 h-6 flex items-center justify-center rounded hover:bg-white transition-colors"
+                                  className="w-5 h-5 flex items-center justify-center rounded hover:bg-white transition-colors"
                                 >
-                                  <FiMinus className="w-3 h-3" />
+                                  <FiMinus className="w-2.5 h-2.5" />
                                 </button>
-                                <span className="w-8 text-center text-sm font-medium">
+                                <span className="w-6 text-center text-xs font-medium">
                                   {item.qty}
                                 </span>
                                 <button
                                   onClick={() => updateCartQty(item.id, item.qty + 1)}
-                                  className="w-6 h-6 flex items-center justify-center rounded hover:bg-white transition-colors"
+                                  className="w-5 h-5 flex items-center justify-center rounded hover:bg-white transition-colors"
                                 >
-                                  <FiPlus className="w-3 h-3" />
+                                  <FiPlus className="w-2.5 h-2.5" />
                                 </button>
                               </div>
-                              <span className="font-bold text-rose-700">
+                              <span className="font-bold text-rose-700 text-sm">
                                 ₹{item.price * item.qty}
                               </span>
                             </div>
@@ -3992,43 +3925,43 @@ export default function UnifiedPujaStore() {
                     </div>
 
                     {/* Price Summary */}
-                    <div className="mt-6 border-t border-gray-100 pt-4">
+                    <div className="mt-4 border-t border-gray-100 pt-3">
                       {/* Coupon Section */}
-                      <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <div className="mb-3">
+                        <label className="block text-xs font-medium text-gray-700 mb-1">
                           Apply Coupon
                         </label>
-                        <div className="flex gap-2">
+                        <div className="flex gap-1">
                           <input
                             value={coupon}
                             onChange={(e) => setCoupon(e.target.value)}
                             placeholder="Enter coupon code"
-                            className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                            className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
                           />
                           <button
                             onClick={applyCoupon}
-                            className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors text-sm font-medium whitespace-nowrap"
+                            className="px-3 py-1.5 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors text-xs font-medium whitespace-nowrap"
                           >
                             Apply
                           </button>
                         </div>
                         {couponApplied && (
-                          <div className="mt-2 text-green-600 text-sm flex items-center gap-1">
-                            <FiCheckCircle className="w-4 h-4" />
+                          <div className="mt-1 text-green-600 text-xs flex items-center gap-1">
+                            <FiCheckCircle className="w-3.5 h-3.5" />
                             Coupon {couponApplied} applied successfully!
                           </div>
                         )}
                       </div>
 
                       {/* Price Breakdown */}
-                      <div className="space-y-2 bg-gray-50 rounded-xl p-4">
-                        <div className="flex justify-between text-sm">
+                      <div className="space-y-1.5 bg-gray-50 rounded-lg p-3">
+                        <div className="flex justify-between text-xs">
                           <span className="text-gray-600">Subtotal</span>
                           <span className="font-medium">₹{subtotal}</span>
                         </div>
                         
                         {couponApplied && (
-                          <div className="flex justify-between text-sm">
+                          <div className="flex justify-between text-xs">
                             <span className="text-gray-600">Coupon Discount</span>
                             <span className="text-green-600 font-medium">
                               -₹{Math.round(couponDiscount)}
@@ -4036,12 +3969,12 @@ export default function UnifiedPujaStore() {
                           </div>
                         )}
                         
-                        <div className="flex justify-between text-sm">
+                        <div className="flex justify-between text-xs">
                           <span className="text-gray-600">GST (18%)</span>
                           <span className="font-medium">₹{Math.round(gst)}</span>
                         </div>
                         
-                        <div className="flex justify-between text-sm">
+                        <div className="flex justify-between text-xs">
                           <span className="text-gray-600">
                             Delivery Charges
                             {delivery === 0 && (
@@ -4053,36 +3986,36 @@ export default function UnifiedPujaStore() {
                           </span>
                         </div>
                         
-                        <div className="border-t border-gray-200 pt-3 mt-2">
+                        <div className="border-t border-gray-200 pt-2 mt-2">
                           <div className="flex justify-between items-center">
                             <div>
-                              <span className="font-bold text-lg text-gray-900">Total</span>
-                              <p className="text-xs text-gray-500">Inclusive of all taxes</p>
+                              <span className="font-bold text-sm text-gray-900">Total</span>
+                              <p className="text-[10px] text-gray-500">Inclusive of all taxes</p>
                             </div>
                             <div className="text-right">
-                              <div className="font-bold text-2xl text-rose-700">
+                              <div className="font-bold text-lg text-rose-700">
                                 ₹{total}
                               </div>
-                              <p className="text-xs text-gray-500">Payable amount</p>
+                              <p className="text-[10px] text-gray-500">Payable amount</p>
                             </div>
                           </div>
                         </div>
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="mt-6 space-y-3">
+                      <div className="mt-4 space-y-2">
                         <button
                           onClick={startCartOrder}
-                          className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                          className="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2 text-sm"
                         >
-                          <FiCheckCircle className="w-5 h-5" />
+                          <FiCheckCircle className="w-4 h-4" />
                           Proceed to Checkout
                         </button>
                         
                         <div className="flex gap-2">
                           <button
                             onClick={() => setShowCart(false)}
-                            className="flex-1 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                            className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors text-xs"
                           >
                             Continue Shopping
                           </button>
@@ -4092,7 +4025,7 @@ export default function UnifiedPujaStore() {
                                 setCart([]);
                               }
                             }}
-                            className="flex-1 py-2.5 border border-rose-200 text-rose-700 rounded-lg font-medium hover:bg-rose-50 transition-colors"
+                            className="flex-1 py-2 border border-rose-200 text-rose-700 rounded-lg font-medium hover:bg-rose-50 transition-colors text-xs"
                           >
                             Clear Cart
                           </button>
@@ -4100,8 +4033,8 @@ export default function UnifiedPujaStore() {
                       </div>
 
                       {/* Security Badge */}
-                      <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-center gap-2 text-xs text-gray-500">
-                        <FiShield className="text-green-600 w-4 h-4" />
+                      <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-center gap-2 text-xs text-gray-500">
+                        <FiShield className="text-green-600 w-3.5 h-3.5" />
                         <span>100% Secure • SSL Encrypted</span>
                       </div>
                     </div>
@@ -4140,6 +4073,46 @@ export default function UnifiedPujaStore() {
             />
           )}
         </AnimatePresence>
+
+        {/* Mobile Bottom Navigation */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-2 flex justify-around items-center z-30 sm:hidden">
+          <button
+            onClick={() => setViewMode('all')}
+            className={`flex flex-col items-center p-2 rounded-lg ${viewMode === 'all' ? 'text-rose-600 bg-rose-50' : 'text-gray-600'}`}
+          >
+            <FiGrid className="w-5 h-5" />
+            <span className="text-xs mt-1">All</span>
+          </button>
+          
+          <button
+            onClick={() => setViewMode('packages')}
+            className={`flex flex-col items-center p-2 rounded-lg ${viewMode === 'packages' ? 'text-blue-600 bg-blue-50' : 'text-gray-600'}`}
+          >
+            <FiPackage className="w-5 h-5" />
+            <span className="text-xs mt-1">Packages</span>
+          </button>
+          
+          <button
+            onClick={() => setViewMode('single')}
+            className={`flex flex-col items-center p-2 rounded-lg ${viewMode === 'single' ? 'text-green-600 bg-green-50' : 'text-gray-600'}`}
+          >
+            <FiList className="w-5 h-5" />
+            <span className="text-xs mt-1">Items</span>
+          </button>
+          
+          <button
+            onClick={() => setShowCart(true)}
+            className="flex flex-col items-center p-2 rounded-lg text-gray-600 relative"
+          >
+            <FiShoppingCart className="w-5 h-5" />
+            <span className="text-xs mt-1">Cart</span>
+            {cart.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-rose-600 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                {cart.length}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
