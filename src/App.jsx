@@ -22,8 +22,7 @@ import SanskaraaNotifications from "./pages/Notification";
 import CartPage from "./components/layout/CartPage";
 import ForgetPassword from "./pages/ForgetPassword";
 
-// ⭐ ALPHASTORE
-import Alphastore from "./pages/StoreAlpha";
+
 
 
 
@@ -79,8 +78,7 @@ export default function App() {
           <Route path="/notifications" element={<SanskaraaNotifications />} />
           <Route path="/cart" element={<CartPage />} />
 
-          {/* ⭐ ALPHASTORE ROUTES */}
-          <Route path="/StoreAlpha" element={<Alphastore />} />
+          
 
          
         </Routes>
