@@ -537,6 +537,8 @@ function ServicesSection() {
     { name: "Book Pandit", icon: User, path: "/panditbooking" },
     { name: "Puja Kits", icon: Package, path: "/pujakits" },
     { name: "Services", icon: Sparkles, path: "/services" },
+    { name: "Essentials", icon: Sparkles, path: "/SanskaraaShopApp" }
+
   ];
 
   return (

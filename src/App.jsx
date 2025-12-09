@@ -21,6 +21,7 @@ import VendorRegistration from "./components/layout/VendorRegistration";
 import SanskaraaNotifications from "./pages/Notification";
 import CartPage from "./components/layout/CartPage";
 import ForgetPassword from "./pages/ForgetPassword";
+import SanskaraaShopApp from "./pages/SanskaraaShopApp";
 
 
 
@@ -77,6 +78,7 @@ export default function App() {
           <Route path="/vendor-registration" element={<VendorRegistration />} />
           <Route path="/notifications" element={<SanskaraaNotifications />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/SanskaraaShopApp" element={<SanskaraaShopApp />} />
 
           
 
