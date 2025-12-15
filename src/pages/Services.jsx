@@ -664,7 +664,7 @@ const ServiceDetailModal = ({ service, isOpen, onClose, onBookNow }) => {
               onClick={() => onBookNow(service)}
               className="flex-1 py-2 sm:py-3 bg-[#800000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors font-semibold text-sm sm:text-base flex items-center justify-center gap-2"
             >
-              <MessageCircle size={14} className="sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
+              <MessageCircle size={14} className="sm:w-4 sm:h-4 lg:w-5 lg:h-5 " />
               Book Now
             </button>
           </div>
@@ -916,7 +916,7 @@ const ServiceCard = ({ service, onBook, onToggleWishlist, isWishlisted, onViewDe
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => onBook(service)}
-              className="px-1.5 sm:px-2 lg:px-3 bg-gradient-to-r from-[#800000] to-[#A52A2A] text-white rounded-full text-[10px] sm:text-xs font-semibold shadow-lg shadow-[#800000]/20 hover:shadow-[#800000]/40 transition-all flex items-center gap-0.5 whitespace-nowrap"
+              className="px-1.5 sm:px-2 lg:px-3 bg-gradient-to-r from-[#800000] to-[#A52A2A] text-white rounded-full text-[10px] sm:text-xs font-semibold shadow-lg shadow-[#800000]/20 hover:shadow-[#800000]/40 transition-all flex items-center gap-0.5 whitespace-nowrap "
             >
               Book Now
             </motion.button>
@@ -1301,7 +1301,7 @@ export default function App() {
             <section>
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 lg:mb-8 px-1">
                   <div>
-                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif font-bold text-[#800000] mb-1 sm:mb-2">
+                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif font-bold text-[#800000] mb-1 sm:mb-12">
                       {activeCategory === 'all' ? "Curated Services" : `${categories.find(c => c.key === activeCategory)?.label}`}
                     </h2>
                     <p className="text-stone-500 text-xs sm:text-sm lg:text-base">
