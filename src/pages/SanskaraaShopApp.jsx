@@ -697,6 +697,22 @@ export default function SanskaraaApp() {
     return () => { document.body.style.overflow = 'unset'; };
   }, [selectedProduct, bookingProduct]);
 
+  // Add scrollbar styles dynamically
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+      .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+      .custom-scroll::-webkit-scrollbar-thumb { background-color: #fbd38d; border-radius: 20px; }
+      .custom-scroll::-webkit-scrollbar-thumb:hover { background-color: #f6ad55; }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] font-sans text-gray-800">
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
@@ -860,13 +876,6 @@ export default function SanskaraaApp() {
       <AnimatePresence>
         {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       </AnimatePresence>
-
-      {/* Global Styles */}
-      <style jsx global>{`
-        .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
-        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-scroll::-webkit-scrollbar-thumb { background-color: #fbd38d; border-radius: 20px; }
-      `}</style>
     </div>
   );
 }
