@@ -590,7 +590,7 @@ const ServiceDetailModal = ({ service, isOpen, onClose, onBookNow }) => {
             </div>
 
             {/* Details */}
-            <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-4 sm:space-y-6 mt-12">
               <div>
                 <h3 className="font-semibold text-gray-900 text-sm sm:text-base mb-2">Service Details</h3>
                 <p className="text-gray-600 leading-relaxed text-xs sm:text-sm">
@@ -652,8 +652,8 @@ const ServiceDetailModal = ({ service, isOpen, onClose, onBookNow }) => {
         </div>
 
         {/* Footer */}
-        <div className="p-4 sm:p-6 border-t border-gray-100">
-          <div className="flex gap-2 sm:gap-3 lg:gap-4">
+        <div className="p-4 sm:p-6 border-t border-gray-100 mb-12">
+          <div className="flex gap-2 sm:gap-3 lg:gap-4 ">
             <button
               onClick={onClose}
               className="flex-1 py-2 sm:py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-sm sm:text-base"
