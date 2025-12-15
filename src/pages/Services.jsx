@@ -28,23 +28,23 @@ const THEME = {
 // --------------------------- Services Data ---------------------------
 const servicesData = {
   venues: [
-    { id: 1, name: "Luxury Wedding Hall", img: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&fit=crop", rating: 4.9, price: 150000, reviews: 156, category: "Luxury", location: "Delhi", trending: true, discount: 15 },
-    { id: 2, name: "Garden Wedding Venue", img: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&fit=crop", rating: 4.7, price: 120000, reviews: 89, category: "Outdoor", location: "Mumbai" },
+    { id: 1, name: "Luxury Wedding Hall", img: "images/hall01.png", rating: 4.9, price: 150000, reviews: 156, category: "Luxury", location: "Delhi", trending: true, discount: 15 },
+    { id: 2, name: "Garden Wedding Venue", img: "images/hall03.png", rating: 4.7, price: 120000, reviews: 89, category: "Outdoor", location: "Mumbai" },
   ],
   decorations: [
-    { id: 3, name: "Royal Mandap Decor", img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&fit=crop", rating: 4.7, price: 25000, reviews: 128, category: "Mandap", location: "Delhi", discount: 10, trending: true },
-    { id: 4, name: "Floral Stage Decoration", img: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=800&fit=crop", rating: 4.5, price: 18000, reviews: 89, category: "Floral", location: "Mumbai" },
+    { id: 3, name: "Royal Mandap Decor", img: "images/decor3.png", rating: 4.7, price: 25000, reviews: 128, category: "Mandap", location: "Delhi", discount: 10, trending: true },
+    { id: 4, name: "Floral Stage Decoration", img: "images/decor2.png", rating: 4.5, price: 18000, reviews: 89, category: "Floral", location: "Mumbai" },
   ],
   catering: [
-    { id: 5, name: "Premium Vegetarian", img: "https://images.unsplash.com/photo-1555244162-803834f70033?w=800&fit=crop", rating: 4.8, price: 499, unit: "/plate", reviews: 245, category: "Vegetarian", location: "Delhi" },
-    { id: 6, name: "Non-Veg Feast", img: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&fit=crop", rating: 4.7, price: 699, unit: "/plate", reviews: 178, category: "Non-Veg", location: "Mumbai" },
+    { id: 5, name: "Premium Vegetarian", img: "images/catring01.png", rating: 4.8, price: 499, unit: "/plate", reviews: 245, category: "Vegetarian", location: "Delhi" },
+    { id: 6, name: "Non-Veg Feast", img: "images/catring03.png", rating: 4.7, price: 699, unit: "/plate", reviews: 178, category: "Non-Veg", location: "Mumbai" },
   ],
   photography: [
-    { id: 7, name: "Cinematic Weddings", img: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=800&fit=crop", rating: 4.9, price: 45000, reviews: 203, category: "Premium", location: "Mumbai", trending: true },
+    { id: 7, name: "Cinematic Weddings", img: "images/photography2.png", rating: 4.9, price: 45000, reviews: 203, category: "Premium", location: "Mumbai", trending: true },
   ],
   entertainment: [
-    { id: 8, name: "DJ Night", img: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=800&fit=crop", rating: 4.5, price: 25000, category: "DJ", location: "Bangalore" },
-    { id: 9, name: "Live Orchestra", img: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800&fit=crop", rating: 4.6, price: 50000, category: "Band", location: "Delhi" },
+    { id: 8, name: "DJ Night", img: "images/dj1.png", rating: 4.5, price: 25000, category: "DJ", location: "Bangalore" },
+    { id: 9, name: "Live Orchestra", img: "images/dj2.png", rating: 4.6, price: 50000, category: "Band", location: "Delhi" },
   ],
   artist: [
     { id: 10, name: "Wedding Anchor", img: "https://images.unsplash.com/photo-1545239351-ef35f43d514b?w=800&fit=crop", rating: 4.8, price: 35000, category: "Anchor", location: "Delhi", trending: true },
