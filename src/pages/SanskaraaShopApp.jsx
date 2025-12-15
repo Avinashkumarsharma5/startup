@@ -741,7 +741,7 @@ Total: ₹${(product.price * formData.quantity).toLocaleString()}`;
         {step > 1 && (
           <button 
             onClick={() => setStep(s => s - 1)}
-            className="px-4 py-2.5 border border-gray-300 rounded-lg font-medium text-gray-700 text-sm active:bg-gray-50"
+            className="px-4 py-2.5 border border-gray-300 rounded-lg font-medium text-gray-700 text-sm active:bg-gray-50 mb-12"
           >
             Back
           </button>
