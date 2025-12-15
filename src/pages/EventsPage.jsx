@@ -48,14 +48,14 @@ const rentalProducts = [
   // ========== SOUND & AUDIO EQUIPMENT ==========
   {
     id: 101,
-    name: "DJ Console (Pioneer/Numark)",
+    name: "DJ Console Setup",
     price: 3000,
     category: "Sound & Audio",
     unit: "per day",
     imgGallery: [
-      "https://images.unsplash.com/photo-1571974599782-87624638275f?w=400",
-      "https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=400",
-      "https://images.unsplash.com/photo-1601312247853-0637f7a22c89?w=400"
+      "images/dj2.png",
+      "images/dj1.png",
+      "images/decor2.png"
     ],
     video: "https://assets.mixkit.co/videos/preview/mixkit-dj-mixing-in-a-night-club-5-large.mp4",
     description: "Professional DJ controllers from Pioneer or Numark for seamless mixing",
