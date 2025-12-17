@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
@@ -23,14 +23,22 @@ import CartPage from "./components/layout/CartPage";
 import ForgetPassword from "./pages/ForgetPassword";
 import SanskaraaShopApp from "./pages/SanskaraaShopApp";
 
-
-
-
-
+import SanskaraaLoader from "./components/layout/SanskaraaLoader";
 
 export default function App() {
   const location = useLocation();
+
   const [micOpen, setMicOpen] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
+
+  // 🔥 Show loader only once on app load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLoader(false);
+    }, 2500); // loader duration
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Pages where navbar & footer should NOT appear
   const noLayoutRoutes = [
@@ -44,20 +52,26 @@ export default function App() {
     "/alphastore/order-success"
   ];
 
-  // Convert URL to lowercase to avoid mismatch issues
-  const hideLayout = noLayoutRoutes.includes(location.pathname.toLowerCase());
+  const hideLayout = noLayoutRoutes.includes(
+    location.pathname.toLowerCase()
+  );
 
   const handleMicClick = () => setMicOpen(true);
   const handleMicClose = () => setMicOpen(false);
 
+  // 🔥 Loader Overlay (Top Priority)
+  if (showLoader) {
+    return <SanskaraaLoader />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Toaster position="top-right" />
+
       {!hideLayout && <Navbar onMicClick={handleMicClick} />}
 
       <main className="flex-grow relative">
         <Routes>
-          {/* Default */}
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />
           <Route path="/pujakits" element={<PujaKits />} />
@@ -70,19 +84,27 @@ export default function App() {
 
           {/* Pages */}
           <Route path="/panditbooking" element={<PanditBooking />} />
-          <Route path="/EventsPage" element={<EventsPage />} />
-          <Route path="/BookingsPage" element={<BookingsPage />} />
-          <Route path="/UserProfile" element={<UserProfile />} />
+          <Route path="/eventspage" element={<EventsPage />} />
+          <Route path="/bookingspage" element={<BookingsPage />} />
+          <Route path="/userprofile" element={<UserProfile />} />
           <Route path="/search" element={<SearchPage />} />
-          <Route path="/service-provider/profile" element={<ServiceProviderProfile />} />
-          <Route path="/vendor-registration" element={<VendorRegistration />} />
-          <Route path="/notifications" element={<SanskaraaNotifications />} />
+          <Route
+            path="/service-provider/profile"
+            element={<ServiceProviderProfile />}
+          />
+          <Route
+            path="/vendor-registration"
+            element={<VendorRegistration />}
+          />
+          <Route
+            path="/notifications"
+            element={<SanskaraaNotifications />}
+          />
           <Route path="/cart" element={<CartPage />} />
-          <Route path="/SanskaraaShopApp" element={<SanskaraaShopApp />} />
-
-          
-
-         
+          <Route
+            path="/sanskaraashopapp"
+            element={<SanskaraaShopApp />}
+          />
         </Routes>
 
         {/* Voice Assistant */}
