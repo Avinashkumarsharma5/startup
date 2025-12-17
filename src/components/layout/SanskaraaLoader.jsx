@@ -2,8 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 const messages = [
-  "Preparing sacred services…",
-  "Arranging divine experiences…",
+ 
   "Connecting traditions with technology…"
 ];
 
@@ -16,21 +15,11 @@ const SanskaraaLoader = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
-    }, 6000);
+    }, 8000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  /* 🔔 Soft temple bell */
-  useEffect(() => {
-    const audio = new Audio("/sounds/temple-bell.mp3");
-    audio.volume = 0.12;
-    audio.play().catch(() => {});
-    return () => {
-      audio.pause();
-      audio.currentTime = 0;
-    };
-  }, []);
 
   /* 🔁 Message rotation */
   useEffect(() => {
@@ -126,15 +115,7 @@ const SanskaraaLoader = () => {
               Sanskaraa
             </motion.h1>
 
-            {/* ✨ Tagline */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 }}
-              className="text-sm tracking-widest text-amber-300/80"
-            >
-              Ārambh se Sampūrṇ tak…
-            </motion.p>
+            
 
             {/* ⏳ Status Text */}
             <AnimatePresence mode="wait">
