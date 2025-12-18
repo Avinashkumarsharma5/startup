@@ -436,19 +436,16 @@ function AnimatedSearch({ onVoiceSearch }) {
 function HeroBanner() {
   const slides = [
     {
-      id: 1,
       img: "/images/grrih1.png",
       title: "Griha Pravesh Puja",
       subtitle: "Sacred beginnings with blessings",
     },
     {
-      id: 2,
       img: "/images/havan.jpg",
       title: "Satyanarayan Puja",
       subtitle: "Invoke prosperity & harmony",
     },
     {
-      id: 3,
       img: "/images/decor2.png",
       title: "Wedding Rituals",
       subtitle: "Memorable sacred unions",
@@ -456,70 +453,49 @@ function HeroBanner() {
   ];
 
   const [index, setIndex] = useState(0);
-  const timerRef = useRef(null);
-
-  const next = () => setIndex((i) => (i + 1) % slides.length);
-  const prev = () => setIndex((i) => (i - 1 + slides.length) % slides.length);
-
-  const start = () => {
-    stop();
-    timerRef.current = setInterval(next, 4000);
-  };
-  const stop = () => timerRef.current && clearInterval(timerRef.current);
 
   useEffect(() => {
-    start();
-    return stop;
+    const timer = setInterval(
+      () => setIndex((i) => (i + 1) % slides.length),
+      4500
+    );
+    return () => clearInterval(timer);
   }, []);
 
   return (
-    <div
-      className="relative mt-4 sm:mt-6 rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg"
-      onMouseEnter={stop}
-      onMouseLeave={start}
-    >
-      <div
-        className="flex w-full transition-transform duration-700 ease-out"
-        style={{ transform: `translateX(-${index * 100}%)` }}
+    <div className="relative mt-4 sm:mt-6 h-52 sm:h-72 md:h-96 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl">
+      <motion.div
+        key={index}
+        initial={{ opacity: 0, scale: 1.08 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8 }}
+        className="absolute inset-0"
       >
-        {slides.map((s) => (
-          <div key={s.id} className="w-full shrink-0 relative h-48 sm:h-72 md:h-96">
-            <img
-              src={s.img}
-              alt={s.title}
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-black/10 to-transparent" />
-            <div className="absolute left-3 sm:left-5 bottom-3 sm:bottom-5 text-white drop-shadow-md max-w-[85%] sm:max-w-[60%]">
-              <p className="text-xs sm:text-sm opacity-90">{s.subtitle}</p>
-              <h3 className="text-base sm:text-xl md:text-2xl lg:text-3xl font-bold">{s.title}</h3>
-            </div>
-          </div>
-        ))}
-      </div>
+        <img
+          src={slides[index].img}
+          alt={slides[index].title}
+          className="w-full h-full object-cover"
+        />
 
-      {/* Controls */}
-      <button
-        onClick={prev}
-        className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-1.5 sm:p-2.5 shadow-md hover:bg-white transition-colors"
-      >
-        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-orange-500" />
-      </button>
-      <button
-        onClick={next}
-        className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-1.5 sm:p-2.5 shadow-md hover:bg-white transition-colors"
-      >
-        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-orange-500" />
-      </button>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+        <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 text-white max-w-[80%]">
+          <p className="text-xs sm:text-sm text-amber-300 tracking-widest uppercase">
+            {slides[index].subtitle}
+          </p>
+          <h2 className="text-lg sm:text-2xl md:text-3xl font-bold">
+            {slides[index].title}
+          </h2>
+        </div>
+      </motion.div>
 
       {/* Dots */}
-      <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 sm:gap-2">
+      <div className="absolute bottom-3 right-4 flex gap-2">
         {slides.map((_, i) => (
-          <button
+          <div
             key={i}
-            onClick={() => setIndex(i)}
-            className={`rounded-full transition-all ${
-              index === i ? "w-4 sm:w-6 h-1.5 bg-orange-500" : "w-2 h-1.5 bg-white/60"
+            className={`h-1.5 rounded-full transition-all ${
+              i === index ? "w-6 bg-amber-400" : "w-2 bg-white/50"
             }`}
           />
         ))}
@@ -527,6 +503,7 @@ function HeroBanner() {
     </div>
   );
 }
+
 
 // ----------------- Services -----------------
 function ServicesSection() {
@@ -542,7 +519,7 @@ function ServicesSection() {
   ];
 
   return (
-    <div className="mt-4 sm:mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+    <div className="mt-4 sm:mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 ">
       {services.map((service) => {
         const Icon = service.icon;
         return (
@@ -561,104 +538,120 @@ function ServicesSection() {
   );
 }
 
-// ----------------- Upcoming Events Section -----------------
-
-
+// ----------------- Upcoming Events Section (Improved) -----------------
 function UpcomingEvents() {
   const navigate = useNavigate();
 
+  // ✅ Correct days left calculation
   const getDaysUntil = (dateString) => {
-    const eventDate = new Date(dateString);
     const today = new Date();
-    const diffTime = today-eventDate;
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 255)); // fixed formula
-  };
-
-  const handleEventClick = (eventId) => {
-    // Redirect to EventsPage
-    navigate("/EventsPage");
+    const eventDate = new Date(dateString);
+    const diff = eventDate.setHours(0,0,0,0) - today.setHours(0,0,0,0);
+    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
   };
 
   return (
-    <div className="mt-4 sm:mt-6">
-      <div className="flex justify-between items-center mb-3">
-        <h3 className="text-lg sm:text-xl font-semibold text-[#800000]">Upcoming Events</h3>
-        <button 
-          onClick={() => navigate("/BookingsPage")}
-          className="text-xs sm:text-sm md:text-base text-orange-600 font-medium hover:text-orange-700 transition-colors"
+    <div className="mt-6">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-xl font-semibold text-[#800000]">
+          Upcoming Events & Festivals
+        </h3>
+        <button
+          onClick={() => navigate("/EventsPage")}
+          className="text-sm text-orange-600 font-medium hover:underline"
         >
-          View All
+          View All →
         </button>
       </div>
 
-      <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-3 sm:space-x-4 -mx-4 sm:-mx-6 px-4 sm:px-6">
-        {upcomingEvents.map(event => (
-          <div 
-            key={event.id}
-            className="inline-block align-top w-48 sm:w-56 md:w-64 bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-md border border-orange-200"
-          >
-            <div className="flex justify-between items-start">
-              <div className="min-w-0 flex-1">
-                <h4 className="font-medium text-gray-800 truncate text-sm sm:text-base">{event.name}</h4>
+      {/* Horizontal Cards */}
+      <div className="overflow-x-auto no-scrollbar pb-5 -mx-4 px-4">
+        <div className="flex gap-4">
+          {upcomingEvents.map((event) => {
+            const daysLeft = getDaysUntil(event.date);
+
+            return (
+              <motion.div
+                key={event.id}
+                whileHover={{ y: -6 }}
+                className="min-w-[220px] sm:min-w-[260px] bg-white rounded-2xl p-4 shadow-md border border-orange-200 relative"
+              >
+                {/* Badge */}
+                <span
+                  className={`absolute top-3 right-3 text-xs px-2 py-1 rounded-full font-medium
+                    ${
+                      event.type === "festival"
+                        ? "bg-amber-100 text-amber-800"
+                        : "bg-blue-100 text-blue-800"
+                    }`}
+                >
+                  {event.type === "festival" ? "Festival" : "Booking"}
+                </span>
+
+                {/* Title */}
+                <h4 className="font-semibold text-gray-800 text-sm sm:text-base pr-10">
+                  {event.name}
+                </h4>
+
+                {/* Date */}
                 <p className="text-xs sm:text-sm text-gray-600 mt-1">
                   {new Date(event.date).toLocaleDateString("en-IN", {
-                    day: "numeric", month: "short", year: "numeric"
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
                   })}
                 </p>
-              </div>
-              {event.type === "festival" && (
-                <span className="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full shrink-0 ml-2">
-                  Festival
-                </span>
-              )}
-            </div>
 
-            <div className="mt-2 sm:mt-3 flex items-center">
-              <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500 mr-1" />
-              <span className="text-xs sm:text-sm font-medium text-amber-700">
-                {getDaysUntil(event.date)} days left
-              </span>
-            </div>
+                {/* Countdown */}
+                <div className="flex items-center gap-2 mt-3">
+                  <Clock className="w-4 h-4 text-orange-500" />
+                  <span className="text-sm font-medium text-amber-700">
+                    {daysLeft === 0 ? "Today" : `${daysLeft} days left`}
+                  </span>
+                </div>
 
-            {/* ✅ On Click Navigate to EventsPage */}
-            <button 
-              onClick={() => handleEventClick(event.id)}
-              className="mt-2 sm:mt-3 w-full bg-amber-100 text-amber-800 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-amber-200 transition-colors"
-            >
-              {event.type === "festival" ? "Learn More" : "View Details"}
-            </button>
-          </div>
-        ))}
+                {/* CTA */}
+                <button
+                  onClick={() => navigate("/EventsPage")}
+                  className="mt-4 w-full bg-gradient-to-r from-amber-100 to-amber-200 text-amber-900 py-2 rounded-lg text-sm font-semibold hover:from-amber-200 hover:to-amber-300 transition"
+                >
+                  {event.type === "festival" ? "Explore Festival" : "View Details"}
+                </button>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 }
 
 
+
 // ----------------- Enhanced Upcoming Events with Loading -----------------
 function EnhancedUpcomingEvents() {
-  const [events, setEvents] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setEvents(upcomingEvents);
-      setLoading(false);
-    }, 1500);
+    const t = setTimeout(() => setLoading(false), 1200);
+    return () => clearTimeout(t);
   }, []);
 
   if (loading) {
     return (
-      <div className="mt-4 sm:mt-6">
-        <div className="flex justify-between items-center mb-3">
-          <div className="h-6 bg-gray-200 rounded w-32 animate-pulse"></div>
-          <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
-        </div>
-        <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-3 sm:space-x-4 -mx-4 sm:-mx-6 px-4 sm:px-6">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="inline-block w-48 sm:w-64">
-              <SkeletonLoader type="card" />
+      <div className="mt-6">
+        <div className="h-6 w-40 bg-gray-200 rounded animate-pulse mb-4" />
+        <div className="flex gap-4 overflow-x-auto -mx-4 px-4 pb-4">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="min-w-[220px] sm:min-w-[260px] bg-white rounded-2xl p-4 shadow-md border border-orange-200 animate-pulse"
+            >
+              <div className="h-4 bg-gray-200 rounded w-3/4 mb-3" />
+              <div className="h-3 bg-gray-200 rounded w-1/2 mb-4" />
+              <div className="h-4 bg-gray-200 rounded w-24 mb-4" />
+              <div className="h-9 bg-gray-200 rounded" />
             </div>
           ))}
         </div>
@@ -830,7 +823,7 @@ function PanditAvailability() {
   return (
     <div className="mt-4 sm:mt-6 bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 shadow-md border border-orange-200">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-2 sm:mb-3">
-        <h3 className="text-lg sm:text-xl font-semibold text-[#800000]">Pandit Assistance</h3>
+        <h3 className="text-lg sm:text-xl font-semibold text-[#800000]">Sanskaraa Assistance</h3>
         <div className="flex items-center">
           <div
             className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full mr-2 ${
@@ -869,56 +862,7 @@ function PanditAvailability() {
   );
 }
 
-// ----------------- Personalized Dashboard -----------------
-function DashboardSection() {
-  const navigate = useNavigate();
-  const [loyaltyPoints] = useState(350);
 
-  return (
-    <div className="mt-4 sm:mt-6">
-      <h3 className="text-lg sm:text-xl font-semibold text-[#800000] mb-3">Your Dashboard</h3>
-      
-      <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 shadow-md border border-orange-200">
-        <div className="flex justify-between items-center mb-3 sm:mb-4">
-          <h4 className="font-medium text-gray-800 text-sm sm:text-base">Loyalty Points</h4>
-          <span className="bg-amber-100 text-amber-800 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
-            {loyaltyPoints} points
-          </span>
-        </div>
-        
-        <p className="text-xs sm:text-sm md:text-base text-gray-600 mb-3 sm:mb-4">
-          Earn 50 points for every booking. Redeem points for discounts on future pujas.
-        </p>
-        
-        <div className="mb-4 sm:mb-5">
-          <h4 className="font-medium text-gray-800 mb-2 text-sm sm:text-base">Past Bookings</h4>
-          <div className="space-y-2">
-            {pastBookings.map(booking => (
-              <div key={booking.id} className="flex justify-between items-center p-2 bg-amber-50 rounded-lg">
-                <div>
-                  <p className="text-xs sm:text-sm font-medium">{booking.name}</p>
-                  <p className="text-xs text-gray-600">
-                    {new Date(booking.date).toLocaleDateString('en-IN')}
-                  </p>
-                </div>
-                <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                  Completed
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-        
-        <button 
-          onClick={() => navigate('/BookingsPage')}
-          className="self-start inline-flex bg-amber-100 text-amber-800 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium hover:bg-amber-200 transition-colors text-xs sm:text-sm"
-        >
-          View All Bookings
-        </button>
-      </div>
-    </div>
-  );
-}
 
 // ----------------- Enhanced Pandit Profile -----------------
 function EnhancedPanditProfile() {
@@ -1523,7 +1467,7 @@ export default function EnhancedHome() {
       <PersonalizedRecommendations />
       <GaneshPromo />
       <PanditAvailability />
-      <DashboardSection />
+     
       <EnhancedPanditProfile />
       <EnhancedPujaKits />
       <TestimonialsSection />
