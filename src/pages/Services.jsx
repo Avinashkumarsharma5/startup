@@ -26,37 +26,244 @@ const THEME = {
 };
 
 // --------------------------- Services Data ---------------------------
+// --------------------------- Services Data ---------------------------
 const servicesData = {
   venues: [
-    { id: 1, name: "Luxury Wedding Hall", img: "images/hall01.png", rating: 4.9, price: 150000, reviews: 156, category: "Luxury", location: "Delhi", trending: true, discount: 15 },
-    { id: 2, name: "Garden Wedding Venue", img: "images/hall03.png", rating: 4.7, price: 120000, reviews: 89, category: "Outdoor", location: "Mumbai" },
+    {
+      id: 1,
+      name: "Luxury Wedding Hall",
+      rating: 4.9,
+      price: 150000,
+      reviews: 156,
+      category: "Luxury",
+      location: "Delhi",
+      trending: true,
+      discount: 15,
+
+      media: [
+        { type: "video", src: "images/Luxury_Wedding_Hall.mp4" },
+        { type: "image", src: "images/hall01.png" },
+        { type: "image", src: "images/hall02.png" },
+        { type: "video", src: "images/Luxury_Wedding_Hall.mp4" }
+      ]
+    },
+    {
+      id: 2,
+      name: "Garden Wedding Venue",
+      rating: 4.7,
+      price: 120000,
+      reviews: 89,
+      category: "Outdoor",
+      location: "Mumbai",
+
+      media: [
+        { type: "image", src: "images/hall03.png" },
+        { type: "video", src: "videos/garden-day.mp4" },
+        { type: "image", src: "images/hall04.png" }
+      ]
+    },
   ],
+
   decorations: [
-    { id: 3, name: "Royal Mandap Decor", img: "images/decor3.png", rating: 4.7, price: 25000, reviews: 128, category: "Mandap", location: "Delhi", discount: 10, trending: true },
-    { id: 4, name: "Floral Stage Decoration", img: "images/decor2.png", rating: 4.5, price: 18000, reviews: 89, category: "Floral", location: "Mumbai" },
+    {
+      id: 3,
+      name: "Royal Mandap Decor",
+      rating: 4.7,
+      price: 25000,
+      reviews: 128,
+      category: "Mandap",
+      location: "Delhi",
+      discount: 10,
+      trending: true,
+
+      media: [
+        { type: "video", src: "videos/mandap-setup.mp4" },
+        { type: "image", src: "images/decor3.png" },
+        { type: "image", src: "images/decor2.png" },
+        { type: "video", src: "videos/mandap-close.mp4" }
+      ]
+    },
+    {
+      id: 4,
+      name: "Floral Stage Decoration",
+      rating: 4.5,
+      price: 18000,
+      reviews: 89,
+      category: "Floral",
+      location: "Mumbai",
+
+      media: [
+        { type: "image", src: "images/decor2.png" },
+        { type: "video", src: "videos/floral-stage.mp4" }
+      ]
+    },
   ],
+
   catering: [
-    { id: 5, name: "Premium Vegetarian", img: "images/catring01.png", rating: 4.8, price: 499, unit: "/plate", reviews: 245, category: "Vegetarian", location: "Delhi" },
-    { id: 6, name: "Non-Veg Feast", img: "images/catring03.png", rating: 4.7, price: 699, unit: "/plate", reviews: 178, category: "Non-Veg", location: "Mumbai" },
+    {
+      id: 5,
+      name: "Premium Vegetarian",
+      rating: 4.8,
+      price: 499,
+      unit: "/plate",
+      reviews: 245,
+      category: "Vegetarian",
+      location: "Delhi",
+
+      media: [
+        { type: "video", src: "videos/veg-thali.mp4" },
+        { type: "image", src: "images/catring01.png" },
+        { type: "image", src: "images/catring02.png" }
+      ]
+    },
+    {
+      id: 6,
+      name: "Non-Veg Feast",
+      rating: 4.7,
+      price: 699,
+      unit: "/plate",
+      reviews: 178,
+      category: "Non-Veg",
+      location: "Mumbai",
+
+      media: [
+        { type: "video", src: "videos/nonveg-buffet.mp4" },
+        { type: "image", src: "images/catring03.png" }
+      ]
+    },
   ],
+
   photography: [
-    { id: 7, name: "Cinematic Weddings", img: "images/photography2.png", rating: 4.9, price: 45000, reviews: 203, category: "Premium", location: "Mumbai", trending: true },
+    {
+      id: 7,
+      name: "Cinematic Weddings",
+      rating: 4.9,
+      price: 45000,
+      reviews: 203,
+      category: "Premium",
+      location: "Mumbai",
+      trending: true,
+
+      media: [
+        { type: "video", src: "videos/cinematic-reel.mp4" },
+        { type: "image", src: "images/photography2.png" },
+        { type: "video", src: "videos/prewedding.mp4" }
+      ]
+    },
   ],
+
   entertainment: [
-    { id: 8, name: "DJ Night", img: "images/dj1.png", rating: 4.5, price: 25000, category: "DJ", location: "Bangalore" },
-    { id: 9, name: "Live Orchestra", img: "images/dj2.png", rating: 4.6, price: 50000, category: "Band", location: "Delhi" },
+    {
+      id: 8,
+      name: "DJ Night",
+      rating: 4.5,
+      price: 25000,
+      category: "DJ",
+      location: "Bangalore",
+
+      media: [
+        { type: "video", src: "videos/dj-night.mp4" },
+        { type: "image", src: "images/dj1.png" }
+      ]
+    },
+    {
+      id: 9,
+      name: "Live Orchestra",
+      rating: 4.6,
+      price: 50000,
+      category: "Band",
+      location: "Delhi",
+
+      media: [
+        { type: "video", src: "videos/orchestra-live.mp4" },
+        { type: "image", src: "images/dj2.png" }
+      ]
+    },
   ],
+
   artist: [
-    { id: 10, name: "Wedding Anchor", img: "https://images.unsplash.com/photo-1545239351-ef35f43d514b?w=800&fit=crop", rating: 4.8, price: 35000, category: "Anchor", location: "Delhi", trending: true },
-    { id: 11, name: "Folk Dancers", img: "https://images.unsplash.com/photo-1547153760-18fc86324498?w=800&fit=crop", rating: 4.7, price: 45000, category: "Dance", location: "Mumbai" },
+    {
+      id: 10,
+      name: "Wedding Anchor",
+      rating: 4.8,
+      price: 35000,
+      category: "Anchor",
+      location: "Delhi",
+      trending: true,
+
+      media: [
+        { type: "video", src: "videos/anchor-stage.mp4" },
+        { type: "image", src: "https://images.unsplash.com/photo-1545239351-ef35f43d514b?w=800" }
+      ]
+    },
+    {
+      id: 11,
+      name: "Folk Dancers",
+      rating: 4.7,
+      price: 45000,
+      category: "Dance",
+      location: "Mumbai",
+
+      media: [
+        { type: "video", src: "videos/folk-dance.mp4" },
+        { type: "image", src: "https://images.unsplash.com/photo-1547153760-18fc86324498?w=800" }
+      ]
+    },
   ],
+
   other: [
-    { id: 20, name: "Full Planning", img: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=800&fit=crop", rating: 4.9, price: 100000, category: "Planning", trending: true },
-    { id: 21, name: "Bridal Makeup", img: "https://images.unsplash.com/photo-1596464716127-f2a82984de30?w=800&fit=crop", rating: 4.8, price: 25000, category: "Beauty" },
-    { id: 22, name: "Mehndi Art", img: "https://images.unsplash.com/photo-1618517351616-38d9dd3b1c67?w=800&fit=crop", rating: 4.7, price: 15000, category: "Beauty" },
-    { id: 23, name: "Car Decor", img: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?w=800&fit=crop", rating: 4.5, price: 8000, category: "Decor" },
+    {
+      id: 20,
+      name: "Full Planning",
+      rating: 4.9,
+      price: 100000,
+      category: "Planning",
+      trending: true,
+
+      media: [
+        { type: "video", src: "videos/full-planning.mp4" },
+        { type: "image", src: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=800" }
+      ]
+    },
+    {
+      id: 21,
+      name: "Bridal Makeup",
+      rating: 4.8,
+      price: 25000,
+      category: "Beauty",
+
+      media: [
+        { type: "video", src: "videos/bridal-makeup.mp4" },
+        { type: "image", src: "https://images.unsplash.com/photo-1596464716127-f2a82984de30?w=800" }
+      ]
+    },
+    {
+      id: 22,
+      name: "Mehndi Art",
+      rating: 4.7,
+      price: 15000,
+      category: "Beauty",
+
+      media: [
+        { type: "video", src: "videos/mehndi.mp4" },
+        { type: "image", src: "https://images.unsplash.com/photo-1618517351616-38d9dd3b1c67?w=800" }
+      ]
+    },
+    {
+      id: 23,
+      name: "Car Decor",
+      rating: 4.5,
+      price: 8000,
+      category: "Decor",
+
+      media: [
+        { type: "video", src: "videos/car-decor.mp4" },
+        { type: "image", src: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?w=800" }
+      ]
+    },
   ]
 };
+
 
 // --------------------------- Categories ---------------------------
 const categories = [
@@ -530,149 +737,211 @@ const BookingSuccessModal = ({ booking, isOpen, onClose }) => {
 };
 
 const ServiceDetailModal = ({ service, isOpen, onClose, onBookNow }) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  /* ================== HOOKS (ALWAYS TOP) ================== */
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
-  if (!isOpen) return null;
+  const media = service?.media || [];
 
+  useEffect(() => {
+    if (media[currentMediaIndex]?.type === "video") {
+      const timer = setTimeout(() => setIsVideoPlaying(true), 300);
+      return () => clearTimeout(timer);
+    }
+    setIsVideoPlaying(false);
+  }, [currentMediaIndex, media]);
+
+  /* ================== EARLY RETURN (AFTER HOOKS) ================== */
+  if (!isOpen || !service) return null;
+
+  /* ================== HANDLERS ================== */
+  const prevMedia = () => {
+    setCurrentMediaIndex((p) => (p === 0 ? media.length - 1 : p - 1));
+    setIsVideoPlaying(false);
+  };
+
+  const nextMedia = () => {
+    setCurrentMediaIndex((p) => (p === media.length - 1 ? 0 : p + 1));
+    setIsVideoPlaying(false);
+  };
+
+  /* ================== JSX ================== */
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4"
       onClick={onClose}
+      className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
     >
       <motion.div
-        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.9, opacity: 0, y: 20 }}
-        className="bg-white rounded-xl sm:rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto mx-2"
+        initial={{ scale: 0.9, y: 40, opacity: 0 }}
+        animate={{ scale: 1, y: 0, opacity: 1 }}
+        exit={{ scale: 0.9, y: 40, opacity: 0 }}
+        transition={{ type: "spring", stiffness: 180, damping: 18 }}
         onClick={(e) => e.stopPropagation()}
+        className="
+          relative w-full max-w-5xl max-h-[92vh] overflow-y-auto
+          rounded-2xl lg:rounded-[2.8rem]
+          bg-gradient-to-b from-[#FFFDF5] via-white to-[#FFF6DD]
+          shadow-[0_30px_120px_rgba(255,215,0,0.35)]
+          border border-[#FFD700]/40
+        "
       >
-        {/* Header */}
-        <div className="p-4 sm:p-6 border-b border-gray-100">
-          <div className="flex items-center justify-between">
-            <div className="flex-1 min-w-0">
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-serif font-bold text-[#800000] truncate">{service.name}</h2>
-              <div className="flex items-center gap-2 sm:gap-4 mt-2 flex-wrap">
-                <div className="flex items-center gap-1">
-                  <Star size={12} className="sm:w-3 sm:h-3 lg:w-4 lg:h-4 text-[#FFD700] fill-current" />
-                  <span className="font-semibold text-xs sm:text-sm lg:text-base">{service.rating}</span>
-                  <span className="text-gray-600 text-xs sm:text-sm">({service.reviews} reviews)</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <MapPin size={12} className="sm:w-3 sm:h-3 lg:w-4 lg:h-4 text-[#800000]" />
-                  <span className="text-gray-600 text-xs sm:text-sm">{service.location}</span>
-                </div>
-              </div>
-            </div>
-            <button
-              onClick={onClose}
-              className="p-1 sm:p-2 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 ml-2"
-            >
-              <X size={18} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
-            </button>
-          </div>
-        </div>
+        {/* ❌ Close */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-40 w-10 h-10 rounded-full
+          bg-white/70 backdrop-blur border border-gray-200
+          flex items-center justify-center shadow-lg hover:bg-white"
+        >
+          <X className="w-5 h-5 text-[#800000]" />
+        </button>
 
-        {/* Content */}
-        <div className="p-4 sm:p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-            {/* Image Gallery */}
-            <div>
-              <div className="rounded-lg sm:rounded-2xl overflow-hidden mb-3 sm:mb-4">
-                <img 
-                  src={service.img} 
-                  alt={service.name}
-                  className="w-full h-40 sm:h-48 lg:h-64 xl:h-80 object-cover"
+        {/* ================== HERO MEDIA ================== */}
+        <div className="relative h-60 sm:h-72 lg:h-96 rounded-t-2xl lg:rounded-t-[2.8rem] overflow-hidden mt-3">
+
+          {media.length > 0 ? (
+            <>
+              {media[currentMediaIndex].type === "video" ? (
+                <video
+                  src={media[currentMediaIndex].src}
+                  autoPlay={isVideoPlaying}
+                  controls={isVideoPlaying}
+                  muted
+                  playsInline
+                  preload="metadata"
+                  className="w-full h-full object-cover"
                 />
+              ) : (
+                <img
+                  src={media[currentMediaIndex].src}
+                  alt={service.name}
+                  className="w-full h-full object-cover"
+                />
+              )}
+
+              {/* ⬅️➡️ Arrows */}
+              {media.length > 1 && (
+                <>
+                  <button
+                    onClick={prevMedia}
+                    className="absolute left-3 top-1/2 -translate-y-1/2
+                    w-10 h-10 rounded-full bg-black/60 text-white
+                    flex items-center justify-center hover:bg-black/80 z-20"
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+                  <button
+                    onClick={nextMedia}
+                    className="absolute right-3 top-1/2 -translate-y-1/2
+                    w-10 h-10 rounded-full bg-black/60 text-white
+                    flex items-center justify-center hover:bg-black/80 z-20"
+                  >
+                    <ChevronRight size={18} />
+                  </button>
+                </>
+              )}
+
+              {/* 🔘 Dots */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+                {media.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      setCurrentMediaIndex(i);
+                      setIsVideoPlaying(false);
+                    }}
+                    className={`w-3 h-3 rounded-full transition-all ${
+                      i === currentMediaIndex
+                        ? "bg-[#FFD700] scale-110"
+                        : "bg-white/60"
+                    }`}
+                  />
+                ))}
               </div>
+            </>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-200">
+              No Media Available
             </div>
+          )}
 
-            {/* Details */}
-            <div className="space-y-4 sm:space-y-6 mt-12">
-              <div>
-                <h3 className="font-semibold text-gray-900 text-sm sm:text-base mb-2">Service Details</h3>
-                <p className="text-gray-600 leading-relaxed text-xs sm:text-sm">
-                  {service.description || "Experience premium service with attention to detail and traditional craftsmanship."}
-                </p>
-              </div>
+          {/* 🎭 Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1a0505]/90 via-[#1a0505]/30 to-transparent pointer-events-none" />
 
-              <div>
-                <h3 className="font-semibold text-gray-900 text-sm sm:text-base mb-2 sm:mb-3">Features</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2">
-                  {service.features?.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <CheckCircle size={12} className="sm:w-3 sm:h-3 lg:w-4 lg:h-4 text-green-600 flex-shrink-0" />
-                      <span className="text-xs sm:text-sm text-gray-600">{feature}</span>
-                    </div>
-                  )) || (
-                    <>
-                      <div className="flex items-center gap-2">
-                        <CheckCircle size={12} className="sm:w-3 sm:h-3 lg:w-4 lg:h-4 text-green-600 flex-shrink-0" />
-                        <span className="text-xs sm:text-sm text-gray-600">Premium Quality</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <CheckCircle size={12} className="sm:w-3 sm:h-3 lg:w-4 lg:h-4 text-green-600 flex-shrink-0" />
-                        <span className="text-xs sm:text-sm text-gray-600">Professional Team</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <CheckCircle size={12} className="sm:w-3 sm:h-3 lg:w-4 lg:h-4 text-green-600 flex-shrink-0" />
-                        <span className="text-xs sm:text-sm text-gray-600">Timely Delivery</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <CheckCircle size={12} className="sm:w-3 sm:h-3 lg:w-4 lg:h-4 text-green-600 flex-shrink-0" />
-                        <span className="text-xs sm:text-sm text-gray-600">Customizable</span>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
+          {/* 🏷️ Badge */}
+          <div className="absolute top-4 left-4 px-4 py-1 rounded-full
+            bg-gradient-to-r from-[#FFD700] to-[#FFA500]
+            text-[#1a0505] text-xs font-bold shadow-xl">
+            PREMIUM SERVICE
+          </div>
 
-              <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
-                <h3 className="font-semibold text-gray-900 text-sm sm:text-base mb-2 sm:mb-3">Pricing</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 text-xs sm:text-sm">Starting Price</span>
-                    <span className="text-lg sm:text-xl lg:text-2xl font-bold text-[#800000]">
-                      ₹{service.price.toLocaleString()}
-                      {service.unit && <span className="text-xs sm:text-sm font-normal ml-1">{service.unit}</span>}
-                    </span>
-                  </div>
-                  {service.discount && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600 text-xs sm:text-sm">Discount</span>
-                      <span className="text-green-600 font-semibold text-xs sm:text-sm">{service.discount}% OFF</span>
-                    </div>
-                  )}
-                </div>
-              </div>
+          {/* 📌 Title */}
+          <div className="absolute bottom-6 left-6 right-6 text-white">
+            <h2 className="text-2xl lg:text-4xl font-serif font-bold">
+              {service.name}
+            </h2>
+            <div className="flex items-center gap-3 mt-2 text-sm">
+              <Star className="w-4 h-4 fill-[#FFD700]" />
+              {service.rating}
+              <MapPin className="w-4 h-4 text-[#FFD700]" />
+              {service.location || "India"}
             </div>
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="p-4 sm:p-6 border-t border-gray-100 mb-12">
-          <div className="flex gap-2 sm:gap-3 lg:gap-4 ">
-            <button
-              onClick={onClose}
-              className="flex-1 py-2 sm:py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-sm sm:text-base"
-            >
-              Close
-            </button>
-            <button
+        {/* ================== CONTENT ================== */}
+        <div className="p-6 lg:p-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div>
+            <h3 className="text-lg font-serif font-bold text-[#800000] mb-2">
+              About This Service
+            </h3>
+            <p className="text-stone-600 text-sm leading-relaxed">
+              {service.description ||
+                "A premium service curated with tradition and executed with luxury."}
+            </p>
+          </div>
+
+          <div className="bg-white/80 backdrop-blur rounded-2xl p-6 border border-[#FFD700]/30 shadow-lg">
+            <h3 className="text-lg font-serif font-bold text-[#800000] mb-4">
+              Pricing
+            </h3>
+
+            <div className="flex justify-between items-center">
+              <span className="text-stone-600 text-sm">Starting From</span>
+              <span className="text-2xl font-bold text-[#800000]">
+                ₹{service.price.toLocaleString()}
+                {service.unit && (
+                  <span className="text-sm text-stone-400 ml-1">
+                    {service.unit}
+                  </span>
+                )}
+              </span>
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => onBookNow(service)}
-              className="flex-1 py-2 sm:py-3 bg-[#800000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors font-semibold text-sm sm:text-base flex items-center justify-center gap-2"
+              className="
+                mt-6 w-full py-3 rounded-full
+                bg-gradient-to-r from-[#800000] via-[#A52A2A] to-[#800000]
+                text-white font-bold tracking-wide
+                shadow-[0_10px_40px_rgba(128,0,0,0.45)]
+                hover:shadow-[0_15px_60px_rgba(255,215,0,0.6)]
+              "
             >
-              <MessageCircle size={14} className="sm:w-4 sm:h-4 lg:w-5 lg:h-5 " />
-              Book Now
-            </button>
+              Book This Premium Service
+            </motion.button>
           </div>
         </div>
       </motion.div>
     </motion.div>
   );
 };
+
+
 
 // --------------------------- Enhanced Responsive Components ---------------------------
 const FloatingParticles = () => {
@@ -818,114 +1087,178 @@ const SupportFloatingButton = () => {
 };
 
 const ServiceCard = ({ service, onBook, onToggleWishlist, isWishlisted, onViewDetails }) => {
+  const imageMedia = service.media?.find(m => m.type === "image");
+  const videoMedia = service.media?.find(m => m.type === "video");
+  
   return (
-    <motion.div 
+    <motion.div
       layout
-      whileHover={{ y: -4 }}
-      className="group bg-white rounded-lg sm:rounded-xl lg:rounded-[2rem] border border-[#FFD700]/20 shadow-sm hover:shadow-[0_8px_30px_rgba(128,0,0,0.1)] transition-all duration-500 overflow-hidden relative h-full flex flex-col"
+      whileHover={{ y: -8 }}
+      transition={{ type: "spring", stiffness: 200, damping: 15 }}
+      className="
+        group relative h-full flex flex-col overflow-hidden
+        rounded-2xl lg:rounded-[2.5rem]
+        bg-gradient-to-b from-white to-[#FFF7E0]
+        border border-[#FFD700]/30
+        shadow-[0_10px_40px_rgba(128,0,0,0.15)]
+        hover:shadow-[0_20px_70px_rgba(255,215,0,0.35)]
+        transition-all duration-700
+      "
     >
-      {/* Discount Ribbon */}
-      {service.discount && (
-        <div className="absolute top-0 right-0 z-20 overflow-hidden rounded-tr-lg sm:rounded-tr-xl lg:rounded-tr-[2rem]">
-          <div className="bg-[#800000] text-white text-[8px] sm:text-[9px] lg:text-[10px] font-bold px-1.5 sm:px-2 lg:px-3 py-0.5 sm:py-1 rounded-bl-md sm:rounded-bl-lg lg:rounded-bl-2xl shadow-md">
-            {service.discount}% OFF
-          </div>
-        </div>
-      )}
+      {/* 🌟 Gold Glow Border */}
+      <div className="absolute inset-0 rounded-[inherit] ring-1 ring-transparent group-hover:ring-[#FFD700]/70 transition-all duration-700 pointer-events-none" />
 
-      {/* Image Section */}
-      <div className="relative h-32 sm:h-36 lg:h-40 xl:h-48 overflow-hidden cursor-pointer" onClick={onViewDetails}>
-        <img 
-          src={service.img} 
-          alt={service.name} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-        />
-        
-        {/* Glass Reflection */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-        
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1a0505]/80 via-[#1a0505]/20 to-transparent opacity-80"></div>
+      {/* 👑 VIP Badge */}
+      <div className="absolute top-3 right-3 z-30">
+        <span className="px-3 py-1 text-[10px] font-bold tracking-widest uppercase
+          bg-gradient-to-r from-[#FFD700] to-[#FFA500]
+          text-[#1a0505] rounded-full shadow-lg">
+          Sanskaraa
+        </span>
+      </div>
 
-        {/* Floating Heart */}
-        <motion.button 
-          whileTap={{ scale: 0.8 }}
+      {/* 🎥 IMAGE / VIDEO SECTION */}
+<div
+  onClick={onViewDetails}
+  className="relative h-60 sm:h-60 lg:h-60 xl:h-72 overflow-hidden cursor-pointer group"
+>
+  {/* VIDEO PREVIEW (ALL DEVICES) */}
+  {videoMedia ? (
+    <video
+      src={videoMedia.src}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="auto"
+      poster={imageMedia?.src}
+      className="absolute inset-0 w-full h-full object-cover"
+    />
+  ) : imageMedia ? (
+    <img
+      src={imageMedia.src}
+      alt={service.name}
+      loading="lazy"
+      className="absolute inset-0 w-full h-full object-cover"
+    />
+  ) : null}
+
+  {/* 🎬 Cinematic Overlay */}
+  <div className="absolute inset-0 bg-gradient-to-t from-[#1a0505]/80 via-[#1a0505]/30 to-transparent pointer-events-none" />
+
+  {/* ✨ Shine Sweep */}
+  <div
+    className="
+      absolute inset-0
+      bg-gradient-to-r from-transparent via-white/20 to-transparent
+      translate-x-[-100%] group-hover:translate-x-[100%]
+      transition-transform duration-[1200ms]
+      pointer-events-none
+    "
+  />
+
+
+
+
+        {/* ❤️ Wishlist */}
+        <motion.button
+          whileTap={{ scale: 0.85 }}
           onClick={(e) => { e.stopPropagation(); onToggleWishlist(service.id); }}
-          className="absolute top-1.5 sm:top-2 lg:top-3 left-1.5 sm:left-2 lg:left-3 w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 rounded-full bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center hover:bg-white transition-all z-20 group/heart shadow-lg"
+          className="
+            absolute top-3 left-3 z-30
+            w-9 h-9 rounded-full
+            bg-white/20 backdrop-blur-xl
+            border border-white/40
+            flex items-center justify-center
+            shadow-xl
+          "
         >
-          <Heart className={`w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4 transition-colors ${
-            isWishlisted ? 'fill-[#800000] text-[#800000]' : 'text-white group-hover/heart:text-[#800000]'
-          }`} />
+          <Heart
+            className={`w-5 h-5 transition-all duration-300 ${
+              isWishlisted
+                ? "fill-[#800000] text-[#800000] scale-110"
+                : "text-white group-hover:text-[#FFD700]"
+            }`}
+          />
         </motion.button>
 
-        {/* Bottom Info on Image */}
-        <div className="absolute bottom-1.5 sm:bottom-2 lg:bottom-3 left-1.5 sm:left-2 lg:left-3 right-1.5 sm:right-2 lg:right-3 flex justify-between items-end text-white z-10">
+        {/* Bottom Info */}
+        <div className="absolute bottom-3 left-3 right-3 z-20 flex justify-between items-end text-white">
           <div>
-            <span className="inline-block px-1 sm:px-1.5 lg:px-2 py-0.5 bg-white/20 backdrop-blur-md border border-white/30 rounded text-[8px] sm:text-[9px] lg:text-[10px] font-semibold mb-0.5 sm:mb-1 tracking-wide uppercase text-[#FFD700]">
+            <span className="px-2 py-0.5 text-[10px] font-bold tracking-widest uppercase
+              bg-white/20 backdrop-blur border border-white/30 rounded text-[#FFD700]">
               {service.category}
             </span>
-            <div className="flex items-center gap-0.5 sm:gap-1 opacity-90">
-              <MapPin size={8} className="sm:w-2.5 sm:h-2.5 lg:w-3 lg:h-3 text-[#FFD700]" />
-              <span className="text-[8px] sm:text-[9px] lg:text-[10px] font-medium text-white">{service.location || 'India'}</span>
+            <div className="flex items-center gap-1 mt-1 text-[10px] opacity-90">
+              <MapPin size={12} className="text-[#FFD700]" />
+              {service.location || "India"}
             </div>
           </div>
-          <div className="flex items-center gap-0.5 sm:gap-1 bg-gradient-to-r from-[#FFD700] to-[#FFA500] px-1 sm:px-1.5 lg:px-2 py-0.5 sm:py-1 rounded text-[#1a0505]">
-            <Star size={8} className="sm:w-2.5 sm:h-2.5 lg:w-3 lg:h-3 fill-[#1a0505] text-[#1a0505]" />
-            <span className="text-[8px] sm:text-[9px] lg:text-[10px] font-bold">{service.rating}</span>
+
+          <div className="flex items-center gap-1 bg-gradient-to-r from-[#FFD700] to-[#FFA500]
+            px-2 py-1 rounded-full text-[#1a0505] shadow-lg">
+            <Star size={12} className="fill-[#1a0505]" />
+            <span className="text-xs font-bold">{service.rating}</span>
           </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-2 sm:p-3 lg:p-4 flex flex-col flex-1 relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-6 sm:w-8 lg:w-10 h-0.5 sm:h-1 bg-[#FFD700]/30 rounded-b-full opacity-50"></div>
-        
-        <h3 
-          className="font-serif font-bold text-sm sm:text-base lg:text-lg text-[#1a0505] mb-1 group-hover:text-[#800000] transition-colors leading-tight cursor-pointer line-clamp-2"
+      {/* 🧾 CONTENT */}
+      <div className="relative flex flex-col flex-1 p-4 lg:p-5">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-1
+          bg-gradient-to-r from-[#FFD700] to-[#FFA500] rounded-full opacity-70" />
+
+        <h3
           onClick={onViewDetails}
+          className="mt-2 font-serif font-bold text-base lg:text-lg xl:text-xl
+            text-[#1a0505] group-hover:text-[#800000]
+            transition-colors cursor-pointer line-clamp-2"
         >
           {service.name}
         </h3>
-        
-        <p className="text-stone-500 text-xs leading-relaxed mb-2 sm:mb-3 lg:mb-4 line-clamp-2">
-          {service.description || "Experience the finest traditional service crafted for your special day."}
+
+        <p className="mt-1 text-xs lg:text-sm text-stone-600 line-clamp-2">
+          {service.description || "Crafted with tradition, executed with luxury."}
         </p>
-        
-        <div className="mt-auto pt-2 sm:pt-3 border-t border-dashed border-[#FFD700]/30 flex items-center justify-between">
+
+        {/* Price + CTA */}
+        <div className="mt-auto pt-4 border-t border-dashed border-[#FFD700]/40 flex justify-between items-center">
           <div>
-            <p className="text-[8px] sm:text-[9px] lg:text-[10px] text-[#800000]/70 font-bold uppercase tracking-wider mb-0.5">
+            <p className="text-[10px] uppercase tracking-widest text-[#800000]/70 font-bold">
               Starting From
             </p>
-            <p className="text-base sm:text-lg lg:text-xl font-bold text-[#800000]">
+            <p className="text-lg lg:text-xl font-bold text-[#800000]">
               ₹{service.price.toLocaleString()}
-              {service.unit && <span className="text-xs text-stone-400 font-normal ml-0.5">{service.unit}</span>}
+              {service.unit && (
+                <span className="text-xs font-normal text-stone-400 ml-1">
+                  {service.unit}
+                </span>
+              )}
             </p>
           </div>
-          
-          <div className="flex gap-1 sm:gap-1.5 lg:gap-2">
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onViewDetails}
-              className="px-1.5 sm:px-2 lg:px-3 border border-[#800000] text-[#800000] rounded-full text-[10px] sm:text-xs font-semibold hover:bg-[#800000] hover:text-white transition-all whitespace-nowrap"
-            >
-              Details
-            </motion.button>
-            
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => onBook(service)}
-              className="px-1.5 sm:px-2 lg:px-3 bg-gradient-to-r from-[#800000] to-[#A52A2A] text-white rounded-full text-[10px] sm:text-xs font-semibold shadow-lg shadow-[#800000]/20 hover:shadow-[#800000]/40 transition-all flex items-center gap-0.5 whitespace-nowrap "
-            >
-              Book Now
-            </motion.button>
-          </div>
+
+          <motion.button
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => onBook(service)}
+            className="
+              px-4 py-2 rounded-full
+              bg-gradient-to-r from-[#800000] via-[#A52A2A] to-[#800000]
+              text-white text-xs font-bold tracking-wide
+              shadow-[0_8px_30px_rgba(128,0,0,0.4)]
+              hover:shadow-[0_12px_40px_rgba(255,215,0,0.6)]
+              transition-all
+            "
+          >
+            Book Now
+          </motion.button>
         </div>
       </div>
     </motion.div>
   );
 };
+
+
 
 const HeroSection = ({ query, setQuery, location, setLocation }) => {
   const { scrollY } = useScroll();
@@ -1105,109 +1438,6 @@ const FilterBar = ({ onSortChange, activeCategory, setActiveCategory, categories
   );
 };
 
-// --------------------------- Footer Component ---------------------------
-const Footer = () => {
-  return (
-    <footer className="bg-[#1a0505] text-white pt-8 sm:pt-12 lg:pt-16 pb-6 sm:pb-8 lg:pb-12 mt-12 sm:mt-16 lg:mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
-          {/* Brand Column */}
-          <div>
-            <div className="flex items-center gap-2 sm:gap-3 mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#800000] rounded-full flex items-center justify-center">
-                <span className="text-[#FFD700] font-serif font-bold text-lg sm:text-xl">S</span>
-              </div>
-              <div>
-                <h3 className="text-xl sm:text-2xl font-serif font-bold text-white">Sanskaraa</h3>
-                <p className="text-[#FFD700] text-xs sm:text-sm">India's Premium Wedding Platform</p>
-              </div>
-            </div>
-            <p className="text-gray-400 text-xs sm:text-sm mb-4">
-              Creating timeless memories with traditional elegance and modern luxury.
-            </p>
-            <div className="flex gap-3 sm:gap-4">
-              {[Facebook, Instagram, Twitter].map((Icon, index) => (
-                <a
-                  key={index}
-                  href="#"
-                  className="w-8 h-8 sm:w-10 sm:h-10 bg-white/10 hover:bg-[#800000] rounded-full flex items-center justify-center transition-colors"
-                >
-                  <Icon size={16} className="sm:w-5 sm:h-5" />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h4 className="font-serif font-bold text-lg sm:text-xl mb-4 text-[#FFD700]">Quick Links</h4>
-            <ul className="space-y-2 sm:space-y-3">
-              {['About Us', 'Services', 'Portfolio', 'Testimonials', 'Blog'].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-gray-300 hover:text-[#FFD700] text-sm sm:text-base transition-colors">
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Services */}
-          <div>
-            <h4 className="font-serif font-bold text-lg sm:text-xl mb-4 text-[#FFD700]">Services</h4>
-            <ul className="space-y-2 sm:space-y-3">
-              {['Venue Booking', 'Wedding Planning', 'Catering', 'Photography', 'Decor'].map((service) => (
-                <li key={service}>
-                  <a href="#" className="text-gray-300 hover:text-[#FFD700] text-sm sm:text-base transition-colors">
-                    {service}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div>
-            <h4 className="font-serif font-bold text-lg sm:text-xl mb-4 text-[#FFD700]">Contact Us</h4>
-            <div className="space-y-3 sm:space-y-4">
-              <div className="flex items-start gap-2 sm:gap-3">
-                <Phone size={16} className="sm:w-5 sm:h-5 text-[#FFD700] mt-1 flex-shrink-0" />
-                <div>
-                  <p className="font-semibold text-sm sm:text-base">Call Us</p>
-                  <p className="text-gray-300 text-xs sm:text-sm">+91 6201486202</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-2 sm:gap-3">
-                <Mail size={16} className="sm:w-5 sm:h-5 text-[#FFD700] mt-1 flex-shrink-0" />
-                <div>
-                  <p className="font-semibold text-sm sm:text-base">Email</p>
-                  <p className="text-gray-300 text-xs sm:text-sm">info@sanskaraa.com</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-2 sm:gap-3">
-                <MapPin size={16} className="sm:w-5 sm:h-5 text-[#FFD700] mt-1 flex-shrink-0" />
-                <div>
-                  <p className="font-semibold text-sm sm:text-base">Location</p>
-                  <p className="text-gray-300 text-xs sm:text-sm">Delhi, Mumbai, Udaipur, Bangalore</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Copyright */}
-        <div className="border-t border-white/10 mt-8 sm:mt-12 pt-6 sm:pt-8 text-center">
-          <p className="text-gray-400 text-xs sm:text-sm">
-            © {new Date().getFullYear()} Sanskaraa Weddings. All rights reserved.
-          </p>
-          <p className="text-gray-500 text-xs mt-1">
-            Crafted with ❤️ for your special moments
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
-};
 
 // --------------------------- Main App Component ---------------------------
 export default function App() {
@@ -1390,8 +1620,6 @@ export default function App() {
             </section>
         </main>
 
-        {/* Footer */}
-        <Footer />
 
         {/* Modals */}
         <ServiceDetailModal

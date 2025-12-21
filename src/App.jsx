@@ -22,6 +22,7 @@ import SanskaraaNotifications from "./pages/Notification";
 import CartPage from "./components/layout/CartPage";
 import ForgetPassword from "./pages/ForgetPassword";
 import SanskaraaShopApp from "./pages/SanskaraaShopApp";
+import EventManagement from "./pages/EventManagement";
 
 import SanskaraaLoader from "./components/layout/SanskaraaLoader";
 
@@ -88,6 +89,7 @@ export default function App() {
           <Route path="/bookingspage" element={<BookingsPage />} />
           <Route path="/userprofile" element={<UserProfile />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/eventmanagement" element={<EventManagement />} />
           <Route
             path="/service-provider/profile"
             element={<ServiceProviderProfile />}

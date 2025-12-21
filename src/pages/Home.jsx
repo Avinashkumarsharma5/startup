@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+
 import {
   Search,
   ChevronLeft,
@@ -19,8 +20,12 @@ import {
   Star,
   Clock,
   X,
-  ChevronDown
+  ChevronDown,
+  ShieldCheck ,  // ✅ ADD THIS
+  Briefcase   // ✅ ADD THIS
 } from "lucide-react";
+
+
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -514,7 +519,8 @@ function ServicesSection() {
     { name: "Book Pandit", icon: User, path: "/panditbooking" },
     { name: "Puja Kits", icon: Package, path: "/pujakits" },
     { name: "Services", icon: Sparkles, path: "/services" },
-    { name: "Essentials", icon: Sparkles, path: "/SanskaraaShopApp" }
+    { name: "Essentials", icon: Sparkles, path: "/SanskaraaShopApp" },
+    { name: "Event Management", icon: Briefcase, path: "/eventmanagement" }, 
 
   ];
 
@@ -864,22 +870,20 @@ function PanditAvailability() {
 
 
 
-// ----------------- Enhanced Pandit Profile -----------------
 function EnhancedPanditProfile() {
   const [showReviews, setShowReviews] = useState(false);
   const navigate = useNavigate();
 
-  // 📞 Your contact number
   const phoneNumber = "6201486202";
 
   const panditData = {
     name: "Pandit Ram Sharma",
     image: "images/panditji 3.png",
-    specialization: "Satyanarayan, Griha Pravesh, Marriage",
+    specialization: "Satyanarayan • Griha Pravesh • Vivah",
     rating: 4.8,
     totalReviews: 47,
     verified: true,
-    experience: "12+ years",
+    experience: "12+ Years",
     languages: ["Hindi", "English", "Sanskrit"],
     reviews: [
       {
@@ -887,17 +891,16 @@ function EnhancedPanditProfile() {
         user: "Priya Singh",
         rating: 5,
         comment:
-          "Very knowledgeable and punctual. Explained everything beautifully.",
-        date: "2025-07-15",
-        verified: true,
+          "Extremely knowledgeable. The puja felt calm, divine and perfectly guided.",
+        date: "15 July 2025",
       },
       {
         id: 2,
         user: "Rajesh Kumar",
         rating: 4,
-        comment: "Good service, would recommend for family ceremonies.",
-        date: "2025-07-10",
-        verified: true,
+        comment:
+          "Very professional and polite. Explained every mantra clearly.",
+        date: "10 July 2025",
       },
     ],
   };
@@ -911,77 +914,95 @@ function EnhancedPanditProfile() {
   };
 
   return (
-    <div className="mt-4 sm:mt-6">
-      <h3 className="text-lg sm:text-xl font-semibold text-[#800000] mb-3 sm:mb-5">
+    <div className="mt-6">
+      <h3 className="text-xl sm:text-2xl font-semibold text-[#7A1A1A] mb-4">
         Pandit Ji Profile
       </h3>
 
-      <div className="bg-[#FFF7E0] rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-md border border-orange-200 space-y-4">
-        {/* 📸 Enlarged Image Section (face-focused) */}
-<div className="w-full overflow-hidden rounded-xl shadow-sm border border-amber-100 relative">
-  <img
-    src={panditData.image}
-    alt="Pandit Ji"
-    className="w-full h-56 sm:h-72 md:h-80 object-cover object-top scale-105"
-  />
-</div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative bg-gradient-to-br from-[#FFF6DE] to-[#FFFDF7] rounded-2xl shadow-xl border border-[#E8C871]/40 overflow-hidden"
+      >
+        {/* 🕉️ Image Section */}
+        <div className="relative h-72 sm:h-80 overflow-hidden">
+          <img
+            src={panditData.image}
+            alt="Pandit Ji"
+            className="w-full h-full object-cover object-top scale-105"
+          />
 
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
 
-        {/* 🔖 Basic Info */}
-        <div className="flex justify-between items-start">
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <p className="text-base sm:text-lg md:text-xl font-semibold text-gray-800">
+          {/* Verified Ribbon */}
+          {panditData.verified && (
+            <div className="absolute top-4 left-4 flex items-center gap-1 bg-white/90 backdrop-blur px-3 py-1 rounded-full shadow text-xs font-medium text-green-700">
+              <ShieldCheck size={14} />
+              Verified Pandit
+            </div>
+          )}
+        </div>
+
+        {/* 📜 Content */}
+        <div className="p-5 space-y-4">
+          {/* Name & Rating */}
+          <div className="flex justify-between items-start">
+            <div>
+              <h4 className="text-lg sm:text-xl font-semibold text-gray-800">
                 {panditData.name}
+              </h4>
+              <p className="text-sm text-gray-600 mt-1">
+                {panditData.specialization}
               </p>
-              {panditData.verified && (
-                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                  Verified
-                </span>
-              )}
             </div>
-            <p className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">
-              {panditData.specialization}
-            </p>
+
+            <div className="text-right">
+              <div className="flex items-center gap-1 justify-end">
+                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                <span className="font-semibold">{panditData.rating}</span>
+              </div>
+              <p className="text-xs text-gray-500">
+                {panditData.totalReviews} reviews
+              </p>
+            </div>
           </div>
 
-          <div className="text-right">
-            <div className="flex items-center gap-1 justify-end">
-              <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-              <span className="font-semibold text-sm sm:text-base">
-                {panditData.rating}
-              </span>
-            </div>
-            <p className="text-xs text-gray-600">
-              {panditData.totalReviews} reviews
-            </p>
+          {/* Experience & Languages */}
+          <div className="flex justify-between text-sm text-gray-600">
+            <span>📿 {panditData.experience} Experience</span>
+            <span>🗣️ {panditData.languages.join(", ")}</span>
           </div>
-        </div>
 
-        {/* 🔸 Experience & Languages */}
-        <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600">
-          <span>📅 {panditData.experience} experience</span>
-          <span className="text-right">
-            🗣️ {panditData.languages.join(", ")}
-          </span>
-        </div>
+          {/* Reviews Toggle */}
+          <button
+            onClick={() => setShowReviews(!showReviews)}
+            className="w-full py-2 rounded-lg border border-[#E8C871] text-[#7A1A1A] font-medium hover:bg-[#FFF1C1] transition"
+          >
+            {showReviews ? "Hide Reviews" : "View Reviews"}
+          </button>
 
-        {/* 🧾 Reviews Section */}
-        <button
-          onClick={() => setShowReviews(!showReviews)}
-          className="w-full text-center text-orange-600 font-medium py-2 border border-orange-300 rounded-lg hover:bg-orange-50 transition-colors text-sm"
-        >
-          {showReviews ? "Hide" : "Show"} Reviews
-        </button>
-
-        {showReviews && (
-          <div className="space-y-3 mt-2">
-            {panditData.reviews.map((review) => (
-              <div key={review.id} className="bg-white p-3 rounded-lg shadow-sm">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <p className="font-medium text-sm">{review.user}</p>
-                    <div className="flex items-center gap-1">
+          {/* Reviews */}
+          <AnimatePresence>
+            {showReviews && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="space-y-3"
+              >
+                {panditData.reviews.map((review) => (
+                  <div
+                    key={review.id}
+                    className="bg-white rounded-xl p-3 shadow border border-amber-100"
+                  >
+                    <div className="flex justify-between mb-1">
+                      <p className="text-sm font-medium">{review.user}</p>
+                      <span className="text-xs text-gray-400">
+                        {review.date}
+                      </span>
+                    </div>
+                    <div className="flex gap-1 mb-1">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
@@ -994,138 +1015,39 @@ function EnhancedPanditProfile() {
                         />
                       ))}
                     </div>
+                    <p className="text-sm text-gray-700">
+                      {review.comment}
+                    </p>
                   </div>
-                  <span className="text-xs text-gray-500">{review.date}</span>
-                </div>
-                <p className="text-xs sm:text-sm text-gray-700">
-                  {review.comment}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        {/* 🔘 Action Buttons */}
-        <div className="flex gap-3 justify-start mt-2">
-          {/* 📞 Call Button */}
-          <button
-            onClick={handleCall}
-            className="inline-flex items-center gap-2 border border-gray-400 px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 text-sm font-medium transition-colors"
-          >
-            <Phone size={16} className="text-gray-700" />
-            Call Now
-          </button>
-
-          {/* 🕉️ Book Now Button */}
-          <button
-            onClick={handleBookNow}
-            className="inline-flex items-center gap-2 bg-[#800000] text-white px-4 py-2 rounded-lg hover:bg-[#A52A2A] text-sm font-medium transition-colors"
-          >
-            <Calendar size={16} className="text-white" />
-            Book Now
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ----------------- Enhanced Puja Kits with Filtering -----------------
-function EnhancedPujaKits() {
-  const [kits, setKits] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // ✅ for navigation
-
-  useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setKits([
-        { title: "Grih Pravesh Kit", price: "₹999" },
-        { title: "Satyanarayan Kit", price: "₹799" },
-        { title: "Ganesh Puja Kit", price: "₹599" },
-        { title: "Navratri Special Kit", price: "₹1299" },
-      ]);
-      setLoading(false);
-    }, 1000);
-  }, []);
-
-  const handleFilterChange = (filters) => {
-    console.log('Applied filters:', filters);
-  };
-
-  const handleRequestPuja = () => {
-    toast.info("Redirecting to Pandit Booking...");
-    setTimeout(() => navigate("/panditbooking"), 600);
-  };
-
-  const handleDonate = () => {
-    toast.info("🙏 Donation feature coming soon!");
-  };
-
-  // ✅ Add to Cart → Redirect to Puja Kits Page
-  const handleAddToCart = (kit) => {
-    toast.success(`Opening ${kit.title} details...`);
-    setTimeout(() => navigate("/pujakits"), 600);
-  };
-
-  if (loading) {
-    return (
-      <div className="mt-4 sm:mt-6">
-        <div className="h-6 bg-gray-200 rounded w-32 animate-pulse mb-3"></div>
-        <FilterSortSystem type="pujaKits" onFilterChange={handleFilterChange} />
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
-          {[1, 2, 3, 4].map(i => (
-            <SkeletonLoader key={i} type="card" />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="mt-4 sm:mt-6">
-      <h3 className="text-lg sm:text-xl font-semibold text-[#800000] mb-2">Puja Kits</h3>
-      <FilterSortSystem type="pujaKits" onFilterChange={handleFilterChange} />
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
-        {kits.map((kit) => (
-          <motion.div
-            key={kit.title}
-            whileHover={{ scale: 1.03 }}
-            className="bg-[#FFF7E0] p-3 sm:p-4 rounded-xl sm:rounded-2xl shadow-md border border-orange-200 transition"
-          >
-            <h4 className="font-medium text-gray-800 text-sm sm:text-base">{kit.title}</h4>
-            <p className="text-xs sm:text-sm text-gray-600 mt-1">{kit.price}</p>
-
-            {/* ✅ Updated Add to Cart button */}
+          {/* Action Buttons */}
+          <div className="flex gap-3 pt-2">
             <button
-              onClick={() => handleAddToCart(kit)}
-              className="mt-2 sm:mt-3 w-full bg-[#800000] text-white py-1.5 sm:py-2 rounded hover:bg-[#A52A2A] text-xs sm:text-sm transition-colors"
+              onClick={handleCall}
+              className="flex-1 flex items-center justify-center gap-2 border border-gray-400 py-2 rounded-xl hover:bg-gray-100 transition font-medium"
             >
-              Add to Cart
+              <Phone size={16} />
+              Call
             </button>
-          </motion.div>
-        ))}
-      </div>
 
-      {/* ✅ Extra CTA Buttons */}
-      <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mt-6">
-        <button
-          onClick={handleRequestPuja}
-          className="bg-amber-100 text-amber-800 font-medium px-4 py-2 sm:px-6 sm:py-2 rounded-lg border border-amber-300 hover:bg-amber-200 transition-colors text-sm sm:text-base"
-        >
-          🕉️ Request Puja
-        </button>
-
-        <button
-          onClick={handleDonate}
-          className="bg-[#800000] text-white font-medium px-4 py-2 sm:px-6 sm:py-2 rounded-lg hover:bg-[#A52A2A] transition-colors text-sm sm:text-base"
-        >
-          🙏 Donate Now
-        </button>
-      </div>
+            <button
+              onClick={handleBookNow}
+              className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-[#7A1A1A] to-[#A52A2A] text-white py-2 rounded-xl shadow hover:scale-[1.02] transition font-medium"
+            >
+              <Calendar size={16} />
+              Book Now
+            </button>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 }
+
 
 
 
@@ -1469,7 +1391,7 @@ export default function EnhancedHome() {
       <PanditAvailability />
      
       <EnhancedPanditProfile />
-      <EnhancedPujaKits />
+   
       <TestimonialsSection />
       <EnhancedFestivalOffers />
 
