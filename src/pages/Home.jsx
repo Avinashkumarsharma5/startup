@@ -516,7 +516,7 @@ function ServicesSection() {
   const navigate = useNavigate();
 
   const services = [
-    { name: "Book Event", icon: Calendar, path: "/EventsPage", color: "from-[#FFD700] to-[#FFA500]" },
+    { name: "Rentals", icon: Calendar, path: "/EventsPage", color: "from-[#FFD700] to-[#FFA500]" },
     { name: "Book Pandit", icon: User, path: "/panditbooking", color: "from-[#FFB703] to-[#FB8500]" },
     { name: "Puja Kits", icon: Package, path: "/pujakits", color: "from-[#F4C430] to-[#D4AF37]" },
     { name: "Services", icon: Sparkles, path: "/services", color: "from-[#FFD700] to-[#FFAA00]" },
