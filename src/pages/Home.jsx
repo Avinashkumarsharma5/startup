@@ -22,7 +22,8 @@ import {
   X,
   ChevronDown,
   ShieldCheck ,  // ✅ ADD THIS
-  Briefcase   // ✅ ADD THIS
+  Briefcase  , // ✅ ADD THIS
+  ShoppingBag
 } from "lucide-react";
 
 
@@ -515,34 +516,77 @@ function ServicesSection() {
   const navigate = useNavigate();
 
   const services = [
-    { name: "Book Event", icon: Calendar, path: "/EventsPage" },
-    { name: "Book Pandit", icon: User, path: "/panditbooking" },
-    { name: "Puja Kits", icon: Package, path: "/pujakits" },
-    { name: "Services", icon: Sparkles, path: "/services" },
-    { name: "Essentials", icon: Sparkles, path: "/SanskaraaShopApp" },
-    { name: "Event Management", icon: Briefcase, path: "/eventmanagement" }, 
-
+    { name: "Book Event", icon: Calendar, path: "/EventsPage", color: "from-[#FFD700] to-[#FFA500]" },
+    { name: "Book Pandit", icon: User, path: "/panditbooking", color: "from-[#FFB703] to-[#FB8500]" },
+    { name: "Puja Kits", icon: Package, path: "/pujakits", color: "from-[#F4C430] to-[#D4AF37]" },
+    { name: "Services", icon: Sparkles, path: "/services", color: "from-[#FFD700] to-[#FFAA00]" },
+    { name: "Essentials", icon: ShoppingBag, path: "/SanskaraaShopApp", color: "from-[#FFC857] to-[#E09F3E]" },
+    { name: "Event Management", icon: Briefcase, path: "/eventmanagement", color: "from-[#FFA500] to-[#FF7A00]" },
   ];
 
   return (
-    <div className="mt-4 sm:mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 ">
+    <div className="mt-6 sm:mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
       {services.map((service) => {
         const Icon = service.icon;
+
         return (
           <motion.button
-            whileTap={{ scale: 0.95 }}
             key={service.name}
+            whileHover={{ y: -6 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => navigate(service.path)}
-            className="bg-[#FFF7E0] rounded-xl sm:rounded-2xl p-3 sm:p-4 text-center shadow hover:shadow-lg border border-orange-200 transition"
+            className="
+              group relative overflow-hidden
+              rounded-2xl sm:rounded-3xl
+              bg-gradient-to-b from-[#FFFDF5] to-[#FFF1CC]
+              border border-[#FFD700]/40
+              p-4 sm:p-5
+              shadow-[0_8px_30px_rgba(128,0,0,0.12)]
+              hover:shadow-[0_18px_50px_rgba(255,215,0,0.45)]
+              transition-all duration-500
+            "
           >
-            <Icon className="mx-auto w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-orange-500" />
-            <p className="font-medium text-gray-800 mt-1.5 sm:mt-2 text-xs sm:text-sm md:text-base">{service.name}</p>
+            {/* ✨ Gold glow ring */}
+            <div className="absolute inset-0 rounded-[inherit] ring-1 ring-transparent group-hover:ring-[#FFD700]/70 transition-all duration-500 pointer-events-none" />
+
+            {/* 🔆 Icon Container */}
+            <div
+              className={`
+                mx-auto mb-3
+                w-12 h-12 sm:w-14 sm:h-14
+                rounded-full
+                flex items-center justify-center
+                bg-gradient-to-br ${service.color}
+                shadow-lg
+                group-hover:scale-110
+                transition-transform duration-500
+              `}
+            >
+              <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-[#1a0505]" />
+            </div>
+
+            {/* 🏷️ Title */}
+            <p className="font-semibold text-center text-[#1a0505] text-xs sm:text-sm md:text-base tracking-wide">
+              {service.name}
+            </p>
+
+            {/* ✨ Hover Shine */}
+            <div
+              className="
+                absolute inset-0
+                bg-gradient-to-r from-transparent via-white/30 to-transparent
+                translate-x-[-100%] group-hover:translate-x-[100%]
+                transition-transform duration-[1200ms]
+                pointer-events-none
+              "
+            />
           </motion.button>
         );
       })}
     </div>
   );
 }
+
 
 // ----------------- Upcoming Events Section (Improved) -----------------
 function UpcomingEvents() {
