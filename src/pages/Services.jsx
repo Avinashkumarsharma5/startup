@@ -58,7 +58,7 @@ const servicesData = {
 
       media: [
         { type: "image", src: "images/hall03.png" },
-        { type: "video", src: "videos/garden-day.mp4" },
+        { type: "video", src: "images/Luxurious_Indian_Wedding_Venue_Video.mp4" },
         { type: "image", src: "images/hall04.png" }
       ]
     },
@@ -77,7 +77,7 @@ const servicesData = {
       trending: true,
 
       media: [
-        { type: "video", src: "videos/mandap-setup.mp4" },
+        { type: "video", src: "images/Royal_Indian_Wedding_Mandap_Video.mp4" },
         { type: "image", src: "images/decor3.png" },
         { type: "image", src: "images/decor2.png" },
         { type: "video", src: "videos/mandap-close.mp4" }
@@ -94,7 +94,7 @@ const servicesData = {
 
       media: [
         { type: "image", src: "images/decor2.png" },
-        { type: "video", src: "videos/floral-stage.mp4" }
+        { type: "video", src: "images/Elegant_Indian_Wedding_Floral_Stage.mp4"}
       ]
     },
   ],
