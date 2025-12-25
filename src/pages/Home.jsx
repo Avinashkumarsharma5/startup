@@ -7,6 +7,8 @@ import {
   ChevronRight,
   Home as HomeIcon,
   User,
+  Users,          // ✅ ADD THIS
+  MapPin,         // ✅ ADD THIS
   Calendar,
   Package,
   Sparkles,
@@ -21,10 +23,11 @@ import {
   Clock,
   X,
   ChevronDown,
-  ShieldCheck ,  // ✅ ADD THIS
-  Briefcase  , // ✅ ADD THIS
+  ShieldCheck,
+  Briefcase,
   ShoppingBag
 } from "lucide-react";
+
 
 
 import { useNavigate } from "react-router-dom";
@@ -712,104 +715,184 @@ function EnhancedUpcomingEvents() {
   return <UpcomingEvents />;
 }
 
-// ----------------- Personalized Recommendations -----------------
 function PersonalizedRecommendations() {
   const navigate = useNavigate();
 
   const recommendations = [
-    { 
-      id: 1, 
-      title: "Satyanarayan Puja", 
-      reason: "Based on your past bookings",
-      type: "puja",
+    {
+      id: 1,
+      title: "Satyanarayan Puja",
+      reason: "Most booked house puja",
+      type: "Puja",
       rating: 4.8,
-      bookings: 124
+      bookings: 124,
+      img: "images/ganesh puja 1.jpeg",
     },
-    { 
-      id: 2, 
-      title: "Griha Pravesh Kit", 
-      reason: "Popular this week",
-      type: "kit",
-      discount: "15% OFF"
+    {
+      id: 2,
+      title: "Griha Pravesh Puja Kit",
+      reason: "Trending this week",
+      type: "Puja Kit",
+      discount: "15% OFF",
+      img: "images/sanskaraa kit2.png",
     },
-    { 
-      id: 3, 
-      title: "Pandit Rajesh Kumar", 
-      reason: "Highly rated for wedding ceremonies",
-      type: "pandit",
+    {
+      id: 3,
+      title: "Pandit Rajesh Kumar",
+      reason: "Expert in wedding rituals",
+      type: "Pandit",
       rating: 4.9,
-      specialization: "Wedding Rituals"
-    }
+      location: "Delhi",
+      img: "images/panditji 2.png",
+    },
+    {
+      id: 4,
+      title: "Floral Stage Decoration",
+      reason: "Wedding favourite",
+      type: "Decoration",
+      img: "images/flowerdeco1.png",
+    },
+    {
+      id: 5,
+      title: "Garden Wedding Venue",
+      reason: "Outdoor premium venue",
+      type: "Venue",
+      location: "Mumbai",
+      img: "images/hall03.png",
+    },
+    {
+      id: 6,
+      title: "Wedding Photography",
+      reason: "Candid + cinematic",
+      type: "Photography",
+      img: "images/photography1.png",
+    },
   ];
 
-  // 🧭 Navigation Handler
   const handleViewDetails = (rec) => {
     switch (rec.type) {
-      case "puja":
+      case "Puja":
+      case "Pandit":
         navigate("/panditbooking", { state: { rec } });
         break;
-      case "kit":
+      case "Puja Kit":
         navigate("/pujakits", { state: { rec } });
         break;
-      case "pandit":
-        navigate("/panditbooking", { state: { rec } });
+      case "Decoration":
+        navigate("/decoration", { state: { rec } });
+        break;
+      case "Venue":
+        navigate("/venues", { state: { rec } });
+        break;
+      case "Photography":
+        navigate("/photography", { state: { rec } });
         break;
       default:
-        console.warn("Unknown recommendation type:", rec.type);
+        break;
     }
   };
 
   return (
-    <div className="mt-4 sm:mt-6">
-      <div className="flex justify-between items-center mb-3">
-        <h3 className="text-lg sm:text-xl font-semibold text-[#800000]">Recommended For You</h3>
-        <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
+    <section className="mt-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4 px-2">
+        <h3 className="text-lg sm:text-xl font-semibold text-[#7A1A1A]">
+          Recommended for you
+        </h3>
+        <Sparkles className="w-4 h-4 text-[#C9A24D]" />
       </div>
 
-      <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-3 sm:space-x-4 -mx-4 sm:-mx-6 px-4 sm:px-6">
-        {recommendations.map((rec) => (
-          <div
-            key={rec.id}
-            className="inline-block align-top w-56 sm:w-64 md:w-72 bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-md border border-orange-200"
-          >
-            <div className="flex items-start justify-between mb-2">
-              <h4 className="font-medium text-gray-800 text-sm sm:text-base flex-1 pr-2">{rec.title}</h4>
-              {rec.discount && (
-                <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full shrink-0">
-                  {rec.discount}
+      {/* Cards */}
+      <div className="overflow-x-auto pb-4 -mx-4 px-4">
+        <div className="flex gap-4">
+          {recommendations.map((rec) => (
+            <div
+              key={rec.id}
+              className="
+                w-64 sm:w-72
+                bg-[#FFFDF7]
+                border border-[#E8C871]/40
+                rounded-xl
+                shadow-sm
+                hover:shadow-md
+                transition
+                flex-shrink-0
+                overflow-hidden
+              "
+            >
+              {/* Image */}
+              <div className="relative h-44 sm:h-60">
+
+
+                <img
+                  src={rec.img}
+                  alt={rec.title}
+                  className="w-full h-full object-cover"
+                />
+
+                {rec.discount && (
+                  <span className="absolute top-2 right-2 bg-[#7A1A1A] text-white text-[11px] px-2 py-0.5 rounded">
+                    {rec.discount}
+                  </span>
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="p-4 flex flex-col h-[170px]">
+                <span className="text-[11px] text-[#A68A3A] font-medium mb-1">
+                  {rec.type}
                 </span>
-              )}
-            </div>
 
-            <p className="text-xs sm:text-sm text-amber-600 mb-2 sm:mb-3">{rec.reason}</p>
+                <h4 className="text-sm sm:text-base font-semibold text-gray-800 mb-1 line-clamp-2">
+                  {rec.title}
+                </h4>
 
-            <div className="flex items-center justify-between">
-              {rec.rating && (
-                <div className="flex items-center">
-                  <Star className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500 fill-amber-500" />
-                  <span className="text-xs sm:text-sm text-gray-700 ml-1">{rec.rating}</span>
-                  {rec.bookings && (
-                    <span className="text-xs text-gray-500 ml-2 hidden sm:inline">
-                      ({rec.bookings} bookings)
+                <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+                  {rec.reason}
+                </p>
+
+                {/* Meta */}
+                <div className="flex items-center gap-3 text-xs text-gray-500 mb-4">
+                  {rec.rating && (
+                    <span className="flex items-center gap-1">
+                      <Star className="w-3 h-3 text-[#C9A24D]" />
+                      {rec.rating}
+                    </span>
+                  )}
+                  {rec.location && (
+                    <span className="flex items-center gap-1">
+                      <MapPin className="w-3 h-3" />
+                      {rec.location}
                     </span>
                   )}
                 </div>
-              )}
 
-              {/* ✅ Dynamic Navigation Button */}
-              <button
-                onClick={() => handleViewDetails(rec)}
-                className="bg-amber-100 text-amber-800 text-xs px-2 sm:px-3 py-1.5 rounded-lg font-medium hover:bg-amber-200 transition-colors"
-              >
-                {rec.type === "pandit" ? "View Profile" : "View Details"}
-              </button>
+                {/* CTA */}
+                <button
+                  onClick={() => handleViewDetails(rec)}
+                  className="
+                    mt-auto
+                    text-sm
+                    font-medium
+                    text-[#7A1A1A]
+                    border border-[#7A1A1A]/40
+                    py-1.5 rounded-lg
+                    hover:bg-[#7A1A1A]
+                    hover:text-white
+                    transition
+                  "
+                >
+                  View Details
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
+
 
 // ----------------- Promo Banner -----------------
 function GaneshPromo() {
@@ -1163,130 +1246,209 @@ function TestimonialsSection() {
   );
 }
 
-// ----------------- Enhanced Festival Offers -----------------
+// ----------------- Enhanced Festival Offers (Upgraded) -----------------
 function EnhancedFestivalOffers() {
   return (
-    <div className="mt-4 sm:mt-6">
-      <h3 className="text-lg sm:text-xl font-semibold text-[#800000] mb-3">Special Offers</h3>
-      
-      <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-3 sm:space-x-4 -mx-4 sm:-mx-6 px-4 sm:px-6">
-        {specialOffers.map(offer => {
+    <section className="mt-6 sm:mt-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4 px-4 sm:px-6">
+        <h3 className="text-lg sm:text-xl font-semibold text-[#800000]">
+          🎉 Special Festival Offers
+        </h3>
+        <span className="text-xs sm:text-sm text-gray-500">
+          Limited Time
+        </span>
+      </div>
+
+      {/* Scroll Container */}
+      <div className="overflow-x-auto whitespace-nowrap pb-4 space-x-4 -mx-4 sm:-mx-6 px-4 sm:px-6 scrollbar-hide">
+        {specialOffers.map((offer) => {
           const isExpired = new Date(offer.expiry) < new Date();
-          
+
           return (
-            <div 
-              key={offer.id} 
-              className="inline-block align-top w-56 sm:w-64 md:w-72 lg:w-80 bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-md border border-orange-200"
+            <div
+              key={offer.id}
+              className={`
+                inline-block align-top w-64 sm:w-72 lg:w-80
+                rounded-2xl p-[1px]
+                ${isExpired ? 'bg-gray-200' : 'bg-gradient-to-br from-orange-300 via-red-200 to-yellow-200'}
+              `}
             >
-              <img 
-                src={offer.image} 
-                alt={offer.title}
-                className="w-full h-24 sm:h-28 md:h-32 object-cover rounded-lg mb-2 sm:mb-3"
-              />
-              
-              <div className="flex justify-between items-start mb-2">
-                <h4 className="font-bold text-gray-800 flex-1 pr-2 text-xs sm:text-sm md:text-base">{offer.title}</h4>
-                <span className={`text-xs px-2 py-1 rounded-full font-bold ${
-                  isExpired ? 'bg-gray-100 text-gray-600' : 'bg-red-100 text-red-800'
-                }`}>
-                  {offer.discount}
-                </span>
-              </div>
-              
-              <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">Limited time offer</p>
-              
-              <div className="flex items-center justify-between">
-                <CountdownTimer targetDate={offer.expiry} size="small" />
-                <button 
-                  disabled={isExpired}
-                  className={`text-xs font-bold py-1 px-2 sm:py-1.5 sm:px-3 rounded-lg ${
-                    isExpired 
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                      : 'bg-[#800000] text-white hover:bg-[#A52A2A]'
-                  }`}
-                >
-                  {isExpired ? 'Expired' : 'Grab Offer'}
-                </button>
+              {/* Card */}
+              <div
+                className={`
+                  bg-white rounded-2xl p-3 sm:p-4 h-full
+                  transition-all duration-300
+                  ${!isExpired && 'hover:-translate-y-1 hover:shadow-xl'}
+                `}
+              >
+                {/* Image */}
+                <div className="relative">
+                  <img
+                    src={offer.image}
+                    alt={offer.title}
+                    className={`w-full h-28 sm:h-32 object-cover rounded-xl ${
+                      isExpired && 'grayscale'
+                    }`}
+                  />
+
+                  {/* Discount Badge */}
+                  <span
+                    className={`
+                      absolute top-2 right-2 text-[10px] sm:text-xs font-bold px-2 py-1 rounded-full
+                      ${isExpired
+                        ? 'bg-gray-100 text-gray-500'
+                        : 'bg-[#800000] text-white'}
+                    `}
+                  >
+                    {offer.discount}
+                  </span>
+
+                  {/* Expired Overlay */}
+                  {isExpired && (
+                    <div className="absolute inset-0 bg-white/70 rounded-xl flex items-center justify-center">
+                      <span className="text-sm font-bold text-gray-600">
+                        Offer Expired
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Content */}
+                <h4 className="mt-3 font-semibold text-gray-800 text-sm sm:text-base line-clamp-2">
+                  {offer.title}
+                </h4>
+
+                <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                  Valid till {new Date(offer.expiry).toLocaleDateString()}
+                </p>
+
+                {/* Footer */}
+                <div className="flex items-center justify-between mt-3">
+                  <CountdownTimer targetDate={offer.expiry} size="small" />
+
+                  <button
+                    disabled={isExpired}
+                    className={`
+                      text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-lg
+                      transition-all duration-200
+                      ${isExpired
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-[#800000] text-white hover:bg-[#A52A2A] hover:shadow-md'}
+                    `}
+                  >
+                    {isExpired ? 'Expired' : 'Grab Offer'}
+                  </button>
+                </div>
               </div>
             </div>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }
+
 
 // ----------------- Quick Actions Floating Buttons -----------------
+
 function QuickActions() {
   const [expanded, setExpanded] = useState(false);
-  const navigate = useNavigate(); // ✅ Add this for page navigation
+  const navigate = useNavigate();
+  const containerRef = useRef(null);
 
   const actions = [
-    { icon: MessageCircle, label: "WhatsApp Support", color: "bg-green-500" },
-    { icon: Gift, label: "Request Puja", color: "bg-amber-500" },
-    { icon: Sparkles, label: "Donate", color: "bg-[#800000]" },
+    {
+      icon: MessageCircle,
+      label: "WhatsApp Support",
+      color: "bg-green-500",
+      action: () =>
+        window.open(
+          "https://wa.me/916201486202?text=Hello%20Sanskaraa%20Support!%20I%20need%20assistance.",
+          "_blank"
+        ),
+    },
+    {
+      icon: Gift,
+      label: "Request Puja",
+      color: "bg-amber-500",
+      action: () => navigate("/panditbooking"),
+    },
+    {
+      icon: Sparkles,
+      label: "Donate",
+      color: "bg-[#800000]",
+      action: () => toast.info("🙏 Donation feature coming soon!"),
+    },
   ];
 
-  const handleAction = (index) => {
-    setExpanded(false);
-
-    // ✅ 1. WhatsApp Support
-    if (index === 0) {
-      window.open(
-        'https://wa.me/916201486202?text=Hello%20Sanskaraa%20Support!%20I%20need%20assistance.',
-        '_blank'
-      );
-    }
-
-    // ✅ 2. Request Puja → Navigate to Pandit Booking Page
-    else if (index === 1) {
-      navigate('/panditbooking');
-    }
-
-    // ✅ 3. Donate → Coming soon message
-    else if (index === 2) {
-      toast.info("🙏 Donation feature coming soon!");
-    }
-  };
+  useEffect(() => {
+    const closeOnOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setExpanded(false);
+      }
+    };
+    document.addEventListener("mousedown", closeOnOutside);
+    return () => document.removeEventListener("mousedown", closeOnOutside);
+  }, []);
 
   return (
-    <div className="fixed left-2 sm:left-4 bottom-24 sm:bottom-28 md:bottom-32 z-50 flex flex-col items-center gap-2 sm:gap-3">
-      {expanded && actions.map((action, index) => (
-        <motion.div
-          key={index}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ delay: index * 0.1 }}
-          className="flex items-center gap-2 bg-white rounded-full shadow-lg pl-2 pr-3 sm:pl-3 sm:pr-4 py-1.5 sm:py-2"
-        >
-          <span className="text-xs font-medium whitespace-nowrap hidden sm:block">
-            {action.label}
-          </span>
-          <button
-            onClick={() => handleAction(index)}
-            className={`${action.color} rounded-full p-1.5 sm:p-2 text-white hover:opacity-90 transition-opacity`}
-          >
-            <action.icon size={16} className="sm:w-4 sm:h-4" />
-          </button>
-        </motion.div>
-      ))}
+    <div
+      ref={containerRef}
+      className="fixed left-3 sm:left-4 bottom-24 sm:bottom-28 md:bottom-32 z-50"
+    >
+      <div className="absolute inset-0 -z-10 blur-2xl bg-[#800000]/20 rounded-full" />
 
-      <motion.button
-        whileTap={{ scale: 0.9 }}
-        onClick={() => setExpanded(!expanded)}
-        className="rounded-full p-2.5 sm:p-3 md:p-3.5 bg-[#800000] text-white shadow-lg hover:bg-[#A52A2A] transition-colors"
-      >
-        {expanded ? (
-          <X size={18} className="sm:w-5 sm:h-5" />
-        ) : (
-          <Sparkles size={18} className="sm:w-5 sm:h-5" />
-        )}
-      </motion.button>
+      <div className="flex flex-col items-start gap-2 sm:gap-3">
+        <AnimatePresence>
+          {expanded &&
+            actions.map((item, index) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, x: -30, scale: 0.9 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: -30, scale: 0.9 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 20,
+                  delay: index * 0.08,
+                }}
+                className="flex items-center gap-2 bg-white rounded-full shadow-xl px-3 py-2"
+              >
+                <span className="text-xs sm:text-sm font-medium text-gray-700 hidden sm:block">
+                  {item.label}
+                </span>
+
+                <button
+                  onClick={() => {
+                    setExpanded(false);
+                    item.action();
+                  }}
+                  className={`${item.color} rounded-full p-2 text-white hover:scale-110 transition-transform active:scale-95`}
+                  aria-label={item.label}
+                >
+                  <item.icon size={16} />
+                </button>
+              </motion.div>
+            ))}
+        </AnimatePresence>
+
+        <motion.button
+          whileTap={{ scale: 0.88 }}
+          onClick={() => setExpanded((v) => !v)}
+          className="relative rounded-full p-3 sm:p-3.5 bg-[#800000] text-white shadow-xl hover:bg-[#A52A2A] transition-colors"
+          aria-label="Quick Actions"
+        >
+          {!expanded && (
+            <span className="absolute inset-0 rounded-full animate-ping bg-[#800000]/30" />
+          )}
+          {expanded ? <X size={20} /> : <Sparkles size={20} />}
+        </motion.button>
+      </div>
     </div>
   );
 }
-
 
 
 
