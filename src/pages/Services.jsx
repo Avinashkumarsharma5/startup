@@ -111,7 +111,7 @@ const servicesData = {
       location: "Delhi",
 
       media: [
-        { type: "video", src: "videos/veg-thali.mp4" },
+        { type: "video", src: "images/Premium_Vegetarian_Catering_Video_Generated.mp4" },
         { type: "image", src: "images/catring01.png" },
         { type: "image", src: "images/catring02.png" }
       ]
@@ -127,7 +127,7 @@ const servicesData = {
       location: "Mumbai",
 
       media: [
-        { type: "video", src: "videos/nonveg-buffet.mp4" },
+        { type: "video", src: "images/Luxurious_Non_Vegetarian_Catering_Video.mp4" },
         { type: "image", src: "images/catring03.png" }
       ]
     },
@@ -145,7 +145,7 @@ const servicesData = {
       trending: true,
 
       media: [
-        { type: "video", src: "videos/cinematic-reel.mp4" },
+        { type: "video", src: "images/Luxury_Indian_Wedding_Showreel_Generated.mp4" },
         { type: "image", src: "images/photography2.png" },
         { type: "video", src: "videos/prewedding.mp4" }
       ]
