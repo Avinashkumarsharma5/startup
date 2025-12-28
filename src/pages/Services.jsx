@@ -162,7 +162,7 @@ const servicesData = {
       location: "Bangalore",
 
       media: [
-        { type: "video", src: "videos/dj-night.mp4" },
+        { type: "video", src: "images/Premium_DJ_Entertainment_Video_Generated.mp4" },
         { type: "image", src: "images/dj1.png" }
       ]
     },
@@ -175,7 +175,7 @@ const servicesData = {
       location: "Delhi",
 
       media: [
-        { type: "video", src: "videos/orchestra-live.mp4" },
+        { type: "video", src: "images/Premium_DJ_Entertainment_Video_Generated.mp4" },
         { type: "image", src: "images/dj2.png" }
       ]
     },
@@ -192,7 +192,7 @@ const servicesData = {
       trending: true,
 
       media: [
-        { type: "video", src: "videos/anchor-stage.mp4" },
+        { type: "video", src: "images/Luxury_Indian_Wedding_Anchor_Showreel.mp4" },
         { type: "image", src: "https://images.unsplash.com/photo-1545239351-ef35f43d514b?w=800" }
       ]
     },
