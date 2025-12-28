@@ -390,36 +390,8 @@ const singleItems = [
     unit: "पीस",
     img: "images/coconut.png",
   },
-  {
-    id: 102,
-    name: "Banana / केला",
-    price: 50,
-    category: "Single Items",
-    subcategory: "Fruits & Offerings",
-    type: "single",
-    unit: "dozon",
-    img: "images/banana.png",
-  },
-  {
-    id: 103,
-    name: "Apple / सेब",
-    price: 200,
-    category: "Single Items",
-    subcategory: "Fruits & Offerings",
-    type: "single",
-    unit: "kg",
-    img: "images/apple.png",
-  },
-  {
-    id: 104,
-    name: "Pomegranate / अनार",
-    price: 60,
-    category: "Single Items",
-    subcategory: "Fruits & Offerings",
-    type: "single",
-    unit: "पीस",
-    img: "images/pomegranate.png",
-  },
+  
+  
   {
     id: 105,
     name: "Flower Garland / फूल माला",
@@ -570,16 +542,7 @@ const singleItems = [
     unit: "पीस",
     img: "images/clay-diya.png",
   },
-  {
-    id: 120,
-    name: "Brass Diya / पीतल का दिया",
-    price: 80,
-    category: "Single Items",
-    subcategory: "Deepak & Diya",
-    type: "single",
-    unit: "पीस",
-    img: "images/pital-diya.png",
-  },
+  
   {
     id: 121,
     name: "Roli / रोली",
@@ -3499,8 +3462,8 @@ export default function UnifiedPujaStore() {
           </div>
         </div>
 
-        {/* View Mode Tabs + Filters */}
-        <div className="sticky top-14 sm:top-16 z-20 bg-white/95 backdrop-blur-md py-3 sm:py-4 mt-3 sm:mt-4 rounded-xl sm:rounded-2xl shadow-lg border border-amber-100">
+        {/* View Mode Tabs + Filters - REMOVED STICKY */}
+        <div className="bg-white/95 backdrop-blur-md py-3 sm:py-4 mt-3 sm:mt-4 rounded-xl sm:rounded-2xl shadow-lg border border-amber-100">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 px-2 sm:px-4">
             
             {/* View Mode Tabs */}
