@@ -145,179 +145,220 @@ const Toast = ({ message, type = "success", onClose, bookingId, bookingDetails, 
 };
 
 // Skeleton Loading Component
-const PujaCardSkeleton = () => (
-  <div className="bg-white rounded-2xl shadow-lg p-6 animate-pulse">
-    <div className="flex items-start justify-between mb-4">
-      <div className="flex items-center gap-3">
-        <div className="w-16 h-16 bg-gray-300 rounded-full"></div>
-        <div className="space-y-2">
-          <div className="h-4 bg-gray-300 rounded w-32"></div>
-          <div className="h-3 bg-gray-300 rounded w-24"></div>
-        </div>
-        </div>
-      <div className="w-8 h-8 bg-gray-300 rounded-lg"></div>
-    </div>
-    <div className="space-y-3 mb-4">
-      <div className="h-3 bg-gray-300 rounded"></div>
-      <div className="h-3 bg-gray-300 rounded w-4/5"></div>
-    </div>
-    <div className="flex items-center justify-between">
-      <div className="h-6 bg-gray-300 rounded w-20"></div>
-      <div className="h-10 bg-gray-300 rounded-lg w-24"></div>
-    </div>
-  </div>
-);
+// 🌸 Premium Skeleton Loading – Sanskaraa Style
+const PujaCardSkeleton = () => {
+  return (
+    <div className="relative overflow-hidden bg-white rounded-2xl shadow-lg p-6">
+      
+      {/* 🔮 Shimmer Overlay */}
+      <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-gray-200/60 to-transparent"></div>
 
-// Trust Badges Component
-const TrustBadges = () => (
-  <div className="flex flex-wrap justify-center gap-6 py-8 border-t border-amber-200 mt-8">
-    <div className="flex items-center gap-3 text-sm text-amber-700">
-      <Shield className="w-5 h-5 text-green-500" />
-      <div>
-        <div className="font-semibold">Verified Pujas</div>
-        <div className="text-xs text-amber-600">Authentic & Traditional</div>
-      </div>
-      </div>
-    <div className="flex items-center gap-3 text-sm text-amber-700">
-      <Award className="w-5 h-5 text-blue-500" />
-      <div>
-        <div className="font-semibold">Quality Guarantee</div>
-        <div className="text-xs text-amber-600">Satisfaction Assured</div>
-      </div>
-    </div>
-    <div className="flex items-center gap-3 text-sm text-amber-700">
-      <PhoneCall className="w-5 h-5 text-purple-500" />
-      <div>
-        <div className="font-semibold">24/7 Support</div>
-        <div className="text-xs text-amber-600">Always Here to Help</div>
-      </div>
-    </div>
-  </div>
-);
+      {/* Header */}
+      <div className="flex items-start justify-between mb-5">
+        <div className="flex items-center gap-4">
+          {/* Avatar */}
+          <div className="w-16 h-16 bg-gray-200 rounded-xl"></div>
 
-// Puja Detail Modal Component
+          {/* Title */}
+          <div className="space-y-2">
+            <div className="h-4 w-36 bg-gray-200 rounded"></div>
+            <div className="h-3 w-24 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+
+        {/* Wishlist / Icon */}
+        <div className="w-9 h-9 bg-gray-200 rounded-lg"></div>
+      </div>
+
+      {/* Description */}
+      <div className="space-y-3 mb-5">
+        <div className="h-3 bg-gray-200 rounded"></div>
+        <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+        <div className="h-3 bg-gray-200 rounded w-4/6"></div>
+      </div>
+
+      {/* Footer */}
+      <div className="flex items-center justify-between">
+        <div className="h-6 w-24 bg-gray-200 rounded"></div>
+        <div className="h-10 w-28 bg-gray-200 rounded-xl"></div>
+      </div>
+    </div>
+  );
+};
+
+
+// 🛡️ Premium Trust Badges – Sanskaraa Style
+const TrustBadges = () => {
+  return (
+    <div className="mt-10 border-t border-amber-200 pt-8">
+      <div className="flex flex-wrap justify-center gap-6">
+
+        {/* Badge 1 */}
+        <div className="flex items-center gap-4 px-6 py-4 rounded-2xl bg-gradient-to-br from-amber-50 to-white shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-100">
+            <Shield className="w-5 h-5 text-green-600" />
+          </div>
+          <div>
+            <div className="text-sm font-semibold text-amber-900">
+              Verified Pujas
+            </div>
+            <div className="text-xs text-amber-600">
+              Authentic & Traditional
+            </div>
+          </div>
+        </div>
+
+        {/* Badge 2 */}
+        <div className="flex items-center gap-4 px-6 py-4 rounded-2xl bg-gradient-to-br from-amber-50 to-white shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100">
+            <Award className="w-5 h-5 text-blue-600" />
+          </div>
+          <div>
+            <div className="text-sm font-semibold text-amber-900">
+              Quality Guarantee
+            </div>
+            <div className="text-xs text-amber-600">
+              Satisfaction Assured
+            </div>
+          </div>
+        </div>
+
+        {/* Badge 3 */}
+        <div className="flex items-center gap-4 px-6 py-4 rounded-2xl bg-gradient-to-br from-amber-50 to-white shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-purple-100">
+            <PhoneCall className="w-5 h-5 text-purple-600" />
+          </div>
+          <div>
+            <div className="text-sm font-semibold text-amber-900">
+              24/7 Support
+            </div>
+            <div className="text-xs text-amber-600">
+              Always Here to Help
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+// 🌸 Premium Puja Detail Modal – Sanskaraa
 const PujaDetailModal = ({ puja, isOpen, onClose, onBookNow }) => {
-  if (!isOpen || !puja) return null; 
+  if (!isOpen || !puja) return null;
 
   const getCategoryIcon = (category) => {
-    switch(category) {
+    switch (category) {
       case "Ghar ke Sanskaar": return <Home className="w-5 h-5" />;
       case "Bacchon ke Sanskaar": return <Baby className="w-5 h-5" />;
       case "Vivah Sanskar": return <HeartIcon className="w-5 h-5" />;
       case "Pitrakarya": return <Users className="w-5 h-5" />;
       case "Festival Pujas": return <CalendarIcon className="w-5 h-5" />;
-      case "Temple / Special Pujas": return <Temple className="w-5 h-5" />;
       default: return <Sparkles className="w-5 h-5" />;
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+        initial={{ opacity: 0, y: 40, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 40, scale: 0.95 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
       >
-        <div className="flex justify-between items-start mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">
-            {puja.name}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100"
-          >
-            <X size={24} />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Basic Info */}
-          <div className="lg:col-span-2">
-            <div className="flex items-start gap-4 mb-6">
-              <div className="relative">
-                <img
-                  src={puja.img}
-                  alt={puja.name}
-                  className="w-24 h-24 rounded-full object-cover border-4 border-amber-200"
-                />
-                <div className="absolute -bottom-1 -right-1 bg-amber-500 text-white p-1 rounded-full">
-                  {getCategoryIcon(puja.category)}
-                </div>
+        {/* Header */}
+        <div className="flex justify-between items-start p-6 border-b">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">{puja.name}</h2>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="flex items-center gap-1 bg-amber-100 px-3 py-1 rounded-full text-sm">
+                {getCategoryIcon(puja.category)}
+                <span className="text-amber-700 font-medium">{puja.category}</span>
               </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {puja.name}
-                </h3>
-                <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-                  <div className="flex items-center gap-1 bg-amber-100 px-3 py-1 rounded-full">
-                    <Sparkles className="w-4 h-4 text-amber-600" />
-                    <span className="font-medium text-amber-700">{puja.category}</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Star className="w-5 h-5 text-amber-500 fill-current" />
-                  <span className="font-semibold text-gray-900">
-                    {puja.rating} ({puja.reviews} reviews)
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">About this Puja</h4>
-                <p className="text-gray-700">{puja.description}</p>
-              </div>
-
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Puja Details</h4>
-                <div className="flex flex-wrap gap-4 text-sm">
-                  <div className="flex items-center gap-1 text-gray-700">
-                    <Clock className="w-4 h-4 text-amber-600" />
-                    <span>Duration: <strong>{puja.duration || '2-3 hours'}</strong></span>
-                  </div>
-                  <div className="flex items-center gap-1 text-gray-700">
-                    <User className="w-4 h-4 text-amber-600" />
-                    <span>Requirements: <strong>{puja.requirements || 'Puja Samagri, Seating'}</strong></span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Benefits</h4>
-                <div className="flex flex-wrap gap-2">
-                  {puja.benefits.map((benefit, index) => (
-                    <span key={index} className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
-                      {benefit}
-                    </span>
-                  ))}
-                </div>
+              <div className="flex items-center gap-1 text-sm text-gray-700">
+                <Star className="w-4 h-4 text-amber-500 fill-current" />
+                {puja.rating} ({puja.reviews})
               </div>
             </div>
           </div>
 
-          {/* Right Column - Booking Info */}
-          <div className="space-y-6">
-            <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
+          <button
+            onClick={onClose}
+            className="p-2 rounded-xl hover:bg-gray-100"
+          >
+            <X size={22} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+          
+          {/* LEFT */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Image + Trust */}
+            <div className="flex items-center gap-5">
+              <img
+                src={puja.img}
+                alt={puja.name}
+                className="w-28 h-28 rounded-2xl object-cover border-4 border-amber-200"
+              />
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm text-green-700">
+                  <Shield className="w-4 h-4" /> Verified Puja
+                </div>
+                <div className="flex items-center gap-2 text-sm text-blue-700">
+                  <Award className="w-4 h-4" /> Experienced Pandit
+                </div>
+                <div className="flex items-center gap-2 text-sm text-purple-700">
+                  <Clock className="w-4 h-4" /> {puja.duration || "2–3 hours"}
+                </div>
+              </div>
+            </div>
+
+            {/* About */}
+            <section>
+              <h4 className="font-semibold text-gray-900 mb-2">About this Puja</h4>
+              <p className="text-gray-700 leading-relaxed">{puja.description}</p>
+            </section>
+
+            {/* Benefits */}
+            <section>
+              <h4 className="font-semibold text-gray-900 mb-2">Benefits</h4>
+              <div className="flex flex-wrap gap-2">
+                {puja.benefits.map((b, i) => (
+                  <span
+                    key={i}
+                    className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm"
+                  >
+                    {b}
+                  </span>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          {/* RIGHT – Sticky Booking */}
+          <div className="lg:sticky lg:top-6 space-y-5">
+            <div className="bg-gradient-to-br from-amber-50 to-white border border-amber-200 rounded-2xl p-5">
               <div className="text-center mb-4">
-                <div className="text-3xl font-bold text-amber-600">
+                <div className="text-3xl font-bold text-amber-700">
                   ₹{puja.price}
                 </div>
-                <div className="text-sm text-amber-600">per ceremony</div>
+                <div className="text-xs text-amber-600">Per Ceremony</div>
               </div>
-              
-              <div className="space-y-3 text-sm">
+
+              <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Samagri Price:</span>
+                  <span>Samagri</span>
                   <span className="font-semibold">₹{puja.samagriPrice}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Completed Pujas:</span>
+                  <span>Completed</span>
                   <span className="font-semibold">{puja.completedPujas}+</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Availability:</span>
+                  <span>Status</span>
                   <span className="font-semibold text-green-600">Available</span>
                 </div>
               </div>
@@ -327,24 +368,26 @@ const PujaDetailModal = ({ puja, isOpen, onClose, onBookNow }) => {
                   onBookNow(puja);
                   onClose();
                 }}
-                className="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-lg font-semibold transition-colors mt-4"
+                className="w-full mt-4 bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-xl font-semibold transition"
               >
-                Book Now
+                Book This Puja
               </button>
             </div>
 
-            {/* Contact Options */}
-            <div className="bg-gray-50 rounded-xl p-4">
-              <h4 className="font-semibold text-gray-900 mb-3">Need Help?</h4>
+            {/* Help */}
+            <div className="bg-gray-50 rounded-2xl p-4">
+              <p className="font-semibold mb-2">Need Help?</p>
               <div className="flex gap-2">
-                <button 
-                  onClick={() => window.open('https://wa.me/916201486202', '_blank')}
-                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                <button
+                  onClick={() =>
+                    window.open("https://wa.me/916201486202", "_blank")
+                  }
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-xl flex items-center justify-center gap-2 text-sm"
                 >
                   <MessageSquare className="w-4 h-4" />
                   WhatsApp
                 </button>
-                <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-2">
+                <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl flex items-center justify-center gap-2 text-sm">
                   <Phone className="w-4 h-4" />
                   Call
                 </button>
@@ -352,72 +395,133 @@ const PujaDetailModal = ({ puja, isOpen, onClose, onBookNow }) => {
             </div>
           </div>
         </div>
+
+        {/* Footer Blessing */}
+        <div className="text-center text-xs text-amber-700 italic pb-4">
+          “Ārambh se Sampūrṇ tak – Sanskaraa aapke saath”
+        </div>
       </motion.div>
     </div>
   );
 };
 
-// Booking Summary Panel Component
+
+// 🧾 Premium Booking Summary Panel – Sanskaraa
 const BookingSummaryPanel = ({ puja, bookingData, currentStep }) => {
-    const totalAmount = puja.price + (bookingData.includeSamagri ? puja.samagriPrice : 0);
+  const totalAmount =
+    puja.price + (bookingData.includeSamagri ? puja.samagriPrice : 0);
 
-    const formattedDate = bookingData.date 
-        ? new Date(bookingData.date).toLocaleDateString('en-IN', { 
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })
-        : 'N/A';
+  const formattedDate = bookingData.date
+    ? new Date(bookingData.date).toLocaleDateString("en-IN", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : null;
 
-    return (
-        <div className={`bg-amber-50 rounded-xl p-4 border border-amber-200 ${currentStep < 4 ? 'sticky top-4' : ''}`}>
-            <h4 className="font-bold text-amber-800 mb-3 flex items-center gap-2">
-                <IndianRupee className="w-5 h-5" /> Booking Summary
-            </h4>
-            <div className="space-y-2 text-sm">
-                <div className="flex justify-between items-center pb-2 border-b border-amber-100">
-                    <span className="text-gray-600">Puja Type:</span>
-                    <span className="font-semibold">{puja.name}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="text-gray-600">Service:</span>
-                    <span className="font-semibold">{bookingData.service}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="text-gray-600">Date & Time:</span>
-                    <span className={`font-semibold ${bookingData.date ? '' : 'text-red-500'}`}>
-                        {bookingData.date && bookingData.time ? 
-                            `${formattedDate} at ${bookingData.time}` : 'Select Date & Time'}
-                    </span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="text-gray-600">Address:</span>
-                    <span className={`font-semibold text-right ${bookingData.address ? 'line-clamp-1' : 'text-red-500'}`}>
-                        {bookingData.address || 'Enter Address'}
-                    </span>
-                </div>
-                
-                <div className="pt-3 border-t border-amber-200 space-y-1">
-                    <div className="flex justify-between text-gray-700">
-                        <span>Puja Price:</span>
-                        <span>₹{puja.price}</span>
-                    </div>
-                    <div className="flex justify-between text-gray-700">
-                        <span>Samagri Kit:</span>
-                        <span className={bookingData.includeSamagri ? 'text-green-600' : 'text-red-500'}>
-                            {bookingData.includeSamagri ? `+₹${puja.samagriPrice}` : 'Not Included'}
-                        </span>
-                    </div>
-                </div>
-                
-                <div className="flex justify-between text-lg font-bold pt-2 border-t border-amber-300">
-                    <span className="text-gray-800">TOTAL:</span>
-                    <span className="text-amber-600">₹{totalAmount}</span>
-                </div>
-            </div>
+  return (
+    <div
+      className={`rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm ${
+        currentStep < 4 ? "sticky top-4" : ""
+      }`}
+    >
+      {/* Header */}
+      <h4 className="font-bold text-amber-900 mb-4 flex items-center gap-2">
+        <IndianRupee className="w-5 h-5 text-amber-700" />
+        Booking Summary
+      </h4>
+
+      {/* Info */}
+      <div className="space-y-3 text-sm">
+        {/* Puja */}
+        <div className="flex justify-between border-b pb-2">
+          <span className="text-gray-600">Puja</span>
+          <span className="font-semibold text-gray-900">
+            {puja.name}
+          </span>
         </div>
-    );
+
+        {/* Service */}
+        <div className="flex justify-between">
+          <span className="text-gray-600">Service</span>
+          <span className="font-semibold">{bookingData.service}</span>
+        </div>
+
+        {/* Date & Time */}
+        <div className="flex justify-between">
+          <span className="text-gray-600">Date & Time</span>
+          <span
+            className={`font-semibold text-right ${
+              bookingData.date && bookingData.time
+                ? "text-gray-900"
+                : "text-red-500"
+            }`}
+          >
+            {bookingData.date && bookingData.time
+              ? `${formattedDate} • ${bookingData.time}`
+              : "Select Date & Time"}
+          </span>
+        </div>
+
+        {/* Address */}
+        <div className="flex justify-between">
+          <span className="text-gray-600">Address</span>
+          <span
+            className={`font-semibold text-right max-w-[60%] ${
+              bookingData.address
+                ? "line-clamp-2 text-gray-900"
+                : "text-red-500"
+            }`}
+          >
+            {bookingData.address || "Enter Address"}
+          </span>
+        </div>
+
+        {/* Trust */}
+        <div className="flex items-center gap-2 text-xs text-green-700 bg-green-50 px-3 py-2 rounded-xl mt-2">
+          <Shield className="w-4 h-4" />
+          Verified Pandit • Authentic Rituals
+        </div>
+
+        {/* Price */}
+        <div className="pt-3 border-t space-y-2">
+          <div className="flex justify-between text-gray-700">
+            <span>Puja Charges</span>
+            <span>₹{puja.price}</span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-gray-700">Samagri Kit</span>
+            <span
+              className={`font-medium ${
+                bookingData.includeSamagri
+                  ? "text-green-600"
+                  : "text-red-500"
+              }`}
+            >
+              {bookingData.includeSamagri
+                ? `+ ₹${puja.samagriPrice}`
+                : "Not Included"}
+            </span>
+          </div>
+        </div>
+
+        {/* TOTAL */}
+        <div className="flex justify-between items-center pt-3 border-t border-amber-300">
+          <span className="text-gray-900 font-bold text-base">TOTAL</span>
+          <span className="text-amber-700 font-bold text-xl">
+            ₹{totalAmount}
+          </span>
+        </div>
+      </div>
+
+      {/* Footer Blessing */}
+      <p className="text-xs text-center text-amber-700 italic mt-4">
+        “Secure • Transparent • Traditional”
+      </p>
+    </div>
+  );
 };
 
 // --- END: SHARED COMPONENTS & UTILITIES ---
@@ -1268,396 +1372,396 @@ export default function PujaBooking() {
   return (
     <div className="min-h-screen bg-amber-50 overflow-x-hidden overflow-y-auto">
       
-      {/* Header Section */}
-      <section className="relative bg-gradient-to-r from-amber-800 to-amber-600 text-white py-16 sm:py-20 md:py-24 px-4 sm:px-6 text-center">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Sparkles className="w-8 h-8 text-amber-300" />
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              Book Puja Services
-            </h1>
-          </div>
-          <p className="text-lg sm:text-xl md:text-2xl mb-8 text-amber-100">
-            Traditional Pujas & Ceremonies – Anytime, Anywhere
-          </p>
-          <p className="text-sm sm:text-base mb-10 text-amber-200">
-            पूजा बुकिंग सेक्शन • 100% Authentic • Best Prices Guaranteed
-          </p>
+  {/* ================= HERO SECTION ================= */}
+<section className="relative bg-gradient-to-br from-amber-900 via-amber-700 to-amber-600 text-white py-20 px-4 text-center overflow-hidden">
+  {/* Soft glow */}
+  <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top,_#fde68a,_transparent_60%)]"></div>
 
-          {/* Enhanced Search Bar */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-4 mt-8 border border-white/20 max-w-4xl mx-auto">
-            <div className="flex-1 w-full relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-amber-300 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search pujas by name, category, or description..."
-                className="w-full pl-10 pr-4 py-3 border border-amber-300 rounded-xl text-gray-700 focus:ring-2 focus:ring-amber-500 focus:outline-none text-base"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+  <div className="relative max-w-6xl mx-auto">
+    <div className="flex items-center justify-center gap-3 mb-4">
+      <Sparkles className="w-9 h-9 text-amber-300 animate-pulse" />
+      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold">
+        Book Puja Services
+      </h1>
+    </div>
+
+    <p className="text-lg sm:text-xl md:text-2xl text-amber-100 mb-2">
+      Traditional Pujas & Sacred Ceremonies
+    </p>
+
+    <p className="text-sm sm:text-base text-amber-200 mb-10">
+      पूजा बुकिंग • Verified Pandits • Transparent Pricing
+    </p>
+
+    {/* Search + Filter */}
+    <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-4 border border-white/20 max-w-4xl mx-auto">
+      <div className="flex-1 w-full relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-300 w-5 h-5" />
+        <input
+          type="text"
+          placeholder="Search puja, ritual, festival…"
+          className="w-full pl-11 pr-4 py-3 rounded-xl text-gray-800 focus:ring-2 focus:ring-amber-500 outline-none text-base"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
+      <button
+        onClick={() => setShowFilters(true)}
+        className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 font-medium shadow-lg justify-center w-full sm:w-auto"
+      >
+        <Filter className="w-5 h-5" />
+        Filters
+      </button>
+    </div>
+  </div>
+</section>
+
+{/* ================= STICKY FILTER BAR ================= */}
+{showFilters && (
+  <motion.div
+    initial={{ opacity: 0, y: -15 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-amber-200 shadow-lg"
+  >
+    <div className="max-w-7xl mx-auto p-5 space-y-5">
+
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold flex items-center gap-2">
+          <Filter className="w-5 h-5 text-amber-600" />
+          Refine Your Puja
+        </h3>
+        <button
+          onClick={() => setShowFilters(false)}
+          className="p-2 rounded-lg hover:bg-gray-100"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Dropdowns */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <select
+          value={filters.service}
+          onChange={(e) => handleFilterChange("service", e.target.value)}
+          className="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 outline-none"
+        >
+          <option value="">All Pujas</option>
+          {allServices.map((s) => (
+            <option key={s}>{s}</option>
+          ))}
+        </select>
+
+        <select
+          value={filters.category}
+          onChange={(e) => handleFilterChange("category", e.target.value)}
+          className="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 outline-none"
+        >
+          <option value="">All Categories</option>
+          {allCategories.map((c) => (
+            <option key={c}>{c}</option>
+          ))}
+        </select>
+
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          className="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 outline-none"
+        >
+          <option value="rating">Top Rated</option>
+          <option value="price-low">Price: Low → High</option>
+          <option value="price-high">Price: High → Low</option>
+          <option value="reviews">Most Booked</option>
+        </select>
+      </div>
+
+      {/* Sliders */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
+        <div>
+          <label className="block text-sm font-medium mb-2">
+            Price ₹{formatPrice(filters.minPrice)} – ₹{formatPrice(filters.maxPrice)}
+          </label>
+          <input
+            type="range"
+            min="700"
+            max="40000"
+            step="100"
+            value={filters.maxPrice}
+            onChange={(e) =>
+              handleFilterChange("maxPrice", parseInt(e.target.value))
+            }
+            className="w-full accent-amber-600"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">
+            Min Rating: {filters.minRating}★
+          </label>
+          <input
+            type="range"
+            min="0"
+            max="5"
+            step="0.5"
+            value={filters.minRating}
+            onChange={(e) =>
+              handleFilterChange("minRating", parseFloat(e.target.value))
+            }
+            className="w-full accent-amber-600"
+          />
+        </div>
+      </div>
+
+      {/* Reset */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => {
+            setFilters({
+              service: "",
+              category: "",
+              minPrice: 700,
+              maxPrice: 40000,
+              minRating: 0,
+              availability: "",
+            });
+            setSearchQuery("");
+          }}
+          className="px-5 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-sm flex items-center gap-2"
+        >
+          <RotateCcw className="w-4 h-4" />
+          Reset Filters
+        </button>
+      </div>
+    </div>
+  </motion.div>
+)}
+
+
+{/* ================= MAIN CONTENT ================= */}
+<div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 relative z-10">
+
+  {/* Header Row */}
+  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
+    <h2 className="text-2xl font-bold flex items-center gap-2 text-gray-800">
+      <Temple className="w-6 h-6 text-amber-600" />
+      Available Pujas
+      <span className="text-sm font-normal text-gray-500">
+        ({sortedPujas.length})
+      </span>
+    </h2>
+
+    {/* Quick Actions */}
+    <div className="flex gap-3">
+      <button
+        onClick={navigateToMyBookings}
+        className="flex items-center gap-2 px-4 py-2 rounded-xl border bg-white text-sm hover:border-amber-400 hover:text-amber-600 transition"
+      >
+        <FileText className="w-4 h-4" />
+        My Bookings
+      </button>
+
+      <button
+        onClick={navigateToFavorites}
+        className="relative flex items-center gap-2 px-4 py-2 rounded-xl border bg-white text-sm hover:border-red-400 hover:text-red-500 transition"
+      >
+        <Heart
+          className="w-4 h-4"
+          fill={favorites.length ? "currentColor" : "none"}
+        />
+        Favorites
+        {favorites.length > 0 && (
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+            {favorites.length}
+          </span>
+        )}
+      </button>
+    </div>
+  </div>
+
+  {/* ================= GRID ================= */}
+  {loading ? (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {[...Array(6)].map((_, i) => (
+        <PujaCardSkeleton key={i} />
+      ))}
+    </div>
+  ) : sortedPujas.length > 0 ? (
+    <motion.div
+      layout
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+      {sortedPujas.map((puja) => (
+        <motion.div
+          layout
+          key={puja.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25 }}
+          className="bg-white rounded-3xl p-6 border border-amber-100 shadow-sm hover:shadow-xl transition"
+        >
+          {/* Card Header */}
+          <div className="flex justify-between items-start mb-4">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <img
+                  src={puja.img}
+                  alt={puja.name}
+                  className="w-16 h-16 rounded-full object-cover border-2 border-amber-200"
+                />
+                <div className="absolute -bottom-1 -right-1 bg-amber-500 text-white p-1 rounded-full">
+                  {getCategoryIcon(puja.category)}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-lg text-gray-800 line-clamp-1">
+                  {puja.name}
+                </h3>
+                <div className="flex items-center gap-1 text-sm text-gray-600">
+                  <Star className="w-4 h-4 text-amber-500 fill-current" />
+                  {puja.rating} ({puja.reviews})
+                </div>
+              </div>
             </div>
-            <div className="flex gap-3 w-full sm:w-auto">
-              <button 
-                onClick={() => setShowFilters(!showFilters)}
-                className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition text-sm font-medium shadow-lg hover:shadow-xl flex-1 sm:flex-none justify-center"
+
+            <button
+              onClick={() => toggleFavorite(puja.id)}
+              className={`p-2 rounded-xl transition ${
+                favorites.includes(puja.id)
+                  ? "bg-red-50 text-red-500"
+                  : "text-gray-400 hover:text-red-500 hover:bg-gray-50"
+              }`}
+            >
+              <Heart
+                size={18}
+                fill={favorites.includes(puja.id) ? "currentColor" : "none"}
+              />
+            </button>
+          </div>
+
+          {/* Card Body */}
+          <div className="space-y-3 mb-5">
+            <span className="inline-flex items-center gap-1 text-xs bg-amber-100 text-amber-800 px-3 py-1 rounded-full">
+              {getCategoryIcon(puja.category)}
+              {puja.category}
+            </span>
+
+            <p className="text-sm text-gray-600 line-clamp-2">
+              {puja.description}
+            </p>
+
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Clock3 className="w-4 h-4" />
+              {puja.duration}
+            </div>
+          </div>
+
+          {/* Price */}
+          <div className="mb-4">
+            <div className="text-2xl font-bold text-amber-600">
+              ₹{formatPrice(puja.price)}
+              <span className="text-sm text-gray-500 font-normal">
+                {" "} / ceremony
+              </span>
+            </div>
+            <div className="text-xs text-green-600 flex items-center gap-1">
+              <IndianRupee className="w-3 h-3" />
+              Samagri +₹{formatPrice(puja.samagriPrice)}
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => handleViewDetails(puja)}
+              className="flex-1 border border-amber-600 text-amber-600 py-2 rounded-xl text-sm font-medium hover:bg-amber-50 transition flex items-center justify-center gap-2"
+            >
+              <Eye className="w-4 h-4" />
+              Details
+            </button>
+
+            <button
+              onClick={() => handleBookNow(puja)}
+              className="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition"
+            >
+              Book Now
+            </button>
+          </div>
+        </motion.div>
+      ))}
+    </motion.div>
+  ) : (
+    /* Empty State */
+    <div className="text-center py-20">
+      <div className="text-6xl mb-4">🔍</div>
+      <h3 className="text-2xl font-bold text-gray-700 mb-2">
+        No Pujas Found
+      </h3>
+      <p className="text-gray-500 mb-6 max-w-md mx-auto">
+        Try adjusting your search or filters to find the perfect puja.
+      </p>
+      <button
+        onClick={() => {
+          setFilters({
+            service: "",
+            category: "",
+            minPrice: 700,
+            maxPrice: 40000,
+            minRating: 0,
+            availability: "",
+          });
+          setSearchQuery("");
+        }}
+        className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl font-semibold"
+      >
+        Reset Filters
+      </button>
+    </div>
+  )}
+
+  {/* ================= RECENTLY VIEWED ================= */}
+  {recentlyViewed.length > 0 && (
+    <div className="mt-20">
+      <h3 className="text-2xl font-bold mb-8 flex items-center gap-2">
+        <Clock className="w-6 h-6 text-amber-600" />
+        Recently Viewed
+      </h3>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {recentlyViewed.map((puja) => (
+          <div
+            key={puja.id}
+            className="bg-white rounded-2xl p-4 border border-amber-100 hover:shadow-lg transition"
+          >
+            <img
+              src={puja.img}
+              alt={puja.name}
+              className="w-20 h-20 mx-auto rounded-full object-cover border-2 border-amber-200 mb-3"
+            />
+            <h4 className="text-sm font-semibold text-center line-clamp-2 mb-2">
+              {puja.name}
+            </h4>
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-amber-600 text-sm">
+                ₹{formatPrice(puja.price)}
+              </span>
+              <button
+                onClick={() => handleBookNow(puja)}
+                className="bg-amber-600 text-white px-3 py-1 rounded-lg text-xs hover:bg-amber-700 transition"
               >
-                <Filter className="w-5 h-5" /> 
-                <span>Filters</span>
+                Book Again
               </button>
             </div>
           </div>
-        </div>
-      </section>
+        ))}
+      </div>
+    </div>
+  )}
 
-      {/* Sticky Filters Bar */}
-      {showFilters && (
-        <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="sticky top-0 z-40 bg-white shadow-2xl p-4 sm:p-6 border-b border-amber-200"
-        >
-            {/* Filters UI */}
-            <div className="max-w-7xl mx-auto">
-                <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                        <Filter className="w-5 h-5" />
-                        Refine Your Search
-                    </h3>
-                    <button onClick={() => setShowFilters(false)} className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {/* Service Filter */}
-                    <div>
-                        <label className="block text-sm font-medium mb-2">Puja Type</label>
-                        <select
-                            value={filters.service}
-                            onChange={(e) => handleFilterChange('service', e.target.value)}
-                            className="w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white border-gray-300 text-gray-700"
-                        >
-                            <option value="">All Pujas</option>
-                            {allServices.map(service => (
-                                <option key={service} value={service}>{service}</option>
-                            ))}
-                        </select>
-                    </div>
 
-                    {/* Category Filter */}
-                    <div>
-                        <label className="block text-sm font-medium mb-2">Category</label>
-                        <select
-                            value={filters.category}
-                            onChange={(e) => handleFilterChange('category', e.target.value)}
-                            className="w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white border-gray-300 text-gray-700"
-                        >
-                            <option value="">All Categories</option>
-                            {allCategories.map(category => (
-                                <option key={category} value={category}>{category}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {/* Sort By */}
-                    <div>
-                        <label className="block text-sm font-medium mb-2">Sort By</label>
-                        <select
-                            value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value)}
-                            className="w-full border px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white border-gray-300 text-gray-700"
-                        >
-                            <option value="rating">Rating</option>
-                            <option value="price-low">Price: Low to High</option>
-                            <option value="price-high">Price: High to Low</option>
-                            <option value="reviews">Most Reviews</option>
-                        </select>
-                    </div>
-                </div>
-
-                {/* Range Sliders */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-gray-200">
-                    <div>
-                        <label className="block text-sm font-medium mb-2">
-                            Price Range: ₹{formatPrice(filters.minPrice)} - ₹{formatPrice(filters.maxPrice)}
-                        </label>
-                        <div className="flex gap-4 items-center">
-                            <span className="text-xs text-gray-500">₹700</span>
-                            <div className="flex-1 space-y-2">
-                                <input
-                                    type="range"
-                                    min="700"
-                                    max="40000"
-                                    step="100"
-                                    value={filters.minPrice}
-                                    onChange={(e) => handleFilterChange('minPrice', parseInt(e.target.value))}
-                                    className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
-                                />
-                                <input
-                                    type="range"
-                                    min="700"
-                                    max="40000"
-                                    step="100"
-                                    value={filters.maxPrice}
-                                    onChange={(e) => handleFilterChange('maxPrice', parseInt(e.target.value))}
-                                    className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
-                                />
-                            </div>
-                            <span className="text-xs text-gray-500">₹40,000</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium mb-2">
-                            Min Rating: {filters.minRating}★
-                        </label>
-                        <input
-                            type="range"
-                            min="0"
-                            max="5"
-                            step="0.5"
-                            value={filters.minRating}
-                            onChange={(e) => handleFilterChange('minRating', parseFloat(e.target.value))}
-                            className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
-                        />
-                    </div>
-                </div>
-
-                {/* Reset Filters Button */}
-                <div className="flex justify-end mt-4">
-                    <button
-                        onClick={() => {
-                            setFilters({
-                                service: "", 
-                                category: "", 
-                                minPrice: 700,
-                                maxPrice: 40000,
-                                minRating: 0,
-                                availability: ""
-                            });
-                            setSearchQuery("");
-                        }}
-                        className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors text-sm font-medium flex items-center gap-2"
-                    >
-                        <RotateCcw className="w-4 h-4" /> Reset All Filters
-                    </button>
-                </div>
-            </div>
-        </motion.div>
-      )}
-
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 overflow-visible relative z-10">
-        {/* Results Count */}
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Temple className="w-6 h-6 text-amber-600" />
-            Available Pujas
-            <span className="text-sm font-normal text-gray-500 ml-2">
-              ({sortedPujas.length} found)
-            </span>
-          </h2>
-          
-          {/* Quick Action Buttons */}
-          <div className="flex gap-3">
-            <button 
-                onClick={navigateToMyBookings} 
-                className="text-gray-700 hover:text-amber-600 flex items-center gap-1.5 p-2 rounded-lg transition-colors text-sm border border-gray-200 bg-white"
-                title="My Bookings"
-            >
-                <FileText className="w-5 h-5" />
-                <span className="hidden sm:inline">My Bookings</span>
-            </button>
-            <button 
-                onClick={navigateToFavorites} 
-                className="text-gray-700 hover:text-red-500 flex items-center gap-1.5 p-2 rounded-lg transition-colors text-sm border border-gray-200 bg-white"
-                title="Favorites"
-            >
-                <Heart className="w-5 h-5" fill={favorites.length > 0 ? 'currentColor' : 'none'} />
-                <span className="hidden sm:inline">Favorites</span>
-                {favorites.length > 0 && (
-                    <span className="text-xs bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center font-bold">
-                        {favorites.length}
-                    </span>
-                )}
-            </button>
-          </div>
-        </div>
-
-        {/* Puja Cards Grid - FIXED LAYOUT */}
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <PujaCardSkeleton key={i} />
-            ))}
-          </div>
-        ) : sortedPujas.length > 0 ? (
-          <motion.div 
-            layout
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-visible"
-          >
-            {sortedPujas.map((puja) => (
-              <motion.div
-                layout
-                key={puja.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-xl p-6 transition-all duration-300 transform hover:scale-[1.02] border border-amber-100"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
-                      <img
-                        src={puja.img}
-                        alt={puja.name}
-                        className="w-16 h-16 rounded-full object-cover border-2 border-amber-200"
-                      />
-                      <div className="absolute -bottom-1 -right-1 bg-amber-500 text-white p-1 rounded-full text-xs">
-                        {getCategoryIcon(puja.category)}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-lg text-gray-800 line-clamp-1">{puja.name}</h3>
-                      </div>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Star className="w-4 h-4 text-amber-500 fill-current" />
-                        <span className="text-sm font-medium text-gray-700">
-                          {puja.rating} ({puja.reviews} reviews)
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => toggleFavorite(puja.id)}
-                    className={`p-2 rounded-lg transition-colors ${
-                      favorites.includes(puja.id)
-                        ? 'text-red-500 bg-red-50'
-                        : 'text-gray-400 hover:text-red-500 hover:bg-gray-50'
-                    }`}
-                  >
-                    <Heart
-                      size={20}
-                      fill={favorites.includes(puja.id) ? 'currentColor' : 'none'}
-                    />
-                  </button>
-                </div>
-
-                <div className="space-y-3 mb-4">
-                    <div className="flex flex-wrap gap-2 mb-2">
-                        <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1">
-                          {getCategoryIcon(puja.category)}
-                          {puja.category}
-                        </span>
-                    </div>
-                  <p className="text-sm text-gray-600 line-clamp-2">{puja.description}</p>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Clock3 className="w-4 h-4" />
-                    <span>{puja.duration}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                        <div className="flex items-center">
-                            <span className="text-2xl font-bold text-amber-600">
-                                ₹{formatPrice(puja.price)}
-                            </span>
-                            <span className="text-sm text-gray-500 ml-1">/ceremony</span>
-                        </div>
-                        <span className="text-xs text-green-600 flex items-center gap-1 mt-0.5">
-                            <IndianRupee className="w-3 h-3" /> Samagri: +₹{formatPrice(puja.samagriPrice)}
-                        </span>
-                  </div>
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleViewDetails(puja)}
-                    className="flex-1 border border-amber-600 text-amber-600 py-2 rounded-lg font-medium hover:bg-amber-50 transition-colors flex items-center justify-center gap-2"
-                  >
-                    <Eye className="w-4 h-4" />
-                    View Details
-                  </button>
-                  <button
-                    onClick={() => handleBookNow(puja)}
-                    className="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-lg font-medium transition-colors shadow-lg hover:shadow-xl"
-                  >
-                    Book Now
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        ) : (
-          /* No Results Found */
-          <div className="text-center py-16">
-            <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-2xl font-bold text-gray-700 mb-4">
-              No Pujas Found
-            </h3>
-            <p className="text-gray-500 mb-8 max-w-md mx-auto">
-              Try adjusting your search criteria or filters to find the perfect puja for your occasion.
-            </p>
-            <button
-              onClick={() => {
-                setFilters({
-                  service: "", 
-                  category: "", 
-                  minPrice: 700,
-                  maxPrice: 40000,
-                  minRating: 0,
-                  availability: ""
-                });
-                setSearchQuery("");
-              }}
-              className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-            >
-              Reset All Filters
-            </button>
-          </div>
-        )}
-
-        {/* Recently Viewed Section */}
-        {recentlyViewed.length > 0 && (
-          <div className="mt-16">
-            <h3 className="text-2xl font-bold mb-8 flex items-center gap-2">
-              <Clock className="w-6 h-6 text-amber-600" />
-              Recently Viewed Pujas
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {recentlyViewed.map((puja) => (
-                <div
-                  key={puja.id}
-                  className="bg-white rounded-xl p-4 border border-amber-100 hover:shadow-lg transition-shadow"
-                >
-                  <div className="flex justify-center mb-3">
-                    <img
-                      src={puja.img}
-                      alt={puja.name}
-                      className="w-20 h-20 rounded-full object-cover border-2 border-amber-200"
-                    />
-                  </div>
-                  <h4 className="font-semibold text-gray-800 text-center text-sm mb-2 line-clamp-2">{puja.name}</h4>
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-amber-600 text-sm">
-                      ₹{formatPrice(puja.price)}
-                    </span>
-                    <button
-                      onClick={() => handleBookNow(puja)}
-                      className="bg-amber-600 text-white px-3 py-1 rounded-lg text-xs hover:bg-amber-700 transition"
-                    >
-                      Book Again
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Trust Badges */}
+          {/* Trust Badges */}
         <TrustBadges />
       </div>
 
