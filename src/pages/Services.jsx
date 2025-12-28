@@ -175,7 +175,7 @@ const servicesData = {
       location: "Delhi",
 
       media: [
-        { type: "video", src: "images/Premium_DJ_Entertainment_Video_Generated.mp4" },
+        { type: "video", src: "images/Luxury_Wedding_Orchestra_Performance_Video.mp4" },
         { type: "image", src: "images/dj2.png" }
       ]
     },
