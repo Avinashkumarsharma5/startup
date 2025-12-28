@@ -1343,7 +1343,7 @@ export default function PujaBooking() {
   };
 
   const navigateToMyBookings = () => {
-    navigate('/my-bookings');
+    navigate('/bookingspage');
   };
 
   const navigateToFavorites = () => {

@@ -591,95 +591,108 @@ function ServicesSection() {
 }
 
 
-// ----------------- Upcoming Events Section (Improved) -----------------
+// ----------------- Upcoming Events (Now Services) -----------------
 function UpcomingEvents() {
   const navigate = useNavigate();
 
-  // ✅ Correct days left calculation
-  const getDaysUntil = (dateString) => {
-    const today = new Date();
-    const eventDate = new Date(dateString);
-    const diff = eventDate.setHours(0,0,0,0) - today.setHours(0,0,0,0);
-    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-  };
+  const services = [
+    {
+      id: 1,
+      name: "Book Pandit Ji",
+      img: "images/panditji 3.png",
+      route: "/panditbooking",
+    },
+    {
+      id: 2,
+      name: "Puja Samagri packages",
+      img: "images/pujakit2.jpg",
+      route: "/pujakits",
+    },
+    {
+      id: 9,
+      name: "Puja Samagri items",
+      img: "images/pujakit.jpg",
+      route: "/pujakits",
+    },
+    {
+      id: 3,
+      name: "Decoration",
+      img: "images/decor3.png",
+      route: "/services",
+    },
+    {
+      id: 4,
+      name: "Catering",
+      img: "images/catring03.png",
+      route: "/services",
+    },
+    {
+      id: 5,
+      name: "Photography",
+      img: "images/photography2.png",
+      route: "/services",
+    },
+    {
+      id: 6,
+      name: "Venue Booking",
+      img: "images/hall02.png",
+      route: "/services",
+    },
+    {
+      id: 7,
+      name: "Invitation Cards",
+      img: "images/invitation01.png",
+      route: "/sanskaraashopapp",
+    },
+    {
+      id: 8,
+      name: "Video Invitation",
+      img: "images/invitation02.png",
+      route: "/sanskaraashopapp",
+    },
+  ];
 
   return (
     <div className="mt-6">
-      {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold text-[#800000]">
-          Upcoming Events & Festivals
+          Our Services
         </h3>
         <button
-          onClick={() => navigate("/EventsPage")}
-          className="text-sm text-orange-600 font-medium hover:underline"
+          onClick={() => navigate("/services")}
+          className="text-sm text-amber-700 font-medium hover:underline"
         >
           View All →
         </button>
       </div>
 
-      {/* Horizontal Cards */}
-      <div className="overflow-x-auto no-scrollbar pb-5 -mx-4 px-4">
-        <div className="flex gap-4">
-          {upcomingEvents.map((event) => {
-            const daysLeft = getDaysUntil(event.date);
+      <div className="overflow-x-auto no-scrollbar pb-4 -mx-4 px-4">
+        <div className="flex gap-6">
+          {services.map((service) => (
+            <motion.div
+              key={service.id}
+              whileHover={{ y: -6 }}
+              onClick={() => navigate(service.route)}
+              className="min-w-[120px] sm:min-w-[140px] cursor-pointer text-center"
+            >
+              <div className="w-24 h-24 sm:w-28 sm:h-28 mx-auto rounded-full bg-white border border-amber-200 shadow-md overflow-hidden">
+                <img
+                  src={service.img}
+                  alt={service.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
 
-            return (
-              <motion.div
-                key={event.id}
-                whileHover={{ y: -6 }}
-                className="min-w-[220px] sm:min-w-[260px] bg-white rounded-2xl p-4 shadow-md border border-orange-200 relative"
-              >
-                {/* Badge */}
-                <span
-                  className={`absolute top-3 right-3 text-xs px-2 py-1 rounded-full font-medium
-                    ${
-                      event.type === "festival"
-                        ? "bg-amber-100 text-amber-800"
-                        : "bg-blue-100 text-blue-800"
-                    }`}
-                >
-                  {event.type === "festival" ? "Festival" : "Booking"}
-                </span>
-
-                {/* Title */}
-                <h4 className="font-semibold text-gray-800 text-sm sm:text-base pr-10">
-                  {event.name}
-                </h4>
-
-                {/* Date */}
-                <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                  {new Date(event.date).toLocaleDateString("en-IN", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </p>
-
-                {/* Countdown */}
-                <div className="flex items-center gap-2 mt-3">
-                  <Clock className="w-4 h-4 text-orange-500" />
-                  <span className="text-sm font-medium text-amber-700">
-                    {daysLeft === 0 ? "Today" : `${daysLeft} days left`}
-                  </span>
-                </div>
-
-                {/* CTA */}
-                <button
-                  onClick={() => navigate("/EventsPage")}
-                  className="mt-4 w-full bg-gradient-to-r from-amber-100 to-amber-200 text-amber-900 py-2 rounded-lg text-sm font-semibold hover:from-amber-200 hover:to-amber-300 transition"
-                >
-                  {event.type === "festival" ? "Explore Festival" : "View Details"}
-                </button>
-              </motion.div>
-            );
-          })}
+              <p className="mt-3 text-sm sm:text-base font-semibold text-gray-800">
+                {service.name}
+              </p>
+            </motion.div>
+          ))}
         </div>
       </div>
     </div>
   );
 }
-
 
 
 // ----------------- Enhanced Upcoming Events with Loading -----------------
