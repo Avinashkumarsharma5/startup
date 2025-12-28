@@ -738,8 +738,8 @@ function PersonalizedRecommendations() {
       reason: "Most booked house puja",
       type: "Puja",
       rating: 4.8,
-      bookings: 124,
       img: "images/ganesh puja 1.jpeg",
+      video: "images/Luxury_Wedding_Hall.mp4",
     },
     {
       id: 2,
@@ -748,6 +748,7 @@ function PersonalizedRecommendations() {
       type: "Puja Kit",
       discount: "15% OFF",
       img: "images/sanskaraa kit2.png",
+      video: "images/Royal_Indian_Wedding_Mandap_Video.mp4",
     },
     {
       id: 3,
@@ -757,6 +758,7 @@ function PersonalizedRecommendations() {
       rating: 4.9,
       location: "Delhi",
       img: "images/panditji 2.png",
+      video: "images/Premium_DJ_Entertainment_Video_Generated.mp4",
     },
     {
       id: 4,
@@ -764,6 +766,7 @@ function PersonalizedRecommendations() {
       reason: "Wedding favourite",
       type: "Decoration",
       img: "images/flowerdeco1.png",
+      video: "images/Elegant_Indian_Wedding_Floral_Stage.mp4",
     },
     {
       id: 5,
@@ -772,6 +775,7 @@ function PersonalizedRecommendations() {
       type: "Venue",
       location: "Mumbai",
       img: "images/hall03.png",
+      video: "images/Luxurious_Indian_Wedding_Venue_Video.mp4",
     },
     {
       id: 6,
@@ -779,30 +783,20 @@ function PersonalizedRecommendations() {
       reason: "Candid + cinematic",
       type: "Photography",
       img: "images/photography1.png",
+      video: "images/Luxury_Indian_Wedding_Showreel_Generated.mp4",
     },
   ];
 
   const handleViewDetails = (rec) => {
-    switch (rec.type) {
-      case "Puja":
-      case "Pandit":
-        navigate("/panditbooking", { state: { rec } });
-        break;
-      case "Puja Kit":
-        navigate("/pujakits", { state: { rec } });
-        break;
-      case "Decoration":
-        navigate("/decoration", { state: { rec } });
-        break;
-      case "Venue":
-        navigate("/venues", { state: { rec } });
-        break;
-      case "Photography":
-        navigate("/photography", { state: { rec } });
-        break;
-      default:
-        break;
-    }
+    const routes = {
+      Puja: "/panditbooking",
+      Pandit: "/panditbooking",
+      "Puja Kit": "/pujakits",
+      Decoration: "/decoration",
+      Venue: "/venues",
+      Photography: "/photography",
+    };
+    navigate(routes[rec.type], { state: { rec } });
   };
 
   return (
@@ -825,29 +819,47 @@ function PersonalizedRecommendations() {
                 w-64 sm:w-72
                 bg-[#FFFDF7]
                 border border-[#E8C871]/40
-                rounded-xl
+                rounded-2xl
                 shadow-sm
-                hover:shadow-md
+                hover:shadow-lg
                 transition
                 flex-shrink-0
                 overflow-hidden
+                group
               "
             >
-              {/* Image */}
-              <div className="relative h-44 sm:h-60">
-
-
-                <img
-                  src={rec.img}
-                  alt={rec.title}
-                  className="w-full h-full object-cover"
+              {/* 🎬 VIDEO */}
+              <div className="relative h-44 sm:h-60 overflow-hidden">
+                <video
+                  src={rec.video}
+                  poster={rec.img}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  className="
+                    w-full h-full object-cover
+                    scale-100 group-hover:scale-105
+                    transition-transform duration-700
+                  "
+                  onError={(e) => (e.currentTarget.poster = rec.img)}
                 />
 
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+
+                {/* Discount badge */}
                 {rec.discount && (
                   <span className="absolute top-2 right-2 bg-[#7A1A1A] text-white text-[11px] px-2 py-0.5 rounded">
                     {rec.discount}
                   </span>
                 )}
+
+                {/* Play hint */}
+                <div className="absolute bottom-2 left-2 text-[11px] text-white/80 flex items-center gap-1">
+                  ▶ Preview
+                </div>
               </div>
 
               {/* Content */}
@@ -885,8 +897,7 @@ function PersonalizedRecommendations() {
                   onClick={() => handleViewDetails(rec)}
                   className="
                     mt-auto
-                    text-sm
-                    font-medium
+                    text-sm font-medium
                     text-[#7A1A1A]
                     border border-[#7A1A1A]/40
                     py-1.5 rounded-lg
@@ -905,6 +916,8 @@ function PersonalizedRecommendations() {
     </section>
   );
 }
+
+
 
 
 // ----------------- Promo Banner -----------------
