@@ -653,20 +653,20 @@ function UpcomingEvents() {
   ];
 
   return (
-    <div className="mt-6">
-      <div className="flex justify-between items-center mb-4">
+    <div className="mt-7">
+      <div className="flex justify-between items-center mb-8 ">
         <h3 className="text-xl font-semibold text-[#800000]">
           Our Services
         </h3>
         <button
           onClick={() => navigate("/services")}
-          className="text-sm text-amber-700 font-medium hover:underline"
+          className="text-sm text-amber-700 font-medium hover:underline "
         >
           View All →
         </button>
       </div>
 
-      <div className="overflow-x-auto no-scrollbar pb-4 -mx-4 px-4">
+      <div className="overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 ">
         <div className="flex gap-6">
           {services.map((service) => (
             <motion.div
