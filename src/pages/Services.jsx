@@ -205,7 +205,7 @@ const servicesData = {
       location: "Mumbai",
 
       media: [
-        { type: "video", src: "videos/folk-dance.mp4" },
+        { type: "video", src: "images/Indian_Folk_Dance_Performance_Video.mp4" },
         { type: "image", src: "https://images.unsplash.com/photo-1547153760-18fc86324498?w=800" }
       ]
     },
@@ -221,7 +221,7 @@ const servicesData = {
       trending: true,
 
       media: [
-        { type: "video", src: "videos/full-planning.mp4" },
+        { type: "video", src: "images/Luxury_Indian_Wedding_Showreel_Video.mp4" },
         { type: "image", src: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=800" }
       ]
     },
@@ -233,7 +233,7 @@ const servicesData = {
       category: "Beauty",
 
       media: [
-        { type: "video", src: "videos/bridal-makeup.mp4" },
+        { type: "video", src: "images/Bridal_Makeup_Showreel_Video_Generated.mp4" },
         { type: "image", src: "https://images.unsplash.com/photo-1596464716127-f2a82984de30?w=800" }
       ]
     },
