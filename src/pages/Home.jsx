@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Helmet } from "react-helmet-async";
+
 
 import {
   Search,
@@ -7,8 +9,8 @@ import {
   ChevronRight,
   Home as HomeIcon,
   User,
-  Users,          // ✅ ADD THIS
-  MapPin,         // ✅ ADD THIS
+  Users,          
+  MapPin,         
   Calendar,
   Package,
   Sparkles,
@@ -148,8 +150,11 @@ function CountdownTimer({ targetDate, size = "medium" }) {
         {String(timeLeft.seconds).padStart(2, '0')}s
       </div>
     </div>
+
+    
   );
 }
+
 
 // ----------------- Filter & Sort System -----------------
 function FilterSortSystem({ type, onFilterChange }) {
@@ -356,7 +361,7 @@ function DynamicGreeting() {
         {greeting}{userName ? `, ${userName}` : ""}
       </p>
       <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#800000]">
-        Wishing you a blessed day ahead 🙏
+        Wishing you a blessed day ahead 
       </h2>
       <p className="mt-2 text-xs sm:text-sm md:text-base text-amber-800 bg-amber-100 p-2 sm:p-3 rounded-lg ">
         {shloka}
@@ -1584,7 +1589,6 @@ function VoiceSearchModal({ isOpen, onClose, onResult }) {
 // ----------------- Main Enhanced Home Component ---------------
 export default function EnhancedHome() {
   const navigate = useNavigate();
-  const [cartItems] = useState(2);
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
 
   const handleVoiceSearch = () => {
@@ -1594,68 +1598,73 @@ export default function EnhancedHome() {
   const handleVoiceResult = (command) => {
     setVoiceModalOpen(false);
     toast.success(`Command recognized: ${command}`);
-    
-    // Navigate based on command
+
     if (command.includes("Satyanarayan")) {
       navigate("/puja-booking", { state: { pujaType: "Satyanarayan" } });
     } else if (command.includes("Griha Pravesh")) {
       navigate("/puja-booking", { state: { pujaType: "Griha Pravesh" } });
     } else if (command.includes("Puja Kit")) {
       navigate("/pujakits");
-    } else if (command.includes("Schedule Call")) {
-      // Logic to schedule call
-      toast.info("Call scheduling feature coming soon!");
     }
   };
 
-  const handleFilterChange = (filters) => {
-    console.log('Filters applied:', filters);
-    // Implement actual filtering logic based on filters
-    toast.info(`Filters applied: ${JSON.stringify(filters)}`);
-  };
-
   return (
-    <main className="min-h-screen pb-20 sm:pb-24 p-3 sm:p-4 md:p-6 bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] font-sans text-gray-800 relative">
-      {/* Toast Notifications */}
-      <ToastContainer 
-        position="top-right" 
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      
-      <DynamicGreeting />
-      <PanchangWidget />
-      <AnimatedSearch onVoiceSearch={handleVoiceSearch} />
-      
-      <HeroBanner />
-      <ServicesSection />
-      
-      {/* Enhanced Sections */}
-      <EnhancedUpcomingEvents />
-      <PersonalizedRecommendations />
-      <GaneshPromo />
-      <PanditAvailability />
-     
-      <EnhancedPanditProfile />
-   
-      <TestimonialsSection />
-      <EnhancedFestivalOffers />
+    <>
+      {/* ✅ SEO */}
+      <Helmet>
+        <title>Sanskaraa – Book Pandit Ji, Puja Kits & Event Services Online</title>
 
-      <QuickActions />
-      {/* <FloatingCart itemCount={cartItems} /> */}
-     
-      
-      <VoiceSearchModal 
-        isOpen={voiceModalOpen} 
-        onClose={() => setVoiceModalOpen(false)}
-        onResult={handleVoiceResult}
-      />
-    </main>
+        <meta
+          name="description"
+          content="Book Pandit Ji, Puja Kits, Griha Pravesh Puja, Wedding Rituals, Decoration & Event Management services online with Sanskaraa."
+        />
+
+        <meta
+          name="keywords"
+          content="Pandit booking, Puja kits, Griha Pravesh puja, Satyanarayan puja, Wedding rituals, Event management, Sanskaraa"
+        />
+
+        <meta property="og:title" content="Sanskaraa – Sacred Services Made Easy" />
+        <meta
+          property="og:description"
+          content="India’s trusted platform for Pandit booking, Puja kits & event rituals."
+        />
+        <meta property="og:image" content="/images/sanskaraa1.png" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+
+      {/* ✅ UI */}
+      <main className="min-h-screen pb-20 sm:pb-24 p-3 sm:p-4 md:p-6 bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] font-sans text-gray-800 relative">
+        {/* SEO H1 */}
+        <h1 className="sr-only">
+          Sanskaraa – Book Pandit Ji, Puja Kits & Event Services Online
+        </h1>
+
+        <ToastContainer position="top-right" autoClose={3000} />
+
+        <DynamicGreeting />
+        <PanchangWidget />
+        <AnimatedSearch onVoiceSearch={handleVoiceSearch} />
+
+        <HeroBanner />
+        <ServicesSection />
+
+        <EnhancedUpcomingEvents />
+        <PersonalizedRecommendations />
+        <GaneshPromo />
+        <PanditAvailability />
+        <EnhancedPanditProfile />
+        <TestimonialsSection />
+        <EnhancedFestivalOffers />
+
+        <QuickActions />
+
+        <VoiceSearchModal
+          isOpen={voiceModalOpen}
+          onClose={() => setVoiceModalOpen(false)}
+          onResult={handleVoiceResult}
+        />
+      </main>
+    </>
   );
 }
