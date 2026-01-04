@@ -601,16 +601,17 @@ function UpcomingEvents() {
       name: "Book Pandit Ji",
       img: "images/panditji 3.png",
       route: "/panditbooking",
+      badge: "Popular",
     },
     {
       id: 2,
-      name: "Puja Samagri packages",
+      name: "Puja Samagri Packages",
       img: "images/pujakit2.jpg",
       route: "/pujakits",
     },
     {
       id: 9,
-      name: "Puja Samagri items",
+      name: "Puja Samagri Items",
       img: "images/pujakit.jpg",
       route: "/pujakits",
     },
@@ -643,6 +644,7 @@ function UpcomingEvents() {
       name: "Invitation Cards",
       img: "images/invitation01.png",
       route: "/sanskaraashopapp",
+      badge: "New",
     },
     {
       id: 8,
@@ -653,44 +655,62 @@ function UpcomingEvents() {
   ];
 
   return (
-    <div className="mt-7">
-      <div className="flex justify-between items-center mb-8 ">
-        <h3 className="text-xl font-semibold text-[#800000]">
+    <section className="mt-10">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6 px-1">
+        <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#7A1A1A]">
           Our Services
         </h3>
         <button
           onClick={() => navigate("/services")}
-          className="text-sm text-amber-700 font-medium hover:underline "
+          className="text-sm font-semibold text-amber-700 hover:text-amber-800 transition"
         >
           View All →
         </button>
       </div>
 
-      <div className="overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 ">
-        <div className="flex gap-6">
+      {/* Horizontal Scroll */}
+      <div className="overflow-x-auto no-scrollbar -mx-4 px-4 pb-4">
+        <div className="flex gap-7">
           {services.map((service) => (
             <motion.div
               key={service.id}
-              whileHover={{ y: -6 }}
+              whileHover={{ y: -8, scale: 1.05 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 260 }}
               onClick={() => navigate(service.route)}
-              className="min-w-[120px] sm:min-w-[140px] cursor-pointer text-center"
+              className="min-w-[120px] sm:min-w-[150px] cursor-pointer text-center group"
             >
-              <div className="w-24 h-24 sm:w-28 sm:h-28 mx-auto rounded-full bg-white border border-amber-200 shadow-md overflow-hidden">
-                <img
-                  src={service.img}
-                  alt={service.name}
-                  className="w-full h-full object-cover"
-                />
+              {/* Image Wrapper */}
+              <div className="relative mx-auto w-24 h-24 sm:w-28 sm:h-28 rounded-full 
+                bg-gradient-to-br from-amber-200 to-amber-400 p-[2px] shadow-lg">
+
+                <div className="w-full h-full rounded-full bg-white overflow-hidden">
+                  <img
+                    src={service.img}
+                    alt={service.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+
+                {/* Badge */}
+                {service.badge && (
+                  <span className="absolute -top-1 -right-1 text-[10px] px-2 py-0.5 rounded-full 
+                    bg-[#7A1A1A] text-white font-bold shadow">
+                    {service.badge}
+                  </span>
+                )}
               </div>
 
-              <p className="mt-3 text-sm sm:text-base font-semibold text-gray-800">
+              {/* Title */}
+              <p className="mt-3 text-sm sm:text-base font-semibold text-gray-800 leading-tight">
                 {service.name}
               </p>
             </motion.div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
