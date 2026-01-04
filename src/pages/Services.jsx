@@ -245,7 +245,7 @@ const servicesData = {
       category: "Beauty",
 
       media: [
-        { type: "video", src: "videos/mehndi.mp4" },
+        { type: "video", src: "images/Luxury_Mehndi_Art_Showreel_Video.mp4" },
         { type: "image", src: "https://images.unsplash.com/photo-1618517351616-38d9dd3b1c67?w=800" }
       ]
     },
@@ -257,7 +257,7 @@ const servicesData = {
       category: "Decor",
 
       media: [
-        { type: "video", src: "videos/car-decor.mp4" },
+        { type: "video", src: "images/Premium_Indian_Wedding_Car_Showreel.mp4" },
         { type: "image", src: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?w=800" }
       ]
     },
