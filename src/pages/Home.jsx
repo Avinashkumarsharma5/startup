@@ -764,7 +764,7 @@ function PersonalizedRecommendations() {
       type: "Puja",
       rating: 4.8,
       img: "images/ganesh puja 1.jpeg",
-      video: "images/Luxury_Wedding_Hall.mp4",
+      video: "images/Satyanarayan_Puja_Ceremony_Video_Generation.mp4",
     },
     {
       id: 2,
@@ -773,7 +773,7 @@ function PersonalizedRecommendations() {
       type: "Puja Kit",
       discount: "15% OFF",
       img: "images/sanskaraa kit2.png",
-      video: "images/Royal_Indian_Wedding_Mandap_Video.mp4",
+      video: "images/Premium_Griha_Pravesh_Puja_Kit_Video.mp4",
     },
     {
       id: 3,
@@ -783,7 +783,7 @@ function PersonalizedRecommendations() {
       rating: 4.9,
       location: "Delhi",
       img: "images/panditji 2.png",
-      video: "images/Premium_DJ_Entertainment_Video_Generated.mp4",
+      video: "images/Wedding_Pandit_Ji_Profile_Video.mp4",
     },
     {
       id: 4,
