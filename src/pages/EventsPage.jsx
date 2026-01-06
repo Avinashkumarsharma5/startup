@@ -1681,32 +1681,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
           )}
         </div>
 
-        {/* Hero Section */}
-        <div className="mt-4 sm:mt-6 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border p-3 sm:p-4 lg:p-6" style={{backgroundColor: colors.white + 'CC', borderColor: colors.saffron + '20'}}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-            <div className="flex items-center gap-3 p-3 rounded-xl border" style={{backgroundColor: colors.saffron + '10', borderColor: colors.saffron + '20'}}>
-              <FiPackage className="w-5 h-5 sm:w-6 sm:h-6" style={{color: colors.saffron}} />
-              <div>
-                <p className="font-semibold text-sm" style={{color: colors.culturalRed}}>80+ Equipment Types</p>
-                <p className="text-xs" style={{color: colors.culturalRed + 'B0'}}>Complete event solutions</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 rounded-xl border" style={{backgroundColor: colors.success + '10', borderColor: colors.success + '20'}}>
-              <FiTruck className="w-5 h-5 sm:w-6 sm:h-6" style={{color: colors.success}} />
-              <div>
-                <p className="font-semibold text-sm" style={{color: colors.culturalRed}}>Free Delivery</p>
-                <p className="text-xs" style={{color: colors.culturalRed + 'B0'}}>Above ₹4999 rental</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 rounded-xl border" style={{backgroundColor: colors.warning + '10', borderColor: colors.warning + '20'}}>
-              <FiShield className="w-5 h-5 sm:w-6 sm:h-6" style={{color: colors.warning}} />
-              <div>
-                <p className="font-semibold text-sm" style={{color: colors.culturalRed}}>Quality Guaranteed</p>
-                <p className="text-xs" style={{color: colors.culturalRed + 'B0'}}>Professional equipment</p>
-              </div>
-            </div>
-          </div>
-        </div>
+       
         
         {/* Category Icons & Filters */}
         <div className="mt-4 sm:mt-6 backdrop-blur-sm rounded-xl shadow-lg border px-3 sm:px-4 py-3 sm:py-4" style={{backgroundColor: colors.white + 'CC', borderColor: colors.saffron + '20'}}>
