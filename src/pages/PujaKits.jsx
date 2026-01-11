@@ -162,6 +162,8 @@ const resolveItemPrice = (itemName) => {
 
 // ---------- Mock Data ----------
 // Package Kits
+// ---------- Mock Data ----------
+// Package Kits
 const kits = [
   {
     id: 1,
@@ -914,9 +916,11 @@ const singleItems = [
     img: "images/kapoor-oil.png",
   },
 ];
+
 // Combine all products
 const allProducts = [...kits, ...singleItems];
 
+// ---------- Kit Items Details ----------
 const pujaKitItems = {
   1: {
     name: "Griha Pravesh / गृह प्रवेश",
@@ -1886,7 +1890,6 @@ const pujaKitItems = {
     ]
   }
 };
-
 // ---------- Helper Functions ----------
 const saveToLocal = (key, val) => localStorage.setItem(key, JSON.stringify(val));
 const readFromLocal = (key, fallback) => {
@@ -2373,13 +2376,6 @@ const KitItemsModal = ({ kit, onClose, onAddToCart }) => {
 
               <div className="flex flex-col items-end gap-2">
                 <button
-                  onClick={() => console.log("Backend Payload:", getBackendPayload())}
-                  className="text-xs text-blue-600 hover:text-blue-800"
-                >
-                  Debug: View Backend Structure
-                </button>
-                
-                <button
                   onClick={handleAddToCart}
                   className="
                     bg-gradient-to-r from-rose-600 to-pink-600
@@ -2401,6 +2397,816 @@ const KitItemsModal = ({ kit, onClose, onAddToCart }) => {
 
       </motion.div>
     </motion.div>
+  );
+};
+
+// ---------- Unified Order Wizard Modal ----------
+const UnifiedOrderWizardModal = ({
+  mode,
+  product,
+  qty,
+  cartItems,
+  onClose,
+  onConfirm,
+}) => {
+  const [step, setStep] = useState(1);
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    address: "",
+    landmark: "",
+    city: "",
+    pincode: "",
+    deliveryDate: "",
+    deliverySlot: "",
+    includePandit: false,
+    additionalNotes: "",
+  });
+
+  const items = useMemo(() => {
+    if (mode === 'single' && product) {
+      return [{ ...product, qty }];
+    } else if (mode === 'package' && product) {
+      return [{ ...product, qty, includePandit: form.includePandit }];
+    }
+    return cartItems || [];
+  }, [mode, product, qty, cartItems, form.includePandit]);
+
+  const pricing = useMemo(() => {
+    const subtotal = items.reduce((sum, item) => {
+      let price = item.price;
+      if (item.type === 'package' && item.includePandit) {
+        price += 500;
+      }
+      return sum + price * item.qty;
+    }, 0);
+    
+    const gst = Math.round(subtotal * 0.18);
+    const delivery = subtotal === 0 ? 0 : subtotal >= 999 ? 0 : 50;
+    const total = subtotal + gst + delivery;
+    return { subtotal, gst, delivery, total };
+  }, [items]);
+
+  const getTomorrowDate = () => {
+    const t = new Date();
+    t.setDate(t.getDate() + 1);
+    return t.toISOString().split("T")[0];
+  };
+
+  const generateTimeSlots = () => {
+    const timeSlots = [];
+    for (let hour = 5; hour <= 21; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const timeString = `${hour.toString().padStart(2, "0")}:${minute
+          .toString()
+          .padStart(2, "0")}`;
+        const time12hr = new Date(`2000-01-01T${timeString}`).toLocaleTimeString(
+          "en-IN",
+          {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          }
+        );
+        timeSlots.push(time12hr);
+      }
+    }
+    return timeSlots;
+  };
+
+  const timeSlots = generateTimeSlots();
+
+  const handleNext = () => {
+    if (step === 1) {
+      if (!form.name || !form.phone || !form.address || !form.city || !form.pincode) {
+        alert("Please fill all required fields");
+        return;
+      }
+      if (form.phone.length < 8) {
+        alert("Please enter valid phone number");
+        return;
+      }
+    }
+    if (step === 2) {
+      if (!form.deliveryDate || !form.deliverySlot) {
+        alert("Please select delivery date and time slot");
+        return;
+      }
+      if (mode === 'package' && !form.deliveryDate) {
+        alert("Please select puja date");
+        return;
+      }
+    }
+    setStep((s) => s + 1);
+  };
+
+  const handleConfirm = () => {
+    onConfirm({
+      items,
+      pricing,
+      customer: {
+        name: form.name,
+        phone: form.phone,
+        address: form.address,
+        landmark: form.landmark,
+        city: form.city,
+        pincode: form.pincode,
+      },
+      delivery: {
+        date: form.deliveryDate,
+        slot: form.deliverySlot,
+      },
+      includePandit: form.includePandit,
+      additionalNotes: form.additionalNotes,
+      mode,
+    });
+  };
+
+  const isPackage = mode === 'package';
+
+  return (
+    <motion.div
+      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-2 sm:p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+    >
+      <motion.div
+        className="bg-white rounded-xl sm:rounded-2xl w-full max-w-lg sm:max-w-2xl max-h-[90vh] overflow-y-auto"
+        initial={{ y: 40, opacity: 0, scale: 0.95 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        exit={{ y: 40, opacity: 0, scale: 0.95 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="sticky top-0 bg-white z-10 p-3 sm:p-4 border-b border-rose-100 flex justify-between items-center">
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-rose-800 flex items-center gap-1 sm:gap-2">
+              {isPackage ? <FiCalendar /> : <FiShoppingCart />}
+              {isPackage ? "Book Puja Package" : "Place Order"}
+            </h2>
+            <p className="text-xs text-gray-500 hidden sm:block">
+              {isPackage 
+                ? "Complete puja service booking" 
+                : "Daily puja items home delivery"}
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-rose-600 text-xl p-1"
+          >
+            <FiX />
+          </button>
+        </div>
+
+        {/* Step Indicator */}
+        <div className="px-3 sm:px-4 py-3">
+          <div className="flex items-center justify-between mb-2">
+            {[
+              { no: 1, label: "Address" },
+              { no: 2, label: isPackage ? "Date & Time" : "Delivery Slot" },
+              { no: 3, label: "Review" },
+            ].map((s) => (
+              <div key={s.no} className="flex-1 flex flex-col items-center">
+                <div
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border-2 text-xs sm:text-sm ${
+                    step >= s.no
+                      ? "bg-rose-600 border-rose-600 text-white"
+                      : "border-gray-300 text-gray-300"
+                  }`}
+                >
+                  {step > s.no ? <FiCheckCircle /> : s.no}
+                </div>
+                <span
+                  className={`mt-1 text-[10px] sm:text-xs text-center ${
+                    step >= s.no
+                      ? "text-rose-700 font-semibold"
+                      : "text-gray-400"
+                  }`}
+                >
+                  {s.label}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-rose-600"
+              initial={{ width: "0%" }}
+              animate={{ width: `${((step - 1) / 2) * 100}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
+        </div>
+
+        {/* Steps */}
+        <div className="px-3 sm:px-4 pb-3 min-h-[280px]">
+          <AnimatePresence mode="wait">
+            {/* STEP 1: Address */}
+            {step === 1 && (
+              <motion.div
+                key="step1"
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                className="space-y-3"
+              >
+                <h3 className="text-sm sm:text-base font-semibold text-rose-800 flex items-center gap-2">
+                  <FiMapPin />
+                  {isPackage ? "Puja Address Details" : "Delivery Address"}
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                  <div className="col-span-1 sm:col-span-2">
+                    <label className="text-xs text-gray-600 mb-1 block">
+                      Full Name <span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex items-center gap-2 border rounded-lg px-2 py-1.5">
+                      <FiUser className="text-gray-400 text-xs" />
+                      <input
+                        type="text"
+                        className="w-full text-xs sm:text-sm outline-none"
+                        placeholder="Your good name"
+                        value={form.name}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, name: e.target.value }))
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-gray-600 mb-1 block">
+                      Mobile <span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex items-center gap-2 border rounded-lg px-2 py-1.5">
+                      <FiPhone className="text-gray-400 text-xs" />
+                      <input
+                        type="tel"
+                        className="w-full text-xs sm:text-sm outline-none"
+                        placeholder="10 digit mobile"
+                        value={form.phone}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, phone: e.target.value }))
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-gray-600 mb-1 block">
+                      City <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
+                      placeholder="Your city"
+                      value={form.city}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, city: e.target.value }))
+                      }
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-gray-600 mb-1 block">
+                      Pincode <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
+                      placeholder="Pincode"
+                      value={form.pincode}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, pincode: e.target.value }))
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-600 mb-1 block">
+                    {isPackage ? "Puja Address" : "Full Address"} <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    rows={2}
+                    className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
+                    placeholder={isPackage ? "Where should panditji come for puja?" : "House no, street, area..."}
+                    value={form.address}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, address: e.target.value }))
+                    }
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-600 mb-1 block">
+                    Landmark
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
+                    placeholder="Near temple / chowk"
+                    value={form.landmark}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, landmark: e.target.value }))
+                    }
+                  />
+                </div>
+
+                {isPackage && (
+                  <div>
+                    <label className="text-xs text-gray-600 mb-1 block">
+                      Additional Notes (Optional)
+                    </label>
+                    <textarea
+                      rows={2}
+                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
+                      placeholder="Any special requirements..."
+                      value={form.additionalNotes}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, additionalNotes: e.target.value }))
+                      }
+                    />
+                  </div>
+                )}
+
+                <div className="bg-amber-50 border border-amber-200 rounded-lg px-2 py-2 text-[11px] text-amber-800 flex items-start gap-2">
+                  <FiShield className="text-amber-500 mt-0.5" />
+                  <span>
+                    Your details are used only for service. No spam, no sharing.
+                  </span>
+                </div>
+              </motion.div>
+            )}
+
+            {/* STEP 2: Date & Time */}
+            {step === 2 && (
+              <motion.div
+                key="step2"
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                className="space-y-3"
+              >
+                <h3 className="text-sm sm:text-base font-semibold text-rose-800 flex items-center gap-2">
+                  <FiCalendar />
+                  {isPackage ? "Puja Date & Time" : "Delivery Schedule"}
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs text-gray-600 mb-1 block">
+                      {isPackage ? "Puja Date" : "Delivery Date"} <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      min={getTomorrowDate()}
+                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
+                      value={form.deliveryDate}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, deliveryDate: e.target.value }))
+                      }
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-gray-600 mb-1 block">
+                      {isPackage ? "Puja Time" : "Time Slot"} <span className="text-red-500">*</span>
+                    </label>
+                    {isPackage ? (
+                      <select
+                        className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
+                        value={form.deliverySlot}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, deliverySlot: e.target.value }))
+                        }
+                      >
+                        <option value="">Choose preferred time</option>
+                        {timeSlots.map((slot) => (
+                          <option key={slot} value={slot}>{slot}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <select
+                        className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
+                        value={form.deliverySlot}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, deliverySlot: e.target.value }))
+                        }
+                      >
+                        <option value="">Select slot</option>
+                        <option value="6 AM - 9 AM">6 AM - 9 AM</option>
+                        <option value="9 AM - 12 PM">9 AM - 12 PM</option>
+                        <option value="12 PM - 3 PM">12 PM - 3 PM</option>
+                        <option value="3 PM - 6 PM">3 PM - 6 PM</option>
+                        <option value="6 PM - 9 PM">6 PM - 9 PM</option>
+                      </select>
+                    )}
+                  </div>
+                </div>
+
+                {isPackage && product && (
+                  <div className="flex items-start gap-3 p-3 border border-amber-300 rounded-lg bg-amber-50">
+                    <input
+                      type="checkbox"
+                      id="includePandit"
+                      className="w-4 h-4 sm:w-5 sm:h-5 text-rose-600 focus:ring-rose-500 rounded mt-0.5"
+                      checked={form.includePandit}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          includePandit: e.target.checked,
+                        }))
+                      }
+                    />
+                    <label
+                      htmlFor="includePandit"
+                      className="text-sm text-gray-700 flex-1"
+                    >
+                      <div className="font-semibold text-xs sm:text-sm">
+                        Include Pandit Service (+₹500)
+                      </div>
+                      <div className="text-xs text-gray-600 mt-1">
+                        Experienced pandit will perform the puja with proper rituals
+                      </div>
+                    </label>
+                  </div>
+                )}
+
+                <div className={`border rounded-lg px-2 py-2 text-[11px] flex items-start gap-2 ${
+                  isPackage ? "bg-green-50 border-green-200 text-green-800" : "bg-blue-50 border-blue-200 text-blue-800"
+                }`}>
+                  <FiClock className="mt-0.5" />
+                  <span>
+                    {isPackage 
+                      ? "For best spiritual benefits, consider morning hours (5:00 AM - 9:00 AM)"
+                      : "We always try to deliver in selected slot. In rare cases, there can be +/- 30 minutes variation."}
+                  </span>
+                </div>
+              </motion.div>
+            )}
+
+            {/* STEP 3: Review */}
+            {step === 3 && (
+              <motion.div
+                key="step3"
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                className="space-y-3"
+              >
+                <h3 className="text-sm sm:text-base font-semibold text-rose-800">
+                  Review Your {isPackage ? "Booking" : "Order"}
+                </h3>
+
+                {/* Items Summary */}
+                <div className="bg-rose-50 rounded-lg p-3 max-h-40 sm:max-h-48 overflow-y-auto">
+                  {items.map((item) => (
+                    <div
+                      key={item.id || item.kitId}
+                      className="flex items-center justify-between text-xs sm:text-sm mb-2 last:mb-0"
+                    >
+                      <span className="flex-1 pr-2">
+                        <div className="font-medium">{item.name}</div>
+                        <div className="text-gray-500 text-[10px] sm:text-xs">
+                          {item.type === 'single' && ` (${item.unit})`}
+                          {item.type === 'package' && item.includePandit && " + Pandit"}
+                          {item.type === 'puja-kit' && ` (Custom Kit)`}
+                          <span className="ml-1">
+                            ({item.qty} × {formatINR(item.type === 'package' && item.includePandit ? item.price + 500 : item.price)})
+                          </span>
+                        </div>
+                      </span>
+                      <span className="font-semibold text-rose-700">
+                        {formatINR((item.type === 'package' && item.includePandit ? item.price + 500 : item.price) * item.qty)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Address & Delivery Summary */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                  <div className="bg-white border border-gray-100 rounded-lg p-3 text-xs sm:text-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FiHome className="text-rose-600" />
+                      <span className="font-semibold text-gray-800">
+                        {isPackage ? "Puja At" : "Delivery To"}
+                      </span>
+                    </div>
+                    <p className="font-medium text-gray-800">{form.name}</p>
+                    <p className="text-gray-600">{form.phone}</p>
+                    <p className="text-gray-600 text-[11px] mt-1">
+                      {form.address}
+                      {form.landmark && `, ${form.landmark}`}
+                      {form.city && `, ${form.city}`}{" "}
+                      {form.pincode && `- ${form.pincode}`}
+                    </p>
+                  </div>
+
+                  <div className="bg-white border border-gray-100 rounded-lg p-3 text-xs sm:text-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FiCalendar className="text-rose-600" />
+                      <span className="font-semibold text-gray-800">
+                        {isPackage ? "Schedule" : "Delivery"}
+                      </span>
+                    </div>
+                    <p className="text-gray-700 text-sm">
+                      Date:{" "}
+                      {form.deliveryDate
+                        ? new Date(form.deliveryDate).toLocaleDateString("en-IN", {
+                            weekday: "short",
+                            day: "numeric",
+                            month: "short",
+                          })
+                        : "-"}
+                    </p>
+                    <p className="text-gray-700 text-sm">
+                      {isPackage ? "Time" : "Slot"}: {form.deliverySlot || "-"}
+                    </p>
+                    {isPackage && form.includePandit && (
+                      <p className="text-green-600 mt-1 text-xs">✓ Pandit Service Included</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Price Summary */}
+                <div className="bg-gray-50 rounded-lg p-3 text-xs sm:text-sm space-y-1">
+                  <div className="flex justify-between">
+                    <span>Subtotal</span>
+                    <span>{formatINR(pricing.subtotal)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>GST (18%)</span>
+                    <span>{formatINR(pricing.gst)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>
+                      {isPackage ? "Service Charges" : "Delivery"}{" "}
+                      {!isPackage && pricing.delivery === 0 && (
+                        <span className="text-green-600 text-[10px]">(FREE)</span>
+                      )}
+                    </span>
+                    <span>{formatINR(pricing.delivery)}</span>
+                  </div>
+                  <div className="flex justify-between font-bold text-base sm:text-lg border-t border-gray-200 pt-2 sm:pt-3 mt-2">
+                    <span>Total Payable</span>
+                    <span>{formatINR(pricing.total)}</span>
+                  </div>
+                </div>
+
+                <div className="bg-green-50 border border-green-200 rounded-lg px-2 py-2 text-[11px] text-green-800 flex items-start gap-2">
+                  <FiShield className="mt-0.5" />
+                  <span>
+                    Secure checkout. {isPackage ? "Booking" : "Order"} confirmation will be sent via WhatsApp.
+                  </span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Footer Buttons */}
+        <div className="sticky bottom-0 bg-white border-t border-gray-100 p-3 sm:p-4">
+          <div className="flex gap-2 sm:gap-3">
+            {step > 1 && (
+              <button
+                onClick={() => setStep((s) => s - 1)}
+                className="px-3 sm:px-4 py-2 rounded-lg border text-xs sm:text-sm text-gray-700 flex items-center gap-1 hover:bg-gray-50"
+              >
+                <FiArrowLeft className="hidden sm:inline" />
+                Back
+              </button>
+            )}
+
+            <button
+              onClick={step === 3 ? handleConfirm : handleNext}
+              className="flex-1 py-2.5 sm:py-3 rounded-lg bg-gradient-to-r from-rose-600 to-rose-700 text-white text-xs sm:text-sm font-semibold hover:shadow-lg flex items-center justify-center gap-2"
+            >
+              {step === 3 ? (
+                <>
+                  <FiCheckCircle />
+                  {isPackage ? "Confirm Booking" : "Confirm Order"}
+                </>
+              ) : (
+                "Next"
+              )}
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+// ---------- Unified Success Page ----------
+const UnifiedSuccessPage = ({ order, onBackToHome }) => {
+  const [showAnimation, setShowAnimation] = useState(true);
+  const isPackage = order.mode === 'package';
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowAnimation(false), 1800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleShare = () => {
+    const itemsText = order.items
+      .map((item) => 
+        `• ${item.name}${item.type === 'single' ? ` (${item.unit})` : ''} (x${item.qty}) - ₹${(item.type === 'package' && item.includePandit ? item.price + 500 : item.price) * item.qty}`
+      )
+      .join("\n");
+
+    const msg = `🪷 *Sanskaraa ${isPackage ? 'Puja Booking' : 'Order'} Confirmed* 🪷
+
+*${isPackage ? 'Booking' : 'Order'} ID:* ${order.id}
+*Name:* ${order.customer.name}
+*Phone:* ${order.customer.phone}
+
+*${isPackage ? 'Service' : 'Items'}:*
+${itemsText}
+
+*Total:* ₹${order.pricing.total}
+
+*${isPackage ? 'Puja' : 'Delivery'} Details:*
+• Date: ${new Date(order.delivery.date).toLocaleDateString("en-IN")}
+• ${isPackage ? 'Time' : 'Slot'}: ${order.delivery.slot}
+• Address: ${order.customer.address}, ${order.customer.city} - ${order.customer.pincode}
+
+${isPackage && order.includePandit ? '✓ Pandit Service Included\n' : ''}
+_This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete Puja Solution._`;
+
+    const encoded = encodeURIComponent(msg);
+    const supportNumber = "916201486202";
+    const url = `https://wa.me/${supportNumber}?text=${encoded}`;
+    window.open(url, "_blank");
+  };
+
+  const handleDownloadReceipt = () => {
+    alert("PDF receipt download will be implemented with backend integration");
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-amber-50 to-rose-50 flex items-center justify-center p-4">
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="bg-white rounded-xl sm:rounded-2xl shadow-lg max-w-md w-full p-4 sm:p-6 text-center relative overflow-hidden"
+      >
+        {/* Background Glow */}
+        <div className="absolute -top-10 -right-10 w-20 h-20 sm:w-24 sm:h-24 bg-amber-200 rounded-full blur-3xl opacity-60" />
+        <div className="absolute -bottom-10 -left-10 w-20 h-20 sm:w-24 sm:h-24 bg-green-200 rounded-full blur-3xl opacity-60" />
+
+        {/* Success Animation */}
+        <AnimatePresence>
+          {showAnimation && (
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 1.4, opacity: 0 }}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-green-100 rounded-full flex items-center justify-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="w-12 h-12 sm:w-16 sm:h-16 bg-green-200 rounded-full flex items-center justify-center"
+                >
+                  <FiCheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
+                </motion.div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Success Icon */}
+        <div className="relative mb-4 mt-4">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
+            <FiCheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
+          </div>
+          <div className="mt-2 text-xs sm:text-sm text-amber-700 bg-amber-50 border border-amber-200 px-2 sm:px-3 py-1 rounded-full inline-block">
+            Sanskaraa • {isPackage ? 'Complete Puja Service' : 'Puja Essentials'}
+          </div>
+        </div>
+
+        {/* Success Message */}
+        <motion.h1
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="text-lg sm:text-xl font-bold text-gray-800 mb-2"
+        >
+          {isPackage ? 'Puja Booked Successfully!' : 'Order Confirmed!'}
+        </motion.h1>
+
+        <motion.p
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-gray-600 text-sm mb-3 sm:mb-4"
+        >
+          {isPackage 
+            ? 'Your puja has been scheduled. May God bless you with happiness and prosperity.'
+            : 'Thank you for choosing Sanskaraa. Your puja items will be delivered as per schedule.'}
+        </motion.p>
+
+        {/* Booking/Order Details */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="bg-gray-50 rounded-lg p-3 mb-3 text-left"
+        >
+          <h3 className="font-semibold text-gray-800 mb-2 border-b pb-2 text-sm">
+            {isPackage ? 'Booking' : 'Order'} Details
+          </h3>
+
+          <div className="space-y-1.5 text-xs sm:text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-600">{isPackage ? 'Puja' : 'Items'}:</span>
+              <span className="font-medium text-right">
+                {order.items.length} {isPackage ? 'package' : 'item(s)'}
+              </span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-gray-600">Date:</span>
+              <span className="font-medium">
+                {new Date(order.delivery.date).toLocaleDateString("en-IN", {
+                  weekday: "short",
+                  day: "numeric",
+                  month: "short",
+                })}
+              </span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-gray-600">{isPackage ? 'Time' : 'Slot'}:</span>
+              <span className="font-medium">{order.delivery.slot}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-gray-600">Total Amount:</span>
+              <span className="font-semibold text-green-600">
+                ₹{order.pricing.total}
+              </span>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Action Buttons */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="grid grid-cols-2 gap-2 mb-3"
+        >
+          <button
+            onClick={handleShare}
+            className="flex items-center justify-center gap-1 sm:gap-2 bg-green-600 text-white py-2 sm:py-2.5 rounded-lg font-medium hover:bg-green-700 transition-colors text-xs sm:text-sm"
+          >
+            <FiShare2 className="w-3 h-3 sm:w-4 sm:h-4" />
+            Share
+          </button>
+
+          <button
+            onClick={handleDownloadReceipt}
+            className="flex items-center justify-center gap-1 sm:gap-2 border border-gray-300 text-gray-700 py-2 sm:py-2.5 rounded-lg font-medium hover:bg-gray-50 transition-colors text-xs sm:text-sm"
+          >
+            <FiDownload className="w-3 h-3 sm:w-4 sm:h-4" />
+            PDF Receipt
+          </button>
+        </motion.div>
+
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.7 }}
+        >
+          <button
+            onClick={onBackToHome}
+            className="w-full flex items-center justify-center gap-2 bg-rose-600 text-white py-2.5 sm:py-3 rounded-lg font-medium hover:bg-rose-700 transition-colors text-sm"
+          >
+            <FiHome className="w-4 h-4" />
+            Back to Store
+          </button>
+        </motion.div>
+
+        {/* Blessing Message */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="text-xs text-gray-500 mt-3 sm:mt-4 italic"
+        >
+          "सर्वे भवन्तु सुखिनः, सर्वे सन्तु निरामयाः"
+          <br />
+          May all be happy, may all be free from illness
+        </motion.p>
+      </motion.div>
+    </div>
   );
 };
 
@@ -2435,6 +3241,15 @@ export default function UnifiedPujaStoreWithKitEditor() {
   const [showKitItemsModal, setShowKitItemsModal] = useState(false);
   const [selectedKitForDetails, setSelectedKitForDetails] = useState(null);
 
+  // Order flow states
+  const [showOrderWizard, setShowOrderWizard] = useState(false);
+  const [orderMode, setOrderMode] = useState(null);
+  const [orderProduct, setOrderProduct] = useState(null);
+  const [orderQty, setOrderQty] = useState(1);
+  const [orderSuccess, setOrderSuccess] = useState(null);
+  const [coupon, setCoupon] = useState("");
+  const [couponApplied, setCouponApplied] = useState(null);
+
   // Simulate loading
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 800);
@@ -2444,6 +3259,13 @@ export default function UnifiedPujaStoreWithKitEditor() {
   // Persist cart & wishlist
   useEffect(() => saveToLocal("sanskaraa_cart", cart), [cart]);
   useEffect(() => saveToLocal("sanskaraa_wishlist", wishlist), [wishlist]);
+
+  // Browser notification permission
+  useEffect(() => {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, []);
 
   // Derived filtered list
   const filtered = useMemo(() => {
@@ -2521,10 +3343,82 @@ export default function UnifiedPujaStoreWithKitEditor() {
       w.includes(id) ? w.filter((x) => x !== id) : [...w, id]
     );
 
+  // Order functions
+  const bookPuja = (kit) => {
+    setOrderMode('package');
+    setOrderProduct(kit);
+    setOrderQty(1);
+    setShowOrderWizard(true);
+  };
+
+  const startSingleOrder = (product, qty) => {
+    if (qty < 1) qty = 1;
+    setOrderMode('single');
+    setOrderProduct(product);
+    setOrderQty(qty);
+    setShowOrderWizard(true);
+  };
+
+  const startCartOrder = () => {
+    if (cart.length === 0) {
+      alert("Cart is empty. Please add some items.");
+      return;
+    }
+    setOrderMode('cart');
+    setOrderProduct(null);
+    setOrderQty(1);
+    setShowOrderWizard(true);
+    setShowCart(false);
+  };
+
   // Show Kit Details with editor
   const showKitDetails = (kit) => {
     setSelectedKitForDetails(kit);
     setShowKitItemsModal(true);
+  };
+
+  // Handle Order Confirmation
+  const handleOrderConfirm = (orderPayload) => {
+    const order = {
+      id: Date.now(),
+      items: orderPayload.items,
+      pricing: orderPayload.pricing,
+      customer: orderPayload.customer,
+      delivery: orderPayload.delivery,
+      includePandit: orderPayload.includePandit,
+      additionalNotes: orderPayload.additionalNotes,
+      mode: orderPayload.mode,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Save to localStorage
+    try {
+      const prev = JSON.parse(
+        localStorage.getItem("sanskaraa_orders") || "[]"
+      );
+      localStorage.setItem(
+        "sanskaraa_orders",
+        JSON.stringify([...prev, order])
+      );
+    } catch (e) {
+      console.error(e);
+    }
+
+    // Clear cart if cart order
+    if (order.mode === 'cart') {
+      setCart([]);
+    }
+
+    setShowOrderWizard(false);
+    setOrderSuccess(order);
+
+    // Browser notification
+    if ("Notification" in window && Notification.permission === "granted") {
+      new Notification("Sanskaraa", {
+        body: `${order.mode === 'package' ? 'Puja' : 'Order'} confirmed for ₹${order.pricing.total}`,
+        icon: "/images/logo.png",
+      });
+    }
   };
 
   // Pricing for cart
@@ -2532,6 +3426,37 @@ export default function UnifiedPujaStoreWithKitEditor() {
     (sum, item) => sum + item.price * item.qty,
     0
   );
+  const couponDiscount =
+    couponApplied === "FESTIVE10" ? subtotal * 0.1 : 0;
+  const gst = (subtotal - couponDiscount) * 0.18;
+  const delivery =
+    subtotal > 0 ? (subtotal > 999 ? 0 : 50) : 0;
+  const total = Math.round(
+    subtotal - couponDiscount + gst + delivery
+  );
+
+  const applyCoupon = () => {
+    if (coupon.trim().toUpperCase() === "FESTIVE10") {
+      setCouponApplied("FESTIVE10");
+    } else {
+      setCouponApplied(null);
+      alert("Invalid coupon");
+    }
+  };
+
+  // If success page active, show only that
+  if (orderSuccess) {
+    return (
+      <UnifiedSuccessPage
+        order={orderSuccess}
+        onBackToHome={() => {
+          setOrderSuccess(null);
+          setOrderMode(null);
+          setOrderProduct(null);
+        }}
+      />
+    );
+  }
 
   if (loading) {
     return (
@@ -2697,84 +3622,15 @@ export default function UnifiedPujaStoreWithKitEditor() {
                     wishlist={wishlist.includes(product.id)}
                     onWishlistToggle={() => toggleWishlist(product.id)}
                     onAddToCart={() => addToCart(product, quantities[product.id] || 1)}
-                    onBookPuja={() => console.log("Book puja:", product)}
+                    onBookPuja={() => bookPuja(product)}
                     onViewDetails={() => showKitDetails(product)}
-                    onBuyNow={() => console.log("Buy now:", product)}
+                    onBuyNow={() => startSingleOrder(product, quantities[product.id] || 1)}
                     onQuantityChange={(id, delta) => changeQty(id, delta)}
                   />
                 ))}
               </div>
             </>
           )}
-        </div>
-
-        {/* Features Section */}
-        <div className="mt-6 sm:mt-8 md:mt-12 bg-gradient-to-br from-white to-amber-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-amber-100">
-          <div className="text-center mb-4 sm:mb-6">
-            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-rose-800 mb-1 sm:mb-2">
-              Why Choose Sanskaraa?
-            </h3>
-            <p className="text-gray-600 text-xs sm:text-sm">
-              Industry-standard architecture for reliable puja shopping
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            {[
-              {
-                title: "Customizable Kits",
-                desc: "Edit quantity and price of each item. Zero quantity = excluded.",
-                icon: "✏️",
-                features: ["Edit prices", "Adjust quantities", "Real-time total"],
-                color: "from-blue-500 to-blue-600"
-              },
-              {
-                title: "Single Source of Truth",
-                desc: "One data model for cart, checkout, orders, and backend.",
-                icon: "💾",
-                features: ["Consistent data", "Future-proof", "Backend ready"],
-                color: "from-green-500 to-green-600"
-              },
-              {
-                title: "Auto Calculations",
-                desc: "Total price updates automatically with any change.",
-                icon: "🧮",
-                features: ["Live updates", "Tax included", "Discounts applied"],
-                color: "from-amber-500 to-amber-600"
-              },
-              {
-                title: "Secure & Scalable",
-                desc: "Professional architecture that grows with your needs.",
-                icon: "🛡️",
-                features: ["Local storage", "API ready", "Production tested"],
-                color: "from-purple-500 to-purple-600"
-              },
-            ].map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 hover:shadow-lg transition-all duration-300 border border-gray-100"
-              >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-r ${item.color} flex items-center justify-center text-xl`}>
-                    {item.icon}
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-sm sm:text-base text-gray-800">{item.title}</h4>
-                    <p className="text-xs text-gray-600">{item.desc}</p>
-                  </div>
-                </div>
-                
-                <ul className="space-y-1.5">
-                  {item.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2 text-xs text-gray-700">
-                      <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${item.color}`}></div>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Cart Sidebar */}
@@ -2917,24 +3773,63 @@ export default function UnifiedPujaStoreWithKitEditor() {
 
                     {/* Price Summary */}
                     <div className="mt-4 border-t border-gray-100 pt-3">
+                      {/* Coupon Section */}
+                      <div className="mb-3">
+                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                          Apply Coupon
+                        </label>
+                        <div className="flex gap-1">
+                          <input
+                            value={coupon}
+                            onChange={(e) => setCoupon(e.target.value)}
+                            placeholder="Enter coupon code"
+                            className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                          />
+                          <button
+                            onClick={applyCoupon}
+                            className="px-3 py-1.5 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors text-xs font-medium whitespace-nowrap"
+                          >
+                            Apply
+                          </button>
+                        </div>
+                        {couponApplied && (
+                          <div className="mt-1 text-green-600 text-xs flex items-center gap-1">
+                            <FiCheckCircle className="w-3.5 h-3.5" />
+                            Coupon {couponApplied} applied successfully!
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Price Breakdown */}
                       <div className="space-y-1.5 bg-gray-50 rounded-lg p-3">
                         <div className="flex justify-between text-xs">
                           <span className="text-gray-600">Subtotal</span>
                           <span className="font-medium">₹{subtotal}</span>
                         </div>
                         
+                        {couponApplied && (
+                          <div className="flex justify-between text-xs">
+                            <span className="text-gray-600">Coupon Discount</span>
+                            <span className="text-green-600 font-medium">
+                              -₹{Math.round(couponDiscount)}
+                            </span>
+                          </div>
+                        )}
+                        
                         <div className="flex justify-between text-xs">
                           <span className="text-gray-600">GST (18%)</span>
-                          <span className="font-medium">₹{Math.round(subtotal * 0.18)}</span>
+                          <span className="font-medium">₹{Math.round(gst)}</span>
                         </div>
                         
                         <div className="flex justify-between text-xs">
                           <span className="text-gray-600">
                             Delivery Charges
-                            <span className="text-green-600 ml-1">(FREE)</span>
+                            {delivery === 0 && (
+                              <span className="text-green-600 ml-1">(FREE)</span>
+                            )}
                           </span>
-                          <span className="text-green-600 font-medium">
-                            FREE
+                          <span className={`font-medium ${delivery === 0 ? 'text-green-600' : ''}`}>
+                            {delivery === 0 ? 'FREE' : `₹${delivery}`}
                           </span>
                         </div>
                         
@@ -2946,7 +3841,7 @@ export default function UnifiedPujaStoreWithKitEditor() {
                             </div>
                             <div className="text-right">
                               <div className="font-bold text-lg text-rose-700">
-                                ₹{Math.round(subtotal * 1.18)}
+                                ₹{total}
                               </div>
                               <p className="text-[10px] text-gray-500">Payable amount</p>
                             </div>
@@ -2957,7 +3852,7 @@ export default function UnifiedPujaStoreWithKitEditor() {
                       {/* Action Buttons */}
                       <div className="mt-4 space-y-2">
                         <button
-                          onClick={() => console.log("Checkout:", cart)}
+                          onClick={startCartOrder}
                           className="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2 text-sm"
                         >
                           <FiCheckCircle className="w-4 h-4" />
@@ -3007,6 +3902,20 @@ export default function UnifiedPujaStoreWithKitEditor() {
                 setSelectedKitForDetails(null);
               }}
               onAddToCart={addToCart}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Unified Order Wizard Modal */}
+        <AnimatePresence>
+          {showOrderWizard && (
+            <UnifiedOrderWizardModal
+              mode={orderMode}
+              product={orderProduct}
+              qty={orderQty}
+              cartItems={cart}
+              onClose={() => setShowOrderWizard(false)}
+              onConfirm={handleOrderConfirm}
             />
           )}
         </AnimatePresence>
