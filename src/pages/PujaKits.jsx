@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo,useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   FiShoppingCart,
   FiHeart,
@@ -36,9 +36,129 @@ import {
   FiGift,
   FiPercent,
   FiChevronRight,
+  FiEdit2,
+  FiTrash2,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+
+// ---------- Price Resolver Function ----------
+const resolveItemPrice = (itemName) => {
+  const priceMap = {
+    // Fruits & Offerings
+    "नारियल": 25,
+    "नारियल (nariyal)": 25,
+    "coconut": 25,
+    "फूल माला": 40,
+    "flower": 40,
+    "गेंदे के फूल": 40,
+    "marigold": 40,
+    "गुलाब की पंखुड़ी": 30,
+    "rose": 30,
+    // Fragrance
+    "अगरबत्ती": 15,
+    "agarbatti": 15,
+    "धूप": 60,
+    "dhoop": 60,
+    "गुग्गुल": 10,
+    "guggal": 10,
+    "लोबान": 45,
+    "loban": 45,
+    // Havan & Aarti
+    "कपूर": 25,
+    "kapoor": 25,
+    "हवन सामग्री": 60,
+    "havan": 60,
+    "समिधा": 30,
+    "samidha": 30,
+    "घी": 120,
+    "ghee": 120,
+    "कपूर टेबलेट": 40,
+    "camphor": 40,
+    // Deepak & Diya
+    "घी बत्ती": 50,
+    "ghee batti": 50,
+    "बाती": 20,
+    "cotton wick": 20,
+    "मिट्टी का दिया": 10,
+    "clay diya": 10,
+    // Tilak & Kumkum
+    "रोली": 15,
+    "roli": 15,
+    "अक्षत": 20,
+    "akshata": 20,
+    "चावल": 20,
+    "rice": 20,
+    "सिंदूर": 20,
+    "sindoor": 20,
+    "हल्दी": 20,
+    "haldi": 20,
+    "कुमकुम": 20,
+    "kumkum": 20,
+    // Prasad
+    "पंचामृत": 60,
+    "panchamrit": 60,
+    "मिश्री": 20,
+    "mishri": 20,
+    "ड्राई फ्रूट्स": 70,
+    "dry fruits": 70,
+    "लड्डू": 50,
+    "laddu": 50,
+    "गुड़": 30,
+    "jaggery": 30,
+    // Cloth
+    "लाल कपड़ा": 40,
+    "red cloth": 40,
+    "पीला कपड़ा": 40,
+    "yellow cloth": 40,
+    "चुनरी": 50,
+    "chunri": 50,
+    // Utensils
+    "घंटी": 60,
+    "bell": 60,
+    "कलश": 120,
+    "kalash": 120,
+    "थाली": 80,
+    "plate": 80,
+    // Special Items
+    "गंगाजल": 25,
+    "gangajal": 25,
+    "शहद": 30,
+    "honey": 30,
+    "काला तिल": 20,
+    "black sesame": 20,
+    "शक्कर": 20,
+    "sugar": 20,
+    // Miscellaneous
+    "माचिस": 10,
+    "matchbox": 10,
+    "मौली": 10,
+    "moli": 10,
+    "सुपारी": 15,
+    "supari": 15,
+    "पान के पत्ते": 10,
+    "betel leaves": 10,
+    "कपूर तेल": 50,
+    "camphor oil": 50,
+  };
+
+  const lowerName = itemName.toLowerCase();
+  
+  // Check for exact matches first
+  for (const [key, price] of Object.entries(priceMap)) {
+    if (lowerName.includes(key.toLowerCase())) {
+      return price;
+    }
+  }
+  
+  // Check for number patterns
+  if (/\b(two|2|दो)\b/i.test(itemName)) return 40;
+  if (/\b(five|5|पांच)\b/i.test(itemName)) return 100;
+  if (/\b(ten|10|दस)\b/i.test(itemName)) return 200;
+  
+  // Default price
+  return 30;
+};
 
 // ---------- Mock Data ----------
 // Package Kits
@@ -794,54 +914,9 @@ const singleItems = [
     img: "images/kapoor-oil.png",
   },
 ];
-
 // Combine all products
 const allProducts = [...kits, ...singleItems];
 
-// Categories for filtering
-const categories = [
-  "All",
-  "Package Kits",
-  "Single Items",
-  "Ghar ke Sanskaar",
-  "Bacchon ke Sanskaar",
-  "Vivah Sanskar",
-  "Pitrakarya",
-  "Festival Pujas",
-  "Temple / Special Pujas",
-  "Others / Custom Options",
-  "Fruits & Offerings",
-  "Fragrance",
-  "Havan & Aarti",
-  "Deepak & Diya",
-  "Tilak & Kumkum",
-  "Prasad",
-  "Puja Cloth",
-  "Puja Utensils",
-  "Special Items",
-  "Miscellaneous",
-];
-
-const festivals = [
-  "All Festivals",
-  "Diwali",
-  "Navratri",
-  "Ganesh Chaturthi",
-  "Holi",
-  "Janmashtami",
-  "Raksha Bandhan",
-  "House Warming",
-  "Wedding",
-];
-
-const trustBadges = [
-  { icon: "🔰", text: "100% Authentic" },
-  { icon: "🌿", text: "Eco-friendly" },
-  { icon: "🕉️", text: "Sanctified by Pandits" },
-  { icon: "🚚", text: "Same Day Delivery" },
-];
-
-// ---------- Puja Kit Items Details ----------
 const pujaKitItems = {
   1: {
     name: "Griha Pravesh / गृह प्रवेश",
@@ -2028,862 +2103,107 @@ const ProductCard = ({ product, qty, isPackage, wishlist, onWishlistToggle, onAd
   );
 };
 
-// ---------- Unified Order Wizard Modal ----------
-const UnifiedOrderWizardModal = ({
-  mode,
-  product,
-  qty,
-  cartItems,
-  onClose,
-  onConfirm,
-}) => {
-  const [step, setStep] = useState(1);
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    address: "",
-    landmark: "",
-    city: "",
-    pincode: "",
-    deliveryDate: "",
-    deliverySlot: "",
-    includePandit: false,
-    additionalNotes: "",
-  });
-
-  const items = useMemo(() => {
-    if (mode === 'single' && product) {
-      return [{ ...product, qty }];
-    } else if (mode === 'package' && product) {
-      return [{ ...product, qty, includePandit: form.includePandit }];
-    }
-    return cartItems || [];
-  }, [mode, product, qty, cartItems, form.includePandit]);
-
-  const pricing = useMemo(() => {
-    const subtotal = items.reduce((sum, item) => {
-      let price = item.price;
-      if (item.type === 'package' && item.includePandit) {
-        price += 500;
-      }
-      return sum + price * item.qty;
-    }, 0);
-    
-    const gst = Math.round(subtotal * 0.18);
-    const delivery = subtotal === 0 ? 0 : subtotal >= 999 ? 0 : 50;
-    const total = subtotal + gst + delivery;
-    return { subtotal, gst, delivery, total };
-  }, [items]);
-
-  const getTomorrowDate = () => {
-    const t = new Date();
-    t.setDate(t.getDate() + 1);
-    return t.toISOString().split("T")[0];
-  };
-
-  const generateTimeSlots = () => {
-    const timeSlots = [];
-    for (let hour = 5; hour <= 21; hour++) {
-      for (let minute = 0; minute < 60; minute += 30) {
-        const timeString = `${hour.toString().padStart(2, "0")}:${minute
-          .toString()
-          .padStart(2, "0")}`;
-        const time12hr = new Date(`2000-01-01T${timeString}`).toLocaleTimeString(
-          "en-IN",
-          {
-            hour: "numeric",
-            minute: "2-digit",
-            hour12: true,
-          }
-        );
-        timeSlots.push(time12hr);
-      }
-    }
-    return timeSlots;
-  };
-
-  const timeSlots = generateTimeSlots();
-
-  const handleNext = () => {
-    if (step === 1) {
-      if (!form.name || !form.phone || !form.address || !form.city || !form.pincode) {
-        alert("Please fill all required fields");
-        return;
-      }
-      if (form.phone.length < 8) {
-        alert("Please enter valid phone number");
-        return;
-      }
-    }
-    if (step === 2) {
-      if (!form.deliveryDate || !form.deliverySlot) {
-        alert("Please select delivery date and time slot");
-        return;
-      }
-      if (mode === 'package' && !form.deliveryDate) {
-        alert("Please select puja date");
-        return;
-      }
-    }
-    setStep((s) => s + 1);
-  };
-
-  const handleConfirm = () => {
-    onConfirm({
-      items,
-      pricing,
-      customer: {
-        name: form.name,
-        phone: form.phone,
-        address: form.address,
-        landmark: form.landmark,
-        city: form.city,
-        pincode: form.pincode,
-      },
-      delivery: {
-        date: form.deliveryDate,
-        slot: form.deliverySlot,
-      },
-      includePandit: form.includePandit,
-      additionalNotes: form.additionalNotes,
-      mode,
-    });
-  };
-
-  const isPackage = mode === 'package';
-
-  return (
-    <motion.div
-      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-2 sm:p-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
-    >
-      <motion.div
-        className="bg-white rounded-xl sm:rounded-2xl w-full max-w-lg sm:max-w-2xl max-h-[90vh] overflow-y-auto"
-        initial={{ y: 40, opacity: 0, scale: 0.95 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        exit={{ y: 40, opacity: 0, scale: 0.95 }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="sticky top-0 bg-white z-10 p-3 sm:p-4 border-b border-rose-100 flex justify-between items-center">
-          <div>
-            <h2 className="text-base sm:text-lg font-bold text-rose-800 flex items-center gap-1 sm:gap-2">
-              {isPackage ? <FiCalendar /> : <FiShoppingCart />}
-              {isPackage ? "Book Puja Package" : "Place Order"}
-            </h2>
-            <p className="text-xs text-gray-500 hidden sm:block">
-              {isPackage 
-                ? "Complete puja service booking" 
-                : "Daily puja items home delivery"}
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-rose-600 text-xl p-1"
-          >
-            <FiX />
-          </button>
-        </div>
-
-        {/* Step Indicator */}
-        <div className="px-3 sm:px-4 py-3">
-          <div className="flex items-center justify-between mb-2">
-            {[
-              { no: 1, label: "Address" },
-              { no: 2, label: isPackage ? "Date & Time" : "Delivery Slot" },
-              { no: 3, label: "Review" },
-            ].map((s) => (
-              <div key={s.no} className="flex-1 flex flex-col items-center">
-                <div
-                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border-2 text-xs sm:text-sm ${
-                    step >= s.no
-                      ? "bg-rose-600 border-rose-600 text-white"
-                      : "border-gray-300 text-gray-300"
-                  }`}
-                >
-                  {step > s.no ? <FiCheckCircle /> : s.no}
-                </div>
-                <span
-                  className={`mt-1 text-[10px] sm:text-xs text-center ${
-                    step >= s.no
-                      ? "text-rose-700 font-semibold"
-                      : "text-gray-400"
-                  }`}
-                >
-                  {s.label}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-rose-600"
-              initial={{ width: "0%" }}
-              animate={{ width: `${((step - 1) / 2) * 100}%` }}
-              transition={{ duration: 0.3 }}
-            />
-          </div>
-        </div>
-
-        {/* Steps */}
-        <div className="px-3 sm:px-4 pb-3 min-h-[280px]">
-          <AnimatePresence mode="wait">
-            {/* STEP 1: Address */}
-            {step === 1 && (
-              <motion.div
-                key="step1"
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
-                className="space-y-3"
-              >
-                <h3 className="text-sm sm:text-base font-semibold text-rose-800 flex items-center gap-2">
-                  <FiMapPin />
-                  {isPackage ? "Puja Address Details" : "Delivery Address"}
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                  <div className="col-span-1 sm:col-span-2">
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      Full Name <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex items-center gap-2 border rounded-lg px-2 py-1.5">
-                      <FiUser className="text-gray-400 text-xs" />
-                      <input
-                        type="text"
-                        className="w-full text-xs sm:text-sm outline-none"
-                        placeholder="Your good name"
-                        value={form.name}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, name: e.target.value }))
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      Mobile <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex items-center gap-2 border rounded-lg px-2 py-1.5">
-                      <FiPhone className="text-gray-400 text-xs" />
-                      <input
-                        type="tel"
-                        className="w-full text-xs sm:text-sm outline-none"
-                        placeholder="10 digit mobile"
-                        value={form.phone}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, phone: e.target.value }))
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      City <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                      placeholder="Your city"
-                      value={form.city}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, city: e.target.value }))
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      Pincode <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                      placeholder="Pincode"
-                      value={form.pincode}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, pincode: e.target.value }))
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs text-gray-600 mb-1 block">
-                    {isPackage ? "Puja Address" : "Full Address"} <span className="text-red-500">*</span>
-                  </label>
-                  <textarea
-                    rows={2}
-                    className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                    placeholder={isPackage ? "Where should panditji come for puja?" : "House no, street, area..."}
-                    value={form.address}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, address: e.target.value }))
-                    }
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs text-gray-600 mb-1 block">
-                    Landmark
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                    placeholder="Near temple / chowk"
-                    value={form.landmark}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, landmark: e.target.value }))
-                    }
-                  />
-                </div>
-
-                {isPackage && (
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      Additional Notes (Optional)
-                    </label>
-                    <textarea
-                      rows={2}
-                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                      placeholder="Any special requirements..."
-                      value={form.additionalNotes}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, additionalNotes: e.target.value }))
-                      }
-                    />
-                  </div>
-                )}
-
-                <div className="bg-amber-50 border border-amber-200 rounded-lg px-2 py-2 text-[11px] text-amber-800 flex items-start gap-2">
-                  <FiShield className="text-amber-500 mt-0.5" />
-                  <span>
-                    Your details are used only for service. No spam, no sharing.
-                  </span>
-                </div>
-              </motion.div>
-            )}
-
-            {/* STEP 2: Date & Time */}
-            {step === 2 && (
-              <motion.div
-                key="step2"
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
-                className="space-y-3"
-              >
-                <h3 className="text-sm sm:text-base font-semibold text-rose-800 flex items-center gap-2">
-                  <FiCalendar />
-                  {isPackage ? "Puja Date & Time" : "Delivery Schedule"}
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      {isPackage ? "Puja Date" : "Delivery Date"} <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="date"
-                      min={getTomorrowDate()}
-                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                      value={form.deliveryDate}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, deliveryDate: e.target.value }))
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      {isPackage ? "Puja Time" : "Time Slot"} <span className="text-red-500">*</span>
-                    </label>
-                    {isPackage ? (
-                      <select
-                        className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                        value={form.deliverySlot}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, deliverySlot: e.target.value }))
-                        }
-                      >
-                        <option value="">Choose preferred time</option>
-                        {timeSlots.map((slot) => (
-                          <option key={slot} value={slot}>{slot}</option>
-                        ))}
-                      </select>
-                    ) : (
-                      <select
-                        className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                        value={form.deliverySlot}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, deliverySlot: e.target.value }))
-                        }
-                      >
-                        <option value="">Select slot</option>
-                        <option value="6 AM - 9 AM">6 AM - 9 AM</option>
-                        <option value="9 AM - 12 PM">9 AM - 12 PM</option>
-                        <option value="12 PM - 3 PM">12 PM - 3 PM</option>
-                        <option value="3 PM - 6 PM">3 PM - 6 PM</option>
-                        <option value="6 PM - 9 PM">6 PM - 9 PM</option>
-                      </select>
-                    )}
-                  </div>
-                </div>
-
-                {isPackage && product && (
-                  <div className="flex items-start gap-3 p-3 border border-amber-300 rounded-lg bg-amber-50">
-                    <input
-                      type="checkbox"
-                      id="includePandit"
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-rose-600 focus:ring-rose-500 rounded mt-0.5"
-                      checked={form.includePandit}
-                      onChange={(e) =>
-                        setForm((prev) => ({
-                          ...prev,
-                          includePandit: e.target.checked,
-                        }))
-                      }
-                    />
-                    <label
-                      htmlFor="includePandit"
-                      className="text-sm text-gray-700 flex-1"
-                    >
-                      <div className="font-semibold text-xs sm:text-sm">
-                        Include Pandit Service (+₹500)
-                      </div>
-                      <div className="text-xs text-gray-600 mt-1">
-                        Experienced pandit will perform the puja with proper rituals
-                      </div>
-                    </label>
-                  </div>
-                )}
-
-                <div className={`border rounded-lg px-2 py-2 text-[11px] flex items-start gap-2 ${
-                  isPackage ? "bg-green-50 border-green-200 text-green-800" : "bg-blue-50 border-blue-200 text-blue-800"
-                }`}>
-                  <FiClock className="mt-0.5" />
-                  <span>
-                    {isPackage 
-                      ? "For best spiritual benefits, consider morning hours (5:00 AM - 9:00 AM)"
-                      : "We always try to deliver in selected slot. In rare cases, there can be +/- 30 minutes variation."}
-                  </span>
-                </div>
-              </motion.div>
-            )}
-
-            {/* STEP 3: Review */}
-            {step === 3 && (
-              <motion.div
-                key="step3"
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
-                className="space-y-3"
-              >
-                <h3 className="text-sm sm:text-base font-semibold text-rose-800">
-                  Review Your {isPackage ? "Booking" : "Order"}
-                </h3>
-
-                {/* Items Summary */}
-                <div className="bg-rose-50 rounded-lg p-3 max-h-40 sm:max-h-48 overflow-y-auto">
-                  {items.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center justify-between text-xs sm:text-sm mb-2 last:mb-0"
-                    >
-                      <span className="flex-1 pr-2">
-                        <div className="font-medium">{item.name}</div>
-                        <div className="text-gray-500 text-[10px] sm:text-xs">
-                          {item.type === 'single' && ` (${item.unit})`}
-                          {item.type === 'package' && item.includePandit && " + Pandit"}
-                          <span className="ml-1">
-                            ({item.qty} × {formatINR(item.type === 'package' && item.includePandit ? item.price + 500 : item.price)})
-                          </span>
-                        </div>
-                      </span>
-                      <span className="font-semibold text-rose-700">
-                        {formatINR((item.type === 'package' && item.includePandit ? item.price + 500 : item.price) * item.qty)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Address & Delivery Summary */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                  <div className="bg-white border border-gray-100 rounded-lg p-3 text-xs sm:text-sm">
-                    <div className="flex items-center gap-2 mb-2">
-                      <FiHome className="text-rose-600" />
-                      <span className="font-semibold text-gray-800">
-                        {isPackage ? "Puja At" : "Delivery To"}
-                      </span>
-                    </div>
-                    <p className="font-medium text-gray-800">{form.name}</p>
-                    <p className="text-gray-600">{form.phone}</p>
-                    <p className="text-gray-600 text-[11px] mt-1">
-                      {form.address}
-                      {form.landmark && `, ${form.landmark}`}
-                      {form.city && `, ${form.city}`}{" "}
-                      {form.pincode && `- ${form.pincode}`}
-                    </p>
-                  </div>
-
-                  <div className="bg-white border border-gray-100 rounded-lg p-3 text-xs sm:text-sm">
-                    <div className="flex items-center gap-2 mb-2">
-                      <FiCalendar className="text-rose-600" />
-                      <span className="font-semibold text-gray-800">
-                        {isPackage ? "Schedule" : "Delivery"}
-                      </span>
-                    </div>
-                    <p className="text-gray-700 text-sm">
-                      Date:{" "}
-                      {form.deliveryDate
-                        ? new Date(form.deliveryDate).toLocaleDateString("en-IN", {
-                            weekday: "short",
-                            day: "numeric",
-                            month: "short",
-                          })
-                        : "-"}
-                    </p>
-                    <p className="text-gray-700 text-sm">
-                      {isPackage ? "Time" : "Slot"}: {form.deliverySlot || "-"}
-                    </p>
-                    {isPackage && form.includePandit && (
-                      <p className="text-green-600 mt-1 text-xs">✓ Pandit Service Included</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Price Summary */}
-                <div className="bg-gray-50 rounded-lg p-3 text-xs sm:text-sm space-y-1">
-                  <div className="flex justify-between">
-                    <span>Subtotal</span>
-                    <span>{formatINR(pricing.subtotal)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>GST (18%)</span>
-                    <span>{formatINR(pricing.gst)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>
-                      {isPackage ? "Service Charges" : "Delivery"}{" "}
-                      {!isPackage && pricing.delivery === 0 && (
-                        <span className="text-green-600 text-[10px]">(FREE)</span>
-                      )}
-                    </span>
-                    <span>{formatINR(pricing.delivery)}</span>
-                  </div>
-                  <div className="flex justify-between font-bold text-base sm:text-lg border-t border-gray-200 pt-2 sm:pt-3 mt-2">
-                    <span>Total Payable</span>
-                    <span>{formatINR(pricing.total)}</span>
-                  </div>
-                </div>
-
-                <div className="bg-green-50 border border-green-200 rounded-lg px-2 py-2 text-[11px] text-green-800 flex items-start gap-2">
-                  <FiShield className="mt-0.5" />
-                  <span>
-                    Secure checkout. {isPackage ? "Booking" : "Order"} confirmation will be sent via WhatsApp.
-                  </span>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Footer Buttons */}
-        <div className="sticky bottom-0 bg-white border-t border-gray-100 p-3 sm:p-4">
-          <div className="flex gap-2 sm:gap-3">
-            {step > 1 && (
-              <button
-                onClick={() => setStep((s) => s - 1)}
-                className="px-3 sm:px-4 py-2 rounded-lg border text-xs sm:text-sm text-gray-700 flex items-center gap-1 hover:bg-gray-50"
-              >
-                <FiArrowLeft className="hidden sm:inline" />
-                Back
-              </button>
-            )}
-
-            <button
-              onClick={step === 3 ? handleConfirm : handleNext}
-              className="flex-1 py-2.5 sm:py-3 rounded-lg bg-gradient-to-r from-rose-600 to-rose-700 text-white text-xs sm:text-sm font-semibold hover:shadow-lg flex items-center justify-center gap-2"
-            >
-              {step === 3 ? (
-                <>
-                  <FiCheckCircle />
-                  {isPackage ? "Confirm Booking" : "Confirm Order"}
-                </>
-              ) : (
-                "Next"
-              )}
-            </button>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-};
-
-// ---------- Unified Success Page ----------
-const UnifiedSuccessPage = ({ order, onBackToHome }) => {
-  const [showAnimation, setShowAnimation] = useState(true);
-  const isPackage = order.mode === 'package';
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShowAnimation(false), 1800);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleShare = () => {
-    const itemsText = order.items
-      .map((item) => 
-        `• ${item.name}${item.type === 'single' ? ` (${item.unit})` : ''} (x${item.qty}) - ₹${(item.type === 'package' && item.includePandit ? item.price + 500 : item.price) * item.qty}`
-      )
-      .join("\n");
-
-    const msg = `🪷 *Sanskaraa ${isPackage ? 'Puja Booking' : 'Order'} Confirmed* 🪷
-
-*${isPackage ? 'Booking' : 'Order'} ID:* ${order.id}
-*Name:* ${order.customer.name}
-*Phone:* ${order.customer.phone}
-
-*${isPackage ? 'Service' : 'Items'}:*
-${itemsText}
-
-*Total:* ₹${order.pricing.total}
-
-*${isPackage ? 'Puja' : 'Delivery'} Details:*
-• Date: ${new Date(order.delivery.date).toLocaleDateString("en-IN")}
-• ${isPackage ? 'Time' : 'Slot'}: ${order.delivery.slot}
-• Address: ${order.customer.address}, ${order.customer.city} - ${order.customer.pincode}
-
-${isPackage && order.includePandit ? '✓ Pandit Service Included\n' : ''}
-_This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete Puja Solution._`;
-
-    const encoded = encodeURIComponent(msg);
-    const supportNumber = "916201486202";
-    const url = `https://wa.me/${supportNumber}?text=${encoded}`;
-    window.open(url, "_blank");
-  };
-
-  const handleDownloadReceipt = () => {
-    alert("PDF receipt download will be implemented with backend integration");
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-amber-50 to-rose-50 flex items-center justify-center p-4">
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="bg-white rounded-xl sm:rounded-2xl shadow-lg max-w-md w-full p-4 sm:p-6 text-center relative overflow-hidden"
-      >
-        {/* Background Glow */}
-        <div className="absolute -top-10 -right-10 w-20 h-20 sm:w-24 sm:h-24 bg-amber-200 rounded-full blur-3xl opacity-60" />
-        <div className="absolute -bottom-10 -left-10 w-20 h-20 sm:w-24 sm:h-24 bg-green-200 rounded-full blur-3xl opacity-60" />
-
-        {/* Success Animation */}
-        <AnimatePresence>
-          {showAnimation && (
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 1.4, opacity: 0 }}
-              className="absolute inset-0 flex items-center justify-center"
-            >
-              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-green-100 rounded-full flex items-center justify-center">
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="w-12 h-12 sm:w-16 sm:h-16 bg-green-200 rounded-full flex items-center justify-center"
-                >
-                  <FiCheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Success Icon */}
-        <div className="relative mb-4 mt-4">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
-            <FiCheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
-          </div>
-          <div className="mt-2 text-xs sm:text-sm text-amber-700 bg-amber-50 border border-amber-200 px-2 sm:px-3 py-1 rounded-full inline-block">
-            Sanskaraa • {isPackage ? 'Complete Puja Service' : 'Puja Essentials'}
-          </div>
-        </div>
-
-        {/* Success Message */}
-        <motion.h1
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="text-lg sm:text-xl font-bold text-gray-800 mb-2"
-        >
-          {isPackage ? 'Puja Booked Successfully!' : 'Order Confirmed!'}
-        </motion.h1>
-
-        <motion.p
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="text-gray-600 text-sm mb-3 sm:mb-4"
-        >
-          {isPackage 
-            ? 'Your puja has been scheduled. May God bless you with happiness and prosperity.'
-            : 'Thank you for choosing Sanskaraa. Your puja items will be delivered as per schedule.'}
-        </motion.p>
-
-        {/* Booking/Order Details */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="bg-gray-50 rounded-lg p-3 mb-3 text-left"
-        >
-          <h3 className="font-semibold text-gray-800 mb-2 border-b pb-2 text-sm">
-            {isPackage ? 'Booking' : 'Order'} Details
-          </h3>
-
-          <div className="space-y-1.5 text-xs sm:text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-600">{isPackage ? 'Puja' : 'Items'}:</span>
-              <span className="font-medium text-right">
-                {order.items.length} {isPackage ? 'package' : 'item(s)'}
-              </span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">Date:</span>
-              <span className="font-medium">
-                {new Date(order.delivery.date).toLocaleDateString("en-IN", {
-                  weekday: "short",
-                  day: "numeric",
-                  month: "short",
-                })}
-              </span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">{isPackage ? 'Time' : 'Slot'}:</span>
-              <span className="font-medium">{order.delivery.slot}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">Total Amount:</span>
-              <span className="font-semibold text-green-600">
-                ₹{order.pricing.total}
-              </span>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Action Buttons */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="grid grid-cols-2 gap-2 mb-3"
-        >
-          <button
-            onClick={handleShare}
-            className="flex items-center justify-center gap-1 sm:gap-2 bg-green-600 text-white py-2 sm:py-2.5 rounded-lg font-medium hover:bg-green-700 transition-colors text-xs sm:text-sm"
-          >
-            <FiShare2 className="w-3 h-3 sm:w-4 sm:h-4" />
-            Share
-          </button>
-
-          <button
-            onClick={handleDownloadReceipt}
-            className="flex items-center justify-center gap-1 sm:gap-2 border border-gray-300 text-gray-700 py-2 sm:py-2.5 rounded-lg font-medium hover:bg-gray-50 transition-colors text-xs sm:text-sm"
-          >
-            <FiDownload className="w-3 h-3 sm:w-4 sm:h-4" />
-            PDF Receipt
-          </button>
-        </motion.div>
-
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.7 }}
-        >
-          <button
-            onClick={onBackToHome}
-            className="w-full flex items-center justify-center gap-2 bg-rose-600 text-white py-2.5 sm:py-3 rounded-lg font-medium hover:bg-rose-700 transition-colors text-sm"
-          >
-            <FiHome className="w-4 h-4" />
-            Back to Store
-          </button>
-        </motion.div>
-
-        {/* Blessing Message */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="text-xs text-gray-500 mt-3 sm:mt-4 italic"
-        >
-          "सर्वे भवन्तु सुखिनः, सर्वे सन्तु निरामयाः"
-          <br />
-          May all be happy, may all be free from illness
-        </motion.p>
-      </motion.div>
-    </div>
-  );
-};
-
+// ---------- Kit Items Modal with Complete Architecture ----------
 const KitItemsModal = ({ kit, onClose, onAddToCart }) => {
   const kitDetails = pujaKitItems?.[kit?.id];
 
-  /* ---------------- PRICE RESOLVER ---------------- */
-  const resolveItemPrice = useCallback((itemName) => {
-    const match = singleItems?.find((si) =>
-      itemName
-        .toLowerCase()
-        .includes(si.name.split("/")[0].toLowerCase())
-    );
-    return match?.price ?? 30;
-  }, []);
-
-  /* ---------------- INITIAL ITEMS ---------------- */
-  const [kitItems, setKitItems] = useState(() => {
-    if (!kitDetails?.items?.length) return [];
-    return kitDetails.items.map((name) => ({
-      name,
-      price: resolveItemPrice(name),
-      qty: /2|two/i.test(name) ? 2 : /5|five/i.test(name) ? 5 : 1,
+  /* ========== 1️⃣ DATA MODEL (Single Source of Truth) ========== */
+  const createKitItems = useCallback((items) => {
+    if (!items?.length) return [];
+    return items.map((name, index) => ({
+      id: `${kit.id}-${name}-${index}`, // Unique ID
+      name: name.trim(),
+      basePrice: resolveItemPrice(name), // default price
+      customPrice: null, // user/admin edited price
+      qty: /2|two|दो/i.test(name) ? 2 : 
+           /5|five|पांच/i.test(name) ? 5 : 
+           /10|ten|दस/i.test(name) ? 10 : 1,
+      enabled: true
     }));
-  });
+  }, [kit.id]);
 
-  /* ---------------- TOTAL PRICE ---------------- */
-  const totalKitPrice = useMemo(
-    () => kitItems.reduce((sum, i) => sum + i.price * i.qty, 0),
-    [kitItems]
+  /* ========== 2️⃣ STATE INITIALIZATION ========== */
+  const [kitItems, setKitItems] = useState(() => 
+    createKitItems(kitDetails?.items)
   );
 
-  /* ---------------- QTY UPDATE ---------------- */
-  const updateQty = useCallback((index, delta) => {
+  /* ========== 3️⃣ QTY + ENABLE LOGIC ========== */
+  const updateQty = useCallback((id, delta) => {
     setKitItems((items) =>
-      items.map((it, i) =>
-        i === index ? { ...it, qty: Math.max(1, it.qty + delta) } : it
+      items.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              qty: Math.max(0, item.qty + delta),
+              enabled: item.qty + delta > 0, // qty = 0 → enabled = false
+            }
+          : item
       )
     );
   }, []);
 
-  /* ---------------- ADD TO CART ---------------- */
+  /* ========== 4️⃣ PRICE EDIT SYSTEM ========== */
+  const updatePrice = useCallback((id, price) => {
+    setKitItems((items) =>
+      items.map((item) =>
+        item.id === id
+          ? { 
+              ...item, 
+              customPrice: price === item.basePrice ? null : price 
+            }
+          : item
+      )
+    );
+  }, []);
+
+  /* ========== 5️⃣ TOTAL PRICE CALCULATION ========== */
+  const totalKitPrice = useMemo(() => {
+    return kitItems
+      .filter((item) => item.enabled) // Only enabled items
+      .reduce(
+        (sum, item) => 
+          sum + (item.customPrice ?? item.basePrice) * item.qty,
+        0
+      );
+  }, [kitItems]);
+
+  /* ========== 6️⃣ CART PAYLOAD (Production Ready) ========== */
   const handleAddToCart = () => {
-    onAddToCart({
-      ...kit,
-      items: kitItems,
-      totalPrice: totalKitPrice,
+    const enabledItems = kitItems.filter((item) => item.enabled);
+    
+    const cartPayload = {
+      kitId: kit.id,
+      name: kitDetails.name,
       type: "puja-kit",
-    });
+      price: totalKitPrice,
+      items: enabledItems.map(({ name, qty, basePrice, customPrice }) => ({
+        name,
+        qty,
+        basePrice,
+        customPrice,
+        finalPrice: customPrice ?? basePrice
+      }))
+    };
+
+    onAddToCart(cartPayload);
     onClose();
+  };
+
+  /* ========== 7️⃣ BACKEND READY STRUCTURE ========== */
+  const getBackendPayload = () => {
+    const enabledItems = kitItems.filter((item) => item.enabled);
+    
+    return {
+      kitId: kit.id,
+      totalPrice: totalKitPrice,
+      items: enabledItems.map((item) => ({
+        name: item.name,
+        qty: item.qty,
+        price: item.customPrice ?? item.basePrice,
+        basePrice: item.basePrice,
+        customPrice: item.customPrice
+      }))
+    };
   };
 
   if (!kitDetails) return null;
@@ -2919,7 +2239,7 @@ const KitItemsModal = ({ kit, onClose, onAddToCart }) => {
                 {kitDetails.name}
               </h2>
               <p className="text-xs text-gray-500">
-                Editable Puja Samagri
+                Customize your kit • Items with qty = 0 will be excluded
               </p>
             </div>
           </div>
@@ -2927,118 +2247,170 @@ const KitItemsModal = ({ kit, onClose, onAddToCart }) => {
 
         {/* ===== CONTENT ===== */}
         <div className="flex-1 overflow-y-auto px-4 pb-40">
-
+          {/* Info Banner */}
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800 my-3">
-            🪔 Quantity aap apne ritual ke hisaab se change kar sakte ho
+            🪔 <strong>Quantity 0 = Item excluded</strong> • Click on price to edit
           </div>
 
+          {/* Items List */}
           <div className="divide-y">
-            {kitItems.map((item, i) => (
+            {kitItems.map((item) => (
               <div
-                key={i}
-                className="flex items-center justify-between py-3"
+                key={item.id}
+                className={`py-3 ${!item.enabled ? "opacity-40" : ""}`}
               >
-                <div>
-                  <p className="text-sm font-medium">{item.name}</p>
-                  <p className="text-xs text-gray-500">
-                    ₹{item.price} × {item.qty}
-                  </p>
+                <div className="flex items-center justify-between gap-3">
+                  {/* Item Name & Info */}
+                  <div className="flex-1">
+                    <div className="flex items-start gap-2">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{item.name}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs text-gray-500">
+                            Base: ₹{item.basePrice}
+                          </span>
+                          {item.customPrice !== null && (
+                            <span className="text-xs text-green-600">
+                              Custom: ₹{item.customPrice}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Price Edit Input */}
+                  <div className="flex flex-col items-end gap-1">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min="1"
+                        value={item.customPrice ?? item.basePrice}
+                        onChange={(e) => 
+                          updatePrice(item.id, Number(e.target.value))
+                        }
+                        className="w-20 text-xs border rounded px-2 py-1 text-center"
+                      />
+                      <span className="text-xs text-gray-500">×</span>
+                    </div>
+                    
+                    {/* Quantity Controls */}
+                    <div className="flex items-center gap-2">
+                      <button
+                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          item.qty === 0 
+                            ? "bg-gray-100 text-gray-400" 
+                            : "bg-gray-100 hover:bg-gray-200"
+                        }`}
+                        onClick={() => updateQty(item.id, -1)}
+                      >
+                        <FiMinus className="w-3 h-3" />
+                      </button>
+                      
+                      <span className={`font-semibold w-6 text-center ${
+                        item.qty === 0 ? "text-gray-400" : ""
+                      }`}>
+                        {item.qty}
+                      </span>
+                      
+                      <button
+                        className="w-8 h-8 rounded-full bg-rose-100 text-rose-600 hover:bg-rose-200 flex items-center justify-center"
+                        onClick={() => updateQty(item.id, 1)}
+                      >
+                        <FiPlus className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <button
-                    className="w-9 h-9 rounded-full bg-gray-100 text-lg"
-                    onClick={() => updateQty(i, -1)}
-                  >
-                    −
-                  </button>
-
-                  <span className="font-semibold">{item.qty}</span>
-
-                  <button
-                    className="w-9 h-9 rounded-full bg-rose-100 text-rose-600 text-lg"
-                    onClick={() => updateQty(i, 1)}
-                  >
-                    +
-                  </button>
+                {/* Item Total */}
+                <div className="flex justify-end mt-2">
+                  <div className="text-xs text-gray-600">
+                    Item Total:{" "}
+                    <span className="font-semibold text-rose-700">
+                      ₹{(item.customPrice ?? item.basePrice) * item.qty}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
-
-            {kitItems.length === 0 && (
-              <p className="text-center text-sm text-gray-500 py-10">
-                No items available
-              </p>
-            )}
           </div>
+
+          {/* Empty State */}
+          {kitItems.length === 0 && (
+            <p className="text-center text-sm text-gray-500 py-10">
+              No items available
+            </p>
+          )}
         </div>
 
-     {/* ===== FLOATING STICKY BOTTOM CTA (MORE UPPER) ===== */}
-<div className="sticky bottom-0 z-30 pointer-events-none">
-  <div className="px-4 pb-6">
-    <div
-      className="
-        pointer-events-auto
-        bg-white/95 backdrop-blur
-        border
-        rounded-3xl
-        shadow-[0_-10px_30px_rgba(0,0,0,0.15)]
-        px-4 py-4
-        flex items-center justify-between gap-4
-        translate-y-[-30px]
-      "
-    >
-      {/* PRICE */}
-      <div className="leading-tight">
-        <p className="text-[11px] text-gray-500 uppercase tracking-wide">
-          Total Amount
-        </p>
-        <motion.p
-          key={totalKitPrice}
-          initial={{ y: 6, scale: 0.95 }}
-          animate={{ y: 0, scale: 1 }}
-          transition={{ duration: 0.2 }}
-          className="text-xl font-bold text-rose-700"
-        >
-          ₹{totalKitPrice}
-        </motion.p>
-      </div>
+        {/* ===== FLOATING CTA ===== */}
+        <div className="sticky bottom-0 z-30 pointer-events-none">
+          <div className="px-4 pb-6">
+            <div
+              className="
+                pointer-events-auto
+                bg-white/95 backdrop-blur
+                border
+                rounded-3xl
+                shadow-[0_-10px_30px_rgba(0,0,0,0.15)]
+                px-4 py-4
+                flex items-center justify-between gap-4
+                translate-y-[-30px]
+              "
+            >
+              <div>
+                <p className="text-[11px] text-gray-500 uppercase tracking-wide">
+                  Total Kit Price
+                </p>
+                <p className="text-xl font-bold text-rose-700">
+                  ₹{totalKitPrice}
+                </p>
+                <p className="text-[10px] text-gray-500">
+                  {kitItems.filter(i => i.enabled).length} items included
+                </p>
+              </div>
 
-      {/* CTA BUTTON */}
-      <motion.button
-        whileTap={{ scale: 0.96 }}
-        onClick={handleAddToCart}
-        className="
-          bg-gradient-to-r from-rose-600 to-pink-600
-          text-white
-          px-8 py-3.5
-          rounded-2xl
-          font-semibold
-          shadow-[0_8px_25px_rgba(244,63,94,0.45)]
-        "
-      >
-        Add to Cart
-      </motion.button>
-    </div>
-  </div>
-</div>
-
+              <div className="flex flex-col items-end gap-2">
+                <button
+                  onClick={() => console.log("Backend Payload:", getBackendPayload())}
+                  className="text-xs text-blue-600 hover:text-blue-800"
+                >
+                  Debug: View Backend Structure
+                </button>
+                
+                <button
+                  onClick={handleAddToCart}
+                  className="
+                    bg-gradient-to-r from-rose-600 to-pink-600
+                    text-white
+                    px-8 py-3.5
+                    rounded-2xl
+                    font-semibold
+                    shadow-[0_8px_25px_rgba(244,63,94,0.45)]
+                    hover:shadow-[0_12px_30px_rgba(244,63,94,0.6)]
+                    transition-all
+                  "
+                >
+                  Add Kit to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
       </motion.div>
     </motion.div>
   );
 };
 
-// ---------- Main Unified Component ----------
-export default function UnifiedPujaStore() {
+// ---------- Main Component ----------
+export default function UnifiedPujaStoreWithKitEditor() {
   const navigate = useNavigate();
 
   // UI state
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedFestival, setSelectedFestival] = useState("All Festivals");
-  const [priceRange, setPriceRange] = useState([0, 5000]);
-  const [sortBy, setSortBy] = useState("popular");
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState("all");
   const [quantities, setQuantities] = useState(() => {
@@ -3057,20 +2429,11 @@ export default function UnifiedPujaStore() {
     readFromLocal("sanskaraa_cart", [])
   );
 
-  // Modal + order flow
+  // Modal states
   const [showCart, setShowCart] = useState(false);
-  const [coupon, setCoupon] = useState("");
-  const [couponApplied, setCouponApplied] = useState(null);
   const [showDiyaAnimation, setShowDiyaAnimation] = useState(false);
-
-  // Order flow states
-  const [showOrderWizard, setShowOrderWizard] = useState(false);
-  const [orderMode, setOrderMode] = useState(null);
-  const [orderProduct, setOrderProduct] = useState(null);
-  const [orderQty, setOrderQty] = useState(1);
   const [showKitItemsModal, setShowKitItemsModal] = useState(false);
   const [selectedKitForDetails, setSelectedKitForDetails] = useState(null);
-  const [orderSuccess, setOrderSuccess] = useState(null);
 
   // Simulate loading
   useEffect(() => {
@@ -3081,13 +2444,6 @@ export default function UnifiedPujaStore() {
   // Persist cart & wishlist
   useEffect(() => saveToLocal("sanskaraa_cart", cart), [cart]);
   useEffect(() => saveToLocal("sanskaraa_wishlist", wishlist), [wishlist]);
-
-  // Browser notification permission
-  useEffect(() => {
-    if ("Notification" in window && Notification.permission === "default") {
-      Notification.requestPermission();
-    }
-  }, []);
 
   // Derived filtered list
   const filtered = useMemo(() => {
@@ -3102,13 +2458,6 @@ export default function UnifiedPujaStore() {
         p.category === selectedCategory || 
         p.subcategory === selectedCategory;
       
-      const matchFestival =
-        selectedFestival === "All Festivals" ||
-        p.festival === selectedFestival;
-      
-      const matchPrice =
-        p.price >= priceRange[0] && p.price <= priceRange[1];
-      
       const q = search.trim().toLowerCase();
       const matchSearch =
         q === "" ||
@@ -3116,16 +2465,11 @@ export default function UnifiedPujaStore() {
         p.category.toLowerCase().includes(q) ||
         (p.subcategory && p.subcategory.toLowerCase().includes(q));
       
-      return matchCat && matchFestival && matchPrice && matchSearch;
+      return matchCat && matchSearch;
     });
 
-    // Sorting
-    if (sortBy === "price-low") list = list.sort((a, b) => a.price - b.price);
-    if (sortBy === "price-high") list = list.sort((a, b) => b.price - a.price);
-    if (sortBy === "newest") list = list.sort((a, b) => b.id - a.id);
-    
     return list;
-  }, [search, selectedCategory, selectedFestival, priceRange, sortBy, viewMode]);
+  }, [search, selectedCategory, viewMode]);
 
   // Quantity handlers for single items
   const changeQty = (id, delta) => {
@@ -3136,17 +2480,16 @@ export default function UnifiedPujaStore() {
     });
   };
 
-  const setQty = (id, value) => {
-    const num = Number(value);
-    if (Number.isNaN(num) || num < 1) return;
-    setQuantities((prev) => ({ ...prev, [id]: num }));
-  };
-
-  // Cart helpers
+  // Cart handlers with proper kit support
   const addToCart = (product, qty = 1) => {
     if (qty < 1) qty = 1;
     setCart((prev) => {
-      const idx = prev.findIndex((item) => item.id === product.id);
+      const idx = prev.findIndex((item) => 
+        product.type === "puja-kit" 
+          ? item.kitId === product.kitId 
+          : item.id === product.id
+      );
+      
       if (idx === -1) {
         return [...prev, { ...product, qty }];
       }
@@ -3178,82 +2521,10 @@ export default function UnifiedPujaStore() {
       w.includes(id) ? w.filter((x) => x !== id) : [...w, id]
     );
 
-  // Order functions
-  const bookPuja = (kit) => {
-    setOrderMode('package');
-    setOrderProduct(kit);
-    setOrderQty(1);
-    setShowOrderWizard(true);
-  };
-
-  const startSingleOrder = (product, qty) => {
-    if (qty < 1) qty = 1;
-    setOrderMode('single');
-    setOrderProduct(product);
-    setOrderQty(qty);
-    setShowOrderWizard(true);
-  };
-
-  const startCartOrder = () => {
-    if (cart.length === 0) {
-      alert("Cart is empty. Please add some items.");
-      return;
-    }
-    setOrderMode('cart');
-    setOrderProduct(null);
-    setOrderQty(1);
-    setShowOrderWizard(true);
-    setShowCart(false);
-  };
-
-  // Show Kit Details
+  // Show Kit Details with editor
   const showKitDetails = (kit) => {
     setSelectedKitForDetails(kit);
     setShowKitItemsModal(true);
-  };
-
-  // Handle Order Confirmation
-  const handleOrderConfirm = (orderPayload) => {
-    const order = {
-      id: Date.now(),
-      items: orderPayload.items,
-      pricing: orderPayload.pricing,
-      customer: orderPayload.customer,
-      delivery: orderPayload.delivery,
-      includePandit: orderPayload.includePandit,
-      additionalNotes: orderPayload.additionalNotes,
-      mode: orderPayload.mode,
-      createdAt: new Date().toISOString(),
-    };
-
-    // Save to localStorage
-    try {
-      const prev = JSON.parse(
-        localStorage.getItem("sanskaraa_orders") || "[]"
-      );
-      localStorage.setItem(
-        "sanskaraa_orders",
-        JSON.stringify([...prev, order])
-      );
-    } catch (e) {
-      console.error(e);
-    }
-
-    // Clear cart if cart order
-    if (order.mode === 'cart') {
-      setCart([]);
-    }
-
-    setShowOrderWizard(false);
-    setOrderSuccess(order);
-
-    // Browser notification
-    if ("Notification" in window && Notification.permission === "granted") {
-      new Notification("Sanskaraa", {
-        body: `${order.mode === 'package' ? 'Puja' : 'Order'} confirmed for ₹${order.pricing.total}`,
-        icon: "/images/logo.png",
-      });
-    }
   };
 
   // Pricing for cart
@@ -3261,40 +2532,20 @@ export default function UnifiedPujaStore() {
     (sum, item) => sum + item.price * item.qty,
     0
   );
-  const couponDiscount =
-    couponApplied === "FESTIVE10" ? subtotal * 0.1 : 0;
-  const gst = (subtotal - couponDiscount) * 0.18;
-  const delivery =
-    subtotal > 0 ? (subtotal > 999 ? 0 : 50) : 0;
-  const total = Math.round(
-    subtotal - couponDiscount + gst + delivery
-  );
 
-  const applyCoupon = () => {
-    if (coupon.trim().toUpperCase() === "FESTIVE10") {
-      setCouponApplied("FESTIVE10");
-    } else {
-      setCouponApplied(null);
-      alert("Invalid coupon");
-    }
-  };
-
-  // If success page active, show only that
-  if (orderSuccess) {
+  if (loading) {
     return (
-      <UnifiedSuccessPage
-        order={orderSuccess}
-        onBackToHome={() => {
-          setOrderSuccess(null);
-          setOrderMode(null);
-          setOrderProduct(null);
-        }}
-      />
+      <div className="min-h-screen bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-amber-200 border-t-amber-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-amber-700 font-medium">Loading Puja Store...</p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] pt-16 pb-4 px-2 sm:px-4 lg:px-6 relative">
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] pt-16 pb-20 px-2 sm:px-4 lg:px-6 relative">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div className="absolute top-10 left-10 w-20 h-20 sm:w-24 sm:h-24 bg-orange-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-bounce"></div>
@@ -3303,32 +2554,14 @@ export default function UnifiedPujaStore() {
       </div>
 
       <div className="max-w-7xl mx-auto mt-4 sm:mt-6 lg:mt-8 relative z-10">
-        {/* Trust Badges */}
-        <div className="flex flex-wrap justify-center gap-2 mb-3 sm:mb-4 px-1">
-          {trustBadges.map((badge, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="flex items-center gap-1 bg-white px-2 py-1 rounded-full shadow-sm border text-xs"
-            >
-              <span>{badge.icon}</span>
-              <span className="font-medium text-[#800000] hidden xs:inline">
-                {badge.text}
-              </span>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Topbar (Logo, Search, Cart) */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-4 sm:mt-6 p-2 bg-white/80 rounded-xl sm:rounded-2xl shadow-lg backdrop-blur-sm">
+        {/* Topbar */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-4 sm:mt-6 p-3 bg-white/80 rounded-xl sm:rounded-2xl shadow-lg backdrop-blur-sm border border-amber-100">
           <div>
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#800000] font-serif">
-              Sanskaraa
+              Sanskaraa Puja Store
             </h1>
-            <p className="text-xs sm:text-sm text-[#800000] mt-0.5 hidden sm:block">
-              Complete Puja Solutions - Packages & Single Items
+            <p className="text-xs sm:text-sm text-[#800000] mt-0.5">
+              Complete Puja Solutions with Customizable Kits
             </p>
           </div>
 
@@ -3363,7 +2596,7 @@ export default function UnifiedPujaStore() {
           </div>
         </div>
 
-        {/* View Mode Tabs + Filters - REMOVED STICKY */}
+        {/* View Mode Tabs */}
         <div className="bg-white/95 backdrop-blur-md py-3 sm:py-4 mt-3 sm:mt-4 rounded-xl sm:rounded-2xl shadow-lg border border-amber-100">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 px-2 sm:px-4">
             
@@ -3373,8 +2606,8 @@ export default function UnifiedPujaStore() {
               <div className="flex bg-gray-100 p-1 rounded-lg">
                 {[
                   { key: "all", label: "All", icon: FiGrid },
-                  { key: "packages", label: "Packages", icon: FiPackage },
-                  { key: "single", label: "Items", icon: FiList },
+                  { key: "packages", label: "Puja Kits", icon: FiPackage },
+                  { key: "single", label: "Single Items", icon: FiList },
                 ].map((tab) => (
                   <button
                     key={tab.key}
@@ -3392,8 +2625,8 @@ export default function UnifiedPujaStore() {
               </div>
             </div>
 
-            {/* Category & Festival Filters */}
-            <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-2">
+            {/* Category Filter */}
+            <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
               <div className="relative">
                 <FiGrid className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <select
@@ -3402,60 +2635,13 @@ export default function UnifiedPujaStore() {
                   className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                 >
                   <option value="All">All Categories</option>
-                  {categories.filter(c => c !== "All").map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
+                  <option value="Package Kits">Puja Packages</option>
+                  <option value="Single Items">Single Items</option>
+                  <option value="Ghar ke Sanskaar">Ghar ke Sanskaar</option>
+                  <option value="Festival Pujas">Festival Pujas</option>
+                  <option value="Vivah Sanskar">Wedding Ceremonies</option>
                 </select>
               </div>
-
-              <div className="relative">
-                <FiCalendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <select
-                  value={selectedFestival}
-                  onChange={(e) => setSelectedFestival(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                >
-                  <option value="All Festivals">All Festivals</option>
-                  {festivals.filter(f => f !== "All Festivals").map((f) => (
-                    <option key={f} value={f}>{f}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Price Range */}
-              <div className="col-span-1 xs:col-span-2">
-                <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200">
-                  <span className="text-xs font-medium text-gray-700 whitespace-nowrap">
-                    Price: ₹0 - ₹{priceRange[1]}
-                  </span>
-                  <input
-                    type="range"
-                    min="0"
-                    max="5000"
-                    step="100"
-                    value={priceRange[1]}
-                    onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
-                    className="flex-1 h-1.5 bg-gray-300 rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-amber-600"
-                  />
-                  <span className="text-sm font-bold text-amber-700">
-                    ₹{priceRange[1]}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Sort & Search */}
-            <div className="flex items-center gap-2">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 rounded-lg border border-gray-200 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-              >
-                <option value="popular">Sort: Popular</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="newest">Newest First</option>
-              </select>
             </div>
           </div>
         </div>
@@ -3467,18 +2653,7 @@ export default function UnifiedPujaStore() {
 
         {/* Product Grid */}
         <div className="mt-4 sm:mt-6">
-          {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="h-36 sm:h-48 bg-gradient-to-br from-rose-100 to-amber-100 rounded-xl sm:rounded-2xl mb-2 sm:mb-3"></div>
-                  <div className="h-3 sm:h-4 bg-gray-200 rounded mb-1 sm:mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-2/3 mb-2 sm:mb-3"></div>
-                  <div className="h-5 sm:h-6 bg-gray-200 rounded w-1/2"></div>
-                </div>
-              ))}
-            </div>
-          ) : filtered.length === 0 ? (
+          {filtered.length === 0 ? (
             <div className="text-center py-12 bg-gradient-to-br from-white to-amber-50 rounded-xl sm:rounded-2xl shadow-lg border border-amber-100">
               <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 bg-gradient-to-br from-amber-100 to-rose-100 rounded-full flex items-center justify-center">
                 <FiSearch className="w-8 h-8 sm:w-10 sm:h-10 text-amber-400" />
@@ -3487,13 +2662,12 @@ export default function UnifiedPujaStore() {
                 No items found
               </h3>
               <p className="text-gray-500 text-xs sm:text-sm max-w-md mx-auto mb-4 sm:mb-6 px-4">
-                Try adjusting your filters or search term. We have plenty of puja items for you!
+                Try adjusting your filters or search term.
               </p>
               <button
                 onClick={() => {
                   setSelectedCategory("All");
                   setSearch("");
-                  setPriceRange([0, 5000]);
                 }}
                 className="px-4 sm:px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors text-sm font-medium"
               >
@@ -3508,7 +2682,7 @@ export default function UnifiedPujaStore() {
                   Showing <span className="font-semibold">{filtered.length}</span> items
                 </div>
                 <div className="text-xs text-gray-500">
-                  {viewMode === 'all' ? 'All Items' : viewMode === 'packages' ? 'Puja Packages Only' : 'Single Items Only'}
+                  {viewMode === 'all' ? 'All Items' : viewMode === 'packages' ? 'Customizable Puja Kits' : 'Single Items'}
                 </div>
               </div>
 
@@ -3523,9 +2697,9 @@ export default function UnifiedPujaStore() {
                     wishlist={wishlist.includes(product.id)}
                     onWishlistToggle={() => toggleWishlist(product.id)}
                     onAddToCart={() => addToCart(product, quantities[product.id] || 1)}
-                    onBookPuja={() => bookPuja(product)}
+                    onBookPuja={() => console.log("Book puja:", product)}
                     onViewDetails={() => showKitDetails(product)}
-                    onBuyNow={() => startSingleOrder(product, quantities[product.id] || 1)}
+                    onBuyNow={() => console.log("Buy now:", product)}
                     onQuantityChange={(id, delta) => changeQty(id, delta)}
                   />
                 ))}
@@ -3534,47 +2708,51 @@ export default function UnifiedPujaStore() {
           )}
         </div>
 
-        {/* How-to Section */}
-        <div className="mt-6 sm:mt-8 md:mt-12 bg-gradient-to-br from-white to-amber-50 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-lg border border-amber-100">
+        {/* Features Section */}
+        <div className="mt-6 sm:mt-8 md:mt-12 bg-gradient-to-br from-white to-amber-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-amber-100">
           <div className="text-center mb-4 sm:mb-6">
             <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-rose-800 mb-1 sm:mb-2">
-              Complete Puja Solutions
+              Why Choose Sanskaraa?
             </h3>
             <p className="text-gray-600 text-xs sm:text-sm">
-              Everything you need for a perfect puja experience
+              Industry-standard architecture for reliable puja shopping
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {[
               {
-                title: "Ready Puja Packages",
-                desc: "Complete kits for all rituals with optional pandit service",
-                icon: "📦",
-                features: ["Complete Samagri", "Pandit Service Available", "Step-by-step Guide"],
-                color: "from-blue-500 to-blue-600",
-                bg: "bg-blue-50"
+                title: "Customizable Kits",
+                desc: "Edit quantity and price of each item. Zero quantity = excluded.",
+                icon: "✏️",
+                features: ["Edit prices", "Adjust quantities", "Real-time total"],
+                color: "from-blue-500 to-blue-600"
               },
               {
-                title: "Individual Puja Items",
-                desc: "Fresh fruits, agarbatti, kapoor and all daily essentials",
-                icon: "🛒",
-                features: ["Fresh & Authentic", "Multiple Units", "Same Day Delivery"],
-                color: "from-green-500 to-green-600",
-                bg: "bg-green-50"
+                title: "Single Source of Truth",
+                desc: "One data model for cart, checkout, orders, and backend.",
+                icon: "💾",
+                features: ["Consistent data", "Future-proof", "Backend ready"],
+                color: "from-green-500 to-green-600"
               },
               {
-                title: "Expert Guidance",
-                desc: "Video guides and pandit support for perfect puja",
-                icon: "🎓",
-                features: ["Video Tutorials", "Pandit Support", "Custom Solutions"],
-                color: "from-amber-500 to-amber-600",
-                bg: "bg-amber-50"
+                title: "Auto Calculations",
+                desc: "Total price updates automatically with any change.",
+                icon: "🧮",
+                features: ["Live updates", "Tax included", "Discounts applied"],
+                color: "from-amber-500 to-amber-600"
+              },
+              {
+                title: "Secure & Scalable",
+                desc: "Professional architecture that grows with your needs.",
+                icon: "🛡️",
+                features: ["Local storage", "API ready", "Production tested"],
+                color: "from-purple-500 to-purple-600"
               },
             ].map((item, idx) => (
               <div
                 key={idx}
-                className={`${item.bg} rounded-lg sm:rounded-xl p-3 sm:p-4 hover:shadow-lg transition-all duration-300`}
+                className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 hover:shadow-lg transition-all duration-300 border border-gray-100"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-r ${item.color} flex items-center justify-center text-xl`}>
@@ -3594,64 +2772,6 @@ export default function UnifiedPujaStore() {
                     </li>
                   ))}
                 </ul>
-                
-                <button className="mt-3 sm:mt-4 w-full py-2 text-xs sm:text-sm font-medium rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors">
-                  Explore Now
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Customer Reviews */}
-        <div className="mt-6 sm:mt-8 md:mt-12">
-          <h3 className="text-base sm:text-lg md:text-xl font-bold text-rose-800 mb-3 sm:mb-4 text-center">
-            Customer Experiences
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
-            {[
-              {
-                name: "Rajesh Sharma",
-                review: "Perfect Griha Pravesh kit! Everything was well-packed and blessed.",
-                type: "Package",
-              },
-              {
-                name: "Priya Patel",
-                review: "Daily puja items delivery is so convenient. Fresh and authentic!",
-                type: "Single Items",
-              },
-              {
-                name: "Amit Verma",
-                review: "Pandit service was excellent. Very professional and knowledgeable.",
-                type: "Service",
-              },
-              {
-                name: "Sneha Reddy",
-                review: "Navratri puja kit had all items mentioned. Highly recommended!",
-                type: "Package",
-              },
-            ].map((review, i) => (
-              <div
-                key={i}
-                className="bg-white rounded-lg sm:rounded-xl p-3 shadow-md border border-rose-100"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-amber-400 to-rose-400 rounded-full flex-shrink-0"></div>
-                  <div>
-                    <p className="font-semibold text-rose-800 text-xs sm:text-sm">
-                      {review.name}
-                    </p>
-                    <div className="flex text-amber-400 text-xs">
-                      {"★".repeat(5)}
-                    </div>
-                  </div>
-                </div>
-                <p className="text-xs text-gray-600 mb-2 line-clamp-3">
-                  "{review.review}"
-                </p>
-                <div className="text-[10px] text-rose-600 font-medium">
-                  {review.type}
-                </div>
               </div>
             ))}
           </div>
@@ -3720,7 +2840,7 @@ export default function UnifiedPujaStore() {
                     <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
                       {cart.map((item) => (
                         <motion.div
-                          key={item.id}
+                          key={item.id || item.kitId}
                           initial={{ opacity: 0, x: 20 }}
                           animate={{ opacity: 1, x: 0 }}
                           className="flex gap-2 items-start p-2 bg-white rounded-lg border border-gray-100 hover:border-rose-200 transition-colors"
@@ -3728,10 +2848,10 @@ export default function UnifiedPujaStore() {
                           <div className="relative">
                             <div className="w-12 h-12 bg-gradient-to-br from-amber-100 to-rose-100 rounded-lg flex items-center justify-center flex-shrink-0">
                               <span className="text-xl">
-                                {item.type === 'package' ? '📦' : '🛒'}
+                                {item.type === 'puja-kit' ? '📦' : '🛒'}
                               </span>
                             </div>
-                            {item.type === 'package' && (
+                            {item.type === 'puja-kit' && (
                               <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 text-white text-[9px] rounded-full flex items-center justify-center">
                                 📦
                               </div>
@@ -3744,7 +2864,7 @@ export default function UnifiedPujaStore() {
                                 {item.name}
                               </h4>
                               <button
-                                onClick={() => removeFromCart(item.id)}
+                                onClick={() => removeFromCart(item.id || item.kitId)}
                                 className="text-gray-400 hover:text-rose-600 ml-1"
                               >
                                 <FiX className="w-3.5 h-3.5" />
@@ -3753,12 +2873,19 @@ export default function UnifiedPujaStore() {
                             
                             <div className="flex items-center gap-1 mt-1">
                               <span className="text-xs text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded">
-                                {item.type === 'single' ? item.unit : 'Package'}
+                                {item.type === 'single' ? item.unit : 'Custom Kit'}
                               </span>
                               <span className="text-amber-700 font-bold text-xs">
                                 ₹{item.price}
                               </span>
                             </div>
+
+                            {/* Kit Items Summary */}
+                            {item.type === 'puja-kit' && item.items && (
+                              <div className="mt-1 text-xs text-gray-600">
+                                Contains {item.items.length} items
+                              </div>
+                            )}
 
                             {/* Quantity Controls */}
                             <div className="flex items-center justify-between mt-2">
@@ -3790,63 +2917,24 @@ export default function UnifiedPujaStore() {
 
                     {/* Price Summary */}
                     <div className="mt-4 border-t border-gray-100 pt-3">
-                      {/* Coupon Section */}
-                      <div className="mb-3">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
-                          Apply Coupon
-                        </label>
-                        <div className="flex gap-1">
-                          <input
-                            value={coupon}
-                            onChange={(e) => setCoupon(e.target.value)}
-                            placeholder="Enter coupon code"
-                            className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
-                          />
-                          <button
-                            onClick={applyCoupon}
-                            className="px-3 py-1.5 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors text-xs font-medium whitespace-nowrap"
-                          >
-                            Apply
-                          </button>
-                        </div>
-                        {couponApplied && (
-                          <div className="mt-1 text-green-600 text-xs flex items-center gap-1">
-                            <FiCheckCircle className="w-3.5 h-3.5" />
-                            Coupon {couponApplied} applied successfully!
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Price Breakdown */}
                       <div className="space-y-1.5 bg-gray-50 rounded-lg p-3">
                         <div className="flex justify-between text-xs">
                           <span className="text-gray-600">Subtotal</span>
                           <span className="font-medium">₹{subtotal}</span>
                         </div>
                         
-                        {couponApplied && (
-                          <div className="flex justify-between text-xs">
-                            <span className="text-gray-600">Coupon Discount</span>
-                            <span className="text-green-600 font-medium">
-                              -₹{Math.round(couponDiscount)}
-                            </span>
-                          </div>
-                        )}
-                        
                         <div className="flex justify-between text-xs">
                           <span className="text-gray-600">GST (18%)</span>
-                          <span className="font-medium">₹{Math.round(gst)}</span>
+                          <span className="font-medium">₹{Math.round(subtotal * 0.18)}</span>
                         </div>
                         
                         <div className="flex justify-between text-xs">
                           <span className="text-gray-600">
                             Delivery Charges
-                            {delivery === 0 && (
-                              <span className="text-green-600 ml-1">(FREE)</span>
-                            )}
+                            <span className="text-green-600 ml-1">(FREE)</span>
                           </span>
-                          <span className={`font-medium ${delivery === 0 ? 'text-green-600' : ''}`}>
-                            {delivery === 0 ? 'FREE' : `₹${delivery}`}
+                          <span className="text-green-600 font-medium">
+                            FREE
                           </span>
                         </div>
                         
@@ -3858,7 +2946,7 @@ export default function UnifiedPujaStore() {
                             </div>
                             <div className="text-right">
                               <div className="font-bold text-lg text-rose-700">
-                                ₹{total}
+                                ₹{Math.round(subtotal * 1.18)}
                               </div>
                               <p className="text-[10px] text-gray-500">Payable amount</p>
                             </div>
@@ -3869,7 +2957,7 @@ export default function UnifiedPujaStore() {
                       {/* Action Buttons */}
                       <div className="mt-4 space-y-2">
                         <button
-                          onClick={startCartOrder}
+                          onClick={() => console.log("Checkout:", cart)}
                           className="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2 text-sm"
                         >
                           <FiCheckCircle className="w-4 h-4" />
@@ -3909,21 +2997,7 @@ export default function UnifiedPujaStore() {
           )}
         </AnimatePresence>
 
-        {/* Unified Order Wizard Modal */}
-        <AnimatePresence>
-          {showOrderWizard && (
-            <UnifiedOrderWizardModal
-              mode={orderMode}
-              product={orderProduct}
-              qty={orderQty}
-              cartItems={cart}
-              onClose={() => setShowOrderWizard(false)}
-              onConfirm={handleOrderConfirm}
-            />
-          )}
-        </AnimatePresence>
-
-        {/* Kit Items Details Modal */}
+        {/* Kit Items Modal */}
         <AnimatePresence>
           {showKitItemsModal && selectedKitForDetails && (
             <KitItemsModal
@@ -3932,7 +3006,6 @@ export default function UnifiedPujaStore() {
                 setShowKitItemsModal(false);
                 setSelectedKitForDetails(null);
               }}
-              onBookPuja={bookPuja}
               onAddToCart={addToCart}
             />
           )}
@@ -3953,7 +3026,7 @@ export default function UnifiedPujaStore() {
             className={`flex flex-col items-center p-2 rounded-lg ${viewMode === 'packages' ? 'text-blue-600 bg-blue-50' : 'text-gray-600'}`}
           >
             <FiPackage className="w-5 h-5" />
-            <span className="text-xs mt-1">Packages</span>
+            <span className="text-xs mt-1">Kits</span>
           </button>
           
           <button
