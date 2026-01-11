@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState, useEffect, useMemo,useCallback } from "react";
 import {
   FiShoppingCart,
   FiHeart,
@@ -2837,297 +2837,224 @@ _This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete
   );
 };
 
-// ---------- Kit Items Modal (for package details) ----------
+const PANDIT_FEE = 500;
+
 const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
-  const kitDetails = pujaKitItems[kit.id];
+  const kitDetails = pujaKitItems?.[kit?.id];
   const [selectedOption, setSelectedOption] = useState("fullPuja");
-  const [wishlisted, setWishlisted] = useState(false);
 
-  const relatedKits = kits
-    .filter((k) => k.subcategory === kit.subcategory && k.id !== kit.id)
-    .slice(0, 2);
-
-  const handleAddToWishlist = () => {
-    setWishlisted(!wishlisted);
+  /* ---------------- PRICE RESOLVER ---------------- */
+  const resolveItemPrice = (itemName) => {
+    const match = singleItems?.find((si) =>
+      itemName
+        .toLowerCase()
+        .includes(si.name.split("/")[0].toLowerCase())
+    );
+    return match?.price || 30;
   };
 
-  const handleQuickAction = () => {
-    if (selectedOption === "kitOnly") {
-      onAddToCart(kit);
-    } else {
-      onBookPuja(kit);
-    }
+  /* ---------------- INITIAL ITEMS ---------------- */
+  const [kitItems, setKitItems] = useState(() => {
+    if (!kitDetails?.items?.length) return [];
+    return kitDetails.items.map((name) => ({
+      name,
+      price: resolveItemPrice(name),
+      qty: /2|two/i.test(name) ? 2 : /5|five/i.test(name) ? 5 : 1,
+    }));
+  });
+
+  /* ---------------- CALCULATIONS ---------------- */
+  const totalKitPrice = useMemo(
+    () => kitItems.reduce((sum, i) => sum + i.price * i.qty, 0),
+    [kitItems]
+  );
+
+  const finalPrice = useMemo(
+    () =>
+      selectedOption === "fullPuja"
+        ? totalKitPrice + PANDIT_FEE
+        : totalKitPrice,
+    [totalKitPrice, selectedOption]
+  );
+
+  /* ---------------- HANDLERS ---------------- */
+  const updateQty = useCallback((index, delta) => {
+    setKitItems((items) =>
+      items.map((it, i) =>
+        i === index ? { ...it, qty: Math.max(1, it.qty + delta) } : it
+      )
+    );
+  }, []);
+
+  const handlePrimaryAction = () => {
+    const payload = {
+      ...kit,
+      items: kitItems,
+      kitPrice: totalKitPrice,
+      finalPrice,
+      includePandit: selectedOption === "fullPuja",
+    };
+
+    selectedOption === "fullPuja"
+      ? onBookPuja(payload)
+      : onAddToCart(payload);
+
     onClose();
   };
 
-  if (!kitDetails) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
-        onClick={onClose}
-      >
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.8, opacity: 0 }}
-          className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg sm:text-xl font-bold text-rose-800">Kit Details</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-500 hover:text-rose-600 text-xl p-1"
-            >
-              ✕
-            </button>
-          </div>
-          <p className="text-gray-600 text-center py-8">
-            Details for this kit are coming soon...
-          </p>
-        </motion.div>
-      </motion.div>
-    );
-  }
+  if (!kitDetails) return null;
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-2 sm:p-4"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-3"
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.8, opacity: 0 }}
-        className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+        initial={{ scale: 0.9 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.9 }}
         onClick={(e) => e.stopPropagation()}
+        className="bg-white w-full max-w-5xl rounded-3xl shadow-2xl max-h-[92vh] overflow-y-auto"
       >
-        <div className="flex justify-between items-center mb-3 sm:mb-4">
-          <h2 className="text-base sm:text-lg font-bold text-rose-800">
-            {kitDetails.name} - Complete Details
-          </h2>
-          <div className="flex items-center gap-1 sm:gap-2">
-            <button
-              onClick={handleAddToWishlist}
-              className={`p-1.5 sm:p-2 rounded-full ${
-                wishlisted ? "bg-rose-100 text-rose-600" : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              <FiHeart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${wishlisted ? "fill-rose-600" : ""}`} />
-            </button>
-            <button
-              onClick={onClose}
-              className="text-gray-500 hover:text-rose-600 text-xl p-1"
-            >
-              ✕
-            </button>
+        {/* HEADER */}
+        <div className="sticky top-0 bg-gradient-to-r from-rose-50 to-orange-50 z-10 flex justify-between items-center px-6 py-4 border-b">
+          <div>
+            <h2 className="font-bold text-rose-800 text-xl">
+              {kitDetails.name}
+            </h2>
+            <p className="text-xs text-gray-600">
+              Customize puja kit as per your family needs
+            </p>
           </div>
+          <button
+            onClick={onClose}
+            className="w-9 h-9 flex items-center justify-center rounded-full bg-white shadow hover:bg-rose-100 text-xl"
+          >
+            ✕
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-3 sm:space-y-4">
-            {/* Option Selection */}
-            <div className="bg-amber-50 rounded-lg sm:rounded-xl p-3">
-              <h3 className="font-semibold text-amber-800 mb-2 text-sm sm:text-base">
+        {/* CONTENT */}
+        <div className="grid lg:grid-cols-3 gap-5 p-6">
+          {/* LEFT */}
+          <div className="lg:col-span-2 space-y-5">
+            {/* SERVICE TYPE */}
+            <div className="bg-amber-50/70 rounded-2xl p-4">
+              <h3 className="font-semibold mb-3 text-gray-800">
                 Select Service Type
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <button
-                  onClick={() => setSelectedOption("fullPuja")}
-                  className={`p-2 sm:p-3 rounded-lg border-2 text-left ${
-                    selectedOption === "fullPuja"
-                      ? "border-rose-500 bg-rose-50"
-                      : "border-gray-200"
-                  }`}
-                >
-                  <div className="font-semibold text-xs sm:text-sm">
-                    Book Full Puja
-                  </div>
-                  <div className="text-xs text-gray-600">
-                    Kit + Pandit Service
-                  </div>
-                  <div className="text-rose-600 font-bold mt-1 text-sm">
-                    ₹{kit.price + 500}
-                  </div>
-                </button>
 
-                <button
-                  onClick={() => setSelectedOption("kitOnly")}
-                  className={`p-2 sm:p-3 rounded-lg border-2 text-left ${
-                    selectedOption === "kitOnly"
-                      ? "border-rose-500 bg-rose-50"
-                      : "border-gray-200"
-                  }`}
-                >
-                  <div className="font-semibold text-xs sm:text-sm">
-                    Buy Kit Only
-                  </div>
-                  <div className="text-xs text-gray-600">
-                    DIY Puja Kit
-                  </div>
-                  <div className="text-rose-600 font-bold mt-1 text-sm">
-                    ₹{kit.price}
-                  </div>
-                </button>
+              <div className="grid sm:grid-cols-2 gap-3">
+                {["fullPuja", "kitOnly"].map((type) => {
+                  const active = selectedOption === type;
+                  return (
+                    <button
+                      key={type}
+                      onClick={() => setSelectedOption(type)}
+                      className={`p-4 rounded-xl border-2 text-left transition ${
+                        active
+                          ? "border-rose-500 bg-white shadow-md"
+                          : "border-gray-200 bg-white"
+                      }`}
+                    >
+                      <p className="font-semibold">
+                        {type === "fullPuja"
+                          ? "🙏 Full Puja Service"
+                          : "📦 Kit Only"}
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1">
+                        {type === "fullPuja"
+                          ? "Pandit + Complete Samagri"
+                          : "Only Puja Samagri"}
+                      </p>
+                      <p className="mt-2 text-lg font-bold text-rose-700">
+                        ₹{type === "fullPuja" ? finalPrice : totalKitPrice}
+                      </p>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Kit Items & Benefits */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-              <div>
-                <h3 className="text-sm sm:text-base font-semibold text-rose-800 mb-2 flex items-center gap-2">
-                  <FiCheckCircle className="text-green-500 w-4 h-4" />
-                  What's Included
-                </h3>
-                <div className="bg-green-50 rounded-lg sm:rounded-xl p-2 sm:p-3">
-                  <ul className="space-y-1.5 sm:space-y-2 max-h-60 overflow-y-auto pr-2">
-                    {kitDetails.items.map((item, index) => (
-                      <motion.li
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        className="flex items-center gap-2 p-1.5 sm:p-2 bg-white rounded-lg shadow-sm"
-                      >
-                        <div className="w-5 h-5 sm:w-6 sm:h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-green-600 font-bold text-xs">
-                            {index + 1}
-                          </span>
-                        </div>
-                        <span className="text-gray-700 text-xs sm:text-sm">
-                          {item}
-                        </span>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </div>
+            {/* KIT ITEMS */}
+            <div className="border rounded-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-green-50 to-emerald-100 p-3 font-semibold">
+                Puja Samagri (Editable)
               </div>
 
-              <div>
-                <h3 className="text-sm sm:text-base font-semibold text-rose-800 mb-2 flex items-center gap-2">
-                  <FiStar className="text-amber-500 w-4 h-4" />
-                  Benefits
-                </h3>
-                <div className="bg-amber-50 rounded-lg sm:rounded-xl p-2 sm:p-3">
-                  <ul className="space-y-1.5 sm:space-y-2">
-                    {kitDetails.benefits.map((benefit, index) => (
-                      <motion.li
-                        key={index}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        className="flex items-center gap-2 p-1.5 sm:p-2 bg-white rounded-lg shadow-sm"
-                      >
-                        <div className="w-5 h-5 sm:w-6 sm:h-6 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-amber-600 text-xs">✨</span>
-                        </div>
-                        <span className="text-gray-700 text-xs sm:text-sm">
-                          {benefit}
-                        </span>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </div>
+              <div className="grid sm:grid-cols-2 gap-3 p-4">
+                {kitItems.map((item, i) => (
+                  <div
+                    key={i}
+                    className="border rounded-xl p-3 hover:shadow-md transition"
+                  >
+                    <div className="flex justify-between">
+                      <div>
+                        <p className="font-medium text-sm">{item.name}</p>
+                        <p className="text-xs text-gray-500">
+                          ₹{item.price} per item
+                        </p>
+                      </div>
+                      <span className="font-bold text-green-600">
+                        ₹{item.price * item.qty}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center mt-3">
+                      <span className="text-xs text-gray-500">Quantity</span>
+                      <div className="flex items-center gap-3 bg-gray-100 rounded-full px-3 py-1">
+                        <button onClick={() => updateQty(i, -1)}>−</button>
+                        <span className="font-semibold">{item.qty}</span>
+                        <button onClick={() => updateQty(i, 1)}>+</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-3 sm:space-y-4">
-            {/* Quick Actions */}
-            <div className="bg-white border border-gray-200 rounded-lg sm:rounded-xl p-3 shadow-sm">
-              <h4 className="font-semibold text-gray-800 mb-2 text-sm">
-                Quick Actions
-              </h4>
-
-              <button
-                onClick={handleQuickAction}
-                className="w-full bg-gradient-to-r from-rose-600 to-rose-700 text-white py-2 sm:py-2.5 rounded-lg font-semibold mb-2 hover:shadow-lg transition-all text-sm"
-              >
-                {selectedOption === "fullPuja"
-                  ? "Book Now"
-                  : "Add Kit to Cart"}
-              </button>
-
-              <button
-                onClick={() => {
-                  onAddToCart(kit);
-                  onClose();
-                }}
-                className="w-full border border-rose-400 text-rose-700 py-2 rounded-lg font-medium hover:bg-rose-50 transition-colors mb-2 text-xs sm:text-sm"
-              >
-                Add to Cart
-              </button>
-
-              <button
-                onClick={handleAddToWishlist}
-                className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors text-xs sm:text-sm"
-              >
-                {wishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
-              </button>
-            </div>
-
-            {/* Recommended Add-ons */}
-            {relatedKits.length > 0 && (
-              <div className="bg-blue-50 rounded-lg sm:rounded-xl p-3">
-                <h4 className="font-semibold text-blue-800 mb-2 text-sm">
-                  Recommended Add-ons
-                </h4>
-                <div className="space-y-2">
-                  {relatedKits.map((relatedKit) => (
-                    <div
-                      key={relatedKit.id}
-                      className="flex items-center gap-2 p-2 bg-white rounded-lg"
-                    >
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded flex-shrink-0 flex items-center justify-center">
-                        <span className="text-blue-600">📦</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-gray-800 truncate">
-                          {relatedKit.name}
-                        </p>
-                        <p className="text-xs text-rose-600 font-semibold">
-                          ₹{relatedKit.price}
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => onAddToCart(relatedKit)}
-                        className="text-xs bg-rose-600 text-white px-2 py-1 rounded hover:bg-rose-700 transition-colors flex-shrink-0"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  ))}
+          {/* RIGHT */}
+          <div className="space-y-5">
+            {/* PRICE SUMMARY */}
+            <div className="bg-gradient-to-br from-rose-50 to-pink-100 rounded-2xl p-5">
+              <h4 className="font-semibold mb-3">Price Breakdown</h4>
+              <div className="text-sm space-y-2">
+                <div className="flex justify-between">
+                  <span>Kit Items</span>
+                  <span>₹{totalKitPrice}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Pandit Ji</span>
+                  <span>
+                    {selectedOption === "fullPuja" ? `₹${PANDIT_FEE}` : "—"}
+                  </span>
+                </div>
+                <div className="border-t pt-3 mt-3 flex justify-between text-lg font-bold">
+                  <span>Total</span>
+                  <span className="text-rose-700">₹{finalPrice}</span>
                 </div>
               </div>
-            )}
-
-            {/* Trust Badges */}
-            <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3">
-              <h4 className="font-semibold text-gray-800 mb-2 text-sm">
-                Why Choose Sanskaraa?
-              </h4>
-              <ul className="text-xs text-gray-600 space-y-1">
-                <li>✅ 100% Authentic Products</li>
-                <li>✅ Expert Pandit Network</li>
-                <li>✅ Same Day Delivery</li>
-                <li>✅ Sanitized & Blessed</li>
-              </ul>
             </div>
+
+            {/* CTA */}
+            <button
+              onClick={handlePrimaryAction}
+              className="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white py-4 rounded-2xl font-semibold text-lg shadow-lg"
+            >
+              {selectedOption === "fullPuja"
+                ? `Book Puja Now – ₹${finalPrice}`
+                : `Add Kit to Cart – ₹${totalKitPrice}`}
+            </button>
           </div>
         </div>
       </motion.div>
     </motion.div>
   );
 };
-
 // ---------- Main Unified Component ----------
 export default function UnifiedPujaStore() {
   const navigate = useNavigate();
