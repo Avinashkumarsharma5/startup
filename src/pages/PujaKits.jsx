@@ -2837,21 +2837,18 @@ _This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete
   );
 };
 
-const PANDIT_FEE = 500;
-
-const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
+const KitItemsModal = ({ kit, onClose, onAddToCart }) => {
   const kitDetails = pujaKitItems?.[kit?.id];
-  const [selectedOption, setSelectedOption] = useState("fullPuja");
 
   /* ---------------- PRICE RESOLVER ---------------- */
-  const resolveItemPrice = (itemName) => {
+  const resolveItemPrice = useCallback((itemName) => {
     const match = singleItems?.find((si) =>
       itemName
         .toLowerCase()
         .includes(si.name.split("/")[0].toLowerCase())
     );
-    return match?.price || 30;
-  };
+    return match?.price ?? 30;
+  }, []);
 
   /* ---------------- INITIAL ITEMS ---------------- */
   const [kitItems, setKitItems] = useState(() => {
@@ -2863,18 +2860,10 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
     }));
   });
 
-  /* ---------------- CALCULATIONS ---------------- */
+  /* ---------------- PRICE CALC ---------------- */
   const totalKitPrice = useMemo(
     () => kitItems.reduce((sum, i) => sum + i.price * i.qty, 0),
     [kitItems]
-  );
-
-  const finalPrice = useMemo(
-    () =>
-      selectedOption === "fullPuja"
-        ? totalKitPrice + PANDIT_FEE
-        : totalKitPrice,
-    [totalKitPrice, selectedOption]
   );
 
   /* ---------------- HANDLERS ---------------- */
@@ -2886,19 +2875,15 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
     );
   }, []);
 
-  const handlePrimaryAction = () => {
+  const handleAddToCart = () => {
     const payload = {
       ...kit,
       items: kitItems,
-      kitPrice: totalKitPrice,
-      finalPrice,
-      includePandit: selectedOption === "fullPuja",
+      totalPrice: totalKitPrice,
+      type: "puja-kit",
     };
 
-    selectedOption === "fullPuja"
-      ? onBookPuja(payload)
-      : onAddToCart(payload);
-
+    onAddToCart(payload);
     onClose();
   };
 
@@ -2926,7 +2911,7 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
               {kitDetails.name}
             </h2>
             <p className="text-xs text-gray-600">
-              Customize puja kit as per your family needs
+              Customize Puja Samagri as per your family needs
             </p>
           </div>
           <button
@@ -2941,48 +2926,16 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
         <div className="grid lg:grid-cols-3 gap-5 p-6">
           {/* LEFT */}
           <div className="lg:col-span-2 space-y-5">
-            {/* SERVICE TYPE */}
-            <div className="bg-amber-50/70 rounded-2xl p-4">
-              <h3 className="font-semibold mb-3 text-gray-800">
-                Select Service Type
-              </h3>
-
-              <div className="grid sm:grid-cols-2 gap-3">
-                {["fullPuja", "kitOnly"].map((type) => {
-                  const active = selectedOption === type;
-                  return (
-                    <button
-                      key={type}
-                      onClick={() => setSelectedOption(type)}
-                      className={`p-4 rounded-xl border-2 text-left transition ${
-                        active
-                          ? "border-rose-500 bg-white shadow-md"
-                          : "border-gray-200 bg-white"
-                      }`}
-                    >
-                      <p className="font-semibold">
-                        {type === "fullPuja"
-                          ? "🙏 Full Puja Service"
-                          : "📦 Kit Only"}
-                      </p>
-                      <p className="text-xs text-gray-600 mt-1">
-                        {type === "fullPuja"
-                          ? "Pandit + Complete Samagri"
-                          : "Only Puja Samagri"}
-                      </p>
-                      <p className="mt-2 text-lg font-bold text-rose-700">
-                        ₹{type === "fullPuja" ? finalPrice : totalKitPrice}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
+            {/* INFO BANNER */}
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-800">
+              🪔 All items are editable. Adjust quantities as per your ritual
+              requirements.
             </div>
 
             {/* KIT ITEMS */}
             <div className="border rounded-2xl overflow-hidden">
               <div className="bg-gradient-to-r from-green-50 to-emerald-100 p-3 font-semibold">
-                Puja Samagri (Editable)
+                Puja Samagri Items
               </div>
 
               <div className="grid sm:grid-cols-2 gap-3 p-4">
@@ -3021,33 +2974,27 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
           <div className="space-y-5">
             {/* PRICE SUMMARY */}
             <div className="bg-gradient-to-br from-rose-50 to-pink-100 rounded-2xl p-5">
-              <h4 className="font-semibold mb-3">Price Breakdown</h4>
+              <h4 className="font-semibold mb-3">Price Summary</h4>
               <div className="text-sm space-y-2">
                 <div className="flex justify-between">
-                  <span>Kit Items</span>
-                  <span>₹{totalKitPrice}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Pandit Ji</span>
-                  <span>
-                    {selectedOption === "fullPuja" ? `₹${PANDIT_FEE}` : "—"}
-                  </span>
+                  <span>Total Items</span>
+                  <span>{kitItems.length}</span>
                 </div>
                 <div className="border-t pt-3 mt-3 flex justify-between text-lg font-bold">
-                  <span>Total</span>
-                  <span className="text-rose-700">₹{finalPrice}</span>
+                  <span>Total Amount</span>
+                  <span className="text-rose-700">
+                    ₹{totalKitPrice}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* CTA */}
             <button
-              onClick={handlePrimaryAction}
+              onClick={handleAddToCart}
               className="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white py-4 rounded-2xl font-semibold text-lg shadow-lg"
             >
-              {selectedOption === "fullPuja"
-                ? `Book Puja Now – ₹${finalPrice}`
-                : `Add Kit to Cart – ₹${totalKitPrice}`}
+              Add Puja Kit to Cart – ₹{totalKitPrice}
             </button>
           </div>
         </div>
@@ -3055,6 +3002,7 @@ const KitItemsModal = ({ kit, onClose, onBookPuja, onAddToCart }) => {
     </motion.div>
   );
 };
+
 // ---------- Main Unified Component ----------
 export default function UnifiedPujaStore() {
   const navigate = useNavigate();
