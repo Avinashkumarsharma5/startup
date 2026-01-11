@@ -2860,13 +2860,13 @@ const KitItemsModal = ({ kit, onClose, onAddToCart }) => {
     }));
   });
 
-  /* ---------------- PRICE CALC ---------------- */
+  /* ---------------- TOTAL PRICE ---------------- */
   const totalKitPrice = useMemo(
     () => kitItems.reduce((sum, i) => sum + i.price * i.qty, 0),
     [kitItems]
   );
 
-  /* ---------------- HANDLERS ---------------- */
+  /* ---------------- QTY UPDATE ---------------- */
   const updateQty = useCallback((index, delta) => {
     setKitItems((items) =>
       items.map((it, i) =>
@@ -2875,15 +2875,14 @@ const KitItemsModal = ({ kit, onClose, onAddToCart }) => {
     );
   }, []);
 
+  /* ---------------- ADD TO CART ---------------- */
   const handleAddToCart = () => {
-    const payload = {
+    onAddToCart({
       ...kit,
       items: kitItems,
       totalPrice: totalKitPrice,
       type: "puja-kit",
-    };
-
-    onAddToCart(payload);
+    });
     onClose();
   };
 
@@ -2894,110 +2893,137 @@ const KitItemsModal = ({ kit, onClose, onAddToCart }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-3"
       onClick={onClose}
+      className="fixed inset-0 z-50 bg-black/60 flex items-end md:items-center md:justify-center"
     >
       <motion.div
-        initial={{ scale: 0.9 }}
-        animate={{ scale: 1 }}
-        exit={{ scale: 0.9 }}
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        exit={{ y: 100 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white w-full max-w-5xl rounded-3xl shadow-2xl max-h-[92vh] overflow-y-auto"
+        className="
+          bg-white w-full max-w-3xl
+          rounded-t-3xl md:rounded-3xl
+          max-h-[85vh] md:max-h-[90vh]
+          flex flex-col
+        "
       >
-        {/* HEADER */}
-        <div className="sticky top-0 bg-gradient-to-r from-rose-50 to-orange-50 z-10 flex justify-between items-center px-6 py-4 border-b">
-          <div>
-            <h2 className="font-bold text-rose-800 text-xl">
-              {kitDetails.name}
-            </h2>
-            <p className="text-xs text-gray-600">
-              Customize Puja Samagri as per your family needs
-            </p>
+        {/* ===== HEADER ===== */}
+        <div className="sticky top-0 bg-white z-10 border-b">
+          <div className="md:hidden w-12 h-1 bg-gray-300 rounded-full mx-auto mt-2" />
+
+          <div className="flex items-center gap-3 px-4 py-3">
+            <button onClick={onClose} className="text-xl">←</button>
+            <div>
+              <h2 className="font-semibold text-base">
+                {kitDetails.name}
+              </h2>
+              <p className="text-xs text-gray-500">
+                Editable Puja Samagri
+              </p>
+            </div>
           </div>
-          <button
-            onClick={onClose}
-            className="w-9 h-9 flex items-center justify-center rounded-full bg-white shadow hover:bg-rose-100 text-xl"
-          >
-            ✕
-          </button>
         </div>
 
-        {/* CONTENT */}
-        <div className="grid lg:grid-cols-3 gap-5 p-6">
-          {/* LEFT */}
-          <div className="lg:col-span-2 space-y-5">
-            {/* INFO BANNER */}
-            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-800">
-              🪔 All items are editable. Adjust quantities as per your ritual
-              requirements.
-            </div>
+        {/* ===== CONTENT ===== */}
+        <div className="flex-1 overflow-y-auto px-4 pb-40">
 
-            {/* KIT ITEMS */}
-            <div className="border rounded-2xl overflow-hidden">
-              <div className="bg-gradient-to-r from-green-50 to-emerald-100 p-3 font-semibold">
-                Puja Samagri Items
-              </div>
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800 my-3">
+            🪔 Quantity aap apne ritual ke hisaab se change kar sakte ho
+          </div>
 
-              <div className="grid sm:grid-cols-2 gap-3 p-4">
-                {kitItems.map((item, i) => (
-                  <div
-                    key={i}
-                    className="border rounded-xl p-3 hover:shadow-md transition"
+          <div className="divide-y">
+            {kitItems.map((item, i) => (
+              <div
+                key={i}
+                className="flex items-center justify-between py-3"
+              >
+                <div>
+                  <p className="text-sm font-medium">{item.name}</p>
+                  <p className="text-xs text-gray-500">
+                    ₹{item.price} × {item.qty}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    className="w-9 h-9 rounded-full bg-gray-100 text-lg"
+                    onClick={() => updateQty(i, -1)}
                   >
-                    <div className="flex justify-between">
-                      <div>
-                        <p className="font-medium text-sm">{item.name}</p>
-                        <p className="text-xs text-gray-500">
-                          ₹{item.price} per item
-                        </p>
-                      </div>
-                      <span className="font-bold text-green-600">
-                        ₹{item.price * item.qty}
-                      </span>
-                    </div>
+                    −
+                  </button>
 
-                    <div className="flex justify-between items-center mt-3">
-                      <span className="text-xs text-gray-500">Quantity</span>
-                      <div className="flex items-center gap-3 bg-gray-100 rounded-full px-3 py-1">
-                        <button onClick={() => updateQty(i, -1)}>−</button>
-                        <span className="font-semibold">{item.qty}</span>
-                        <button onClick={() => updateQty(i, 1)}>+</button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+                  <span className="font-semibold">{item.qty}</span>
 
-          {/* RIGHT */}
-          <div className="space-y-5">
-            {/* PRICE SUMMARY */}
-            <div className="bg-gradient-to-br from-rose-50 to-pink-100 rounded-2xl p-5">
-              <h4 className="font-semibold mb-3">Price Summary</h4>
-              <div className="text-sm space-y-2">
-                <div className="flex justify-between">
-                  <span>Total Items</span>
-                  <span>{kitItems.length}</span>
-                </div>
-                <div className="border-t pt-3 mt-3 flex justify-between text-lg font-bold">
-                  <span>Total Amount</span>
-                  <span className="text-rose-700">
-                    ₹{totalKitPrice}
-                  </span>
+                  <button
+                    className="w-9 h-9 rounded-full bg-rose-100 text-rose-600 text-lg"
+                    onClick={() => updateQty(i, 1)}
+                  >
+                    +
+                  </button>
                 </div>
               </div>
-            </div>
+            ))}
 
-            {/* CTA */}
-            <button
-              onClick={handleAddToCart}
-              className="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white py-4 rounded-2xl font-semibold text-lg shadow-lg"
-            >
-              Add Puja Kit to Cart – ₹{totalKitPrice}
-            </button>
+            {kitItems.length === 0 && (
+              <p className="text-center text-sm text-gray-500 py-10">
+                No items available
+              </p>
+            )}
           </div>
         </div>
+
+     {/* ===== FLOATING STICKY BOTTOM CTA (MORE UPPER) ===== */}
+<div className="sticky bottom-0 z-30 pointer-events-none">
+  <div className="px-4 pb-6">
+    <div
+      className="
+        pointer-events-auto
+        bg-white/95 backdrop-blur
+        border
+        rounded-3xl
+        shadow-[0_-10px_30px_rgba(0,0,0,0.15)]
+        px-4 py-4
+        flex items-center justify-between gap-4
+        translate-y-[-30px]
+      "
+    >
+      {/* PRICE */}
+      <div className="leading-tight">
+        <p className="text-[11px] text-gray-500 uppercase tracking-wide">
+          Total Amount
+        </p>
+        <motion.p
+          key={totalKitPrice}
+          initial={{ y: 6, scale: 0.95 }}
+          animate={{ y: 0, scale: 1 }}
+          transition={{ duration: 0.2 }}
+          className="text-xl font-bold text-rose-700"
+        >
+          ₹{totalKitPrice}
+        </motion.p>
+      </div>
+
+      {/* CTA BUTTON */}
+      <motion.button
+        whileTap={{ scale: 0.96 }}
+        onClick={handleAddToCart}
+        className="
+          bg-gradient-to-r from-rose-600 to-pink-600
+          text-white
+          px-8 py-3.5
+          rounded-2xl
+          font-semibold
+          shadow-[0_8px_25px_rgba(244,63,94,0.45)]
+        "
+      >
+        Add to Cart
+      </motion.button>
+    </div>
+  </div>
+</div>
+
+
       </motion.div>
     </motion.div>
   );
