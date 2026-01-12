@@ -3238,264 +3238,193 @@ export default function UnifiedPujaStoreWithKitEditor() {
           )}
         </div>
 
-        {/* Cart Sidebar */}
-        <AnimatePresence>
-          {showCart && (
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              className="fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 overflow-y-auto mt-16"
+        {/* ================= CART SIDEBAR (PREMIUM) ================= */}
+<AnimatePresence>
+  {showCart && (
+    <motion.div
+      initial={{ x: "100%" }}
+      animate={{ x: 0 }}
+      exit={{ x: "100%" }}
+      transition={{ type: "spring", stiffness: 260, damping: 30 }}
+      className="fixed right-0 top-0 h-full w-full sm:w-[380px] bg-white shadow-2xl z-50 flex flex-col"
+    >
+      {/* ================= HEADER ================= */}
+      <div className="sticky top-0 z-20 bg-gradient-to-r from-rose-50 to-amber-50 p-4 border-b mt-12">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <FiShoppingCart className="w-6 h-6 text-rose-600" />
+              {cart.length > 0 && (
+                <span className="absolute -top-2 -right-2 w-5 h-5 bg-rose-600 text-white text-xs rounded-full flex items-center justify-center">
+                  {cart.length}
+                </span>
+              )}
+            </div>
+            <div>
+              <h2 className="font-bold text-lg text-rose-800">Your Cart</h2>
+              <p className="text-xs text-gray-500">
+                {cart.length} item{cart.length !== 1 && "s"} selected
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setShowCart(false)}
+            className="p-2 rounded-lg hover:bg-white/60 transition"
+          >
+            <FiX className="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
+      </div>
+
+      {/* ================= CONTENT ================= */}
+      <div className="flex-1 overflow-y-auto p-4">
+        {cart.length === 0 ? (
+          <div className="h-full flex flex-col items-center justify-center text-center">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-100 to-rose-100 flex items-center justify-center mb-4">
+              🛒
+            </div>
+            <h3 className="font-semibold text-gray-800 mb-1">
+              Your cart is empty
+            </h3>
+            <p className="text-xs text-gray-500 mb-4">
+              Add puja items or kits to continue
+            </p>
+            <button
+              onClick={() => setShowCart(false)}
+              className="px-6 py-3 bg-rose-600 text-white rounded-xl font-medium hover:bg-rose-700"
             >
-              {/* Header */}
-              <div className="sticky top-0 bg-white z-10 p-3 border-b border-rose-100 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <FiShoppingCart className="w-5 h-5 text-rose-600" />
-                    {cart.length > 0 && (
-                      <motion.span
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute -top-2 -right-2 bg-rose-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
-                      >
-                        {cart.length}
-                      </motion.span>
-                    )}
-                  </div>
-                  <div>
-                    <h2 className="font-bold text-base text-rose-800">Your Cart</h2>
-                    <p className="text-xs text-gray-500">{cart.length} items</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowCart(false)}
-                  className="p-1 hover:bg-rose-50 rounded-lg transition-colors"
+              Explore Products
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* ================= ITEMS ================= */}
+            <div className="space-y-3">
+              {cart.map((item) => (
+                <motion.div
+                  key={item.id || item.kitId}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white border rounded-xl p-3 flex gap-3"
                 >
-                  <FiX className="w-5 h-5 text-gray-500 hover:text-rose-600" />
-                </button>
-              </div>
-
-              {/* Cart Items */}
-              <div className="p-3">
-                {cart.length === 0 ? (
-                  <div className="text-center py-10">
-                    <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-amber-100 to-rose-100 rounded-full flex items-center justify-center">
-                      <FiShoppingCart className="w-8 h-8 text-gray-400" />
-                    </div>
-                    <h3 className="text-base font-semibold text-gray-700 mb-2">
-                      Your cart is empty
-                    </h3>
-                    <p className="text-gray-500 text-xs mb-4">
-                      Add some puja items to get started
-                    </p>
-                    <button
-                      onClick={() => setShowCart(false)}
-                      className="px-5 py-2.5 bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm"
-                    >
-                      Continue Shopping
-                    </button>
+                  {/* Icon */}
+                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-amber-100 to-rose-100 flex items-center justify-center text-xl">
+                    {item.type === "puja-kit" ? "📦" : "🛒"}
                   </div>
-                ) : (
-                  <>
-                    {/* Items List */}
-                    <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
-                      {cart.map((item) => (
-                        <motion.div
-                          key={item.id || item.kitId}
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          className="flex gap-2 items-start p-2 bg-white rounded-lg border border-gray-100 hover:border-rose-200 transition-colors"
-                        >
-                          <div className="relative">
-                            <div className="w-12 h-12 bg-gradient-to-br from-amber-100 to-rose-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                              <span className="text-xl">
-                                {item.type === 'puja-kit' ? '📦' : '🛒'}
-                              </span>
-                            </div>
-                            {item.type === 'puja-kit' && (
-                              <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 text-white text-[9px] rounded-full flex items-center justify-center">
-                                📦
-                              </div>
-                            )}
-                          </div>
 
-                          <div className="flex-1 min-w-0">
-                            <div className="flex justify-between">
-                              <h4 className="font-semibold text-xs text-gray-800 line-clamp-2">
-                                {item.name}
-                              </h4>
-                              <button
-                                onClick={() => removeFromCart(item.id || item.kitId)}
-                                className="text-gray-400 hover:text-rose-600 ml-1"
-                              >
-                                <FiX className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                            
-                            <div className="flex items-center gap-1 mt-1">
-                              <span className="text-xs text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded">
-                                {item.type === 'single' ? item.unit : 'Custom Kit'}
-                              </span>
-                              <span className="text-amber-700 font-bold text-xs">
-                                ₹{item.price}
-                              </span>
-                            </div>
-
-                            {/* Kit Items Summary */}
-                            {item.type === 'puja-kit' && item.items && (
-                              <div className="mt-1 text-xs text-gray-600">
-                                Contains {item.items.length} items
-                              </div>
-                            )}
-
-                            {/* Quantity Controls */}
-                            <div className="flex items-center justify-between mt-2">
-                              <div className="flex items-center gap-1 bg-gray-50 rounded-lg px-1.5 py-1">
-                                <button
-                                  onClick={() => updateCartQty(item.id, item.qty - 1)}
-                                  className="w-5 h-5 flex items-center justify-center rounded hover:bg-white transition-colors"
-                                >
-                                  <FiMinus className="w-2.5 h-2.5" />
-                                </button>
-                                <span className="w-6 text-center text-xs font-medium">
-                                  {item.qty}
-                                </span>
-                                <button
-                                  onClick={() => updateCartQty(item.id, item.qty + 1)}
-                                  className="w-5 h-5 flex items-center justify-center rounded hover:bg-white transition-colors"
-                                >
-                                  <FiPlus className="w-2.5 h-2.5" />
-                                </button>
-                              </div>
-                              <span className="font-bold text-rose-700 text-sm">
-                                ₹{item.price * item.qty}
-                              </span>
-                            </div>
-                          </div>
-                        </motion.div>
-                      ))}
+                  {/* Details */}
+                  <div className="flex-1">
+                    <div className="flex justify-between">
+                      <h4 className="font-semibold text-sm text-gray-800 line-clamp-2">
+                        {item.name}
+                      </h4>
+                      <button
+                        onClick={() =>
+                          removeFromCart(item.id || item.kitId)
+                        }
+                        className="text-gray-400 hover:text-rose-600"
+                      >
+                        <FiX />
+                      </button>
                     </div>
 
-                    {/* Price Summary */}
-                    <div className="mt-4 border-t border-gray-100 pt-3">
-                      {/* Coupon Section */}
-                      <div className="mb-3">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
-                          Apply Coupon
-                        </label>
-                        <div className="flex gap-1">
-                          <input
-                            value={coupon}
-                            onChange={(e) => setCoupon(e.target.value)}
-                            placeholder="Enter coupon code"
-                            className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
-                          />
-                          <button
-                            onClick={applyCoupon}
-                            className="px-3 py-1.5 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors text-xs font-medium whitespace-nowrap"
-                          >
-                            Apply
-                          </button>
-                        </div>
-                        {couponApplied && (
-                          <div className="mt-1 text-green-600 text-xs flex items-center gap-1">
-                            <FiCheckCircle className="w-3.5 h-3.5" />
-                            Coupon {couponApplied} applied successfully!
-                          </div>
-                        )}
-                      </div>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      {item.type === "single" ? item.unit : "Custom Puja Kit"}
+                    </p>
 
-                      {/* Price Breakdown */}
-                      <div className="space-y-1.5 bg-gray-50 rounded-lg p-3">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-gray-600">Subtotal</span>
-                          <span className="font-medium">₹{subtotal}</span>
-                        </div>
-                        
-                        {couponApplied && (
-                          <div className="flex justify-between text-xs">
-                            <span className="text-gray-600">Coupon Discount</span>
-                            <span className="text-green-600 font-medium">
-                              -₹{Math.round(couponDiscount)}
-                            </span>
-                          </div>
-                        )}
-                        
-                        <div className="flex justify-between text-xs">
-                          <span className="text-gray-600">GST (18%)</span>
-                          <span className="font-medium">₹{Math.round(gst)}</span>
-                        </div>
-                        
-                        <div className="flex justify-between text-xs">
-                          <span className="text-gray-600">
-                            Delivery Charges
-                            {delivery === 0 && (
-                              <span className="text-green-600 ml-1">(FREE)</span>
-                            )}
-                          </span>
-                          <span className={`font-medium ${delivery === 0 ? 'text-green-600' : ''}`}>
-                            {delivery === 0 ? 'FREE' : `₹${delivery}`}
-                          </span>
-                        </div>
-                        
-                        <div className="border-t border-gray-200 pt-2 mt-2">
-                          <div className="flex justify-between items-center">
-                            <div>
-                              <span className="font-bold text-sm text-gray-900">Total</span>
-                              <p className="text-[10px] text-gray-500">Inclusive of all taxes</p>
-                            </div>
-                            <div className="text-right">
-                              <div className="font-bold text-lg text-rose-700">
-                                ₹{total}
-                              </div>
-                              <p className="text-[10px] text-gray-500">Payable amount</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="mt-4 space-y-2">
+                    {/* Qty + Price */}
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-2 py-1">
                         <button
-                          onClick={startCartOrder}
-                          className="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2 text-sm"
+                          onClick={() =>
+                            updateCartQty(item.id, item.qty - 1)
+                          }
+                          className="p-1 hover:bg-white rounded"
                         >
-                          <FiCheckCircle className="w-4 h-4" />
-                          Proceed to Checkout
+                          <FiMinus />
                         </button>
-                        
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => setShowCart(false)}
-                            className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors text-xs"
-                          >
-                            Continue Shopping
-                          </button>
-                          <button
-                            onClick={() => {
-                              if (window.confirm('Are you sure you want to clear cart?')) {
-                                setCart([]);
-                              }
-                            }}
-                            className="flex-1 py-2 border border-rose-200 text-rose-700 rounded-lg font-medium hover:bg-rose-50 transition-colors text-xs"
-                          >
-                            Clear Cart
-                          </button>
-                        </div>
+                        <span className="w-6 text-center text-sm font-medium">
+                          {item.qty}
+                        </span>
+                        <button
+                          onClick={() =>
+                            updateCartQty(item.id, item.qty + 1)
+                          }
+                          className="p-1 hover:bg-white rounded"
+                        >
+                          <FiPlus />
+                        </button>
                       </div>
 
-                      {/* Security Badge */}
-                      <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-center gap-2 text-xs text-gray-500">
-                        <FiShield className="text-green-600 w-3.5 h-3.5" />
-                        <span>100% Secure • SSL Encrypted</span>
-                      </div>
+                      <span className="font-bold text-rose-700">
+                        ₹{item.price * item.qty}
+                      </span>
                     </div>
-                  </>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* ================= STICKY FOOTER ================= */}
+      {cart.length > 0 && (
+        <div className="sticky bottom-0 bg-white border-t p-4 space-y-3">
+          {/* Total */}
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-xs text-gray-500">Total Payable</p>
+              <p className="text-xl font-bold text-rose-700">₹{total}</p>
+            </div>
+            {delivery === 0 && (
+              <span className="text-xs text-green-600 font-medium">
+                🚚 Free Delivery
+              </span>
+            )}
+          </div>
+
+          {/* Checkout */}
+          <button
+            onClick={startCartOrder}
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-rose-600 to-rose-700 text-white font-semibold text-sm hover:shadow-lg flex items-center justify-center gap-2"
+          >
+            <FiCheckCircle />
+            Proceed to Checkout
+          </button>
+
+          {/* Actions */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowCart(false)}
+              className="flex-1 py-2 border rounded-lg text-xs hover:bg-gray-50"
+            >
+              Continue Shopping
+            </button>
+            <button
+              onClick={() => {
+                if (window.confirm("Clear all items from cart?")) {
+                  setCart([]);
+                }
+              }}
+              className="flex-1 py-2 border border-rose-200 text-rose-700 rounded-lg text-xs hover:bg-rose-50"
+            >
+              Clear Cart
+            </button>
+          </div>
+
+          {/* Security */}
+<div className="flex items-center justify-center gap-2 text-xs text-gray-500 mt-2">
+  <FiShield className="text-green-600 mb-14" />
+  <span>100% Secure Checkout</span>
+</div>
+        </div>
+      )}
+    </motion.div>
+  )}
+</AnimatePresence>
+
 
         {/* Kit Items Modal */}
         <AnimatePresence>
