@@ -1916,182 +1916,154 @@ const DiyaAnimation = () => (
   </motion.div>
 );
 
-// ---------- Product Card Component ----------
-const ProductCard = ({ product, qty, isPackage, wishlist, onWishlistToggle, onAddToCart, onBookPuja, onViewDetails, onBuyNow, onQuantityChange }) => {
+// ---------- Premium Product Card ----------
+const ProductCard = ({
+  product,
+  qty,
+  isPackage,
+  wishlist,
+  onWishlistToggle,
+  onAddToCart,
+  onBookPuja,
+  onViewDetails,
+  onBuyNow,
+  onQuantityChange,
+}) => {
+  const [imgError, setImgError] = useState(false);
+
   return (
     <motion.div
       layout
-      className="bg-white rounded-lg sm:rounded-xl shadow-md hover:shadow-lg cursor-pointer relative overflow-hidden border border-rose-100 group flex flex-col h-full"
-      whileHover={{ y: -4 }}
-      transition={{ type: "spring", stiffness: 300 }}
+      whileHover={{ y: -6, scale: 1.01 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      className="relative bg-white/90 backdrop-blur rounded-xl shadow-md hover:shadow-xl border border-amber-100 overflow-hidden flex flex-col group"
     >
-      {/* Top Badges */}
-      <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10">
-        <div className={`px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider ${
-          isPackage 
-            ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' 
-            : 'bg-gradient-to-r from-green-500 to-green-600 text-white'
-        }`}>
-          {isPackage ? 'Puja Package' : 'Single Item'}
-        </div>
-        
-        <button
+      {/* 🔖 Top Bar */}
+      <div className="absolute top-2 left-2 right-2 flex justify-between z-10">
+        <span
+          className={`px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide shadow ${
+            isPackage
+              ? "bg-gradient-to-r from-indigo-500 to-indigo-600 text-white"
+              : "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white"
+          }`}
+        >
+          {isPackage ? "Puja Package" : "Single Item"}
+        </span>
+
+        <motion.button
+          whileTap={{ scale: 0.85 }}
           onClick={onWishlistToggle}
-          className="p-1 bg-white/90 backdrop-blur-sm rounded-full shadow-sm hover:scale-110 transition-transform"
+          className="p-1.5 bg-white/90 rounded-full shadow"
         >
           <FiHeart
-            className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${
+            className={`w-3.5 h-3.5 ${
               wishlist
                 ? "text-rose-500 fill-rose-500"
                 : "text-gray-400 hover:text-rose-400"
             }`}
           />
-        </button>
+        </motion.button>
       </div>
 
-      {/* Image Container */}
-      <div className="h-28 sm:h-36 overflow-hidden bg-gradient-to-br from-amber-50 to-rose-50 relative">
-        <img
-          src={product.img}
-          alt={product.name}
-          className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700"
-          onError={(e) => {
-            e.currentTarget.style.display = "none";
-            e.currentTarget.parentElement.innerHTML = `
-              <div class="w-full h-full flex items-center justify-center">
-                <div class="text-center">
-                  <div class="text-3xl sm:text-4xl mb-1 sm:mb-2">${isPackage ? '📦' : '🛒'}</div>
-                  <div class="text-xs text-gray-500 px-1">${product.name}</div>
-                </div>
-              </div>
-            `;
-          }}
-        />
-        
-        {/* Overlay Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      {/* 🖼 Image */}
+      <div className="h-36 bg-gradient-to-br from-amber-50 to-rose-50 flex items-center justify-center overflow-hidden">
+        {!imgError ? (
+          <motion.img
+            src={product.img}
+            alt={product.name}
+            onError={() => setImgError(true)}
+            className="h-full w-full object-cover"
+            whileHover={{ scale: 1.12 }}
+            transition={{ duration: 0.6 }}
+          />
+        ) : (
+          <div className="text-center text-gray-400">
+            <div className="text-4xl mb-1">{isPackage ? "📦" : "🛒"}</div>
+            <div className="text-xs px-2">{product.name}</div>
+          </div>
+        )}
       </div>
 
-      {/* Content */}
-      <div className="p-3 sm:p-4 flex flex-col flex-grow">
-        {/* Category Tag */}
-        <div className="mb-1 sm:mb-2">
-          <span className="inline-block px-1.5 py-0.5 sm:px-2 sm:py-0.5 bg-amber-100 text-amber-800 text-[9px] sm:text-[10px] font-medium rounded-full">
-            {product.subcategory}
-          </span>
-        </div>
+      {/* 📦 Content */}
+      <div className="p-4 flex flex-col flex-grow">
+        <span className="text-[10px] bg-amber-100 text-amber-800 w-fit px-2 py-0.5 rounded-full mb-2">
+          {product.subcategory}
+        </span>
 
-        {/* Product Name */}
-        <h3 className="font-bold text-xs sm:text-sm text-gray-800 group-hover:text-rose-900 transition-colors line-clamp-2 leading-tight mb-1 h-8 sm:h-10">
+        <h3 className="font-semibold text-sm text-gray-800 line-clamp-2 mb-1 group-hover:text-rose-800">
           {product.name}
         </h3>
 
-        {/* Unit/Type Info */}
-        <p className="text-[10px] sm:text-[11px] text-gray-500 mb-2 sm:mb-3 flex items-center gap-1">
-          {!isPackage && (
-            <>
-              <span>Unit:</span>
-              <span className="font-medium text-gray-700">{product.unit}</span>
-            </>
-          )}
-        </p>
+        {!isPackage && (
+          <p className="text-[11px] text-gray-500 mb-2">
+            Unit: <span className="font-medium">{product.unit}</span>
+          </p>
+        )}
 
-        {/* Price & Rating */}
-        <div className="flex items-center justify-between mb-3 sm:mb-4">
+        {/* 💰 Price */}
+        <div className="flex justify-between items-end mb-3">
           <div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-base sm:text-lg font-bold text-amber-700">
-                ₹{product.price}
-              </span>
+            <div className="text-lg font-bold text-amber-700">
+              ₹{product.price}
               {!isPackage && (
-                <span className="text-[10px] sm:text-xs text-gray-500">/ {product.unit}</span>
+                <span className="text-xs text-gray-500"> / {product.unit}</span>
               )}
             </div>
             {!isPackage && qty > 1 && (
-              <div className="text-[10px] sm:text-xs text-gray-600 mt-0.5">
-                Total: <span className="font-semibold text-rose-700">
-                  ₹{product.price * qty}
-                </span>
+              <div className="text-xs text-rose-700">
+                Total ₹{product.price * qty}
               </div>
             )}
           </div>
-          
-          <div className="flex items-center gap-1">
-            <div className="flex text-amber-400 text-[10px] sm:text-xs">
-              {"★".repeat(5)}
-            </div>
-            <span className="text-[10px] sm:text-xs text-gray-500">(4.8)</span>
-          </div>
+
+          <div className="text-xs text-amber-500">★★★★★ <span className="text-gray-400">(4.8)</span></div>
         </div>
 
-        {/* Quantity Selector for Single Items */}
+        {/* 🔢 Quantity */}
         {!isPackage && (
-          <div className="mb-3 sm:mb-4">
-            <div className="flex items-center justify-between">
-              <label className="text-[10px] sm:text-xs font-medium text-gray-700">Qty:</label>
-              <div className="flex items-center gap-1 bg-gray-50 rounded-full px-1 py-1 border border-gray-200">
-                <button
-                  onClick={() => onQuantityChange(product.id, -1)}
-                  className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-full bg-white border text-sm hover:bg-gray-50 transition-colors"
-                >
-                  <FiMinus className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                </button>
-                <input
-                  type="number"
-                  min={1}
-                  value={qty}
-                  onChange={(e) => onQuantityChange(product.id, parseInt(e.target.value) || 1)}
-                  className="w-8 sm:w-12 text-center text-xs sm:text-sm bg-transparent outline-none font-medium"
-                />
-                <button
-                  onClick={() => onQuantityChange(product.id, 1)}
-                  className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-full bg-white border text-sm hover:bg-gray-50 transition-colors"
-                >
-                  <FiPlus className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                </button>
-              </div>
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-xs text-gray-600">Quantity</span>
+            <div className="flex items-center gap-1 bg-gray-100 rounded-full px-1">
+              <button onClick={() => onQuantityChange(product.id, -1)} className="p-1">
+                <FiMinus size={12} />
+              </button>
+              <span className="px-2 text-xs font-semibold">{qty}</span>
+              <button onClick={() => onQuantityChange(product.id, 1)} className="p-1">
+                <FiPlus size={12} />
+              </button>
             </div>
           </div>
         )}
 
-        {/* Action Buttons */}
-        <div className="mt-auto space-y-1.5 sm:space-y-2">
+        {/* 🚀 Actions */}
+        <div className="mt-auto space-y-2">
           {isPackage ? (
             <>
-              <div className="flex gap-1.5 sm:gap-2">
-                <button
-                  onClick={onViewDetails}
-                  className="flex-1 py-1.5 sm:py-2 border border-blue-500 text-blue-700 rounded-lg hover:bg-blue-50 transition-colors text-[10px] sm:text-xs font-medium flex items-center justify-center gap-1"
-                >
-                  <FiInfo className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                  Details
-                </button>
-                <button
-                  onClick={onBookPuja}
-                  className="flex-1 py-1.5 sm:py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:shadow-lg transition-all text-[10px] sm:text-xs font-medium"
-                >
-                  Book Now
-                </button>
-              </div>
               <button
-                onClick={onAddToCart}
-                className="w-full py-1.5 sm:py-2 border border-amber-300 text-amber-700 rounded-lg hover:bg-amber-50 transition-colors text-[10px] sm:text-xs font-medium"
+                onClick={onViewDetails}
+                className="w-full border border-indigo-500 text-indigo-600 rounded-lg py-2 text-xs hover:bg-indigo-50"
               >
-                Add Kit to Cart
+                View Details
+              </button>
+              <button
+                onClick={onBookPuja}
+                className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg py-2 text-xs font-semibold"
+              >
+                Book Puja
               </button>
             </>
           ) : (
             <>
               <button
                 onClick={onAddToCart}
-                className="w-full py-2 sm:py-2.5 bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-lg text-xs sm:text-sm font-medium hover:shadow-lg transition-all flex items-center justify-center gap-1 sm:gap-2"
+                className="w-full bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-lg py-2 text-sm font-semibold flex items-center justify-center gap-2"
               >
-                <FiShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                Add to Cart
+                <FiShoppingCart /> Add to Cart
               </button>
               <button
                 onClick={onBuyNow}
-                className="w-full py-2 sm:py-2.5 border border-amber-400 text-amber-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-amber-50 transition-colors"
+                className="w-full border border-amber-400 text-amber-700 rounded-lg py-2 text-sm hover:bg-amber-50"
               >
                 Buy Now
               </button>
@@ -2100,11 +2072,12 @@ const ProductCard = ({ product, qty, isPackage, wishlist, onWishlistToggle, onAd
         </div>
       </div>
 
-      {/* Hover Effect Border */}
-      <div className="absolute inset-0 border-2 border-transparent group-hover:border-amber-300 rounded-lg sm:rounded-xl pointer-events-none transition-colors duration-300"></div>
+      {/* ✨ Glow Border */}
+      <div className="absolute inset-0 pointer-events-none rounded-xl border border-transparent group-hover:border-amber-300 transition" />
     </motion.div>
   );
 };
+
 
 // ---------- Kit Items Modal with Complete Architecture ----------
 const KitItemsModal = ({ kit, onClose, onAddToCart }) => {
@@ -2232,7 +2205,7 @@ const KitItemsModal = ({ kit, onClose, onAddToCart }) => {
         "
       >
         {/* ===== HEADER ===== */}
-        <div className="sticky top-0 bg-white z-10 border-b">
+        <div className="sticky top-0 bg-white z-10 border-b mt-8">
           <div className="md:hidden w-12 h-1 bg-gray-300 rounded-full mx-auto mt-2" />
 
           <div className="flex items-center gap-3 px-4 py-3">
