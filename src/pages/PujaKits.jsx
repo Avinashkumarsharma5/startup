@@ -2373,7 +2373,94 @@ const KitItemsModal = ({ kit, onClose, onAddToCart }) => {
   );
 };
 
-// ---------- Unified Order Wizard Modal ----------
+// ======================================================
+// FINAL Input Component (CALENDAR WORKS + DATE SAFE)
+// ======================================================
+const Input = ({ label, value, onChange, error, type = "text", min }) => {
+  const isDate = type === "date";
+
+  return (
+    <div>
+      <label className="text-xs text-gray-600 mb-1 block">
+        {label}
+      </label>
+
+      <input
+        type={type}
+        value={value}
+        min={isDate ? min : undefined}
+
+        // ✅ Allow calendar
+        onFocus={(e) => {
+          if (isDate && e.target.showPicker) {
+            e.target.showPicker(); // 🔥 force calendar open (Chrome)
+          }
+        }}
+
+        // 🚫 Block manual typing
+        onKeyDown={(e) => isDate && e.preventDefault()}
+        onPaste={(e) => isDate && e.preventDefault()}
+        inputMode={isDate ? "none" : undefined}
+
+        onChange={(e) => onChange(e.target.value)}
+        className={`
+          w-full border rounded-lg px-2 py-2 text-xs sm:text-sm outline-none
+          focus:ring-2 focus:ring-rose-400 cursor-pointer
+          ${error ? "border-red-400" : "border-gray-300"}
+        `}
+      />
+
+      {error && (
+        <p className="text-[10px] text-red-500 mt-1">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+};
+
+
+const Textarea = ({ label, value, onChange, error, rows = 2 }) => (
+  <div>
+    <label className="text-xs text-gray-600 mb-1 block">{label}</label>
+    <textarea
+      rows={rows}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className={`
+        w-full border rounded-lg px-2 py-2 text-xs sm:text-sm outline-none
+        focus:ring-2 focus:ring-rose-400
+        ${error ? "border-red-400" : "border-gray-300"}
+      `}
+    />
+    {error && <p className="text-[10px] text-red-500 mt-1">{error}</p>}
+  </div>
+);
+
+const Select = ({ label, value, onChange, options = [], error }) => (
+  <div>
+    <label className="text-xs text-gray-600 mb-1 block">{label}</label>
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className={`
+        w-full border rounded-lg px-2 py-2 text-xs sm:text-sm outline-none
+        focus:ring-2 focus:ring-rose-400
+        ${error ? "border-red-400" : "border-gray-300"}
+      `}
+    >
+      <option value="">Select</option>
+      {options.map((opt) => (
+        <option key={opt} value={opt}>{opt}</option>
+      ))}
+    </select>
+    {error && <p className="text-[10px] text-red-500 mt-1">{error}</p>}
+  </div>
+);
+
+// ======================================================
+// Unified Order Wizard Modal (FINAL – FULLY REPLACED)
+// ======================================================
 const UnifiedOrderWizardModal = ({
   mode,
   product,
@@ -2382,7 +2469,10 @@ const UnifiedOrderWizardModal = ({
   onClose,
   onConfirm,
 }) => {
+  const isPackage = mode === "package";
+
   const [step, setStep] = useState(1);
+  const [errors, setErrors] = useState({});
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -2396,85 +2486,87 @@ const UnifiedOrderWizardModal = ({
     additionalNotes: "",
   });
 
+  // ---------------- ITEMS ----------------
   const items = useMemo(() => {
-    if (mode === 'single' && product) {
-      return [{ ...product, qty }];
-    } else if (mode === 'package' && product) {
+    if (mode === "single" && product) return [{ ...product, qty }];
+    if (mode === "package" && product)
       return [{ ...product, qty, includePandit: form.includePandit }];
-    }
     return cartItems || [];
   }, [mode, product, qty, cartItems, form.includePandit]);
 
+  // ---------------- PRICING ----------------
   const pricing = useMemo(() => {
     const subtotal = items.reduce((sum, item) => {
       let price = item.price;
-      if (item.type === 'package' && item.includePandit) {
-        price += 500;
-      }
+      if (item.type === "package" && item.includePandit) price += 500;
       return sum + price * item.qty;
     }, 0);
-    
+
     const gst = Math.round(subtotal * 0.18);
-    const delivery = subtotal === 0 ? 0 : subtotal >= 999 ? 0 : 50;
-    const total = subtotal + gst + delivery;
-    return { subtotal, gst, delivery, total };
-  }, [items]);
+    const delivery = subtotal >= 999 || isPackage ? 0 : 50;
 
-  const getTomorrowDate = () => {
-    const t = new Date();
-    t.setDate(t.getDate() + 1);
-    return t.toISOString().split("T")[0];
-  };
+    return {
+      subtotal,
+      gst,
+      delivery,
+      total: subtotal + gst + delivery,
+    };
+  }, [items, isPackage]);
 
-  const generateTimeSlots = () => {
-    const timeSlots = [];
-    for (let hour = 5; hour <= 21; hour++) {
-      for (let minute = 0; minute < 60; minute += 30) {
-        const timeString = `${hour.toString().padStart(2, "0")}:${minute
-          .toString()
-          .padStart(2, "0")}`;
-        const time12hr = new Date(`2000-01-01T${timeString}`).toLocaleTimeString(
-          "en-IN",
-          {
-            hour: "numeric",
-            minute: "2-digit",
-            hour12: true,
-          }
+  // ---------------- DATE HELPERS ----------------
+  const tomorrow = useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split("T")[0];
+  }, []);
+
+  const timeSlots = useMemo(() => {
+    const slots = [];
+    for (let h = 5; h <= 21; h++) {
+      ["00", "30"].forEach((m) => {
+        slots.push(
+          new Date(`2000-01-01T${String(h).padStart(2, "0")}:${m}`)
+            .toLocaleTimeString("en-IN", {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })
         );
-        timeSlots.push(time12hr);
-      }
+      });
     }
-    return timeSlots;
+    return slots;
+  }, []);
+
+  // ---------------- VALIDATION ----------------
+  const validateStep1 = () => {
+    const e = {};
+    if (!form.name.trim()) e.name = "Required";
+    if (!/^[6-9]\d{9}$/.test(form.phone)) e.phone = "Invalid mobile number";
+    if (!form.city.trim()) e.city = "Required";
+    if (!/^\d{6}$/.test(form.pincode)) e.pincode = "Invalid pincode";
+    if (!form.address.trim()) e.address = "Required";
+    setErrors(e);
+    return Object.keys(e).length === 0;
   };
 
-  const timeSlots = generateTimeSlots();
+  const validateStep2 = () => {
+    const e = {};
+    if (!form.deliveryDate) e.deliveryDate = "Select date";
+    if (!form.deliverySlot) e.deliverySlot = "Select time slot";
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
 
   const handleNext = () => {
-    if (step === 1) {
-      if (!form.name || !form.phone || !form.address || !form.city || !form.pincode) {
-        alert("Please fill all required fields");
-        return;
-      }
-      if (form.phone.length < 8) {
-        alert("Please enter valid phone number");
-        return;
-      }
-    }
-    if (step === 2) {
-      if (!form.deliveryDate || !form.deliverySlot) {
-        alert("Please select delivery date and time slot");
-        return;
-      }
-      if (mode === 'package' && !form.deliveryDate) {
-        alert("Please select puja date");
-        return;
-      }
-    }
+    if (step === 1 && !validateStep1()) return;
+    if (step === 2 && !validateStep2()) return;
+    setErrors({});
     setStep((s) => s + 1);
   };
 
   const handleConfirm = () => {
     onConfirm({
+      mode,
       items,
       pricing,
       customer: {
@@ -2491,693 +2583,233 @@ const UnifiedOrderWizardModal = ({
       },
       includePandit: form.includePandit,
       additionalNotes: form.additionalNotes,
-      mode,
     });
   };
 
-  const isPackage = mode === 'package';
-
+  // ---------------- UI ----------------
   return (
     <motion.div
-      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-2 sm:p-4"
+      className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-3"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
     >
       <motion.div
-        className="bg-white rounded-xl sm:rounded-2xl w-full max-w-lg sm:max-w-2xl max-h-[90vh] overflow-y-auto"
-        initial={{ y: 40, opacity: 0, scale: 0.95 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        exit={{ y: 40, opacity: 0, scale: 0.95 }}
         onClick={(e) => e.stopPropagation()}
+        initial={{ y: 30, scale: 0.96 }}
+        animate={{ y: 0, scale: 1 }}
+        exit={{ y: 30, scale: 0.96 }}
+        className="bg-white w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden"
       >
-        {/* Header */}
-        <div className="sticky top-0 bg-white z-10 p-3 sm:p-4 border-b border-rose-100 flex justify-between items-center">
-          <div>
-            <h2 className="text-base sm:text-lg font-bold text-rose-800 flex items-center gap-1 sm:gap-2">
-              {isPackage ? <FiCalendar /> : <FiShoppingCart />}
-              {isPackage ? "Book Puja Package" : "Place Order"}
-            </h2>
-            <p className="text-xs text-gray-500 hidden sm:block">
-              {isPackage 
-                ? "Complete puja service booking" 
-                : "Daily puja items home delivery"}
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-rose-600 text-xl p-1"
-          >
-            <FiX />
-          </button>
+        {/* HEADER */}
+        <div className="p-4 border-b flex justify-between items-center bg-gradient-to-r from-rose-50 to-amber-50">
+          <h2 className="font-bold text-rose-800">
+            {isPackage ? "Puja Booking" : "Place Order"}
+          </h2>
+          <button onClick={onClose} className="text-xl text-gray-500">✕</button>
         </div>
 
-        {/* Step Indicator */}
-        <div className="px-3 sm:px-4 py-3">
-          <div className="flex items-center justify-between mb-2">
-            {[
-              { no: 1, label: "Address" },
-              { no: 2, label: isPackage ? "Date & Time" : "Delivery Slot" },
-              { no: 3, label: "Review" },
-            ].map((s) => (
-              <div key={s.no} className="flex-1 flex flex-col items-center">
-                <div
-                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border-2 text-xs sm:text-sm ${
-                    step >= s.no
-                      ? "bg-rose-600 border-rose-600 text-white"
-                      : "border-gray-300 text-gray-300"
-                  }`}
-                >
-                  {step > s.no ? <FiCheckCircle /> : s.no}
-                </div>
-                <span
-                  className={`mt-1 text-[10px] sm:text-xs text-center ${
-                    step >= s.no
-                      ? "text-rose-700 font-semibold"
-                      : "text-gray-400"
-                  }`}
-                >
-                  {s.label}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-rose-600"
-              initial={{ width: "0%" }}
-              animate={{ width: `${((step - 1) / 2) * 100}%` }}
-              transition={{ duration: 0.3 }}
-            />
-          </div>
-        </div>
-
-        {/* Steps */}
-        <div className="px-3 sm:px-4 pb-3 min-h-[280px]">
+        {/* CONTENT */}
+        <div className="px-4 py-4 space-y-4 max-h-[60vh] overflow-y-auto">
           <AnimatePresence mode="wait">
-            {/* STEP 1: Address */}
             {step === 1 && (
-              <motion.div
-                key="step1"
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
-                className="space-y-3"
-              >
-                <h3 className="text-sm sm:text-base font-semibold text-rose-800 flex items-center gap-2">
-                  <FiMapPin />
-                  {isPackage ? "Puja Address Details" : "Delivery Address"}
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                  <div className="col-span-1 sm:col-span-2">
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      Full Name <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex items-center gap-2 border rounded-lg px-2 py-1.5">
-                      <FiUser className="text-gray-400 text-xs" />
-                      <input
-                        type="text"
-                        className="w-full text-xs sm:text-sm outline-none"
-                        placeholder="Your good name"
-                        value={form.name}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, name: e.target.value }))
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      Mobile <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex items-center gap-2 border rounded-lg px-2 py-1.5">
-                      <FiPhone className="text-gray-400 text-xs" />
-                      <input
-                        type="tel"
-                        className="w-full text-xs sm:text-sm outline-none"
-                        placeholder="10 digit mobile"
-                        value={form.phone}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, phone: e.target.value }))
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      City <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                      placeholder="Your city"
-                      value={form.city}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, city: e.target.value }))
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      Pincode <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                      placeholder="Pincode"
-                      value={form.pincode}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, pincode: e.target.value }))
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs text-gray-600 mb-1 block">
-                    {isPackage ? "Puja Address" : "Full Address"} <span className="text-red-500">*</span>
-                  </label>
-                  <textarea
-                    rows={2}
-                    className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                    placeholder={isPackage ? "Where should panditji come for puja?" : "House no, street, area..."}
-                    value={form.address}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, address: e.target.value }))
-                    }
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs text-gray-600 mb-1 block">
-                    Landmark
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                    placeholder="Near temple / chowk"
-                    value={form.landmark}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, landmark: e.target.value }))
-                    }
-                  />
-                </div>
-
-                {isPackage && (
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      Additional Notes (Optional)
-                    </label>
-                    <textarea
-                      rows={2}
-                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                      placeholder="Any special requirements..."
-                      value={form.additionalNotes}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, additionalNotes: e.target.value }))
-                      }
-                    />
-                  </div>
-                )}
-
-                <div className="bg-amber-50 border border-amber-200 rounded-lg px-2 py-2 text-[11px] text-amber-800 flex items-start gap-2">
-                  <FiShield className="text-amber-500 mt-0.5" />
-                  <span>
-                    Your details are used only for service. No spam, no sharing.
-                  </span>
-                </div>
+              <motion.div key="s1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
+                <Input label="Full Name" value={form.name} error={errors.name} onChange={(v) => setForm({ ...form, name: v })} />
+                <Input label="Mobile" value={form.phone} error={errors.phone} onChange={(v) => setForm({ ...form, phone: v })} />
+                <Input label="City" value={form.city} error={errors.city} onChange={(v) => setForm({ ...form, city: v })} />
+                <Input label="Pincode" value={form.pincode} error={errors.pincode} onChange={(v) => setForm({ ...form, pincode: v })} />
+                <Textarea label="Address" value={form.address} error={errors.address} onChange={(v) => setForm({ ...form, address: v })} />
               </motion.div>
             )}
 
-            {/* STEP 2: Date & Time */}
             {step === 2 && (
-              <motion.div
-                key="step2"
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
-                className="space-y-3"
-              >
-                <h3 className="text-sm sm:text-base font-semibold text-rose-800 flex items-center gap-2">
-                  <FiCalendar />
-                  {isPackage ? "Puja Date & Time" : "Delivery Schedule"}
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      {isPackage ? "Puja Date" : "Delivery Date"} <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="date"
-                      min={getTomorrowDate()}
-                      className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                      value={form.deliveryDate}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, deliveryDate: e.target.value }))
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs text-gray-600 mb-1 block">
-                      {isPackage ? "Puja Time" : "Time Slot"} <span className="text-red-500">*</span>
-                    </label>
-                    {isPackage ? (
-                      <select
-                        className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                        value={form.deliverySlot}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, deliverySlot: e.target.value }))
-                        }
-                      >
-                        <option value="">Choose preferred time</option>
-                        {timeSlots.map((slot) => (
-                          <option key={slot} value={slot}>{slot}</option>
-                        ))}
-                      </select>
-                    ) : (
-                      <select
-                        className="w-full border rounded-lg px-2 py-1.5 text-xs sm:text-sm outline-none"
-                        value={form.deliverySlot}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, deliverySlot: e.target.value }))
-                        }
-                      >
-                        <option value="">Select slot</option>
-                        <option value="6 AM - 9 AM">6 AM - 9 AM</option>
-                        <option value="9 AM - 12 PM">9 AM - 12 PM</option>
-                        <option value="12 PM - 3 PM">12 PM - 3 PM</option>
-                        <option value="3 PM - 6 PM">3 PM - 6 PM</option>
-                        <option value="6 PM - 9 PM">6 PM - 9 PM</option>
-                      </select>
-                    )}
-                  </div>
-                </div>
-
-                {isPackage && product && (
-                  <div className="flex items-start gap-3 p-3 border border-amber-300 rounded-lg bg-amber-50">
-                    <input
-                      type="checkbox"
-                      id="includePandit"
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-rose-600 focus:ring-rose-500 rounded mt-0.5"
-                      checked={form.includePandit}
-                      onChange={(e) =>
-                        setForm((prev) => ({
-                          ...prev,
-                          includePandit: e.target.checked,
-                        }))
-                      }
-                    />
-                    <label
-                      htmlFor="includePandit"
-                      className="text-sm text-gray-700 flex-1"
-                    >
-                      <div className="font-semibold text-xs sm:text-sm">
-                        Include Pandit Service (+₹500)
-                      </div>
-                      <div className="text-xs text-gray-600 mt-1">
-                        Experienced pandit will perform the puja with proper rituals
-                      </div>
-                    </label>
-                  </div>
-                )}
-
-                <div className={`border rounded-lg px-2 py-2 text-[11px] flex items-start gap-2 ${
-                  isPackage ? "bg-green-50 border-green-200 text-green-800" : "bg-blue-50 border-blue-200 text-blue-800"
-                }`}>
-                  <FiClock className="mt-0.5" />
-                  <span>
-                    {isPackage 
-                      ? "For best spiritual benefits, consider morning hours (5:00 AM - 9:00 AM)"
-                      : "We always try to deliver in selected slot. In rare cases, there can be +/- 30 minutes variation."}
-                  </span>
-                </div>
+              <motion.div key="s2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
+                <Input
+                  type="date"
+                  min={tomorrow}
+                  label={isPackage ? "Puja Date" : "Delivery Date"}
+                  value={form.deliveryDate}
+                  error={errors.deliveryDate}
+                  onChange={(v) => setForm({ ...form, deliveryDate: v })}
+                />
+                <Select
+                  label="Time Slot"
+                  value={form.deliverySlot}
+                  error={errors.deliverySlot}
+                  options={isPackage ? timeSlots : ["6 AM - 9 AM", "9 AM - 12 PM", "12 PM - 3 PM", "3 PM - 6 PM", "6 PM - 9 PM"]}
+                  onChange={(v) => setForm({ ...form, deliverySlot: v })}
+                />
               </motion.div>
             )}
 
-            {/* STEP 3: Review */}
             {step === 3 && (
-              <motion.div
-                key="step3"
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
-                className="space-y-3"
-              >
-                <h3 className="text-sm sm:text-base font-semibold text-rose-800">
-                  Review Your {isPackage ? "Booking" : "Order"}
-                </h3>
-
-                {/* Items Summary */}
-                <div className="bg-rose-50 rounded-lg p-3 max-h-40 sm:max-h-48 overflow-y-auto">
-                  {items.map((item) => (
-                    <div
-                      key={item.id || item.kitId}
-                      className="flex items-center justify-between text-xs sm:text-sm mb-2 last:mb-0"
-                    >
-                      <span className="flex-1 pr-2">
-                        <div className="font-medium">{item.name}</div>
-                        <div className="text-gray-500 text-[10px] sm:text-xs">
-                          {item.type === 'single' && ` (${item.unit})`}
-                          {item.type === 'package' && item.includePandit && " + Pandit"}
-                          {item.type === 'puja-kit' && ` (Custom Kit)`}
-                          <span className="ml-1">
-                            ({item.qty} × {formatINR(item.type === 'package' && item.includePandit ? item.price + 500 : item.price)})
-                          </span>
-                        </div>
-                      </span>
-                      <span className="font-semibold text-rose-700">
-                        {formatINR((item.type === 'package' && item.includePandit ? item.price + 500 : item.price) * item.qty)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Address & Delivery Summary */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                  <div className="bg-white border border-gray-100 rounded-lg p-3 text-xs sm:text-sm">
-                    <div className="flex items-center gap-2 mb-2">
-                      <FiHome className="text-rose-600" />
-                      <span className="font-semibold text-gray-800">
-                        {isPackage ? "Puja At" : "Delivery To"}
-                      </span>
-                    </div>
-                    <p className="font-medium text-gray-800">{form.name}</p>
-                    <p className="text-gray-600">{form.phone}</p>
-                    <p className="text-gray-600 text-[11px] mt-1">
-                      {form.address}
-                      {form.landmark && `, ${form.landmark}`}
-                      {form.city && `, ${form.city}`}{" "}
-                      {form.pincode && `- ${form.pincode}`}
-                    </p>
-                  </div>
-
-                  <div className="bg-white border border-gray-100 rounded-lg p-3 text-xs sm:text-sm">
-                    <div className="flex items-center gap-2 mb-2">
-                      <FiCalendar className="text-rose-600" />
-                      <span className="font-semibold text-gray-800">
-                        {isPackage ? "Schedule" : "Delivery"}
-                      </span>
-                    </div>
-                    <p className="text-gray-700 text-sm">
-                      Date:{" "}
-                      {form.deliveryDate
-                        ? new Date(form.deliveryDate).toLocaleDateString("en-IN", {
-                            weekday: "short",
-                            day: "numeric",
-                            month: "short",
-                          })
-                        : "-"}
-                    </p>
-                    <p className="text-gray-700 text-sm">
-                      {isPackage ? "Time" : "Slot"}: {form.deliverySlot || "-"}
-                    </p>
-                    {isPackage && form.includePandit && (
-                      <p className="text-green-600 mt-1 text-xs">✓ Pandit Service Included</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Price Summary */}
-                <div className="bg-gray-50 rounded-lg p-3 text-xs sm:text-sm space-y-1">
-                  <div className="flex justify-between">
-                    <span>Subtotal</span>
-                    <span>{formatINR(pricing.subtotal)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>GST (18%)</span>
-                    <span>{formatINR(pricing.gst)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>
-                      {isPackage ? "Service Charges" : "Delivery"}{" "}
-                      {!isPackage && pricing.delivery === 0 && (
-                        <span className="text-green-600 text-[10px]">(FREE)</span>
-                      )}
-                    </span>
-                    <span>{formatINR(pricing.delivery)}</span>
-                  </div>
-                  <div className="flex justify-between font-bold text-base sm:text-lg border-t border-gray-200 pt-2 sm:pt-3 mt-2">
-                    <span>Total Payable</span>
-                    <span>{formatINR(pricing.total)}</span>
-                  </div>
-                </div>
-
-                <div className="bg-green-50 border border-green-200 rounded-lg px-2 py-2 text-[11px] text-green-800 flex items-start gap-2">
-                  <FiShield className="mt-0.5" />
-                  <span>
-                    Secure checkout. {isPackage ? "Booking" : "Order"} confirmation will be sent via WhatsApp.
-                  </span>
+              <motion.div key="s3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <div className="bg-rose-50 p-4 rounded-lg">
+                  <p className="font-semibold text-rose-700">
+                    Total Payable: ₹{pricing.total}
+                  </p>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
-        {/* Footer Buttons */}
-        <div className="sticky bottom-0 bg-white border-t border-gray-100 p-3 sm:p-4">
-          <div className="flex gap-2 sm:gap-3">
-            {step > 1 && (
-              <button
-                onClick={() => setStep((s) => s - 1)}
-                className="px-3 sm:px-4 py-2 rounded-lg border text-xs sm:text-sm text-gray-700 flex items-center gap-1 hover:bg-gray-50"
-              >
-                <FiArrowLeft className="hidden sm:inline" />
-                Back
-              </button>
-            )}
-
-            <button
-              onClick={step === 3 ? handleConfirm : handleNext}
-              className="flex-1 py-2.5 sm:py-3 rounded-lg bg-gradient-to-r from-rose-600 to-rose-700 text-white text-xs sm:text-sm font-semibold hover:shadow-lg flex items-center justify-center gap-2"
-            >
-              {step === 3 ? (
-                <>
-                  <FiCheckCircle />
-                  {isPackage ? "Confirm Booking" : "Confirm Order"}
-                </>
-              ) : (
-                "Next"
-              )}
+        {/* FOOTER */}
+        <div className="p-4 border-t flex gap-2">
+          {step > 1 && (
+            <button onClick={() => setStep((s) => s - 1)} className="px-4 py-2 border rounded-lg text-sm">
+              Back
             </button>
-          </div>
+          )}
+          <button
+            onClick={step === 3 ? handleConfirm : handleNext}
+            className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-rose-600 to-rose-700 text-white font-semibold"
+          >
+            {step === 3 ? (isPackage ? "Confirm Booking" : "Confirm Order") : "Next"}
+          </button>
         </div>
       </motion.div>
     </motion.div>
   );
 };
 
-// ---------- Unified Success Page ----------
+// ---------- Enhanced Unified Success Page (AUTO WHATSAPP) ----------
 const UnifiedSuccessPage = ({ order, onBackToHome }) => {
-  const [showAnimation, setShowAnimation] = useState(true);
-  const isPackage = order.mode === 'package';
+  const [sent, setSent] = useState(false);
+  const isPackage = order?.mode === "package";
 
+  const safe = {
+    id: order?.id || `SK-${Date.now()}`,
+    items: order?.items || [],
+    pricing: order?.pricing || { total: 0 },
+    customer: order?.customer || {},
+    delivery: order?.delivery || {},
+    includePandit: order?.includePandit,
+  };
+
+  // 🔥 AUTO WHATSAPP SEND (ON LOAD)
   useEffect(() => {
-    const timer = setTimeout(() => setShowAnimation(false), 1800);
-    return () => clearTimeout(timer);
-  }, []);
+    if (sent) return;
 
-  const handleShare = () => {
-    const itemsText = order.items
-      .map((item) => 
-        `• ${item.name}${item.type === 'single' ? ` (${item.unit})` : ''} (x${item.qty}) - ₹${(item.type === 'package' && item.includePandit ? item.price + 500 : item.price) * item.qty}`
+    const itemsText = safe.items
+      .map(
+        (item) =>
+          `• ${item.name} (x${item.qty}) - ₹${
+            (item.type === "package" && item.includePandit
+              ? item.price + 500
+              : item.price) * item.qty
+          }`
       )
       .join("\n");
 
-    const msg = `🪷 *Sanskaraa ${isPackage ? 'Puja Booking' : 'Order'} Confirmed* 🪷
+    const message = `🪷 *Sanskaraa ${isPackage ? "Puja Booking" : "Order"} Confirmed* 🪷
 
-*${isPackage ? 'Booking' : 'Order'} ID:* ${order.id}
-*Name:* ${order.customer.name}
-*Phone:* ${order.customer.phone}
+🆔 *ID:* ${safe.id}
+👤 *Name:* ${safe.customer.name || "-"}
+📞 *Phone:* ${safe.customer.phone || "-"}
 
-*${isPackage ? 'Service' : 'Items'}:*
+📦 *${isPackage ? "Puja Details" : "Items"}*
 ${itemsText}
 
-*Total:* ₹${order.pricing.total}
+📅 *Date:* ${
+      safe.delivery.date
+        ? new Date(safe.delivery.date).toLocaleDateString("en-IN")
+        : "-"
+    }
+⏰ *${isPackage ? "Time" : "Slot"}:* ${safe.delivery.slot || "-"}
 
-*${isPackage ? 'Puja' : 'Delivery'} Details:*
-• Date: ${new Date(order.delivery.date).toLocaleDateString("en-IN")}
-• ${isPackage ? 'Time' : 'Slot'}: ${order.delivery.slot}
-• Address: ${order.customer.address}, ${order.customer.city} - ${order.customer.pincode}
+📍 *Address:* ${safe.customer.address || "-"}, ${safe.customer.city || ""} ${
+      safe.customer.pincode ? `- ${safe.customer.pincode}` : ""
+    }
 
-${isPackage && order.includePandit ? '✓ Pandit Service Included\n' : ''}
-_This ${isPackage ? 'booking' : 'order'} is placed via Sanskaraa - Your Complete Puja Solution._`;
+💰 *Total:* ₹${safe.pricing.total}
 
-    const encoded = encodeURIComponent(msg);
-    const supportNumber = "916201486202";
-    const url = `https://wa.me/${supportNumber}?text=${encoded}`;
+${isPackage && safe.includePandit ? "✅ Pandit Service Included\n" : ""}
+🙏 Thank you for trusting *Sanskaraa*`;
+
+    const url = `https://wa.me/916201486202?text=${encodeURIComponent(
+      message
+    )}`;
+
     window.open(url, "_blank");
-  };
-
-  const handleDownloadReceipt = () => {
-    alert("PDF receipt download will be implemented with backend integration");
-  };
+    setSent(true);
+  }, [sent]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-amber-50 to-rose-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50 via-white to-rose-50 flex items-center justify-center p-4">
       <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="bg-white rounded-xl sm:rounded-2xl shadow-lg max-w-md w-full p-4 sm:p-6 text-center relative overflow-hidden"
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 text-center relative overflow-hidden"
       >
-        {/* Background Glow */}
-        <div className="absolute -top-10 -right-10 w-20 h-20 sm:w-24 sm:h-24 bg-amber-200 rounded-full blur-3xl opacity-60" />
-        <div className="absolute -bottom-10 -left-10 w-20 h-20 sm:w-24 sm:h-24 bg-green-200 rounded-full blur-3xl opacity-60" />
+        {/* Decorative glow */}
+        <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-40 h-40 bg-amber-300/40 blur-3xl rounded-full" />
 
-        {/* Success Animation */}
-        <AnimatePresence>
-          {showAnimation && (
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 1.4, opacity: 0 }}
-              className="absolute inset-0 flex items-center justify-center"
-            >
-              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-green-100 rounded-full flex items-center justify-center">
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="w-12 h-12 sm:w-16 sm:h-16 bg-green-200 rounded-full flex items-center justify-center"
-                >
-                  <FiCheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Success Icon */}
-        <div className="relative mb-4 mt-4">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
-            <FiCheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
+        {/* Diya */}
+        <div className="relative mb-4">
+          <div className="w-20 h-20 mx-auto bg-amber-100 rounded-full flex items-center justify-center">
+            <FiCheckCircle className="text-green-600 w-10 h-10" />
           </div>
-          <div className="mt-2 text-xs sm:text-sm text-amber-700 bg-amber-50 border border-amber-200 px-2 sm:px-3 py-1 rounded-full inline-block">
-            Sanskaraa • {isPackage ? 'Complete Puja Service' : 'Puja Essentials'}
+          <motion.div
+            className="absolute -top-5 left-1/2 -translate-x-1/2 w-4 h-8 rounded-full bg-gradient-to-t from-orange-600 via-yellow-400 to-yellow-200"
+            animate={{ scaleY: [1, 1.2, 0.95] }}
+            transition={{ repeat: Infinity, duration: 0.4 }}
+          />
+        </div>
+
+        <h1 className="text-2xl font-extrabold text-rose-800">
+          {isPackage ? "Puja Booked Successfully 🙏" : "Order Confirmed 🎉"}
+        </h1>
+
+        <p className="text-sm text-gray-600 mt-2">
+          {isPackage
+            ? "Pandit & samagri will be arranged as per your booking."
+            : "Your puja items will reach you on time."}
+        </p>
+
+        {/* Confirmation Banner */}
+        <div className="mt-4 bg-green-50 border border-green-200 rounded-xl p-3 text-sm text-green-700">
+          ✅ Confirmation has been sent to your WhatsApp
+        </div>
+
+        {/* Summary */}
+        <div className="mt-4 bg-gray-50 rounded-xl p-4 text-left text-sm space-y-2">
+          <div className="flex justify-between">
+            <span>ID</span>
+            <span className="font-semibold">{safe.id}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Date</span>
+            <span>
+              {safe.delivery.date
+                ? new Date(safe.delivery.date).toLocaleDateString("en-IN")
+                : "-"}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span>{isPackage ? "Time" : "Slot"}</span>
+            <span>{safe.delivery.slot || "-"}</span>
+          </div>
+          <div className="flex justify-between font-bold border-t pt-2">
+            <span>Total</span>
+            <span className="text-green-600">
+              ₹{safe.pricing.total}
+            </span>
           </div>
         </div>
 
-        {/* Success Message */}
-        <motion.h1
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="text-lg sm:text-xl font-bold text-gray-800 mb-2"
+        {/* Back Button */}
+        <button
+          onClick={onBackToHome}
+          className="mt-5 w-full bg-rose-600 text-white py-3 rounded-xl font-semibold hover:bg-rose-700 transition"
         >
-          {isPackage ? 'Puja Booked Successfully!' : 'Order Confirmed!'}
-        </motion.h1>
+          Continue Shopping
+        </button>
 
-        <motion.p
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="text-gray-600 text-sm mb-3 sm:mb-4"
-        >
-          {isPackage 
-            ? 'Your puja has been scheduled. May God bless you with happiness and prosperity.'
-            : 'Thank you for choosing Sanskaraa. Your puja items will be delivered as per schedule.'}
-        </motion.p>
-
-        {/* Booking/Order Details */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="bg-gray-50 rounded-lg p-3 mb-3 text-left"
-        >
-          <h3 className="font-semibold text-gray-800 mb-2 border-b pb-2 text-sm">
-            {isPackage ? 'Booking' : 'Order'} Details
-          </h3>
-
-          <div className="space-y-1.5 text-xs sm:text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-600">{isPackage ? 'Puja' : 'Items'}:</span>
-              <span className="font-medium text-right">
-                {order.items.length} {isPackage ? 'package' : 'item(s)'}
-              </span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">Date:</span>
-              <span className="font-medium">
-                {new Date(order.delivery.date).toLocaleDateString("en-IN", {
-                  weekday: "short",
-                  day: "numeric",
-                  month: "short",
-                })}
-              </span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">{isPackage ? 'Time' : 'Slot'}:</span>
-              <span className="font-medium">{order.delivery.slot}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">Total Amount:</span>
-              <span className="font-semibold text-green-600">
-                ₹{order.pricing.total}
-              </span>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Action Buttons */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="grid grid-cols-2 gap-2 mb-3"
-        >
-          <button
-            onClick={handleShare}
-            className="flex items-center justify-center gap-1 sm:gap-2 bg-green-600 text-white py-2 sm:py-2.5 rounded-lg font-medium hover:bg-green-700 transition-colors text-xs sm:text-sm"
-          >
-            <FiShare2 className="w-3 h-3 sm:w-4 sm:h-4" />
-            Share
-          </button>
-
-          <button
-            onClick={handleDownloadReceipt}
-            className="flex items-center justify-center gap-1 sm:gap-2 border border-gray-300 text-gray-700 py-2 sm:py-2.5 rounded-lg font-medium hover:bg-gray-50 transition-colors text-xs sm:text-sm"
-          >
-            <FiDownload className="w-3 h-3 sm:w-4 sm:h-4" />
-            PDF Receipt
-          </button>
-        </motion.div>
-
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.7 }}
-        >
-          <button
-            onClick={onBackToHome}
-            className="w-full flex items-center justify-center gap-2 bg-rose-600 text-white py-2.5 sm:py-3 rounded-lg font-medium hover:bg-rose-700 transition-colors text-sm"
-          >
-            <FiHome className="w-4 h-4" />
-            Back to Store
-          </button>
-        </motion.div>
-
-        {/* Blessing Message */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="text-xs text-gray-500 mt-3 sm:mt-4 italic"
-        >
-          "सर्वे भवन्तु सुखिनः, सर्वे सन्तु निरामयाः"
-          <br />
-          May all be happy, may all be free from illness
-        </motion.p>
+        <p className="text-xs text-gray-500 mt-4 italic">
+          “सर्वे भवन्तु सुखिनः, सर्वे सन्तु निरामयाः”
+        </p>
       </motion.div>
     </div>
   );
