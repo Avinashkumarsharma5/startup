@@ -2939,9 +2939,14 @@ export default function UnifiedPujaStoreWithKitEditor() {
     );
   };
 
-  const removeFromCart = (id) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
-  };
+  const removeFromCart = (removeId) => {
+  setCart(prevCart =>
+    prevCart.filter(
+      item => (item.id || item.kitId) !== removeId
+    )
+  );
+};
+
 
   const toggleWishlist = (id) =>
     setWishlist((w) =>
@@ -3248,126 +3253,147 @@ export default function UnifiedPujaStoreWithKitEditor() {
       transition={{ type: "spring", stiffness: 260, damping: 30 }}
       className="fixed right-0 top-0 h-full w-full sm:w-[380px] bg-white shadow-2xl z-50 flex flex-col"
     >
-      {/* ================= HEADER ================= */}
-      <div className="sticky top-0 z-20 bg-gradient-to-r from-rose-50 to-amber-50 p-4 border-b mt-12">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <FiShoppingCart className="w-6 h-6 text-rose-600" />
-              {cart.length > 0 && (
-                <span className="absolute -top-2 -right-2 w-5 h-5 bg-rose-600 text-white text-xs rounded-full flex items-center justify-center">
-                  {cart.length}
-                </span>
-              )}
-            </div>
-            <div>
-              <h2 className="font-bold text-lg text-rose-800">Your Cart</h2>
-              <p className="text-xs text-gray-500">
-                {cart.length} item{cart.length !== 1 && "s"} selected
-              </p>
-            </div>
-          </div>
+      {/* ================= ENHANCED CART HEADER ================= */}
+<div className="sticky top-0 z-30 mt-12 backdrop-blur-xl bg-white/70 border-b border-rose-100 shadow-sm ">
+  <div className="px-4 py-3 flex items-center justify-between mt-6">
 
-          <button
-            onClick={() => setShowCart(false)}
-            className="p-2 rounded-lg hover:bg-white/60 transition"
-          >
-            <FiX className="w-5 h-5 text-gray-600" />
-          </button>
-        </div>
-      </div>
+    {/* Left: Cart Info */}
+    <div className="flex items-center gap-4">
+      <div className="relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-rose-100 to-amber-100">
+        <FiShoppingCart className="w-6 h-6 text-rose-700" />
 
-      {/* ================= CONTENT ================= */}
-      <div className="flex-1 overflow-y-auto p-4">
-        {cart.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-center">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-100 to-rose-100 flex items-center justify-center mb-4">
-              🛒
-            </div>
-            <h3 className="font-semibold text-gray-800 mb-1">
-              Your cart is empty
-            </h3>
-            <p className="text-xs text-gray-500 mb-4">
-              Add puja items or kits to continue
-            </p>
-            <button
-              onClick={() => setShowCart(false)}
-              className="px-6 py-3 bg-rose-600 text-white rounded-xl font-medium hover:bg-rose-700"
-            >
-              Explore Products
-            </button>
-          </div>
-        ) : (
-          <>
-            {/* ================= ITEMS ================= */}
-            <div className="space-y-3">
-              {cart.map((item) => (
-                <motion.div
-                  key={item.id || item.kitId}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white border rounded-xl p-3 flex gap-3"
-                >
-                  {/* Icon */}
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-amber-100 to-rose-100 flex items-center justify-center text-xl">
-                    {item.type === "puja-kit" ? "📦" : "🛒"}
-                  </div>
-
-                  {/* Details */}
-                  <div className="flex-1">
-                    <div className="flex justify-between">
-                      <h4 className="font-semibold text-sm text-gray-800 line-clamp-2">
-                        {item.name}
-                      </h4>
-                      <button
-                        onClick={() =>
-                          removeFromCart(item.id || item.kitId)
-                        }
-                        className="text-gray-400 hover:text-rose-600"
-                      >
-                        <FiX />
-                      </button>
-                    </div>
-
-                    <p className="text-xs text-gray-500 mt-0.5">
-                      {item.type === "single" ? item.unit : "Custom Puja Kit"}
-                    </p>
-
-                    {/* Qty + Price */}
-                    <div className="flex items-center justify-between mt-3">
-                      <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-2 py-1">
-                        <button
-                          onClick={() =>
-                            updateCartQty(item.id, item.qty - 1)
-                          }
-                          className="p-1 hover:bg-white rounded"
-                        >
-                          <FiMinus />
-                        </button>
-                        <span className="w-6 text-center text-sm font-medium">
-                          {item.qty}
-                        </span>
-                        <button
-                          onClick={() =>
-                            updateCartQty(item.id, item.qty + 1)
-                          }
-                          className="p-1 hover:bg-white rounded"
-                        >
-                          <FiPlus />
-                        </button>
-                      </div>
-
-                      <span className="font-bold text-rose-700">
-                        ₹{item.price * item.qty}
-                      </span>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </>
+        {cart.length > 0 && (
+          <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 bg-rose-600 text-white text-[11px] font-semibold rounded-full flex items-center justify-center shadow">
+            {cart.length}
+          </span>
         )}
       </div>
+
+      <div>
+        <h2 className="font-semibold text-base md:text-lg text-rose-900 leading-tight">
+          Your Cart
+        </h2>
+        <p className="text-xs text-gray-500">
+          {cart.length} item{cart.length !== 1 && "s"} selected
+        </p>
+      </div>
+    </div>
+
+    {/* Right: Close Button */}
+    <button
+      onClick={() => setShowCart(false)}
+      className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-rose-50 transition active:scale-95"
+      aria-label="Close Cart"
+    >
+      <FiX className="w-5 h-5 text-gray-600" />
+    </button>
+
+  </div>
+</div>
+
+
+      {/* ================= ENHANCED CONTENT ================= */}
+<div className="flex-1 overflow-y-auto px-4 py-5 space-y-4">
+
+  {/* ================= EMPTY CART ================= */}
+  {cart.length === 0 ? (
+    <div className="h-full flex flex-col items-center justify-center text-center px-4">
+      
+      <div className="w-28 h-28 rounded-full bg-gradient-to-br from-amber-100 via-rose-100 to-amber-50 flex items-center justify-center mb-5 shadow-inner">
+        <span className="text-4xl">🛒</span>
+      </div>
+
+      <h3 className="font-semibold text-gray-800 text-lg mb-1">
+        Your Cart is Empty
+      </h3>
+
+      <p className="text-sm text-gray-500 mb-6 max-w-xs">
+        Add puja items or curated kits to begin your sacred journey with Sanskaraa.
+      </p>
+
+      <button
+        onClick={() => setShowCart(false)}
+        className="px-7 py-3 rounded-2xl bg-gradient-to-r from-rose-600 to-amber-600 text-white font-medium shadow hover:opacity-95 active:scale-95 transition"
+      >
+        Explore Puja Essentials
+      </button>
+
+    </div>
+  ) : (
+    <>
+      {/* ================= CART ITEMS ================= */}
+      <div className="space-y-4">
+        {cart.map((item) => (
+          <motion.div
+            key={item.id || item.kitId}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="relative bg-white rounded-2xl border border-rose-100 p-4 shadow-sm hover:shadow-md transition"
+          >
+
+            {/* Remove Button */}
+            <button
+              onClick={() => removeFromCart(item.id || item.kitId)}
+              className="absolute top-3 right-3 p-1 rounded-full text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition"
+            >
+              <FiX size={16} />
+            </button>
+
+            <div className="flex gap-4">
+
+              {/* Icon */}
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-100 to-rose-100 flex items-center justify-center text-2xl shrink-0">
+                {item.type === "puja-kit" ? "📦" : "🪔"}
+              </div>
+
+              {/* Details */}
+              <div className="flex-1">
+                <h4 className="font-semibold text-sm md:text-base text-gray-800 leading-snug line-clamp-2">
+                  {item.name}
+                </h4>
+
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {item.type === "single" ? item.unit : "Custom Puja Kit"}
+                </p>
+
+                {/* Qty & Price */}
+                <div className="flex items-center justify-between mt-4">
+
+                  {/* Quantity Controller */}
+                  <div className="flex items-center gap-3 bg-gray-50 border rounded-xl px-3 py-1.5">
+                    <button
+                      onClick={() => updateCartQty(item.id, item.qty - 1)}
+                      className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-white transition"
+                    >
+                      <FiMinus size={14} />
+                    </button>
+
+                    <span className="min-w-[20px] text-center text-sm font-semibold">
+                      {item.qty}
+                    </span>
+
+                    <button
+                      onClick={() => updateCartQty(item.id, item.qty + 1)}
+                      className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-white transition"
+                    >
+                      <FiPlus size={14} />
+                    </button>
+                  </div>
+
+                  {/* Price */}
+                  <span className="text-base font-bold text-rose-700">
+                    ₹{(item.price * item.qty).toLocaleString("en-IN")}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </>
+  )}
+</div>
 
       {/* ================= STICKY FOOTER ================= */}
       {cart.length > 0 && (
