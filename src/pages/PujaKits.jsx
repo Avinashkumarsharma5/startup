@@ -160,10 +160,9 @@ const resolveItemPrice = (itemName) => {
   return 30;
 };
 
-// ---------- Mock Data ----------
+
 // Package Kits
-// ---------- Mock Data ----------
-// Package Kits
+
 const kits = [
   {
     id: 1,
