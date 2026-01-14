@@ -362,60 +362,90 @@ const Toast = ({ toast, onClose }) => {
   );
 };
 
-// --------------------------- Booking Flow Components ---------------------------
 const BookingWizardModal = ({ service, isOpen, onClose, onSuccess }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    eventType: '',
-    eventDate: '',
-    guestCount: '',
-    location: '',
-    message: ''
+    name: "",
+    phone: "",
+    email: "",
+    eventType: "",
+    eventDate: "",
+    guestCount: "",
+    location: "",
+    message: ""
   });
 
   const { addToast } = useToast();
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  /* ================= VALIDATIONS ================= */
+  const isValidIndianMobile = (phone) => /^[6-9]\d{9}$/.test(phone);
+
+  const isFutureOrTodayDate = (date) => {
+    if (!date) return false;
+    const selected = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return selected >= today;
   };
 
+  /* ================= RESET ON OPEN ================= */
+  useEffect(() => {
+    if (isOpen) {
+      setStep(1);
+      setFormData({
+        name: "",
+        phone: "",
+        email: "",
+        eventType: "",
+        eventDate: "",
+        guestCount: "",
+        location: "",
+        message: ""
+      });
+    }
+  }, [isOpen]);
+
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  /* ================= FINAL SUBMIT ================= */
   const handleSubmit = () => {
-    if (!formData.name || !formData.phone || !formData.eventDate) {
-      addToast('Please fill all required fields', 'error');
+    if (!formData.name.trim()) {
+      addToast("Name is required", "error");
       return;
     }
 
-    const message = `🎊 *NEW SERVICE ENQUIRY - Sanskaraa Weddings* 🎊
+    if (!isValidIndianMobile(formData.phone)) {
+      addToast("Enter valid 10-digit Indian mobile number", "error");
+      return;
+    }
 
-*Service Details:*
-🏷️ Service: ${service.name}
-💰 Starting Price: ₹${service.price.toLocaleString()}${service.unit || ''}
-⭐ Rating: ${service.rating}/5
-📍 Category: ${service.category}
+    if (!isFutureOrTodayDate(formData.eventDate)) {
+      addToast("Please select today or a future date", "error");
+      return;
+    }
 
-*Customer Details:*
-👤 Name: ${formData.name}
-📞 Phone: ${formData.phone}
-📧 Email: ${formData.email || 'Not provided'}
+    const message = `🎊 *NEW SERVICE ENQUIRY - Sanskaraa* 🎊
 
-*Event Details:*
-🎉 Event Type: ${formData.eventType || 'Not specified'}
-📅 Event Date: ${formData.eventDate}
-👥 Guest Count: ${formData.guestCount || 'Not specified'}
-📍 Location: ${formData.location || 'Not specified'}
+Service: ${service.name}
+Price: ₹${service.price}
 
-💬 Additional Message: ${formData.message || 'No additional message'}
+Name: ${formData.name}
+Phone: ${formData.phone}
+Email: ${formData.email || "N/A"}
+Event Type: ${formData.eventType || "N/A"}
+Event Date: ${formData.eventDate}
+Guests: ${formData.guestCount || "N/A"}
+Location: ${formData.location || "N/A"}
 
-_This enquiry was sent via Sanskaraa Weddings Platform_`;
+Message: ${formData.message || "N/A"}
+`;
 
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappNumber = "916201486202";
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-
-    window.open(whatsappUrl, '_blank');
+    window.open(
+      `https://wa.me/916201486202?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
 
     onSuccess({
       service,
@@ -424,17 +454,6 @@ _This enquiry was sent via Sanskaraa Weddings Platform_`;
       id: Date.now()
     });
 
-    setStep(1);
-    setFormData({
-      name: '',
-      phone: '',
-      email: '',
-      eventType: '',
-      eventDate: '',
-      guestCount: '',
-      location: '',
-      message: ''
-    });
     onClose();
   };
 
@@ -442,265 +461,171 @@ _This enquiry was sent via Sanskaraa Weddings Platform_`;
 
   return (
     <motion.div
+      className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4"
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.9, opacity: 0, y: 20 }}
-        className="bg-white rounded-xl sm:rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-2"
         onClick={(e) => e.stopPropagation()}
+        initial={{ scale: 0.9, y: 30 }}
+        animate={{ scale: 1, y: 0 }}
+        exit={{ scale: 0.9, y: 30 }}
+        className="bg-white w-full max-w-md rounded-3xl overflow-hidden"
       >
-        {/* Header */}
-        <div className="p-4 sm:p-6 border-b border-gray-100 mt-8 sm:mt-12">
-          <div className="flex items-center justify-between">
-            <div className="flex-1 min-w-0">
-              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#800000] truncate">Book {service.name}</h2>
-              <p className="text-xs sm:text-sm text-gray-600">Complete your booking in simple steps</p>
-            </div>
-            <button
-              onClick={onClose}
-              className="p-1 sm:p-2 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
-            >
-              <X size={18} className="sm:w-5 sm:h-5" />
-            </button>
-          </div>
+        {/* ================= HEADER ================= */}
+        <div className="p-5 border-b flex justify-between items-center">
+          <h2 className="text-lg font-serif font-bold text-[#800000]">
+            Book {service.name}
+          </h2>
+          <button onClick={onClose}>
+            <X />
+          </button>
+        </div>
 
-          {/* Step Indicator */}
-          <div className="flex items-center justify-between mt-4 sm:mt-6">
-            {[1, 2, 3].map((stepNum) => (
-              <div key={stepNum} className="flex items-center">
-                <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold ${
-                  step >= stepNum 
-                    ? 'bg-[#800000] text-white' 
-                    : 'bg-gray-200 text-gray-600'
-                }`}>
-                  {step > stepNum ? <CheckCircle size={14} className="sm:w-4 sm:h-4" /> : stepNum}
-                </div>
-                {stepNum < 3 && (
-                  <div className={`w-6 sm:w-12 h-1 mx-1 sm:mx-2 ${
-                    step > stepNum ? 'bg-[#800000]' : 'bg-gray-200'
-                  }`} />
+        {/* ================= BODY ================= */}
+        <div className="p-5 space-y-4" autoComplete="off">
+
+          {step === 1 && (
+            <>
+              <input
+                type="text"
+                placeholder="Full Name *"
+                autoComplete="off"
+                value={formData.name}
+                onChange={(e) =>
+                  handleInputChange("name", e.target.value)
+                }
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+
+              <input
+                type="tel"
+                inputMode="numeric"
+                maxLength={10}
+                autoComplete="new-password"
+                placeholder="10-digit Mobile Number *"
+                value={formData.phone}
+                onChange={(e) => {
+                  const v = e.target.value.replace(/\D/g, "");
+                  if (v.length <= 10)
+                    handleInputChange("phone", v);
+                }}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+
+              {formData.phone &&
+                !isValidIndianMobile(formData.phone) && (
+                  <p className="text-red-600 text-xs">
+                    Enter valid 10-digit Indian number
+                  </p>
                 )}
-              </div>
-            ))}
-          </div>
+
+              <input
+                type="email"
+                autoComplete="new-password"
+                placeholder="Email (optional)"
+                value={formData.email}
+                onChange={(e) =>
+                  handleInputChange("email", e.target.value)
+                }
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+            </>
+          )}
+
+          {step === 2 && (
+            <>
+              <select
+                value={formData.eventType}
+                onChange={(e) =>
+                  handleInputChange("eventType", e.target.value)
+                }
+                className="w-full px-3 py-2 border rounded-lg"
+              >
+                <option value="">Select Event Type</option>
+                <option>Wedding</option>
+                <option>Engagement</option>
+                <option>Reception</option>
+                <option>Birthday</option>
+                <option>Corporate</option>
+              </select>
+
+              <input
+                type="date"
+                min={new Date().toISOString().split("T")[0]}
+                value={formData.eventDate}
+                onChange={(e) =>
+                  handleInputChange("eventDate", e.target.value)
+                }
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+
+              {formData.eventDate &&
+                !isFutureOrTodayDate(formData.eventDate) && (
+                  <p className="text-red-600 text-xs">
+                    Past date not allowed
+                  </p>
+                )}
+
+              <input
+                type="number"
+                placeholder="Guest Count"
+                value={formData.guestCount}
+                onChange={(e) =>
+                  handleInputChange("guestCount", e.target.value)
+                }
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+            </>
+          )}
+
+          {step === 3 && (
+            <textarea
+              rows={4}
+              placeholder="Additional Message"
+              value={formData.message}
+              onChange={(e) =>
+                handleInputChange("message", e.target.value)
+              }
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          )}
         </div>
 
-        {/* Content */}
-        <div className="p-4 sm:p-6">
-          <AnimatePresence mode="wait">
-            {step === 1 && (
-              <motion.div
-                key="step1"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-3 sm:space-y-4"
-              >
-                <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Personal Information</h3>
-                
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#800000] focus:border-transparent text-sm sm:text-base"
-                      placeholder="Enter your full name"
-                    />
-                  </div>
+        {/* ================= FOOTER ================= */}
+        <div className="p-5 border-t flex gap-3">
+          {step > 1 && (
+            <button
+              onClick={() => setStep(step - 1)}
+              className="flex-1 border rounded-lg py-2"
+            >
+              Back
+            </button>
+          )}
 
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                      Phone Number *
-                    </label>
-                    <input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#800000] focus:border-transparent text-sm sm:text-base"
-                      placeholder="10-digit mobile number"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#800000] focus:border-transparent text-sm sm:text-base"
-                      placeholder="your@email.com"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {step === 2 && (
-              <motion.div
-                key="step2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-3 sm:space-y-4"
-              >
-                <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Event Details</h3>
-                
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                      Event Type
-                    </label>
-                    <select
-                      value={formData.eventType}
-                      onChange={(e) => handleInputChange('eventType', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#800000] focus:border-transparent text-sm sm:text-base"
-                    >
-                      <option value="">Select event type</option>
-                      <option value="Wedding">Wedding</option>
-                      <option value="Engagement">Engagement</option>
-                      <option value="Reception">Reception</option>
-                      <option value="Birthday">Birthday</option>
-                      <option value="Corporate">Corporate Event</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                      Event Date *
-                    </label>
-                    <input
-                      type="date"
-                      value={formData.eventDate}
-                      onChange={(e) => handleInputChange('eventDate', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#800000] focus:border-transparent text-sm sm:text-base"
-                      min={new Date().toISOString().split('T')[0]}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                      Guest Count
-                    </label>
-                    <input
-                      type="number"
-                      value={formData.guestCount}
-                      onChange={(e) => handleInputChange('guestCount', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#800000] focus:border-transparent text-sm sm:text-base"
-                      placeholder="Approximate number of guests"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                      Event Location
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.location}
-                      onChange={(e) => handleInputChange('location', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#800000] focus:border-transparent text-sm sm:text-base"
-                      placeholder="City or venue address"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {step === 3 && (
-              <motion.div
-                key="step3"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-3 sm:space-y-4"
-              >
-                <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Final Details</h3>
-                
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                      Additional Message
-                    </label>
-                    <textarea
-                      value={formData.message}
-                      onChange={(e) => handleInputChange('message', e.target.value)}
-                      rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#800000] focus:border-transparent text-sm sm:text-base resize-none"
-                      placeholder="Any specific requirements or questions..."
-                    />
-                  </div>
-
-                  {/* Service Summary */}
-                  <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Service Summary</h4>
-                    <div className="space-y-2 text-xs sm:text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Service:</span>
-                        <span className="font-medium">{service.name}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Starting Price:</span>
-                        <span className="font-medium text-[#800000]">₹{service.price.toLocaleString()}{service.unit || ''}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Category:</span>
-                        <span className="font-medium">{service.category}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Footer */}
-        <div className="p-4 sm:p-6 border-t border-gray-100">
-          <div className="flex justify-between gap-2 sm:gap-3">
-            {step > 1 && (
-              <button
-                onClick={() => setStep(step - 1)}
-                className="px-3 sm:px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-sm sm:text-base flex-1"
-              >
-                Back
-              </button>
-            )}
-            
-            {step < 3 ? (
-              <button
-                onClick={() => setStep(step + 1)}
-                className="ml-auto px-3 sm:px-6 py-2 bg-[#800000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors text-sm sm:text-base flex-1"
-              >
-                Next
-              </button>
-            ) : (
-              <button
-                onClick={handleSubmit}
-                className="ml-auto px-3 sm:px-6 py-2 bg-[#800000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors text-sm sm:text-base flex items-center justify-center gap-2 flex-1"
-              >
-                <MessageCircle size={16} className="sm:w-4 sm:h-4" />
-                <span className="whitespace-nowrap text-xs sm:text-sm">Send via WhatsApp</span>
-              </button>
-            )}
-          </div>
+          {step < 3 ? (
+            <button
+              onClick={() => setStep(step + 1)}
+              className="flex-1 bg-[#800000] text-white rounded-lg py-2"
+            >
+              Next
+            </button>
+          ) : (
+            <button
+              onClick={handleSubmit}
+              className="flex-1 bg-[#800000] text-white rounded-lg py-2"
+            >
+              Send via WhatsApp
+            </button>
+          )}
         </div>
       </motion.div>
     </motion.div>
   );
 };
+
 
 const BookingSuccessModal = ({ booking, isOpen, onClose }) => {
   useEffect(() => {
@@ -802,7 +727,7 @@ const ServiceDetailModal = ({ service, isOpen, onClose, onBookNow }) => {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+        className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -810,52 +735,58 @@ const ServiceDetailModal = ({ service, isOpen, onClose, onBookNow }) => {
       >
         <motion.div
           onClick={(e) => e.stopPropagation()}
-          initial={{ scale: 0.9, y: 50 }}
+          initial={{ scale: 0.92, y: 40 }}
           animate={{ scale: 1, y: 0 }}
-          exit={{ scale: 0.9, y: 50 }}
-          transition={{ type: "spring", stiffness: 200, damping: 20 }}
-          className="relative w-full max-w-6xl max-h-[92vh] overflow-y-auto rounded-[2.5rem]
-          bg-gradient-to-b from-[#FFFDF4] via-white to-[#FFF1C1]
-          shadow-[0_50px_150px_rgba(255,215,0,0.35)] border border-[#FFD700]/40"
+          exit={{ scale: 0.92, y: 40 }}
+          transition={{ type: "spring", stiffness: 220, damping: 20 }}
+          className="
+            relative w-full max-w-6xl max-h-[92vh] overflow-y-auto
+            rounded-2xl sm:rounded-3xl
+            bg-gradient-to-b from-[#FFFDF4] via-white to-[#FFF1C1]
+            border border-[#FFD700]/40
+            shadow-[0_40px_120px_rgba(255,215,0,0.35)]
+          "
         >
+          {/* ================= CLOSE ================= */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-30 w-11 h-11 rounded-full bg-white/80 flex items-center justify-center shadow"
+            className="absolute top-3 right-3 z-30 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow"
           >
             <X className="text-[#800000]" />
           </button>
 
-          <div className="relative h-72 lg:h-[420px] rounded-t-[2.5rem] overflow-hidden">
+          {/* ================= MEDIA ================= */}
+          <div className="relative h-64 sm:h-72 lg:h-[420px] rounded-t-2xl sm:rounded-t-3xl overflow-hidden">
             {media[index]?.type === "video" ? (
-  <video
-    src={media[index].src}
-    autoPlay
-    muted
-    loop
-    playsInline
-    preload="auto"
-    poster="/images/fallback-service.jpg"
-    className="w-full h-full object-cover bg-black"
-    onError={(e) => {
-      e.currentTarget.style.display = "none";
-    }}
-  />
-) : (
-
+              <video
+                src={media[index].src}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                className="w-full h-full object-cover bg-black"
+              />
+            ) : (
               <img
                 src={media[index]?.src}
                 alt={service.name}
-                loading="lazy"
                 className="w-full h-full object-cover"
               />
             )}
 
             {media.length > 1 && (
               <>
-                <button onClick={prev} className="nav-arrow left-4">
+                <button
+                  onClick={prev}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full"
+                >
                   <ChevronLeft />
                 </button>
-                <button onClick={next} className="nav-arrow right-4">
+                <button
+                  onClick={next}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full"
+                >
                   <ChevronRight />
                 </button>
               </>
@@ -863,32 +794,95 @@ const ServiceDetailModal = ({ service, isOpen, onClose, onBookNow }) => {
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
 
-            <div className="absolute bottom-6 left-6 text-white">
-              <h2 className="text-3xl font-serif font-bold">{service.name}</h2>
-              <div className="flex gap-3 text-sm mt-1">
-                <Star className="w-4 h-4 fill-[#FFD700]" />
-                {service.rating}
-                <MapPin className="w-4 h-4 text-[#FFD700]" />
-                {service.location || "India"}
+            {/* Title */}
+            <div className="absolute bottom-4 left-4 right-4 text-white">
+              <h2 className="text-2xl sm:text-3xl font-serif font-bold">
+                {service.name}
+              </h2>
+              <div className="flex items-center gap-3 text-xs sm:text-sm mt-1">
+                <span className="flex items-center gap-1">
+                  <Star className="w-4 h-4 fill-[#FFD700]" />
+                  {service.rating}
+                </span>
+                <span className="flex items-center gap-1">
+                  <MapPin className="w-4 h-4 text-[#FFD700]" />
+                  {service.location || "India"}
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="p-8 lg:p-12 grid lg:grid-cols-2 gap-8">
+          {/* ================= CONTENT ================= */}
+          <div className="p-4 sm:p-6 lg:p-10 space-y-8">
+
+            {/* ===== HIGHLIGHTS ===== */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                "Verified Vendor",
+                "Premium Quality",
+                "Customizable",
+                "On-Time Service"
+              ].map((h) => (
+                <div
+                  key={h}
+                  className="bg-white rounded-xl p-3 text-center border border-[#FFD700]/30 text-xs sm:text-sm font-semibold text-[#800000]"
+                >
+                  ✓ {h}
+                </div>
+              ))}
+            </div>
+
+            {/* ===== ABOUT ===== */}
             <div>
               <h3 className="text-lg font-serif font-bold text-[#800000] mb-2">
-                About Service
+                About This Service
               </h3>
               <p className="text-stone-600 text-sm leading-relaxed">
                 {service.description ||
-                  "A premium service curated with tradition and executed with luxury."}
+                  "A premium service curated with tradition and executed with luxury to create unforgettable moments."}
               </p>
             </div>
 
-            <div className="bg-white/90 rounded-2xl p-6 border border-[#FFD700]/40 shadow-xl">
-              <div className="flex justify-between items-center mb-6">
-                <span className="text-stone-600 text-sm">Starting From</span>
-                <span className="text-3xl font-bold text-[#800000]">
+            {/* ===== WHAT’S INCLUDED ===== */}
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-bold text-[#800000] mb-2">What’s Included</h4>
+                <ul className="space-y-1 text-sm text-stone-600">
+                  <li>✔ Professional setup</li>
+                  <li>✔ Quality materials</li>
+                  <li>✔ On-site coordination</li>
+                  <li>✔ Custom adjustments</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-bold text-[#800000] mb-2">Not Included</h4>
+                <ul className="space-y-1 text-sm text-stone-600">
+                  <li>✖ Venue charges</li>
+                  <li>✖ Extra customization cost</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* ===== PROCESS ===== */}
+            <div>
+              <h4 className="font-bold text-[#800000] mb-3">How It Works</h4>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-center">
+                {["Book", "Consult", "Customize", "Execute"].map((step, i) => (
+                  <div
+                    key={step}
+                    className="bg-[#FFF7E0] rounded-xl p-3 border border-[#FFD700]/40 font-semibold"
+                  >
+                    {i + 1}. {step}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ===== PRICE & CTA ===== */}
+            <div className="bg-white rounded-2xl p-5 border border-[#FFD700]/40 shadow-xl">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-sm text-stone-500">Starting From</span>
+                <span className="text-2xl sm:text-3xl font-bold text-[#800000]">
                   ₹{service.price.toLocaleString()}
                   {service.unit && (
                     <span className="text-sm text-stone-400 ml-1">
@@ -899,15 +893,22 @@ const ServiceDetailModal = ({ service, isOpen, onClose, onBookNow }) => {
               </div>
 
               <motion.button
-                whileHover={{ scale: 1.04 }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.96 }}
                 onClick={() => onBookNow(service)}
-                className="w-full py-4 rounded-full bg-gradient-to-r
-                from-[#800000] via-[#A52A2A] to-[#800000]
-                text-white font-bold shadow-[0_20px_60px_rgba(128,0,0,0.5)]"
+                className="
+                  w-full py-3 rounded-full
+                  bg-gradient-to-r from-[#800000] via-[#A52A2A] to-[#800000]
+                  text-white font-bold
+                  shadow-[0_20px_60px_rgba(128,0,0,0.5)]
+                "
               >
                 Book Premium Service
               </motion.button>
+
+              <p className="text-xs text-center text-stone-500 mt-3">
+                Our executive will contact you within 24 hours
+              </p>
             </div>
           </div>
         </motion.div>
@@ -915,6 +916,7 @@ const ServiceDetailModal = ({ service, isOpen, onClose, onBookNow }) => {
     </AnimatePresence>
   );
 };
+
 
 
 /* ================= FLOATING PARTICLES (OPTIMIZED) ================= */
