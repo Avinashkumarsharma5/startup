@@ -1345,19 +1345,49 @@ const HeroSection = ({ query, setQuery, location, setLocation }) => {
             <ChevronDown size={16} className="text-[#800000]/60" />
           </div>
 
-          {/* Search */}
-          <div className="flex items-center px-4 py-4 gap-3">
-            <Search size={18} className="text-[#800000]" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search venues, decor, catering..."
-              className="flex-1 bg-transparent outline-none text-[#1a0505] placeholder-[#800000]/50 font-medium"
-            />
-            <button className="bg-gradient-to-br from-[#800000] to-[#A52A2A] text-white px-6 py-2 rounded-xl font-semibold shadow-lg active:scale-95 transition">
-              Search
-            </button>
-          </div>
+{/* ================= SEARCH ================= */}
+<div className="flex flex-col sm:flex-row sm:items-center px-3 sm:px-4 py-3 sm:py-4 gap-3">
+  
+  {/* Search Input */}
+  <div className="flex items-center gap-3 flex-1">
+    <Search size={18} className="text-[#800000] shrink-0" />
+    <input
+      value={query}
+      onChange={(e) => setQuery(e.target.value)}
+      placeholder="Search venues, decor, catering..."
+      className="
+        w-full
+        bg-transparent
+        outline-none
+        text-[#1a0505]
+        placeholder-[#800000]/50
+        font-medium
+        text-sm
+      "
+    />
+  </div>
+
+  {/* Search Button */}
+  <button
+    className="
+      w-full sm:w-auto
+      bg-gradient-to-br from-[#800000] to-[#A52A2A]
+      text-white
+      px-5 sm:px-6
+      py-2.5
+      rounded-xl
+      font-semibold
+      text-sm
+      shadow-lg
+      active:scale-95
+      transition
+    "
+  >
+    Search
+  </button>
+
+</div>
+
         </motion.div>
 
         {/* ===== Trending Chips ===== */}
@@ -1542,13 +1572,13 @@ export default function App() {
             
             {/* Services Grid */}
             <section>
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 lg:mb-8 px-1">
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 lg:mb-8 px-1 ">
                   <div>
                     <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif font-bold text-[#800000] mb-1 sm:mb-12">
                       {activeCategory === 'all' ? "Curated Services" : `${categories.find(c => c.key === activeCategory)?.label}`}
                     </h2>
-                    <p className="text-stone-500 text-xs sm:text-sm lg:text-base">
-                      Handpicked vendors verified for quality & tradition.
+                    <p className="text-stone-500 text-xs sm:text-sm lg:text-base mt-8">
+                      Handpicked Services verified for quality & tradition.
                     </p>
                   </div>
                 </div>
