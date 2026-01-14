@@ -1082,20 +1082,20 @@ const ServiceCard = ({
   const videoMedia = service.media?.find((m) => m.type === "video");
 
   return (
-    <motion.div
-      layout
-      whileHover={{ y: -8 }}
-      transition={{ type: "spring", stiffness: 200, damping: 15 }}
-      className="
-        group relative h-full flex flex-col overflow-hidden
-        rounded-2xl lg:rounded-[2.5rem]
-        bg-gradient-to-b from-white to-[#FFF7E0]
-        border border-[#FFD700]/30
-        shadow-[0_10px_40px_rgba(128,0,0,0.15)]
-        hover:shadow-[0_20px_70px_rgba(255,215,0,0.35)]
-        transition-all duration-700
-      "
-    >
+   <motion.div
+  whileHover={{ y: -6 }}
+  transition={{ duration: 0.25, ease: "easeOut" }}
+  className="
+    group relative h-full flex flex-col overflow-hidden
+    rounded-2xl lg:rounded-[2.5rem]
+    bg-gradient-to-b from-white to-[#FFF7E0]
+    border border-[#FFD700]/30
+    shadow-xl
+    hover:shadow-2xl
+    will-change-transform
+  "
+>
+
       {/* 🌟 Glow Border */}
       <div className="absolute inset-0 rounded-[inherit] ring-1 ring-transparent group-hover:ring-[#FFD700]/70 pointer-events-none transition-all duration-700" />
 
@@ -1389,10 +1389,10 @@ const FilterBar = ({
   categories
 }) => {
   return (
-    <div className="sticky top-[64px] z-40 mb-6 px-2 sm:px-4">
+    <div className="sticky top-[64px] z-40 mb-8 px-2 sm:px-4">
       
-      {/* ================= CATEGORY THUMBNAILS ONLY ================= */}
-      <div className="flex gap-4 sm:gap-5 overflow-x-auto scrollbar-hide py-2">
+      {/* ================= CATEGORY THUMBNAILS ================= */}
+      <div className="flex gap-5 sm:gap-6 overflow-x-auto scrollbar-hide py-3">
 
         {categories.map((cat) => {
           const isActive = activeCategory === cat.key;
@@ -1401,33 +1401,40 @@ const FilterBar = ({
             <button
               key={cat.key}
               onClick={() => setActiveCategory(cat.key)}
-              className="flex flex-col items-center gap-1.5 min-w-[80px] sm:min-w-[96px]"
+              className="group flex flex-col items-center gap-2 min-w-[88px] sm:min-w-[104px]"
             >
-              {/* Thumbnail */}
+              {/* ===== Thumbnail ===== */}
               <div
                 className={`
+                  relative
                   w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24
                   rounded-full overflow-hidden
-                  border-2 transition-all duration-300
+                  border-2 transition-all duration-300 ease-out
                   ${isActive
-                    ? "border-[#800000] scale-110 ring-2 ring-[#FFD700]/60 shadow-lg"
-                    : "border-[#FFD700]/40 hover:scale-105"
+                    ? "border-[#800000] scale-110 shadow-xl ring-2 ring-[#FFD700]/70"
+                    : "border-[#FFD700]/30 group-hover:scale-105 grayscale-[40%]"
                   }
                 `}
               >
                 <img
                   src={cat.image}
                   alt={cat.label}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full object-cover transition-all duration-300 ${
+                    isActive ? "grayscale-0" : "group-hover:grayscale-0"
+                  }`}
                 />
+
+                {isActive && (
+                  <div className="absolute inset-0 rounded-full bg-[#FFD700]/10" />
+                )}
               </div>
 
-              {/* Name */}
+              {/* ===== Name (FIXED VISIBILITY) ===== */}
               <span
-                className={`
-                  text-xs sm:text-sm font-semibold text-center
-                  ${isActive ? "text-[#800000]" : "text-[#5a3a3a]"}
-                `}
+                className="
+                  text-xs sm:text-sm font-semibold text-center tracking-wide
+                  text-black
+                "
               >
                 {cat.label}
               </span>
@@ -1439,6 +1446,7 @@ const FilterBar = ({
     </div>
   );
 };
+
 
 
 
