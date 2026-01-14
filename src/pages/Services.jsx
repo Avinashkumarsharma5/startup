@@ -36,7 +36,7 @@ const servicesData = {
       price: 150000,
       reviews: 156,
       category: "Luxury",
-      location: "Delhi",
+      location: "Ranchi",
       trending: true,
       discount: 15,
 
@@ -54,7 +54,7 @@ const servicesData = {
       price: 120000,
       reviews: 89,
       category: "Outdoor",
-      location: "Mumbai",
+      location: "Ranchi",
 
       media: [
         { type: "image", src: "images/hall03.png" },
@@ -72,7 +72,7 @@ const servicesData = {
       price: 25000,
       reviews: 128,
       category: "Mandap",
-      location: "Delhi",
+      location: "Ranchi",
       discount: 10,
       trending: true,
 
@@ -90,7 +90,7 @@ const servicesData = {
       price: 18000,
       reviews: 89,
       category: "Floral",
-      location: "Mumbai",
+      location: "Ranchi",
 
       media: [
         { type: "image", src: "images/decor2.png" },
@@ -108,7 +108,7 @@ const servicesData = {
       unit: "/plate",
       reviews: 245,
       category: "Vegetarian",
-      location: "Delhi",
+      location: "Ranchi",
 
       media: [
         { type: "video", src: "images/Premium_Vegetarian_Catering_Video_Generated.mp4" },
@@ -124,7 +124,7 @@ const servicesData = {
       unit: "/plate",
       reviews: 178,
       category: "Non-Veg",
-      location: "Mumbai",
+      location: "Ranchi",
 
       media: [
         { type: "video", src: "images/Luxurious_Non_Vegetarian_Catering_Video.mp4" },
@@ -141,7 +141,7 @@ const servicesData = {
       price: 45000,
       reviews: 203,
       category: "Premium",
-      location: "Mumbai",
+      location: "Ranchi",
       trending: true,
 
       media: [
@@ -159,7 +159,7 @@ const servicesData = {
       rating: 4.5,
       price: 25000,
       category: "DJ",
-      location: "Bangalore",
+      location: "Ranchi",
 
       media: [
         { type: "video", src: "images/Premium_DJ_Entertainment_Video_Generated.mp4" },
@@ -172,7 +172,7 @@ const servicesData = {
       rating: 4.6,
       price: 50000,
       category: "Band",
-      location: "Delhi",
+      location: "Ranchi",
 
       media: [
         { type: "video", src: "images/Luxury_Wedding_Orchestra_Performance_Video.mp4" },
@@ -188,7 +188,7 @@ const servicesData = {
       rating: 4.8,
       price: 35000,
       category: "Anchor",
-      location: "Delhi",
+      location: "Ranchi",
       trending: true,
 
       media: [
@@ -202,7 +202,7 @@ const servicesData = {
       rating: 4.7,
       price: 45000,
       category: "Dance",
-      location: "Mumbai",
+      location: "Ranchi",
 
       media: [
         { type: "video", src: "images/Indian_Folk_Dance_Performance_Video.mp4" },
@@ -218,6 +218,7 @@ const servicesData = {
       rating: 4.9,
       price: 100000,
       category: "Planning",
+      location: "Ranchi",
       trending: true,
 
       media: [
@@ -230,6 +231,7 @@ const servicesData = {
       name: "Bridal Makeup",
       rating: 4.8,
       price: 25000,
+      location: "Ranchi",
       category: "Beauty",
 
       media: [
@@ -243,6 +245,7 @@ const servicesData = {
       rating: 4.7,
       price: 15000,
       category: "Beauty",
+      location: "Ranchi",
 
       media: [
         { type: "video", src: "images/Luxury_Mehndi_Art_Showreel_Video.mp4" },
@@ -255,6 +258,7 @@ const servicesData = {
       rating: 4.5,
       price: 8000,
       category: "Decor",
+      location: "Ranchi",
 
       media: [
         { type: "video", src: "images/Premium_Indian_Wedding_Car_Showreel.mp4" },
@@ -1225,115 +1229,126 @@ const ServiceCard = ({
 
 const HeroSection = ({ query, setQuery, location, setLocation }) => {
   const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], [0, 200]);
-  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const bgY = useTransform(scrollY, [0, 600], [0, 220]);
+  const bgOpacity = useTransform(scrollY, [0, 350], [1, 0]);
 
   return (
-    <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[600px] xl:h-[700px] overflow-hidden flex flex-col items-center justify-center text-center px-2 sm:px-4 bg-[#1a0505] mt-11">
-      {/* Background */}
-      <motion.div style={{ y: y1, opacity }} className="absolute inset-0 z-0">
-        <img 
-          src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&fit=crop" 
-          alt="Indian Wedding" 
-          className="w-full h-full object-cover opacity-80" 
+    <section className="relative w-full min-h-[75vh] sm:min-h-[85vh] xl:min-h-[95vh] overflow-hidden bg-[#1a0505] flex items-center justify-center px-3 sm:px-6 mt-10">
+
+      {/* ===== Background ===== */}
+      <motion.div style={{ y: bgY, opacity: bgOpacity }} className="absolute inset-0 z-0 ">
+        <img
+          src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1800&fit=crop"
+          className="w-full h-full object-cover "
+          alt="Wedding"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-[#FAF9F6]"></div>
-        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/black-scales.png')]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-[#FAF9F6]" />
+        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/black-scales.png')]" />
       </motion.div>
-      
+
       <FloatingParticles />
 
-      {/* Logo in Hero */}
-      <motion.div 
-        initial={{ y: -50, opacity: 0 }} 
-        animate={{ y: 0, opacity: 1 }} 
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="absolute top-3 sm:top-4 lg:top-6 left-0 w-full flex justify-center z-20 px-2 "
+      {/* ===== App Logo ===== */}
+      <motion.div
+        initial={{ y: -40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="absolute top-4 left-0 w-full flex justify-center z-20"
       >
-         <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 bg-white/10 backdrop-blur-md px-2 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-2 rounded-full border border-white/20 shadow-2xl">
-            <div className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 bg-[#800000] rounded-full flex items-center justify-center shadow-inner border border-[#FFD700]/50 overflow-hidden">
-    <img 
-        src="images/sanskaraa-logo.png" 
-        alt="Sanskaraa Logo" 
-        className="w-full h-full object-cover"
-    />
-</div>
-
-            <span className="text-lg sm:text-xl lg:text-2xl font-serif font-bold text-white tracking-tight">
-              Sanskaraa
-            </span>
-         </div>
+        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-lg px-4 py-2 rounded-full border border-white/20 shadow-xl mt-8">
+          <div className="w-8 h-8 bg-[#800000] rounded-full overflow-hidden border border-[#FFD700]/50">
+            <img src="images/sanskaraa-logo.png" className="w-full h-full object-cover" />
+          </div>
+          <span className="text-xl font-serif font-bold text-white">
+            Sanskaraa
+          </span>
+        </div>
       </motion.div>
 
-      {/* Content */}
-      <div className="relative z-10 max-w-4xl w-full mt-6 sm:mt-8 lg:mt-10 px-2">
-        <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }}>
-          <span className="inline-block py-0.5 px-2 sm:py-1 sm:px-3 lg:py-1.5 lg:px-4 rounded-full bg-[#FFD700]/20 backdrop-blur-md border border-[#FFD700]/40 text-[#FFD700] text-[10px] sm:text-xs font-bold tracking-[0.15em] sm:tracking-[0.2em] mb-3 sm:mb-4 lg:mb-6 uppercase shadow-lg">
-              India's Premium Wedding Platform
-          </span>
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-serif font-bold text-white mb-4 sm:mb-6 lg:mb-8 leading-tight drop-shadow-2xl px-2">
-              Tradition Meets <span className="text-[#FFD700] italic font-serif">Luxury</span>
-          </h1>
-        </motion.div>
+      {/* ===== Main Content ===== */}
+      <div className="relative z-10 max-w-4xl w-full text-center mt-20 sm:mt-24">
 
-        {/* Search Bar */}
-        <motion.div 
-          initial={{ scale: 0.9, opacity: 0, y: 20 }} 
-          animate={{ scale: 1, opacity: 1, y: 0 }} 
-          transition={{ delay: 0.4, duration: 0.5 }}
-          className="bg-[#FAF9F6]/95 backdrop-blur-xl p-1 sm:p-1.5 lg:p-2 rounded-xl sm:rounded-2xl lg:rounded-[2rem] shadow-2xl flex flex-col sm:flex-row items-center gap-1 sm:gap-1.5 lg:gap-2 max-w-3xl mx-auto border border-[#FFD700]/50 relative z-20"
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="inline-block mb-4 px-4 py-1 rounded-full bg-[#FFD700]/20 border border-[#FFD700]/40 text-[#FFD700] text-[11px] tracking-widest uppercase"
         >
-            <div className="flex items-center px-2 sm:px-3 lg:px-4 xl:px-6 h-10 sm:h-11 lg:h-12 xl:h-14 w-full sm:w-1/3 border-b sm:border-b-0 sm:border-r border-[#FFD700]/30">
-                <MapPin size={14} className="sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#800000] mr-1.5 sm:mr-2 lg:mr-3" />
-                <select 
-                  className="w-full bg-transparent outline-none text-xs sm:text-sm font-semibold text-[#800000] cursor-pointer appearance-none"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                >
-                  <option>All Cities</option>
-                  <option>Delhi</option>
-                  <option>Mumbai</option>
-                  <option>Udaipur</option>
-                  <option>Bangalore</option>
-                </select>
-                <ChevronDown size={10} className="sm:w-2.5 sm:h-2.5 lg:w-3 lg:h-3 text-[#800000]/60 ml-0.5 sm:ml-1 lg:ml-2" />
-            </div>
-            <div className="flex items-center px-2 sm:px-3 lg:px-4 xl:px-6 h-10 sm:h-11 lg:h-12 xl:h-14 w-full flex-1">
-                <Search size={14} className="sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#800000] mr-1.5 sm:mr-2 lg:mr-3" />
-                <input 
-                    type="text" 
-                    placeholder="Search venues, decor, catering..." 
-                    className="w-full bg-transparent outline-none text-[#1a0505] placeholder-[#800000]/50 text-xs sm:text-sm font-medium"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                />
-            </div>
-            <button className="w-full sm:w-auto bg-gradient-to-br from-[#800000] to-[#A52A2A] hover:to-[#5a1010] text-white px-3 sm:px-4 lg:px-6 xl:px-8 py-2 sm:py-2.5 lg:py-3 rounded-lg sm:rounded-xl lg:rounded-[1.5rem] font-semibold transition-all shadow-lg shadow-[#800000]/30 text-xs sm:text-sm flex items-center justify-center gap-0.5 sm:gap-1 lg:gap-2 transform active:scale-95">
-                <span>Search</span>
+          India’s Premium Event Managment Platform
+        </motion.span>
+
+        <motion.h1
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="text-3xl sm:text-5xl xl:text-6xl font-serif font-bold text-white leading-tight drop-shadow-xl"
+        >
+          Tradition Meets <span className="text-[#FFD700] italic">Luxury</span>
+        </motion.h1>
+
+        {/* ===== Search Card (App Feel) ===== */}
+        <motion.div
+          initial={{ y: 40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.45 }}
+          className="mt-8 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-[#FFD700]/40 overflow-hidden"
+        >
+
+          {/* Location */}
+          <div className="flex items-center px-4 py-3 border-b border-[#FFD700]/20">
+            <MapPin size={18} className="text-[#800000] mr-3" />
+            <select
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="flex-1 bg-transparent outline-none font-semibold text-[#800000]"
+            >
+              <option>All Cities</option>
+              <option>Live Location</option>
+              <option>Ranchi</option>
+              <option>Hazribagh</option>
+              <option>Patna</option>
+              <option>Gaya</option>
+            </select>
+            <ChevronDown size={16} className="text-[#800000]/60" />
+          </div>
+
+          {/* Search */}
+          <div className="flex items-center px-4 py-4 gap-3">
+            <Search size={18} className="text-[#800000]" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search venues, decor, catering..."
+              className="flex-1 bg-transparent outline-none text-[#1a0505] placeholder-[#800000]/50 font-medium"
+            />
+            <button className="bg-gradient-to-br from-[#800000] to-[#A52A2A] text-white px-6 py-2 rounded-xl font-semibold shadow-lg active:scale-95 transition">
+              Search
             </button>
+          </div>
         </motion.div>
 
-        {/* Tags */}
-        <motion.div 
-          initial={{ opacity: 0 }} 
-          animate={{ opacity: 1 }} 
+        {/* ===== Trending Chips ===== */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="mt-4 sm:mt-5 lg:mt-6 flex flex-wrap justify-center gap-1.5 sm:gap-2 lg:gap-3 text-white/90 text-xs font-medium px-2"
+          className="mt-5 flex flex-wrap justify-center gap-2 text-xs"
         >
-          <span className="opacity-70 text-[#FFD700] text-[10px] sm:text-xs">Trending:</span>
-          {['Banquet Halls', 'Bridal Makeup', 'Pre-wedding Shoot', 'Mehndi'].map(tag => (
-            <button 
-              key={tag} 
-              className="px-1.5 sm:px-2 lg:px-2.5 py-0.5 sm:py-1 rounded-full bg-white/10 hover:bg-white/20 border border-[#FFD700]/30 text-[#FFD700] transition-colors backdrop-blur-sm text-[10px] sm:text-xs"
+          <span className="text-[#FFD700] opacity-80">Trending:</span>
+          {["Banquet Halls", "Bridal Makeup", "Pre-Wedding Shoot", "Mehndi"].map((tag) => (
+            <button
+              key={tag}
+              className="px-3 py-1 rounded-full bg-white/10 border border-[#FFD700]/30 text-[#FFD700] hover:bg-white/20 transition"
             >
               {tag}
             </button>
           ))}
         </motion.div>
       </div>
-    </div>
+    </section>
   );
 };
+
 
 const FilterBar = ({ onSortChange, activeCategory, setActiveCategory, categories }) => {
   return (
