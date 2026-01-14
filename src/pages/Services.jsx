@@ -193,7 +193,7 @@ const servicesData = {
 
       media: [
         { type: "video", src: "images/Luxury_Indian_Wedding_Anchor_Showreel.mp4" },
-        { type: "image", src: "https://images.unsplash.com/photo-1545239351-ef35f43d514b?w=800" }
+        { type: "image", src: "images/ankar.png" }
       ]
     },
     {
@@ -206,7 +206,7 @@ const servicesData = {
 
       media: [
         { type: "video", src: "images/Indian_Folk_Dance_Performance_Video.mp4" },
-        { type: "image", src: "https://images.unsplash.com/photo-1547153760-18fc86324498?w=800" }
+        { type: "image", src: "images/folk-dance.png" }
       ]
     },
   ],
@@ -222,7 +222,7 @@ const servicesData = {
 
       media: [
         { type: "video", src: "images/Luxury_Indian_Wedding_Showreel_Video.mp4" },
-        { type: "image", src: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=800" }
+        { type: "image", src: "images/planning.png" }
       ]
     },
     {
@@ -234,7 +234,7 @@ const servicesData = {
 
       media: [
         { type: "video", src: "images/Bridal_Makeup_Showreel_Video_Generated.mp4" },
-        { type: "image", src: "https://images.unsplash.com/photo-1596464716127-f2a82984de30?w=800" }
+        { type: "image", src: "images/Bridal-Makeup.png" }
       ]
     },
     {
@@ -246,7 +246,7 @@ const servicesData = {
 
       media: [
         { type: "video", src: "images/Luxury_Mehndi_Art_Showreel_Video.mp4" },
-        { type: "image", src: "https://images.unsplash.com/photo-1618517351616-38d9dd3b1c67?w=800" }
+        { type: "image", src: "images/Mehndi-Art.png" }
       ]
     },
     {
@@ -258,7 +258,7 @@ const servicesData = {
 
       media: [
         { type: "video", src: "images/Premium_Indian_Wedding_Car_Showreel.mp4" },
-        { type: "image", src: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?w=800" }
+        { type: "image", src: "images/car-decor.png" }
       ]
     },
   ]
@@ -666,418 +666,366 @@ _This enquiry was sent via Sanskaraa Weddings Platform_`;
 };
 
 const BookingSuccessModal = ({ booking, isOpen, onClose }) => {
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (!isOpen) return;
+    const t = setTimeout(onClose, 6000);
+    return () => clearTimeout(t);
+  }, [isOpen, onClose]);
+
+  if (!isOpen || !booking) return null;
+
+  const { customer = {}, service = {} } = booking;
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4"
-      onClick={onClose}
-    >
+    <AnimatePresence>
       <motion.div
-        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.9, opacity: 0, y: 20 }}
-        className="bg-white rounded-xl sm:rounded-3xl max-w-md w-full p-4 sm:p-6 lg:p-8 text-center mx-2"
-        onClick={(e) => e.stopPropagation()}
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-3"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
       >
-        {/* Success Icon */}
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: "spring" }}
-          className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6"
+          onClick={(e) => e.stopPropagation()}
+          initial={{ scale: 0.85, y: 40, opacity: 0 }}
+          animate={{ scale: 1, y: 0, opacity: 1 }}
+          exit={{ scale: 0.85, y: 40, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 220, damping: 18 }}
+          className="bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 text-center shadow-[0_40px_120px_rgba(0,0,0,0.45)]"
         >
-          <CheckCircle size={24} className="sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-green-600" />
-        </motion.div>
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: [0, 1.2, 1] }}
+            transition={{ duration: 0.6 }}
+            className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5"
+          >
+            <CheckCircle className="w-10 h-10 text-green-600" />
+          </motion.div>
 
-        <h2 className="text-lg sm:text-xl lg:text-2xl font-serif font-bold text-[#800000] mb-3 sm:mb-4">
-          Enquiry Submitted Successfully!
-        </h2>
+          <h2 className="text-2xl font-serif font-bold text-[#800000] mb-2">
+            Enquiry Sent Successfully
+          </h2>
 
-        <p className="text-gray-600 mb-2 text-xs sm:text-sm lg:text-base">
-          Thank you <strong>{booking.customer.name}</strong> for your interest in
-        </p>
-        <p className="font-semibold text-[#800000] mb-4 sm:mb-6 text-sm sm:text-base lg:text-lg">{booking.service.name}</p>
+          <p className="text-gray-600 text-sm mb-1">
+            Thank you <b>{customer.name}</b> for choosing
+          </p>
+          <p className="text-lg font-semibold text-[#800000] mb-5">
+            {service.name}
+          </p>
 
-        <div className="bg-gray-50 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 text-left">
-          <div className="space-y-2 text-xs sm:text-sm">
-            <div className="flex items-center gap-2">
-              <UserCheck size={12} className="sm:w-3 sm:h-3 lg:w-4 lg:h-4 text-[#800000]" />
-              <span>Our executive will contact you within 5 minutes</span>
+          <div className="bg-gray-50 rounded-xl p-4 text-left space-y-2 text-sm">
+            <div className="flex gap-2">
+              <UserCheck className="w-4 h-4 text-[#800000]" />
+              Our executive will contact you shortly
             </div>
-            <div className="flex items-center gap-2">
-              <Phone size={12} className="sm:w-3 sm:h-3 lg:w-4 lg:h-4 text-[#800000]" />
-              <span>On your number: {booking.customer.phone}</span>
+            <div className="flex gap-2">
+              <Phone className="w-4 h-4 text-[#800000]" />
+              {customer.phone}
             </div>
-            <div className="flex items-center gap-2">
-              <Calendar size={12} className="sm:w-3 sm:h-3 lg:w-4 lg:h-4 text-[#800000]" />
-              <span>Event Date: {booking.customer.eventDate}</span>
+            <div className="flex gap-2">
+              <Calendar className="w-4 h-4 text-[#800000]" />
+              {customer.eventDate}
             </div>
           </div>
-        </div>
 
-        <div className="bg-[#FFF7E0] border border-[#FFD700] rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
-          <p className="text-xs sm:text-sm text-[#800000] font-medium">
-            📞 Need immediate assistance? Call us at <strong>+91 6201486202</strong>
-          </p>
-        </div>
+          <div className="mt-5 bg-[#FFF7E0] border border-[#FFD700] rounded-xl p-3 text-sm text-[#800000]">
+            📞 Need urgent help? Call <b>+91 6201486202</b>
+          </div>
 
-        <button
-          onClick={onClose}
-          className="w-full py-2 sm:py-3 bg-[#800000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors font-semibold text-sm sm:text-base"
-        >
-          Continue Browsing
-        </button>
+          <button
+            onClick={onClose}
+            className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-[#800000] to-[#A52A2A] text-white font-semibold"
+          >
+            Continue Browsing
+          </button>
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </AnimatePresence>
   );
 };
+
 
 const ServiceDetailModal = ({ service, isOpen, onClose, onBookNow }) => {
-  /* ================== HOOKS (ALWAYS TOP) ================== */
-  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-
+  const [index, setIndex] = useState(0);
   const media = service?.media || [];
 
-  useEffect(() => {
-    if (media[currentMediaIndex]?.type === "video") {
-      const timer = setTimeout(() => setIsVideoPlaying(true), 300);
-      return () => clearTimeout(timer);
-    }
-    setIsVideoPlaying(false);
-  }, [currentMediaIndex, media]);
+  useEffect(() => setIndex(0), [service]);
 
-  /* ================== EARLY RETURN (AFTER HOOKS) ================== */
+  useEffect(() => {
+    const esc = (e) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", esc);
+    return () => window.removeEventListener("keydown", esc);
+  }, [onClose]);
+
   if (!isOpen || !service) return null;
 
-  /* ================== HANDLERS ================== */
-  const prevMedia = () => {
-    setCurrentMediaIndex((p) => (p === 0 ? media.length - 1 : p - 1));
-    setIsVideoPlaying(false);
-  };
+  const prev = () => setIndex((p) => (p === 0 ? media.length - 1 : p - 1));
+  const next = () => setIndex((p) => (p === media.length - 1 ? 0 : p + 1));
 
-  const nextMedia = () => {
-    setCurrentMediaIndex((p) => (p === media.length - 1 ? 0 : p + 1));
-    setIsVideoPlaying(false);
-  };
-
-  /* ================== JSX ================== */
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
-      className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
-    >
+    <AnimatePresence>
       <motion.div
-        initial={{ scale: 0.9, y: 40, opacity: 0 }}
-        animate={{ scale: 1, y: 0, opacity: 1 }}
-        exit={{ scale: 0.9, y: 40, opacity: 0 }}
-        transition={{ type: "spring", stiffness: 180, damping: 18 }}
-        onClick={(e) => e.stopPropagation()}
-        className="
-          relative w-full max-w-5xl max-h-[92vh] overflow-y-auto
-          rounded-2xl lg:rounded-[2.8rem]
-          bg-gradient-to-b from-[#FFFDF5] via-white to-[#FFF6DD]
-          shadow-[0_30px_120px_rgba(255,215,0,0.35)]
-          border border-[#FFD700]/40
-        "
+        className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
       >
-        {/* ❌ Close */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-40 w-10 h-10 rounded-full
-          bg-white/70 backdrop-blur border border-gray-200
-          flex items-center justify-center shadow-lg hover:bg-white"
+        <motion.div
+          onClick={(e) => e.stopPropagation()}
+          initial={{ scale: 0.9, y: 50 }}
+          animate={{ scale: 1, y: 0 }}
+          exit={{ scale: 0.9, y: 50 }}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          className="relative w-full max-w-6xl max-h-[92vh] overflow-y-auto rounded-[2.5rem]
+          bg-gradient-to-b from-[#FFFDF4] via-white to-[#FFF1C1]
+          shadow-[0_50px_150px_rgba(255,215,0,0.35)] border border-[#FFD700]/40"
         >
-          <X className="w-5 h-5 text-[#800000]" />
-        </button>
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 z-30 w-11 h-11 rounded-full bg-white/80 flex items-center justify-center shadow"
+          >
+            <X className="text-[#800000]" />
+          </button>
 
-        {/* ================== HERO MEDIA ================== */}
-        <div className="relative h-60 sm:h-72 lg:h-96 rounded-t-2xl lg:rounded-t-[2.8rem] overflow-hidden mt-3">
+          <div className="relative h-72 lg:h-[420px] rounded-t-[2.5rem] overflow-hidden">
+            {media[index]?.type === "video" ? (
+  <video
+    src={media[index].src}
+    autoPlay
+    muted
+    loop
+    playsInline
+    preload="auto"
+    poster="/images/fallback-service.jpg"
+    className="w-full h-full object-cover bg-black"
+    onError={(e) => {
+      e.currentTarget.style.display = "none";
+    }}
+  />
+) : (
 
-          {media.length > 0 ? (
-            <>
-              {media[currentMediaIndex].type === "video" ? (
-                <video
-                  src={media[currentMediaIndex].src}
-                  autoPlay={isVideoPlaying}
-                  controls={isVideoPlaying}
-                  muted
-                  playsInline
-                  preload="metadata"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <img
-                  src={media[currentMediaIndex].src}
-                  alt={service.name}
-                  className="w-full h-full object-cover"
-                />
-              )}
+              <img
+                src={media[index]?.src}
+                alt={service.name}
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
+            )}
 
-              {/* ⬅️➡️ Arrows */}
-              {media.length > 1 && (
-                <>
-                  <button
-                    onClick={prevMedia}
-                    className="absolute left-3 top-1/2 -translate-y-1/2
-                    w-10 h-10 rounded-full bg-black/60 text-white
-                    flex items-center justify-center hover:bg-black/80 z-20"
-                  >
-                    <ChevronLeft size={18} />
-                  </button>
-                  <button
-                    onClick={nextMedia}
-                    className="absolute right-3 top-1/2 -translate-y-1/2
-                    w-10 h-10 rounded-full bg-black/60 text-white
-                    flex items-center justify-center hover:bg-black/80 z-20"
-                  >
-                    <ChevronRight size={18} />
-                  </button>
-                </>
-              )}
+            {media.length > 1 && (
+              <>
+                <button onClick={prev} className="nav-arrow left-4">
+                  <ChevronLeft />
+                </button>
+                <button onClick={next} className="nav-arrow right-4">
+                  <ChevronRight />
+                </button>
+              </>
+            )}
 
-              {/* 🔘 Dots */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-                {media.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => {
-                      setCurrentMediaIndex(i);
-                      setIsVideoPlaying(false);
-                    }}
-                    className={`w-3 h-3 rounded-full transition-all ${
-                      i === currentMediaIndex
-                        ? "bg-[#FFD700] scale-110"
-                        : "bg-white/60"
-                    }`}
-                  />
-                ))}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+
+            <div className="absolute bottom-6 left-6 text-white">
+              <h2 className="text-3xl font-serif font-bold">{service.name}</h2>
+              <div className="flex gap-3 text-sm mt-1">
+                <Star className="w-4 h-4 fill-[#FFD700]" />
+                {service.rating}
+                <MapPin className="w-4 h-4 text-[#FFD700]" />
+                {service.location || "India"}
               </div>
-            </>
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-200">
-              No Media Available
-            </div>
-          )}
-
-          {/* 🎭 Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1a0505]/90 via-[#1a0505]/30 to-transparent pointer-events-none" />
-
-          {/* 🏷️ Badge */}
-          <div className="absolute top-4 left-4 px-4 py-1 rounded-full
-            bg-gradient-to-r from-[#FFD700] to-[#FFA500]
-            text-[#1a0505] text-xs font-bold shadow-xl">
-            PREMIUM SERVICE
-          </div>
-
-          {/* 📌 Title */}
-          <div className="absolute bottom-6 left-6 right-6 text-white">
-            <h2 className="text-2xl lg:text-4xl font-serif font-bold">
-              {service.name}
-            </h2>
-            <div className="flex items-center gap-3 mt-2 text-sm">
-              <Star className="w-4 h-4 fill-[#FFD700]" />
-              {service.rating}
-              <MapPin className="w-4 h-4 text-[#FFD700]" />
-              {service.location || "India"}
             </div>
           </div>
-        </div>
 
-        {/* ================== CONTENT ================== */}
-        <div className="p-6 lg:p-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div>
-            <h3 className="text-lg font-serif font-bold text-[#800000] mb-2">
-              About This Service
-            </h3>
-            <p className="text-stone-600 text-sm leading-relaxed">
-              {service.description ||
-                "A premium service curated with tradition and executed with luxury."}
-            </p>
-          </div>
-
-          <div className="bg-white/80 backdrop-blur rounded-2xl p-6 border border-[#FFD700]/30 shadow-lg">
-            <h3 className="text-lg font-serif font-bold text-[#800000] mb-4">
-              Pricing
-            </h3>
-
-            <div className="flex justify-between items-center">
-              <span className="text-stone-600 text-sm">Starting From</span>
-              <span className="text-2xl font-bold text-[#800000]">
-                ₹{service.price.toLocaleString()}
-                {service.unit && (
-                  <span className="text-sm text-stone-400 ml-1">
-                    {service.unit}
-                  </span>
-                )}
-              </span>
+          <div className="p-8 lg:p-12 grid lg:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-lg font-serif font-bold text-[#800000] mb-2">
+                About Service
+              </h3>
+              <p className="text-stone-600 text-sm leading-relaxed">
+                {service.description ||
+                  "A premium service curated with tradition and executed with luxury."}
+              </p>
             </div>
 
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => onBookNow(service)}
-              className="
-                mt-6 w-full py-3 rounded-full
-                bg-gradient-to-r from-[#800000] via-[#A52A2A] to-[#800000]
-                text-white font-bold tracking-wide
-                shadow-[0_10px_40px_rgba(128,0,0,0.45)]
-                hover:shadow-[0_15px_60px_rgba(255,215,0,0.6)]
-              "
-            >
-              Book This Premium Service
-            </motion.button>
+            <div className="bg-white/90 rounded-2xl p-6 border border-[#FFD700]/40 shadow-xl">
+              <div className="flex justify-between items-center mb-6">
+                <span className="text-stone-600 text-sm">Starting From</span>
+                <span className="text-3xl font-bold text-[#800000]">
+                  ₹{service.price.toLocaleString()}
+                  {service.unit && (
+                    <span className="text-sm text-stone-400 ml-1">
+                      {service.unit}
+                    </span>
+                  )}
+                </span>
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={() => onBookNow(service)}
+                className="w-full py-4 rounded-full bg-gradient-to-r
+                from-[#800000] via-[#A52A2A] to-[#800000]
+                text-white font-bold shadow-[0_20px_60px_rgba(128,0,0,0.5)]"
+              >
+                Book Premium Service
+              </motion.button>
+            </div>
           </div>
-        </div>
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </AnimatePresence>
   );
 };
 
 
-
-// --------------------------- Enhanced Responsive Components ---------------------------
+/* ================= FLOATING PARTICLES (OPTIMIZED) ================= */
 const FloatingParticles = () => {
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 8 }).map(() => ({
+        left: Math.random() * 100,
+        size: Math.random() * 10 + 8,
+        duration: Math.random() * 12 + 12,
+        delay: Math.random() * 8,
+        symbol: Math.random() > 0.5 ? "✿" : "✦",
+      })),
+    []
+  );
+
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {[...Array(6)].map((_, i) => (
+      {particles.map((p, i) => (
         <motion.div
           key={i}
-          initial={{ y: "100%", opacity: 0 }}
-          animate={{ y: "-100%", opacity: [0, 0.4, 0] }}
-          transition={{ duration: Math.random() * 10 + 10, repeat: Infinity, ease: "linear", delay: Math.random() * 10 }}
-          className="absolute text-[#FFD700]/20 font-serif"
-          style={{ 
-            left: `${Math.random() * 100}%`, 
-            fontSize: `${Math.random() * 12 + 6}px` 
+          initial={{ y: "110%", opacity: 0 }}
+          animate={{ y: "-120%", opacity: [0, 0.35, 0] }}
+          transition={{
+            duration: p.duration,
+            repeat: Infinity,
+            ease: "linear",
+            delay: p.delay,
+          }}
+          className="absolute text-[#FFD700]/30 font-serif"
+          style={{
+            left: `${p.left}%`,
+            fontSize: `${p.size}px`,
           }}
         >
-          {Math.random() > 0.5 ? '✿' : '✦'}
+          {p.symbol}
         </motion.div>
       ))}
     </div>
   );
 };
 
+/* ================= COUNT UP (SMOOTH RAF) ================= */
 const CountUp = ({ end, label }) => {
   const [count, setCount] = useState(0);
-  
+
   useEffect(() => {
-    let start = 0;
-    const duration = 2000;
-    const increment = end / (duration / 16);
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) {
-        setCount(end);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 16);
-    return () => clearInterval(timer);
+    let startTime = null;
+    const duration = 1800;
+
+    const animate = (time) => {
+      if (!startTime) startTime = time;
+      const progress = Math.min((time - startTime) / duration, 1);
+      setCount(Math.floor(progress * end));
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+
+    requestAnimationFrame(animate);
   }, [end]);
 
   return (
-    <div className="text-center group cursor-default">
-      <div className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-[#FFD700] mb-1 sm:mb-2 group-hover:scale-110 transition-transform duration-300 font-serif">
+    <div className="text-center select-none group">
+      <div className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#FFD700] font-serif transition-transform duration-300 group-hover:scale-110">
         {count}+
       </div>
-      <div className="text-stone-300 text-xs sm:text-sm uppercase tracking-widest font-medium">
+      <div className="text-stone-300 text-xs sm:text-sm uppercase tracking-widest mt-1">
         {label}
       </div>
     </div>
   );
 };
 
+/* ================= SKELETON CARD (PREMIUM LOADER) ================= */
 const SkeletonCard = () => (
-  <div className="bg-white rounded-xl sm:rounded-[2rem] overflow-hidden shadow-sm h-full flex flex-col animate-pulse border border-[#FFD700]/20">
-    <div className="h-32 sm:h-40 lg:h-48 bg-gray-100"></div>
-    <div className="p-3 sm:p-4 lg:p-5 space-y-2 sm:space-y-3">
-      <div className="h-4 sm:h-5 lg:h-6 bg-gray-100 rounded w-3/4"></div>
-      <div className="h-3 sm:h-4 bg-gray-100 rounded w-1/2"></div>
-      <div className="flex justify-between mt-3 sm:mt-4 lg:mt-6">
-         <div className="h-4 sm:h-5 lg:h-6 bg-gray-100 rounded w-1/3"></div>
-         <div className="h-6 sm:h-8 bg-gray-100 rounded-full w-1/4"></div>
+  <div className="bg-white rounded-2xl overflow-hidden shadow-md animate-pulse border border-[#FFD700]/20 h-full flex flex-col">
+    <div className="h-36 sm:h-44 lg:h-52 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100" />
+    <div className="p-4 space-y-3 flex-1">
+      <div className="h-4 bg-gray-200 rounded w-3/4" />
+      <div className="h-3 bg-gray-200 rounded w-1/2" />
+      <div className="flex justify-between items-center pt-4">
+        <div className="h-4 bg-gray-200 rounded w-1/3" />
+        <div className="h-8 bg-gray-200 rounded-full w-20" />
       </div>
     </div>
   </div>
 );
 
+/* ================= SUPPORT FLOATING BUTTON (SMART & PREMIUM) ================= */
 const SupportFloatingButton = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-16 sm:bottom-20 right-3 sm:right-6 z-[90] flex flex-col items-end gap-2 sm:gap-3 lg:gap-4">
+    <div className="fixed bottom-16 sm:bottom-20 right-4 sm:right-6 z-[90] flex flex-col items-end gap-3">
       <AnimatePresence>
-        {isOpen && (
-          <div className="flex flex-col gap-1 sm:gap-2 lg:gap-3 items-end mb-2">
-            <motion.a
-              href="https://wa.me/916201486202" 
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="flex flex-col gap-2 items-end"
+          >
+            <a
+              href="https://wa.me/916201486202"
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 20, scale: 0.8 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.8 }}
-              transition={{ delay: 0.05 }}
-              className="flex items-center gap-1 sm:gap-2 lg:gap-3 bg-[#25D366] text-white px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 lg:py-2.5 rounded-full shadow-xl hover:bg-[#128C7E] transition-colors group text-xs sm:text-sm"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#25D366] text-white text-sm font-semibold shadow-xl hover:scale-105 transition"
             >
-              <span className="font-semibold whitespace-nowrap">WhatsApp</span>
-              <div className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 bg-white/20 rounded-full flex items-center justify-center group-hover:rotate-12 transition-transform">
-                <MessageCircle size={12} className="sm:w-3 sm:h-3 lg:w-4 lg:h-4" />
-              </div>
-            </motion.a>
+              WhatsApp
+              <MessageCircle size={16} />
+            </a>
 
-            <motion.a
+            <a
               href="tel:+916201486202"
-              initial={{ opacity: 0, y: 20, scale: 0.8 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.8 }}
-              className="flex items-center gap-1 sm:gap-2 lg:gap-3 bg-blue-600 text-white px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 lg:py-2.5 rounded-full shadow-xl hover:bg-blue-700 transition-colors group text-xs sm:text-sm"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600 text-white text-sm font-semibold shadow-xl hover:scale-105 transition"
             >
-              <span className="font-semibold whitespace-nowrap">Call Now</span>
-              <div className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 bg-white/20 rounded-full flex items-center justify-center group-hover:rotate-12 transition-transform">
-                <Phone size={12} className="sm:w-3 sm:h-3 lg:w-4 lg:h-4" />
-              </div>
-            </motion.a>
-          </div>
+              Call Now
+              <Phone size={16} />
+            </a>
+          </motion.div>
         )}
       </AnimatePresence>
 
       <motion.button
-        whileHover={{ scale: 1.05 }}
+        whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 relative overflow-hidden ring-2 sm:ring-3 lg:ring-4 ring-[#FFD700]/40 ${
-          isOpen ? 'bg-stone-800' : 'bg-[#800000]'
-        }`}
+        onClick={() => setOpen(!open)}
+        className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center
+        ring-4 ring-[#FFD700]/40 transition-all duration-300
+        ${open ? "bg-stone-800" : "bg-[#800000]"}`}
       >
-        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent rounded-full pointer-events-none"></div>
         <AnimatePresence mode="wait">
-          {isOpen ? (
+          {open ? (
             <motion.div
               key="close"
               initial={{ rotate: -90, opacity: 0 }}
               animate={{ rotate: 0, opacity: 1 }}
               exit={{ rotate: 90, opacity: 0 }}
             >
-              <X className="text-white w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+              <X className="text-white w-6 h-6" />
             </motion.div>
           ) : (
             <motion.div
-              key="headset"
+              key="support"
               initial={{ rotate: 90, opacity: 0 }}
               animate={{ rotate: 0, opacity: 1 }}
               exit={{ rotate: -90, opacity: 0 }}
             >
-              <Headphones className="text-[#FFD700] w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+              <Headphones className="text-[#FFD700] w-6 h-6" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -1086,10 +1034,16 @@ const SupportFloatingButton = () => {
   );
 };
 
-const ServiceCard = ({ service, onBook, onToggleWishlist, isWishlisted, onViewDetails }) => {
-  const imageMedia = service.media?.find(m => m.type === "image");
-  const videoMedia = service.media?.find(m => m.type === "video");
-  
+const ServiceCard = ({
+  service,
+  onBook,
+  onToggleWishlist,
+  isWishlisted,
+  onViewDetails,
+}) => {
+  const imageMedia = service.media?.find((m) => m.type === "image");
+  const videoMedia = service.media?.find((m) => m.type === "video");
+
   return (
     <motion.div
       layout
@@ -1105,10 +1059,10 @@ const ServiceCard = ({ service, onBook, onToggleWishlist, isWishlisted, onViewDe
         transition-all duration-700
       "
     >
-      {/* 🌟 Gold Glow Border */}
-      <div className="absolute inset-0 rounded-[inherit] ring-1 ring-transparent group-hover:ring-[#FFD700]/70 transition-all duration-700 pointer-events-none" />
+      {/* 🌟 Glow Border */}
+      <div className="absolute inset-0 rounded-[inherit] ring-1 ring-transparent group-hover:ring-[#FFD700]/70 pointer-events-none transition-all duration-700" />
 
-      {/* 👑 VIP Badge */}
+      {/* 👑 Badge */}
       <div className="absolute top-3 right-3 z-30">
         <span className="px-3 py-1 text-[10px] font-bold tracking-widest uppercase
           bg-gradient-to-r from-[#FFD700] to-[#FFA500]
@@ -1117,12 +1071,11 @@ const ServiceCard = ({ service, onBook, onToggleWishlist, isWishlisted, onViewDe
         </span>
       </div>
 
-      {/* 🎥 IMAGE / VIDEO SECTION */}
+{/* ================= MEDIA ================= */}
 <div
   onClick={onViewDetails}
-  className="relative h-60 sm:h-60 lg:h-60 xl:h-72 overflow-hidden cursor-pointer group"
+  className="relative h-60 lg:h-72 overflow-hidden cursor-pointer"
 >
-  {/* VIDEO PREVIEW (ALL DEVICES) */}
   {videoMedia ? (
     <video
       src={videoMedia.src}
@@ -1131,22 +1084,30 @@ const ServiceCard = ({ service, onBook, onToggleWishlist, isWishlisted, onViewDe
       loop
       playsInline
       preload="auto"
-      poster={imageMedia?.src}
-      className="absolute inset-0 w-full h-full object-cover"
+      poster={imageMedia?.src || "/images/fallback-service.jpg"}
+      className="absolute inset-0 w-full h-full object-cover bg-black"
+      onError={(e) => {
+        // fallback to image if video fails
+        e.currentTarget.style.display = "none";
+      }}
     />
-  ) : imageMedia ? (
+  ) : (
     <img
-      src={imageMedia.src}
+      src={imageMedia?.src || "/images/fallback-service.jpg"}
       alt={service.name}
       loading="lazy"
       className="absolute inset-0 w-full h-full object-cover"
+      onError={(e) => {
+        e.currentTarget.onerror = null;
+        e.currentTarget.src = "/images/fallback-service.jpg";
+      }}
     />
-  ) : null}
+  )}
 
-  {/* 🎬 Cinematic Overlay */}
+  {/* 🎬 Overlay (DOES NOT BLOCK VIDEO) */}
   <div className="absolute inset-0 bg-gradient-to-t from-[#1a0505]/80 via-[#1a0505]/30 to-transparent pointer-events-none" />
 
-  {/* ✨ Shine Sweep */}
+  {/* ✨ Shine */}
   <div
     className="
       absolute inset-0
@@ -1157,53 +1118,54 @@ const ServiceCard = ({ service, onBook, onToggleWishlist, isWishlisted, onViewDe
     "
   />
 
+  {/* ❤️ Wishlist (clickable) */}
+  <motion.button
+    whileTap={{ scale: 0.85 }}
+    onClick={(e) => {
+      e.stopPropagation();
+      onToggleWishlist(service.id);
+    }}
+    className="
+      absolute top-3 left-3 z-30
+      w-9 h-9 rounded-full
+      bg-white/20 backdrop-blur-xl
+      border border-white/40
+      flex items-center justify-center
+      shadow-xl
+    "
+  >
+    <Heart
+      className={`w-5 h-5 transition-all duration-300 ${
+        isWishlisted
+          ? "fill-[#800000] text-[#800000] scale-110"
+          : "text-white group-hover:text-[#FFD700]"
+      }`}
+    />
+  </motion.button>
 
-
-
-        {/* ❤️ Wishlist */}
-        <motion.button
-          whileTap={{ scale: 0.85 }}
-          onClick={(e) => { e.stopPropagation(); onToggleWishlist(service.id); }}
-          className="
-            absolute top-3 left-3 z-30
-            w-9 h-9 rounded-full
-            bg-white/20 backdrop-blur-xl
-            border border-white/40
-            flex items-center justify-center
-            shadow-xl
-          "
-        >
-          <Heart
-            className={`w-5 h-5 transition-all duration-300 ${
-              isWishlisted
-                ? "fill-[#800000] text-[#800000] scale-110"
-                : "text-white group-hover:text-[#FFD700]"
-            }`}
-          />
-        </motion.button>
-
-        {/* Bottom Info */}
-        <div className="absolute bottom-3 left-3 right-3 z-20 flex justify-between items-end text-white">
-          <div>
-            <span className="px-2 py-0.5 text-[10px] font-bold tracking-widest uppercase
-              bg-white/20 backdrop-blur border border-white/30 rounded text-[#FFD700]">
-              {service.category}
-            </span>
-            <div className="flex items-center gap-1 mt-1 text-[10px] opacity-90">
-              <MapPin size={12} className="text-[#FFD700]" />
-              {service.location || "India"}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1 bg-gradient-to-r from-[#FFD700] to-[#FFA500]
-            px-2 py-1 rounded-full text-[#1a0505] shadow-lg">
-            <Star size={12} className="fill-[#1a0505]" />
-            <span className="text-xs font-bold">{service.rating}</span>
-          </div>
-        </div>
+  {/* ℹ️ Bottom Info */}
+  <div className="absolute bottom-3 left-3 right-3 z-20 flex justify-between items-end text-white pointer-events-none">
+    <div>
+      <span className="px-2 py-0.5 text-[10px] font-bold tracking-widest uppercase
+        bg-white/20 backdrop-blur border border-white/30 rounded text-[#FFD700]">
+        {service.category}
+      </span>
+      <div className="flex items-center gap-1 mt-1 text-[10px] opacity-90">
+        <MapPin size={12} className="text-[#FFD700]" />
+        {service.location || "India"}
       </div>
+    </div>
 
-      {/* 🧾 CONTENT */}
+    <div className="flex items-center gap-1 bg-gradient-to-r from-[#FFD700] to-[#FFA500]
+      px-2 py-1 rounded-full text-[#1a0505] shadow-lg">
+      <Star size={12} className="fill-[#1a0505]" />
+      <span className="text-xs font-bold">{service.rating}</span>
+    </div>
+  </div>
+</div>
+
+
+      {/* ================= CONTENT ================= */}
       <div className="relative flex flex-col flex-1 p-4 lg:p-5">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-1
           bg-gradient-to-r from-[#FFD700] to-[#FFA500] rounded-full opacity-70" />
@@ -1211,17 +1173,18 @@ const ServiceCard = ({ service, onBook, onToggleWishlist, isWishlisted, onViewDe
         <h3
           onClick={onViewDetails}
           className="mt-2 font-serif font-bold text-base lg:text-lg xl:text-xl
-            text-[#1a0505] group-hover:text-[#800000]
-            transition-colors cursor-pointer line-clamp-2"
+          text-[#1a0505] group-hover:text-[#800000]
+          transition-colors cursor-pointer line-clamp-2"
         >
           {service.name}
         </h3>
 
         <p className="mt-1 text-xs lg:text-sm text-stone-600 line-clamp-2">
-          {service.description || "Crafted with tradition, executed with luxury."}
+          {service.description ||
+            "Crafted with tradition, executed with luxury."}
         </p>
 
-        {/* Price + CTA */}
+        {/* 💰 Price + CTA */}
         <div className="mt-auto pt-4 border-t border-dashed border-[#FFD700]/40 flex justify-between items-center">
           <div>
             <p className="text-[10px] uppercase tracking-widest text-[#800000]/70 font-bold">
