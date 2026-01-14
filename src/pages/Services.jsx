@@ -271,15 +271,48 @@ const servicesData = {
 
 // --------------------------- Categories ---------------------------
 const categories = [
-  { key: "all", label: "All Services", icon: Sparkles },
-  { key: "venues", label: "Venues", icon: Building2 },
-  { key: "decorations", label: "Decor", icon: Flower2 },
-  { key: "catering", label: "Catering", icon: Utensils },
-  { key: "photography", label: "Photography", icon: Camera },
-  { key: "entertainment", label: "Entertainment", icon: Music },
-  { key: "artist", label: "Artist", icon: User },
-  { key: "other", label: "Other Services", icon: Gift },
+  {
+    key: "all",
+    label: "All Services",
+    image: "images/lightdeco1.png"
+  },
+  {
+    key: "venues",
+    label: "Venues",
+    image: "images/hall02.png"
+  },
+  {
+    key: "decorations",
+    label: "Decor",
+    image: "images/decor3.png"
+  },
+  {
+    key: "catering",
+    label: "Catering",
+    image: "images/catring03.png"
+  },
+  {
+    key: "photography",
+    label: "Photography",
+    image: "images/photography3.png"
+  },
+  {
+    key: "entertainment",
+    label: "Entertainment",
+    image: "images/folk-dance.png"
+  },
+  {
+    key: "artist",
+    label: "Artist",
+    image: "images/ankar.png"
+  },
+  {
+    key: "other",
+    label: "Other",
+    image: "images/car-decor.png"
+  }
 ];
+
 
 // --------------------------- Toast Context ---------------------------
 const ToastContext = createContext();
@@ -1350,71 +1383,65 @@ const HeroSection = ({ query, setQuery, location, setLocation }) => {
 };
 
 
-const FilterBar = ({ onSortChange, activeCategory, setActiveCategory, categories }) => {
+const FilterBar = ({
+  activeCategory,
+  setActiveCategory,
+  categories
+}) => {
   return (
-    <div className="bg-white px-2 sm:px-3 lg:px-4 xl:px-6 py-2 sm:py-3 lg:py-4 rounded-lg sm:rounded-xl lg:rounded-2xl xl:rounded-[1.5rem] shadow-sm border border-[#FFD700]/20 mb-4 sm:mb-6 lg:mb-8 flex flex-col gap-2 sm:gap-3 lg:gap-4 sticky top-0 z-40 mx-1 sm:mx-0">
+    <div className="sticky top-[64px] z-40 mb-6 px-2 sm:px-4">
       
-      {/* Categories Bar */}
-      <div className="w-full overflow-x-auto scrollbar-hide flex gap-1.5 sm:gap-2 lg:gap-3 items-center pb-1 sm:pb-1.5 lg:pb-2">
-         {categories.map((cat) => {
-             const Icon = cat.icon;
-             const isActive = activeCategory === cat.key;
-             return (
-                 <button 
-                     key={cat.key}
-                     onClick={() => setActiveCategory(cat.key)}
-                     className={`flex items-center gap-0.5 sm:gap-1 lg:gap-1.5 xl:gap-2 px-1.5 sm:px-2 lg:px-3 xl:px-4 py-1 sm:py-1.5 lg:py-2 rounded-full text-[10px] sm:text-xs font-semibold transition-all duration-300 whitespace-nowrap border ${
-                       isActive 
-                         ? 'bg-[#800000] text-white border-[#800000] shadow-md transform scale-105' 
-                         : 'bg-stone-50 text-stone-600 border-stone-100 hover:bg-stone-100'
-                     }`}
-                 >
-                     <Icon size={10} className="sm:w-2.5 sm:h-2.5 lg:w-3 lg:h-3 xl:w-3.5 xl:h-3.5" />
-                     <span className="text-[10px] sm:text-xs">{cat.label}</span>
-                 </button>
-             )
-         })}
-      </div>
+      {/* ================= CATEGORY THUMBNAILS ONLY ================= */}
+      <div className="flex gap-4 sm:gap-5 overflow-x-auto scrollbar-hide py-2">
 
-      {/* Filters & Sort */}
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:gap-4 items-center justify-between w-full border-t border-stone-100 pt-2 sm:pt-2.5 lg:pt-3">
-        <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-2 w-full sm:w-auto overflow-x-auto scrollbar-hide pb-1 sm:pb-0">
-            <button className="flex items-center gap-0.5 sm:gap-1 lg:gap-1.5 px-1.5 sm:px-2 lg:px-3 xl:px-4 py-1 sm:py-1.5 lg:py-2 bg-[#800000] text-white rounded-full text-[10px] sm:text-xs font-semibold shadow-md whitespace-nowrap">
-              <Filter size={10} className="sm:w-2.5 sm:h-2.5 lg:w-3 lg:h-3" /> 
-              <span>Filters</span>
+        {categories.map((cat) => {
+          const isActive = activeCategory === cat.key;
+
+          return (
+            <button
+              key={cat.key}
+              onClick={() => setActiveCategory(cat.key)}
+              className="flex flex-col items-center gap-1.5 min-w-[80px] sm:min-w-[96px]"
+            >
+              {/* Thumbnail */}
+              <div
+                className={`
+                  w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24
+                  rounded-full overflow-hidden
+                  border-2 transition-all duration-300
+                  ${isActive
+                    ? "border-[#800000] scale-110 ring-2 ring-[#FFD700]/60 shadow-lg"
+                    : "border-[#FFD700]/40 hover:scale-105"
+                  }
+                `}
+              >
+                <img
+                  src={cat.image}
+                  alt={cat.label}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Name */}
+              <span
+                className={`
+                  text-xs sm:text-sm font-semibold text-center
+                  ${isActive ? "text-[#800000]" : "text-[#5a3a3a]"}
+                `}
+              >
+                {cat.label}
+              </span>
             </button>
-            <button className="px-1.5 sm:px-2 lg:px-3 xl:px-4 py-1 sm:py-1.5 lg:py-2 border border-[#FFD700]/30 rounded-full text-[10px] sm:text-xs font-medium text-[#800000] hover:border-[#FFD700] hover:bg-[#FFF7E0] transition-colors whitespace-nowrap bg-[#FAF9F6]">
-              Price Range
-            </button>
-            <button className="px-1.5 sm:px-2 lg:px-3 xl:px-4 py-1 sm:py-1.5 lg:py-2 border border-[#FFD700]/30 rounded-full text-[10px] sm:text-xs font-medium text-[#800000] hover:border-[#FFD700] hover:bg-[#FFF7E0] transition-colors whitespace-nowrap bg-[#FAF9F6]">
-              Location
-            </button>
-            <button className="px-1.5 sm:px-2 lg:px-3 xl:px-4 py-1 sm:py-1.5 lg:py-2 border border-[#FFD700]/30 rounded-full text-[10px] sm:text-xs font-medium text-[#800000] hover:border-[#FFD700] hover:bg-[#FFF7E0] transition-colors whitespace-nowrap bg-[#FAF9F6]">
-              Availability
-            </button>
-        </div>
-        
-        <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 w-full sm:w-auto justify-end">
-            <span className="text-[10px] sm:text-xs font-medium text-[#800000]/60 uppercase tracking-wide hidden sm:block">
-              Sort By:
-            </span>
-            <div className="relative">
-                <select 
-                  onChange={(e) => onSortChange(e.target.value)}
-                  className="bg-[#FAF9F6] pl-1.5 sm:pl-2 lg:pl-3 pr-5 sm:pr-6 lg:pr-7 xl:pr-8 py-1 sm:py-1.5 lg:py-2 rounded text-[10px] sm:text-xs font-semibold text-[#800000] outline-none cursor-pointer border border-[#FFD700]/30 focus:border-[#800000] appearance-none"
-                >
-                  <option value="rating">Top Rated</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="trending">Trending</option>
-                </select>
-                <ChevronDown size={10} className="absolute right-1 sm:right-1.5 lg:right-2 top-1/2 -translate-y-1/2 text-[#800000] pointer-events-none" />
-            </div>
-        </div>
+          );
+        })}
+
       </div>
     </div>
   );
 };
+
+
+
 
 
 // --------------------------- Main App Component ---------------------------
