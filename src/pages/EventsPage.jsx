@@ -1,5 +1,13 @@
 // src/pages/RentalStore.jsx
-import React, { useMemo, useState, useEffect } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback
+} from "react";
+
+
 import {
   FiShoppingCart,
   FiSearch,
@@ -55,7 +63,7 @@ const rentalProducts = [
     imgGallery: [
       "images/dj2.png",
       "images/dj1.png",
-      "images/decor2.png"
+      "public/images/dj.png"
     ],
     video: "https://assets.mixkit.co/videos/preview/mixkit-dj-mixing-in-a-night-club-5-large.mp4",
     description: "Professional DJ controllers from Pioneer or Numark for seamless mixing",
@@ -322,178 +330,143 @@ const getTomorrowDate = () => {
   return t.toISOString().split("T")[0];
 };
 
-// ========== PRODUCT CAROUSEL COMPONENT ==========
 const ProductCarousel = ({ gallery = [], video, productName }) => {
   const [index, setIndex] = useState(0);
-  const [touchStart, setTouchStart] = useState(null);
   const [isHovering, setIsHovering] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const touchStartX = useRef(null);
 
-  const total = (video && !videoError) ? gallery.length + 1 : gallery.length;
+  const hasVideo = video && !videoError;
+  const slides = hasVideo ? ["__video__", ...gallery] : gallery;
+  const total = slides.length;
 
-  // Auto slide with hover pause
+  /* ================= AUTOPLAY ================= */
   useEffect(() => {
     if (isHovering || total <= 1) return;
-    
-    const t = setInterval(() => {
+
+    const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % total);
-    }, 3000);
-    return () => clearInterval(t);
-  }, [total, isHovering]);
+    }, 3500);
 
-  // Swipe support
-  const handleSwipe = (dir) => {
-    if (dir === "left") {
-      setIndex((prev) => (prev + 1) % total);
-    } else {
-      setIndex((prev) => (prev - 1 + total) % total);
-    }
+    return () => clearInterval(timer);
+  }, [isHovering, total]);
+
+  /* ================= KEYBOARD SUPPORT ================= */
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
+
+  const next = () => setIndex((i) => (i + 1) % total);
+  const prev = () => setIndex((i) => (i - 1 + total) % total);
+
+  /* ================= TOUCH SWIPE ================= */
+  const onTouchStart = (e) => {
+    touchStartX.current = e.changedTouches[0].clientX;
   };
 
-  const handleTouchStart = (e) => {
-    setTouchStart(e.changedTouches[0].clientX);
+  const onTouchEnd = (e) => {
+    if (!touchStartX.current) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) diff > 0 ? next() : prev();
+    touchStartX.current = null;
   };
 
-  const handleTouchEnd = (e) => {
-    if (!touchStart) return;
-    
-    const touchEnd = e.changedTouches[0].clientX;
-    const diff = touchStart - touchEnd;
-
-    if (Math.abs(diff) > 50) { // Minimum swipe distance
-      if (diff > 0) {
-        handleSwipe("left");
-      } else {
-        handleSwipe("right");
-      }
-    }
-    setTouchStart(null);
-  };
-
-  const handleVideoError = () => {
-    setVideoError(true);
-    // If we're currently on the video and it fails, move to first image
-    if (index === 0 && video) {
-      setIndex(0);
-    }
-  };
-
-  const currentMedia = () => {
-    if (video && !videoError && index === 0) {
-      return { type: "video", src: video };
-    }
-    const imgIndex = video && !videoError ? index - 1 : index;
-    return { type: "image", src: gallery[imgIndex] || gallery[0] };
-  };
-
-  const active = currentMedia();
-
-  // Handle dot click
-  const handleDotClick = (i) => {
-    setIndex(i);
-  };
-
-  // Handle hover over dots to preview
-  const handleDotHover = (i) => {
-    if (isHovering) {
-      setIndex(i);
-    }
-  };
-
-  if (total === 0) {
+  if (!total) {
     return (
-      <div className="h-40 sm:h-48 rounded-xl overflow-hidden bg-amber-100 flex items-center justify-center" style={{backgroundColor: colors.amber}}>
-        <span className="text-brown/40 text-sm">No images available</span>
+      <div className="h-44 rounded-xl bg-amber-100 flex items-center justify-center text-brown/50">
+        No media available
       </div>
     );
   }
 
   return (
     <div
-      className="relative h-40 sm:h-48 rounded-xl overflow-hidden bg-amber-100 group"
-      style={{backgroundColor: colors.amber}}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
+      className="relative h-44 sm:h-52 rounded-xl overflow-hidden bg-amber-100 group"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
     >
-      {/* Media Display */}
-      <div className="w-full h-full relative">
-        {active.type === "image" ? (
-          <img
-            src={active.src}
-            alt={`${productName} - Image ${index + 1}`}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            onError={(e) => {
-              e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FFF8E7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='10' fill='%235A3E2B'%3EImage%3C/text%3E%3C/svg%3E";
-            }}
-          />
-        ) : (
-          <video
-            className="w-full h-full object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
-            onError={handleVideoError}
-          >
-            <source src={active.src} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        )}
-        
-        {/* Video Indicator */}
-        {active.type === "video" && (
-          <div className="absolute top-2 right-2 bg-black/60 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-            <FiPlay className="w-3 h-3" />
-            Video
+      {/* ================= SLIDER ================= */}
+      <div
+        className="flex h-full transition-transform duration-700 ease-out"
+        style={{ transform: `translateX(-${index * 100}%)` }}
+      >
+        {slides.map((item, i) => (
+          <div key={i} className="min-w-full h-full relative">
+            {item === "__video__" ? (
+              <video
+                className="w-full h-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+                onError={() => setVideoError(true)}
+              >
+                <source src={video} type="video/mp4" />
+              </video>
+            ) : (
+              <img
+                src={item}
+                alt={`${productName} ${i}`}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                onError={(e) =>
+                  (e.currentTarget.src =
+                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%23FFF8E7'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='10' fill='%235A3E2B'%3EImage%3C/text%3E%3C/svg%3E")
+                }
+              />
+            )}
+
+            {item === "__video__" && (
+              <span className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                <FiPlay size={12} /> Video
+              </span>
+            )}
           </div>
-        )}
+        ))}
       </div>
 
-      {/* Navigation Arrows - Show on hover (Hidden on touch devices via group-hover usually) */}
+      {/* ================= ARROWS ================= */}
       {total > 1 && (
         <>
           <button
-            onClick={() => handleSwipe("right")}
-            className="hidden sm:flex absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-lg hover:bg-white hover:scale-110"
-            aria-label="Previous image"
+            onClick={prev}
+            className="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition"
           >
-            <FiArrowLeft className="w-4 h-4" style={{color: colors.culturalRed}} />
+            <FiArrowLeft />
           </button>
           <button
-            onClick={() => handleSwipe("left")}
-            className="hidden sm:flex absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-lg hover:bg-white hover:scale-110"
-            aria-label="Next image"
+            onClick={next}
+            className="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition rotate-180"
           >
-            <FiArrowLeft className="w-4 h-4 rotate-180" style={{color: colors.culturalRed}} />
+            <FiArrowLeft />
           </button>
         </>
       )}
 
-      {/* Dots Indicator */}
+      {/* ================= DOTS ================= */}
       {total > 1 && (
-        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 px-2">
-          {[...Array(total)].map((_, i) => (
+        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+          {slides.map((_, i) => (
             <button
               key={i}
-              onClick={() => handleDotClick(i)}
-              onMouseEnter={() => handleDotHover(i)}
-              className={`flex-1 max-w-[20px] h-2 rounded-full cursor-pointer transition-all duration-300 ${
-                index === i
-                  ? "scale-110 shadow-sm"
-                  : "bg-white/70 hover:bg-white/90"
+              onClick={() => setIndex(i)}
+              className={`h-2 rounded-full transition-all ${
+                index === i ? "w-6 bg-orange-500" : "w-2 bg-white/70"
               }`}
-              style={{backgroundColor: index === i ? colors.saffron : undefined}}
-              aria-label={`Go to slide ${i + 1}`}
             />
           ))}
         </div>
       )}
 
-      {/* Slide Counter */}
+      {/* ================= COUNTER ================= */}
       {total > 1 && (
-        <div className="absolute top-2 left-2 bg-black/60 text-white px-2 py-1 rounded-full text-xs font-semibold">
+        <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
           {index + 1} / {total}
         </div>
       )}
