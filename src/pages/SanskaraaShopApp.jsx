@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef,useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -21,7 +21,8 @@ import {
   Check,
   Plus,
   Minus,
-  Filter
+  Filter,
+  ArrowRight 
 } from "lucide-react";
 
 /* ==========================================================================
@@ -144,43 +145,102 @@ const CATEGORIES = [
    2. UI COMPONENTS (Restyled)
    ========================================================================== */
 
-const Badge = ({ children, color, icon: Icon }) => {
-  const colors = {
-    red: "bg-[#800000] text-white border border-[#600000]",
-    amber: "bg-amber-100 text-amber-800 border border-amber-200",
-    green: "bg-green-100 text-green-800 border border-green-200",
-    blue: "bg-blue-100 text-blue-800 border border-blue-200"
+const Badge = ({
+  children,
+  variant = "red",
+  icon: Icon,
+  size = "sm",
+}) => {
+  const variants = {
+    red: "bg-[#800000]/90 text-white border border-[#600000]",
+    amber: "bg-amber-50 text-amber-800 border border-amber-200",
+    green: "bg-green-50 text-green-800 border border-green-200",
+    blue: "bg-blue-50 text-blue-800 border border-blue-200",
+    gray: "bg-gray-100 text-gray-700 border border-gray-200",
   };
-  
+
+  const sizes = {
+    sm: "text-[10px] px-2 py-0.5",
+    md: "text-xs px-3 py-1",
+  };
+
   return (
-    <div className={`${colors[color]} text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-sm`}>
-      {Icon && <Icon size={10} />}
+    <span
+      className={`
+        inline-flex items-center gap-1 rounded-full
+        font-semibold tracking-wide
+        shadow-sm backdrop-blur
+        ${variants[variant]}
+        ${sizes[size]}
+      `}
+    >
+      {Icon && <Icon size={12} className="opacity-80" />}
       {children}
-    </div>
+    </span>
   );
 };
 
+
 const Toast = ({ message, type = "success", onClose }) => {
   useEffect(() => {
-    const timer = setTimeout(() => onClose(), 3000);
+    const timer = setTimeout(onClose, 3200);
     return () => clearTimeout(timer);
   }, [onClose]);
 
+  const styles = {
+    success: {
+      bg: "bg-[#FFF7E0]",
+      border: "border-orange-200",
+      text: "text-[#800000]",
+      icon: CheckCircle,
+      iconColor: "text-green-600",
+    },
+    error: {
+      bg: "bg-red-50",
+      border: "border-red-200",
+      text: "text-red-800",
+      icon: AlertCircle,
+      iconColor: "text-red-600",
+    },
+    info: {
+      bg: "bg-blue-50",
+      border: "border-blue-200",
+      text: "text-blue-800",
+      icon: Info,
+      iconColor: "text-blue-600",
+    },
+  };
+
+  const { bg, border, text, icon: Icon, iconColor } = styles[type];
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 50 }}
-      className="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 max-w-[90vw]"
+      initial={{ opacity: 0, y: 40, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 40, scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      role="alert"
+      aria-live="assertive"
+      className="fixed top-24 left-1/2 -translate-x-1/2 z-[999] w-fit max-w-[90vw]"
     >
-      <div className={`px-4 py-3 rounded-xl shadow-xl border flex items-center gap-2 ${
-        type === "success" ? "bg-[#FFF7E0] border-orange-200 text-[#800000]" :
-        type === "error" ? "bg-red-50 border-red-200 text-red-800" :
-        "bg-blue-50 border-blue-200 text-blue-800"
-      }`}>
-        {type === "success" ? <CheckCircle size={18} className="text-green-600" /> : <AlertCircle size={18} />}
-        <span className="font-medium text-sm">{message}</span>
-        <button onClick={onClose} className="ml-2">
+      <div
+        className={`
+          flex items-center gap-3 px-4 py-3 rounded-2xl
+          shadow-xl border backdrop-blur
+          ${bg} ${border} ${text}
+        `}
+      >
+        <Icon size={18} className={iconColor} />
+
+        <span className="text-sm font-medium leading-snug">
+          {message}
+        </span>
+
+        <button
+          onClick={onClose}
+          className="ml-2 p-1 rounded-full hover:bg-black/5 transition"
+          aria-label="Close notification"
+        >
           <X size={16} />
         </button>
       </div>
@@ -191,88 +251,129 @@ const Toast = ({ message, type = "success", onClose }) => {
 const ProductCard = ({ product, onClick, onBookNow }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
 
+  // -------- SAFE DATA --------
+  const price = product?.pricing?.basePrice ?? product?.price ?? 0;
+  const rating = product?.rating?.value ?? product?.rating ?? 0;
+  const image =
+    product?.media?.thumbnail ||
+    product?.img ||
+    "/images/placeholder.png";
+
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      whileHover={{ y: -4 }}
-      whileTap={{ scale: 0.98 }}
-      className="group bg-[#FFF7E0] rounded-xl overflow-hidden shadow-md hover:shadow-xl border border-orange-200 flex flex-col h-full cursor-pointer transition-all duration-300"
-      onClick={() => onClick(product)}
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      whileHover={{ y: -6 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 260, damping: 22 }}
+      className="group bg-[#FFF7E0] rounded-2xl overflow-hidden shadow-md hover:shadow-2xl border border-orange-200 flex flex-col h-full cursor-pointer transition-all"
+      onClick={() => onClick?.(product)}
     >
+      {/* ================= IMAGE ================= */}
       <div className="relative aspect-square bg-amber-50 overflow-hidden">
-        <img 
-          src={product.img} 
-          alt={product.name} 
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+        <img
+          src={image}
+          alt={product?.name}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          onError={(e) => (e.currentTarget.src = "/images/placeholder.png")}
         />
-        
-        {product.stock < 10 && (
-          <div className="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">
-            Only {product.stock}
+
+        {/* STOCK ALERT */}
+        {product?.inventory?.stock < 10 && (
+          <div className="absolute top-2 right-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow">
+            Only {product.inventory.stock} left
           </div>
         )}
-        
+
+        {/* BADGES */}
         <div className="absolute top-2 left-2 flex flex-col gap-1">
-          {product.popular && <Badge color="red">POPULAR</Badge>}
-          {product.trending && <Badge color="amber">TRENDING</Badge>}
-          {product.bestseller && <Badge color="green">BEST</Badge>}
+          {product?.popularity?.popular && <Badge variant="red">POPULAR</Badge>}
+          {product?.popularity?.trending && (
+            <Badge variant="amber">TRENDING</Badge>
+          )}
+          {product?.popularity?.bestseller && (
+            <Badge variant="green">BESTSELLER</Badge>
+          )}
         </div>
-        
-        <button 
+
+        {/* WISHLIST */}
+        <button
           onClick={(e) => {
             e.stopPropagation();
-            setIsWishlisted(!isWishlisted);
+            setIsWishlisted((p) => !p);
           }}
-          className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full p-1.5 shadow-md hover:bg-white"
+          className="absolute bottom-2 right-2 bg-white/90 backdrop-blur rounded-full p-2 shadow-md hover:scale-110 transition"
+          aria-label="Add to wishlist"
         >
-          <Heart 
-            size={16} 
-            className={isWishlisted ? "fill-red-500 text-red-500" : "text-gray-400"} 
+          <Heart
+            size={16}
+            className={
+              isWishlisted
+                ? "fill-red-500 text-red-500"
+                : "text-gray-400"
+            }
           />
         </button>
       </div>
-      
-      <div className="p-3 flex flex-col flex-grow">
-        <div className="mb-1 flex items-center justify-between">
-          <span className="text-[10px] font-medium text-amber-800 uppercase bg-amber-100 px-1.5 py-0.5 rounded">
-            {product.category}
+
+      {/* ================= CONTENT ================= */}
+      <div className="p-4 flex flex-col flex-grow">
+        {/* CATEGORY + RATING */}
+        <div className="mb-2 flex items-center justify-between">
+          <span className="text-[10px] font-semibold tracking-wide uppercase text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
+            {product?.category}
           </span>
-          <div className="flex items-center gap-1">
-            <Star size={10} className="text-amber-500 fill-amber-500"/>
-            <span className="text-xs font-bold text-[#800000]">{product.rating}</span>
-          </div>
+
+          {rating > 0 && (
+            <div className="flex items-center gap-1">
+              <Star size={12} className="text-amber-500 fill-amber-500" />
+              <span className="text-xs font-bold text-[#800000]">
+                {rating}
+              </span>
+            </div>
+          )}
         </div>
-        
+
+        {/* NAME */}
         <h3 className="font-bold text-[#800000] text-sm line-clamp-2 mb-1">
-          {product.name}
+          {product?.name}
         </h3>
-        
-        <p className="text-gray-600 text-xs line-clamp-2 mb-3 flex-grow font-medium">
-          {product.description}
+
+        {/* DESCRIPTION */}
+        <p className="text-gray-600 text-xs line-clamp-2 mb-4 flex-grow font-medium">
+          {product?.description}
         </p>
-        
-        <div className="space-y-2">
+
+        {/* PRICE + DELIVERY */}
+        <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-lg font-bold text-[#800000]">₹{product.price.toLocaleString()}</span>
-              <span className="text-xs text-gray-500 ml-1">/ unit</span>
+              <span className="text-lg font-extrabold text-[#800000]">
+                ₹{price.toLocaleString("en-IN")}
+              </span>
+              <span className="text-xs text-gray-500 ml-1">
+                / {product?.pricing?.priceUnit || "unit"}
+              </span>
             </div>
-            <div className="text-[10px] text-amber-700 flex items-center gap-1 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">
-              <Truck size={10} />
-              {product.deliveryTime}
-            </div>
+
+            {product?.delivery?.time && (
+              <div className="text-[10px] text-amber-700 flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-full border border-amber-100">
+                <Truck size={11} />
+                {product.delivery.time}
+              </div>
+            )}
           </div>
-          
+
+          {/* CTA */}
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onBookNow(product);
+              onBookNow?.(product);
             }}
-            className="w-full py-2 bg-[#800000] text-white text-sm font-bold rounded-lg hover:bg-[#600000] hover:shadow transition-all active:scale-95 flex items-center justify-center gap-2"
+            className="w-full py-2.5 bg-gradient-to-r from-[#800000] to-[#600000] text-white text-sm font-bold rounded-xl hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
           >
-            <ShoppingBag size={14} />
+            <ShoppingBag size={15} />
             Book Now
           </button>
         </div>
@@ -280,6 +381,7 @@ const ProductCard = ({ product, onClick, onBookNow }) => {
     </motion.div>
   );
 };
+
 
 /* ==========================================================================
    3. MODAL COMPONENTS (Restyled)
@@ -643,28 +745,58 @@ const SearchBar = ({ searchTerm, setSearchTerm }) => {
 
   return (
     <div className="sticky top-0 z-30 bg-[#FFF7E0]/95 backdrop-blur-md border-b border-orange-200 py-3 px-4 mt-12 shadow-sm">
-      <div className="relative mt-2">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-orange-400">
+      <div
+        className={`relative mt-2 transition-all ${
+          isFocused ? "scale-[1.01]" : "scale-100"
+        }`}
+      >
+        {/* Search Icon */}
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-400 pointer-events-none">
           <Search size={18} />
         </div>
-        <input 
-          type="text" 
+
+        {/* Input */}
+        <input
+          type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          placeholder="Search invitations, decor, gifts..." 
-          className="w-full pl-10 pr-8 py-2.5 bg-white border border-orange-200 rounded-full text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-200 shadow-inner"
+          placeholder="Search invites, decor, gifts, puja items..."
+          className={`
+            w-full pl-11 pr-10 py-3
+            bg-white rounded-full text-sm
+            text-gray-800 placeholder-gray-400
+            border transition-all duration-200
+            ${
+              isFocused
+                ? "border-orange-400 ring-2 ring-orange-200 shadow-md"
+                : "border-orange-200 shadow-inner"
+            }
+            focus:outline-none
+          `}
         />
+
+        {/* Clear Button */}
         {searchTerm && (
-          <button 
-            onClick={() => setSearchTerm('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 text-gray-400 hover:text-red-500"
+          <button
+            onClick={() => setSearchTerm("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition"
+            aria-label="Clear search"
           >
             <X size={14} />
           </button>
         )}
       </div>
+
+      {/* Helper Text */}
+      {isFocused && (
+        <p className="mt-2 text-[11px] text-amber-700 px-2">
+          Try searching: <span className="font-medium">Wedding invites</span>,{" "}
+          <span className="font-medium">Diya</span>,{" "}
+          <span className="font-medium">Puja gifts</span>
+        </p>
+      )}
     </div>
   );
 };
@@ -681,200 +813,254 @@ export default function SanskaraaApp() {
   const [toast, setToast] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const filteredProducts = PRODUCTS.filter(p => {
-    const matchesCategory = activeCategory === "all" || p.category.toLowerCase().includes(activeCategory.toLowerCase());
-    const matchesSearch = searchTerm === "" || p.name.toLowerCase().includes(searchTerm.toLowerCase()) || p.description.toLowerCase().includes(searchTerm.toLowerCase()) || p.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    return matchesCategory && matchesSearch;
-  });
+  /* ================= FILTER LOGIC ================= */
+  const filteredProducts = useMemo(() => {
+    return PRODUCTS.filter((p) => {
+      const cat =
+        activeCategory === "all" ||
+        p.category?.toLowerCase().includes(activeCategory.toLowerCase());
+
+      const search =
+        !searchTerm ||
+        p.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.tags?.some((t) =>
+          t.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+      return cat && search;
+    });
+  }, [activeCategory, searchTerm]);
 
   const handleBookNow = (product) => {
     setBookingProduct(product);
     setSelectedProduct(null);
   };
 
+  /* ================= BODY SCROLL LOCK ================= */
   useEffect(() => {
-    document.body.style.overflow = (selectedProduct || bookingProduct) ? 'hidden' : 'unset';
-    return () => { document.body.style.overflow = 'unset'; };
+    document.body.style.overflow =
+      selectedProduct || bookingProduct ? "hidden" : "unset";
+    return () => (document.body.style.overflow = "unset");
   }, [selectedProduct, bookingProduct]);
 
-  // Add scrollbar styles dynamically
+  /* ================= CUSTOM SCROLL ================= */
   useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
-      .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-      .custom-scroll::-webkit-scrollbar-thumb { background-color: #fbd38d; border-radius: 20px; }
-      .custom-scroll::-webkit-scrollbar-thumb:hover { background-color: #f6ad55; }
+    const style = document.createElement("style");
+    style.innerHTML = `
+      .custom-scroll::-webkit-scrollbar { height: 4px; width: 4px; }
+      .custom-scroll::-webkit-scrollbar-thumb { background:#f6ad55;border-radius:10px; }
     `;
     document.head.appendChild(style);
-    
-    return () => {
-      document.head.removeChild(style);
-    };
+    return () => document.head.removeChild(style);
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] font-sans text-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF7E0] via-[#FFE4B5] to-[#FFD7A3] text-gray-800">
+      {/* ================= SEARCH ================= */}
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-      <main className="pb-24">
-        {/* Hero Banner */}
-        <div className="px-4 py-6">
-          <div className="rounded-2xl bg-gradient-to-r from-[#800000] to-[#A52A2A] p-5 text-white shadow-lg border border-[#600000]">
-            <div className="max-w-md">
-              <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-full mb-4 border border-white/30">
-                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-                <span className="text-[10px] font-bold tracking-wider">SERVING 50+ CITIES</span>
-              </div>
-              <h1 className="text-2xl font-bold mb-3 leading-tight">Celebrate Traditions with Sanskaraa</h1>
-              <p className="text-amber-100 text-sm mb-5 font-medium">Premium wedding essentials, puja kits, and traditional decor delivered across India</p>
-              <button 
-                onClick={() => setActiveCategory("all")}
-                className="px-5 py-2.5 bg-[#FFF7E0] text-[#800000] font-bold rounded-lg active:scale-95 transition-transform shadow-md hover:bg-white"
-              >
-                Shop Collection
-              </button>
-            </div>
-          </div>
-        </div>
+<main className="pb-28">
+  {/* ================= HERO ================= */}
+  <section className="px-4 pt-6">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#800000] via-[#8b0000] to-[#a52a2a] p-7 text-white shadow-2xl border border-[#600000]"
+    >
+      {/* subtle pattern */}
+      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,#fff,transparent_40%)]" />
 
-        {/* Categories */}
-        <div className="px-4 py-2">
-          <h2 className="font-bold text-[#800000] text-lg mb-3 flex items-center gap-2">
-            <Grid size={18} className="text-amber-600"/> Browse Categories
-          </h2>
-          <div className="flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 custom-scroll">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                className={`flex flex-col items-center p-3 rounded-xl min-w-[85px] transition-all duration-300 ${
-                  activeCategory === cat.id
-                    ? "bg-[#800000] text-white shadow-lg scale-105 border border-[#600000]"
-                    : "bg-[#FFF7E0] text-amber-900 border border-orange-200 hover:border-orange-400 hover:shadow-md"
-                }`}
-              >
-                <cat.icon size={22} className="mb-2" />
-                <span className="text-xs font-bold">{cat.name}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+      <span className="relative inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full text-[11px] font-bold mb-4 border border-white/30">
+        <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+        Serving 50+ Cities
+      </span>
 
-        {/* Products Section */}
-        <div className="px-4 py-3">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="font-bold text-[#800000] text-lg">
-                {activeCategory === "all" ? "Featured Products" : CATEGORIES.find(c => c.id === activeCategory)?.name}
-              </h2>
-              <p className="text-amber-800 text-sm mt-1 font-medium">
-                {filteredProducts.length} products found
-              </p>
-            </div>
-            <button className="p-2.5 rounded-lg border border-orange-200 bg-[#FFF7E0] text-amber-800 hover:bg-white transition-colors shadow-sm">
-              <Filter size={18} />
-            </button>
-          </div>
+      <h1 className="relative text-3xl sm:text-4xl font-extrabold leading-tight mb-3">
+        Celebrate Traditions <br />
+        <span className="text-amber-200">with Sanskaraa</span>
+      </h1>
 
-          {isLoading ? (
-            <div className="grid grid-cols-2 gap-4">
-              {[1,2,3,4].map(i => (
-                <div key={i} className="bg-[#FFF7E0] rounded-xl p-3 animate-pulse border border-orange-200">
-                  <div className="aspect-square bg-orange-100 rounded-lg mb-3"></div>
-                  <div className="h-3 bg-orange-100 rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-orange-100 rounded w-1/2 mb-3"></div>
-                  <div className="h-9 bg-orange-100 rounded"></div>
-                </div>
-              ))}
-            </div>
-          ) : filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              <AnimatePresence>
-                {filteredProducts.map((product) => (
-                  <ProductCard 
-                    key={product.id} 
-                    product={product} 
-                    onClick={setSelectedProduct}
-                    onBookNow={handleBookNow}
-                  />
-                ))}
-              </AnimatePresence>
-            </div>
-          ) : (
-            <div className="text-center py-10 bg-[#FFF7E0]/50 rounded-xl border-2 border-dashed border-orange-300">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Search className="w-8 h-8 text-orange-400" />
-              </div>
-              <p className="text-[#800000] font-bold text-lg">No products found</p>
-              <p className="text-amber-800 text-sm mt-1 mb-4">Try different keywords or categories</p>
-              <button 
-                onClick={() => {setSearchTerm(''); setActiveCategory('all')}}
-                className="px-5 py-2.5 bg-[#800000] text-white font-bold rounded-lg active:scale-95 transition-transform hover:bg-[#A52A2A]"
-              >
-                View All Products
-              </button>
-            </div>
-          )}
-        </div>
+      <p className="relative text-amber-100 text-sm sm:text-base max-w-md mb-6">
+        Premium wedding essentials, puja kits & cultural decor —
+        thoughtfully curated with devotion.
+      </p>
 
-        {/* Trust Section */}
-        <div className="px-4 py-8">
-          <h3 className="text-center font-bold text-[#800000] text-xl mb-6 flex items-center justify-center gap-2">
-            <Sparkles size={20} className="text-amber-500"/> Why Choose Sanskaraa
+      <button
+        onClick={() => setActiveCategory("all")}
+        className="relative inline-flex items-center gap-2 px-6 py-3 bg-[#FFF7E0] text-[#800000] font-bold rounded-xl shadow-lg hover:bg-white active:scale-95 transition"
+      >
+        Explore Collection
+        <ArrowRight size={16} />
+      </button>
+    </motion.div>
+  </section>
+
+  {/* ================= CATEGORIES ================= */}
+  <section className="px-4 pt-8">
+    <h2 className="font-bold text-[#800000] text-lg mb-4 flex items-center gap-2">
+      <Grid size={18} className="text-amber-600" />
+      Browse Categories
+    </h2>
+
+    <div className="flex gap-3 overflow-x-auto custom-scroll pb-3">
+      {CATEGORIES.map((cat) => {
+        const active = activeCategory === cat.id;
+        return (
+          <button
+            key={cat.id}
+            onClick={() => setActiveCategory(cat.id)}
+            className={`min-w-[95px] px-4 py-3 rounded-2xl flex flex-col items-center gap-2 text-xs font-bold transition-all duration-300 ${
+              active
+                ? "bg-gradient-to-br from-[#800000] to-[#a52a2a] text-white shadow-xl scale-105"
+                : "bg-[#FFF7E0] border border-orange-200 text-amber-900 hover:shadow-md hover:border-orange-400"
+            }`}
+          >
+            <cat.icon size={22} />
+            {cat.name}
+          </button>
+        );
+      })}
+    </div>
+  </section>
+
+  {/* ================= PRODUCTS ================= */}
+  <section className="px-4 pt-8">
+    <div className="flex items-center justify-between mb-5">
+      <div>
+        <h2 className="font-bold text-[#800000] text-lg">
+          {activeCategory === "all"
+            ? "Featured Products"
+            : CATEGORIES.find((c) => c.id === activeCategory)?.name}
+        </h2>
+        <p className="text-sm text-amber-800 font-medium mt-0.5">
+          {filteredProducts.length} items found
+        </p>
+      </div>
+
+      <button className="p-2.5 rounded-xl border border-orange-200 bg-[#FFF7E0] hover:bg-white shadow-sm hover:shadow-md transition">
+        <Filter size={18} />
+      </button>
+    </div>
+
+    {isLoading ? (
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="h-64 rounded-2xl bg-orange-100 animate-pulse"
+          />
+        ))}
+      </div>
+    ) : filteredProducts.length ? (
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <AnimatePresence>
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onClick={setSelectedProduct}
+              onBookNow={handleBookNow}
+            />
+          ))}
+        </AnimatePresence>
+      </div>
+    ) : (
+      <div className="text-center py-14 border-2 border-dashed border-orange-300 rounded-3xl bg-[#FFF7E0]/70">
+        <Search size={44} className="mx-auto text-orange-400 mb-4" />
+        <p className="font-bold text-[#800000] text-lg">
+          No products found
+        </p>
+        <p className="text-sm text-amber-800 mb-5">
+          Try changing keywords or selecting another category
+        </p>
+        <button
+          onClick={() => {
+            setSearchTerm("");
+            setActiveCategory("all");
+          }}
+          className="px-6 py-3 bg-gradient-to-r from-[#800000] to-[#a52a2a] text-white rounded-xl font-bold shadow-lg active:scale-95"
+        >
+          View All Products
+        </button>
+      </div>
+    )}
+  </section>
+
+
+
+        {/* ================= TRUST ================= */}
+        <section className="px-4 py-10">
+          <h3 className="text-center text-xl font-bold text-[#800000] mb-6 flex justify-center items-center gap-2">
+            <Sparkles className="text-amber-500" /> Why Sanskaraa
           </h3>
-          <div className="grid grid-cols-2 gap-4">
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-                {icon: ShieldCheck, title: "Verified Quality", desc: "100% Authentic", color: "text-green-600", bg: "bg-green-50"},
-                {icon: Truck, title: "All India Delivery", desc: "Fast & Insured", color: "text-blue-600", bg: "bg-blue-50"},
-                {icon: CheckCircle, title: "Secure Payment", desc: "100% Safe", color: "text-purple-600", bg: "bg-purple-50"},
-                {icon: MessageCircle, title: "24/7 Support", desc: "Always Available", color: "text-orange-600", bg: "bg-orange-50"}
-            ].map((item, idx) => (
-                <div key={idx} className="bg-[#FFF7E0] p-4 rounded-xl border border-orange-200 text-center shadow-sm hover:shadow-md transition-shadow">
-                    <div className={`w-12 h-12 rounded-full ${item.bg} ${item.color} flex items-center justify-center mx-auto mb-3 border border-opacity-20 border-gray-400`}>
-                        <item.icon size={24} />
-                    </div>
-                    <p className="font-bold text-[#800000] mb-1 text-sm">{item.title}</p>
-                    <p className="text-xs text-amber-800">{item.desc}</p>
-                </div>
+              { icon: ShieldCheck, label: "Verified Quality" },
+              { icon: Truck, label: "All India Delivery" },
+              { icon: CheckCircle, label: "Secure Booking" },
+              { icon: MessageCircle, label: "24/7 Support" },
+            ].map((i, idx) => (
+              <div
+                key={idx}
+                className="bg-[#FFF7E0] border border-orange-200 rounded-2xl p-4 text-center shadow-sm hover:shadow-md transition"
+              >
+                <i.icon size={26} className="mx-auto text-amber-600 mb-2" />
+                <p className="font-bold text-sm text-[#800000]">{i.label}</p>
+              </div>
             ))}
           </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="px-4 py-4 mb-20">
-          <div className="rounded-xl bg-gradient-to-r from-gray-900 via-[#2d1b1b] to-[#4a0404] p-5 text-white shadow-xl border border-gray-700">
-            <h3 className="font-bold text-xl mb-2 text-amber-100">Need Help Planning?</h3>
-            <p className="text-gray-300 text-sm mb-5 max-w-md">Book a free consultation with our wedding experts for personalized guidance</p>
-            <button className="w-full py-3 bg-gradient-to-r from-[#FFF7E0] to-[#FFD7A3] text-[#800000] font-bold rounded-lg active:scale-95 transition-transform shadow-md">
-              Book Free Consultation
-            </button>
-          </div>
-        </div>
+        </section>
       </main>
 
-      {/* Modals */}
+      {/* ================= MODALS ================= */}
       <AnimatePresence>
         {selectedProduct && (
-          <ResponsiveModal title="Product Details" onClose={() => setSelectedProduct(null)} size="lg">
-            <ProductDetailsView product={selectedProduct} onBookNow={handleBookNow} />
+          <ResponsiveModal
+            title="Product Details"
+            onClose={() => setSelectedProduct(null)}
+            size="lg"
+          >
+            <ProductDetailsView
+              product={selectedProduct}
+              onBookNow={handleBookNow}
+            />
           </ResponsiveModal>
         )}
+
         {bookingProduct && (
-          <ResponsiveModal title="Complete Booking" onClose={() => setBookingProduct(null)} size="md">
-            <BookingWizard product={bookingProduct} onComplete={() => {
+          <ResponsiveModal
+            title="Complete Booking"
+            onClose={() => setBookingProduct(null)}
+            size="md"
+          >
+            <BookingWizard
+              product={bookingProduct}
+              onComplete={() => {
                 setBookingProduct(null);
-                setToast({ message: "Booking confirmed! Our team will contact you shortly.", type: "success" });
-              }} 
-              onCancel={() => setBookingProduct(null)} 
+                setToast({
+                  type: "success",
+                  message:
+                    "Booking confirmed! Our team will contact you shortly.",
+                });
+              }}
+              onCancel={() => setBookingProduct(null)}
             />
           </ResponsiveModal>
         )}
       </AnimatePresence>
 
-      {/* Toast Notifications */}
+      {/* ================= TOAST ================= */}
       <AnimatePresence>
-        {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        )}
       </AnimatePresence>
     </div>
   );
