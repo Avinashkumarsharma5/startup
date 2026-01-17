@@ -16,11 +16,7 @@ export default function Footer() {
   return (
     <footer className="relative bg-gradient-to-br from-[#3B1F0E] via-[#6B3B1E] to-[#8B4513] text-[#FFD700] px-6 md:px-12 pt-10 pb-6 border-t border-[#FFD700]/30 shadow-[0_-6px_18px_rgba(255,215,0,0.15)]">
       
-      {/* Decorative Mandala Divider */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#FFD700]/30 text-2xl">
-        ❂
-      </div>
-
+      
       {/* Main Content */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
 
@@ -76,7 +72,7 @@ export default function Footer() {
               href="mailto:support@sanskaraa.com"
               className="hover:text-[#FFC107]"
             >
-              support@sanskaraa.com
+              support@sanskaara.net@gmail.com
             </a>
           </p>
         </div>
