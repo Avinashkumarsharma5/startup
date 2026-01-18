@@ -61,11 +61,11 @@ const rentalProducts = [
     category: "Sound & Audio",
     unit: "per day",
     imgGallery: [
-      "images/dj2.png",
-      "images/dj1.png",
-      "public/images/dj.png"
+      "https://www.recordcase.de/media/9d/15/76/1700594714/07-turntables-controller.jpg",
+      "https://www.recordcase.de/media/9d/15/76/1700594714/07-turntables-controller.jpg",
+      "https://m.media-amazon.com/images/I/71ci8C22A9L._AC_UF894%2C1000_QL80_.jpg"
     ],
-    video: "https://assets.mixkit.co/videos/preview/mixkit-dj-mixing-in-a-night-club-5-large.mp4",
+    video: "images/Premium_DJ_Entertainment_Video_Generated.mp4",
     description: "Professional DJ controllers from Pioneer or Numark for seamless mixing",
     minRentalDays: 1,
     deposit: 15000,
