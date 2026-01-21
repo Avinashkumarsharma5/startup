@@ -431,7 +431,7 @@ export default function ContactPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] p-4 sm:p-6 font-sans">
+    <main className="min-h-screen bg-gradient-to-br from-[#FFF7E0] via-[#FFE8B2] to-[#FFD7A3] p-4 sm:p-6 font-sans mt-12">
       {/* Notification Toast */}
       <AnimatePresence>
         {notification && (
