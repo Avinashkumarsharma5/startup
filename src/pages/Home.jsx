@@ -9,8 +9,8 @@ import {
   ChevronRight,
   Home as HomeIcon,
   User,
-  Users,          
-  MapPin,         
+  Users,
+  MapPin,
   Calendar,
   Package,
   Sparkles,
@@ -19,6 +19,7 @@ import {
   ShoppingCart,
   Mic,
   Phone,
+  PhoneCall,
   MessageCircle,
   Gift,
   Star,
@@ -27,8 +28,11 @@ import {
   ChevronDown,
   ShieldCheck,
   Briefcase,
-  ShoppingBag
+  ShoppingBag,
+  Headphones   // ✅ ADD THIS LINE
 } from "lucide-react";
+
+
 
 
 
@@ -1403,7 +1407,7 @@ function EnhancedFestivalOffers() {
 
 // ----------------- Quick Actions Floating Buttons -----------------
 
-function QuickActions() {
+function ContactQuickActions() {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
   const containerRef = useRef(null);
@@ -1420,63 +1424,68 @@ function QuickActions() {
         ),
     },
     {
-      icon: Gift,
-      label: "Request Puja",
-      color: "bg-amber-500",
-      action: () => navigate("/panditbooking"),
+      icon: PhoneCall,
+      label: "Call Support",
+      color: "bg-blue-600",
+      action: () => window.location.href = "tel:+916201486202",
     },
     {
-      icon: Sparkles,
-      label: "Donate",
+      icon: Headphones,
+      label: "Contact Page",
       color: "bg-[#800000]",
-      action: () => toast.info("🙏 Donation feature coming soon!"),
+      action: () => navigate("/contactpage"),
     },
   ];
 
+  // Close when clicked outside
   useEffect(() => {
-    const closeOnOutside = (e) => {
+    const close = (e) => {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
         setExpanded(false);
       }
     };
-    document.addEventListener("mousedown", closeOnOutside);
-    return () => document.removeEventListener("mousedown", closeOnOutside);
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
   }, []);
 
   return (
     <div
       ref={containerRef}
-      className="fixed left-3 sm:left-4 bottom-24 sm:bottom-28 md:bottom-32 z-50"
+      className="fixed left-4 bottom-24 z-50"
     >
-      <div className="absolute inset-0 -z-10 blur-2xl bg-[#800000]/20 rounded-full" />
+      {/* ✨ Soft glow */}
+      <div className="absolute inset-0 -z-10 blur-3xl bg-[#800000]/25 rounded-full" />
 
-      <div className="flex flex-col items-start gap-2 sm:gap-3">
+      <div className="flex flex-col items-start gap-3">
         <AnimatePresence>
           {expanded &&
             actions.map((item, index) => (
               <motion.div
                 key={item.label}
-                initial={{ opacity: 0, x: -30, scale: 0.9 }}
+                initial={{ opacity: 0, x: -20, scale: 0.8 }}
                 animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: -30, scale: 0.9 }}
+                exit={{ opacity: 0, x: -20, scale: 0.8 }}
                 transition={{
                   type: "spring",
-                  stiffness: 300,
-                  damping: 20,
-                  delay: index * 0.08,
+                  stiffness: 260,
+                  damping: 18,
+                  delay: index * 0.07,
                 }}
-                className="flex items-center gap-2 bg-white rounded-full shadow-xl px-3 py-2"
+                className="flex items-center gap-2 bg-white rounded-full shadow-lg pl-3 pr-2 py-2"
               >
-                <span className="text-xs sm:text-sm font-medium text-gray-700 hidden sm:block">
+                {/* Label */}
+                <span className="text-xs sm:text-sm font-medium text-gray-700">
                   {item.label}
                 </span>
 
+                {/* Action Button */}
                 <button
                   onClick={() => {
                     setExpanded(false);
                     item.action();
                   }}
-                  className={`${item.color} rounded-full p-2 text-white hover:scale-110 transition-transform active:scale-95`}
+                  className={`${item.color} p-2 rounded-full text-white shadow-md
+                    hover:scale-110 active:scale-95 transition-transform`}
                   aria-label={item.label}
                 >
                   <item.icon size={16} />
@@ -1485,22 +1494,29 @@ function QuickActions() {
             ))}
         </AnimatePresence>
 
+        {/* 🔴 Main Floating Button */}
         <motion.button
-          whileTap={{ scale: 0.88 }}
+          whileTap={{ scale: 0.85 }}
           onClick={() => setExpanded((v) => !v)}
-          className="relative rounded-full p-3 sm:p-3.5 bg-[#800000] text-white shadow-xl hover:bg-[#A52A2A] transition-colors"
-          aria-label="Quick Actions"
+          className="
+            relative rounded-full p-4
+            bg-gradient-to-br from-[#800000] to-[#A52A2A]
+            text-white shadow-2xl
+            ring-2 ring-[#FFD700]/60
+            hover:ring-[#FFD700]
+            transition
+          "
+          aria-label="Contact Support"
         >
           {!expanded && (
             <span className="absolute inset-0 rounded-full animate-ping bg-[#800000]/30" />
           )}
-          {expanded ? <X size={20} /> : <Sparkles size={20} />}
+          {expanded ? <X size={22} /> : <Headphones size={22} />}
         </motion.button>
       </div>
     </div>
   );
 }
-
 
 
 
@@ -1657,7 +1673,8 @@ export default function EnhancedHome() {
         <TestimonialsSection />
         <EnhancedFestivalOffers />
 
-        <QuickActions />
+      <ContactQuickActions />
+
 
         <VoiceSearchModal
           isOpen={voiceModalOpen}

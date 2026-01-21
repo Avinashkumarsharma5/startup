@@ -19,11 +19,10 @@ import SearchPage from "./pages/SearchPage";
 import ServiceProviderProfile from "./pages/ServiceProviderProfile";
 import VendorRegistration from "./components/layout/VendorRegistration";
 import SanskaraaNotifications from "./pages/Notification";
-import CartPage from "./components/layout/CartPage";
 import ForgetPassword from "./pages/ForgetPassword";
 import SanskaraaShopApp from "./pages/SanskaraaShopApp";
 import EventManagement from "./pages/EventManagement";
-
+import ContactPage from "./components/layout/ContactPage";
 import SanskaraaLoader from "./components/layout/SanskaraaLoader";
 
 export default function App() {
@@ -94,6 +93,7 @@ export default function App() {
             path="/service-provider/profile"
             element={<ServiceProviderProfile />}
           />
+          <Route path="/ContactPage" element={<ContactPage />} />
           <Route
             path="/vendor-registration"
             element={<VendorRegistration />}
@@ -102,7 +102,6 @@ export default function App() {
             path="/notifications"
             element={<SanskaraaNotifications />}
           />
-          <Route path="/cart" element={<CartPage />} />
           <Route
             path="/sanskaraashopapp"
             element={<SanskaraaShopApp />}
