@@ -1108,7 +1108,7 @@ export default function ContactPage() {
           goToStep(4);
           updateState({ chatOpen: true });
         }}
-        className="lg:hidden fixed bottom-6 right-6 bg-[#7A1A1A] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-shadow z-40"
+        className="lg:hidden fixed bottom-6 right-6 bg-[#7A1A1A] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-shadow z-40 mb-12"
       >
         <MessageSquare size={24} />
       </button>
