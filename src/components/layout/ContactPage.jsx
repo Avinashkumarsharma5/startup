@@ -1349,12 +1349,7 @@ export default function ContactPage() {
         </footer>
       </main>
 
-      {/* Mobile Bottom Navigation */}
-      <MobileBottomNav 
-        goToStep={goToStep} 
-        state={state} 
-        updateState={updateState}
-      />
+      
     </div>
   );
 }
