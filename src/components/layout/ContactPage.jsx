@@ -43,7 +43,7 @@ import {
 
 // ---------------- CONFIG ----------------
 const SUPPORT_PHONE = "916201486202";
-const SUPPORT_EMAIL = "support@sanskaraa.com";
+const SUPPORT_EMAIL = "sasanskaara.net@gmail.com";
 
 // ---------------- BRANDING COLORS ----------------
 const PRIMARY = "#7A1A1A";
@@ -605,7 +605,7 @@ export default function ContactPage() {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="pt-14 sm:pt-6 pb-16 sm:pb-6 px-4 sm:px-6">
+      <main className="pt-14 sm:pt-6 pb-16 sm:pb-6 px-4 sm:px-6 mt-12">
         {/* HERO SECTION - Responsive */}
         <motion.section
           className="max-w-4xl mx-auto mb-6 sm:mb-8"
