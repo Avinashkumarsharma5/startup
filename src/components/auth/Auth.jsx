@@ -67,10 +67,7 @@ export default function Auth() {
     try {
       setLoading(true);
 
-      const result = await signInWithPopup(
-        auth,
-        googleProvider
-      );
+      const result = await signInWithPopup(auth, googleProvider);
 
       const user = result.user;
 
@@ -121,18 +118,17 @@ export default function Auth() {
       toast.success(
         "Welcome " + user.displayName
       );
+} catch (err) {
+  console.error(err);
 
-      if (!userData.phone) {
-        navigate("/mobile");
-      } else {
-        navigate("/");
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error(err.message);
-    } finally {
-      setLoading(false);
-    }
+  if (err.code === "auth/popup-closed-by-user") {
+    toast.error("Google Sign In was cancelled.");
+  } else {
+    toast.error(err.message);
+  }
+} finally {
+  setLoading(false);
+}
   };
 
     return (
