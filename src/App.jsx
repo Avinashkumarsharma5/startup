@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-import mobile from "./components/auth/mno";
+import MobileNumber from "./components/auth/mno";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import BottomNavbar from "./components/layout/BottomNavbar";
@@ -88,6 +88,7 @@ export default function App() {
           <Route path="/panditbooking" element={<PanditBooking />} />
           <Route path="/eventspage" element={<EventsPage />} />
           <Route path="/bookingspage" element={<BookingsPage />} />
+          <Route path="/mobile" element={<MobileNumber />} />
           <Route path="/userprofile" element={<UserProfile />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/eventmanagement" element={<EventManagement />} />

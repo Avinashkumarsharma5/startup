@@ -48,10 +48,6 @@ export default function Auth() {
 
       const data = snap.data();
 
-      localStorage.setItem(
-        "loggedInUser",
-        JSON.stringify(data)
-      );
 
       if (!data.phone) {
         navigate("/mobile");
@@ -91,7 +87,7 @@ export default function Auth() {
           { merge: true }
         );
 
-        toast.success("Welcome " + user.displayName);
+    
 
         navigate("/mobile");
 
@@ -108,16 +104,20 @@ export default function Auth() {
 
       const latest = await getDoc(userRef);
 
-      const userData = latest.data();
+   const userData = latest.data();
 
-      localStorage.setItem(
-        "loggedInUser",
-        JSON.stringify(userData)
-      );
+localStorage.setItem(
+  "loggedInUser",
+  JSON.stringify(userData)
+);
 
-      toast.success(
-        "Welcome " + user.displayName
-      );
+toast.success("Welcome " + user.displayName);
+
+if (!userData.phone) {
+  navigate("/mobile");
+} else {
+  navigate("/");
+}
 } catch (err) {
   console.error(err);
 
