@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
+import mobile from "./components/auth/mno";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import BottomNavbar from "./components/layout/BottomNavbar";
@@ -45,6 +46,7 @@ export default function App() {
     "/auth",
     "/login",
     "/signup",
+     "/mobile",   
     "/forget-password",
     "/vendor-registration",
     "/service-provider/profile",
