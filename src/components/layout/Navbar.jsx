@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Bell, Menu, X, Mic } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../../lib/supabase";
+import { auth, isFirebaseConfigured, signOut } from "../../lib/firebase";
 import toast from "react-hot-toast";
 
 export default function Navbar({ onMicClick }) {
@@ -30,7 +30,9 @@ export default function Navbar({ onMicClick }) {
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut();
+      if (isFirebaseConfigured && auth) {
+        await signOut(auth);
+      }
     } catch (error) {
       console.error("Logout failed:", error);
       toast.error("Unable to log out. Please try again.");
@@ -116,7 +118,7 @@ export default function Navbar({ onMicClick }) {
           >
             <div
               className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white text-orange-500 border-2 border-white flex items-center justify-center font-semibold hover:scale-110 transition-transform cursor-pointer"
-              onClick={() => navigate("/UserProfile")}
+              onClick={() => navigate("/userprofile")}
             >
               {profileInitial}
             </div>
@@ -128,7 +130,7 @@ export default function Navbar({ onMicClick }) {
                   <button
                     onClick={() => {
                       setShowProfileMenu(false);
-                      navigate("/UserProfile");
+                      navigate("/userprofile");
                     }}
                     className="w-full text-left px-4 py-2 hover:bg-orange-50 text-gray-700"
                   >

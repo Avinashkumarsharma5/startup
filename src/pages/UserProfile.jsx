@@ -7,7 +7,7 @@ import {
   Phone, TrendingUp, Check, Cloud
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "../lib/supabase";
+import { auth, isFirebaseConfigured, signOut } from "../lib/firebase";
 import toast from "react-hot-toast";
 
 // ---------------- Enhanced Card Component ----------------
@@ -415,7 +415,9 @@ export default function UserProfile() {
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut();
+      if (isFirebaseConfigured && auth) {
+        await signOut(auth);
+      }
     } catch (error) {
       console.error("Logout failed:", error);
       toast.error("Could not log out. Please try again.");

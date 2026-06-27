@@ -6,7 +6,15 @@ import * as yup from "yup";
 import toast, { Toaster } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { Eye, EyeOff, Lock, Mail, User, Calendar, Mic, Loader2, Heart } from "lucide-react";
-import { supabase } from "../../lib/supabase";
+import {
+  auth,
+  isFirebaseConfigured,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  updateProfile,
+} from "../../lib/firebase";
 
 // Validation schemas
 const loginSchema = yup.object({
@@ -82,20 +90,22 @@ export default function Auth() {
 
   // Check for current session and remembered user on login mode
   useEffect(() => {
-    if (isLogin) {
-      // Check if user is already logged in via Supabase
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session) {
-          navigate("/UserProfile");
+    if (!isLogin) return;
+
+    if (isFirebaseConfigured && auth) {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          navigate("/userprofile");
         }
       });
 
-      // Check for remembered email
-      const rememberedEmail = localStorage.getItem("rememberedEmail");
-      if (rememberedEmail) {
-        setValue("email", rememberedEmail);
-        setValue("rememberMe", true);
-      }
+      return () => unsubscribe();
+    }
+
+    const rememberedEmail = localStorage.getItem("rememberedEmail");
+    if (rememberedEmail) {
+      setValue("email", rememberedEmail);
+      setValue("rememberMe", true);
     }
   }, [isLogin, navigate, setValue]);
 
@@ -124,36 +134,25 @@ export default function Auth() {
   const handleLogin = async (data) => {
     setIsLoading(true);
     try {
-      const { data: authData, error } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-      });
-
-      if (error) {
-        toast.error(error.message || "Invalid email or password");
+      if (!isFirebaseConfigured || !auth) {
+        toast.error("Firebase authentication is not configured yet. Please add your Firebase credentials.");
         return;
       }
 
-      if (authData.user) {
-        // Get user profile from Supabase
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', authData.user.id)
-          .single();
+      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+      const firebaseUser = userCredential.user;
 
-        // Store user data
+      if (firebaseUser) {
         const userData = {
-          id: authData.user.id,
-          email: authData.user.email,
-          name: profile?.name || authData.user.email?.split('@')[0] || 'User',
-          role: profile?.role || 'customer',
+          id: firebaseUser.uid,
+          email: firebaseUser.email,
+          name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
+          role: 'customer',
           isLoggedIn: true,
           lastLogin: new Date().toISOString(),
         };
         localStorage.setItem("loggedInUser", JSON.stringify(userData));
 
-        // Handle remember me
         if (data.rememberMe) {
           localStorage.setItem("rememberedEmail", data.email);
         } else {
@@ -164,7 +163,7 @@ export default function Auth() {
         navigate("/");
       }
     } catch (error) {
-      toast.error("Login failed. Please try again.");
+      toast.error(error.message || "Login failed. Please try again.");
       console.error("Login error:", error);
     } finally {
       setIsLoading(false);
@@ -174,45 +173,20 @@ export default function Auth() {
   const handleSignup = async (data) => {
     setIsLoading(true);
     try {
-      // Sign up with Supabase
-      const { data: authData, error: signUpError } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-        options: {
-          data: {
-            name: data.name,
-            role: 'customer'
-          }
-        }
-      });
-
-      if (signUpError) {
-        toast.error(signUpError.message || "Failed to create account");
+      if (!isFirebaseConfigured || !auth) {
+        toast.error("Firebase authentication is not configured yet. Please add your Firebase credentials.");
         return;
       }
 
-      if (authData.user) {
-        // Create profile in profiles table
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: authData.user.id,
-              name: data.name,
-              email: data.email,
-              role: 'customer',
-              created_at: new Date().toISOString()
-            }
-          ]);
+      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      const firebaseUser = userCredential.user;
 
-        if (profileError) {
-          console.error("Profile creation error:", profileError);
-          // Continue anyway as profile might be created via trigger
-        }
+      if (firebaseUser) {
+        await updateProfile(firebaseUser, { displayName: data.name });
 
         const userData = {
-          id: authData.user.id,
-          email: authData.user.email,
+          id: firebaseUser.uid,
+          email: firebaseUser.email,
           name: data.name,
           role: 'customer',
           isLoggedIn: true,
@@ -226,7 +200,7 @@ export default function Auth() {
         navigate("/");
       }
     } catch (error) {
-      toast.error("Failed to create account. Please try again.");
+      toast.error(error.message || "Failed to create account. Please try again.");
       console.error("Signup error:", error);
     } finally {
       setIsLoading(false);
@@ -241,19 +215,17 @@ export default function Auth() {
     }
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/forget-password`,
-      });
-
-      if (error) {
-        toast.error(error.message || "Failed to send reset email");
+      if (!isFirebaseConfigured || !auth) {
+        toast.error("Firebase authentication is not configured yet. Please add your Firebase credentials.");
         return;
       }
+
+      await sendPasswordResetEmail(auth, email);
 
       toast.success("Password reset email sent! Please check your inbox.");
       navigate("/forget-password");
     } catch (error) {
-      toast.error("Failed to send reset email. Please try again.");
+      toast.error(error.message || "Failed to send reset email. Please try again.");
       console.error("Forgot password error:", error);
     }
   };
