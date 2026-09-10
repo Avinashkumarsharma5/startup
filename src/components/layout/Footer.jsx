@@ -11,6 +11,11 @@ import {
   Heart,
   ChevronUp,
 } from "lucide-react";
+import { Link } from "react-router-dom";
+import {
+  SUPPORT_EMAIL,
+  SUPPORT_PHONE_DISPLAY,
+} from "../../lib/support";
 
 export default function Footer() {
   return (
@@ -61,18 +66,18 @@ export default function Footer() {
 
           <p className="flex items-center justify-center md:justify-start gap-2">
             <Phone className="w-4 h-4" />
-            <a href="tel:+916201486202" className="hover:text-[#FFC107]">
-              +91 6201486202
+            <a href="tel:6201486202" className="hover:text-[#FFC107]">
+              {SUPPORT_PHONE_DISPLAY}
             </a>
           </p>
 
           <p className="flex items-center justify-center md:justify-start gap-2">
             <Mail className="w-4 h-4" />
             <a
-              href="mailto:support@sanskaraa.com"
+              href={`mailto:${SUPPORT_EMAIL}`}
               className="hover:text-[#FFC107]"
             >
-              support@sanskaara.net@gmail.com
+              {SUPPORT_EMAIL}
             </a>
           </p>
         </div>
@@ -92,6 +97,12 @@ export default function Footer() {
             Back to Top
             <ChevronUp className="w-4 h-4" />
           </button>
+          <Link
+            to="/contact"
+            className="rounded-full border border-[#FFD700]/40 px-4 py-2 hover:bg-[#FFD700]/10 hover:text-[#FFC107] transition"
+          >
+            Help & Support
+          </Link>
         </div>
       </div>
 

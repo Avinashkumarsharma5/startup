@@ -1433,7 +1433,7 @@ function ContactQuickActions() {
       icon: Headphones,
       label: "Contact Page",
       color: "bg-[#800000]",
-      action: () => navigate("/contactpage"),
+      action: () => navigate("/contact"),
     },
   ];
 

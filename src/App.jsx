@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import MobileNumber from "./components/auth/mno";
@@ -25,12 +25,16 @@ import SanskaraaShopApp from "./pages/SanskaraaShopApp";
 import EventManagement from "./pages/EventManagement";
 import ContactPage from "./components/layout/ContactPage";
 import SanskaraaLoader from "./components/layout/SanskaraaLoader";
+import { auth, onAuthStateChanged } from "./lib/firebase";
+import { getOrCreateUserProfile, persistProfile } from "./lib/profile";
 
 export default function App() {
   const location = useLocation();
 
   const [micOpen, setMicOpen] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
+  const navigate = useNavigate();
 
   // 🔥 Show loader only once on app load
   useEffect(() => {
@@ -40,6 +44,42 @@ export default function App() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    const publicRoutes = [
+      "/auth",
+      "/login",
+      "/signup",
+      "/forget-password",
+      "/contact",
+      "/contactpage",
+    ];
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      try {
+        if (!user && !publicRoutes.includes(location.pathname.toLowerCase())) {
+          navigate("/login", { replace: true });
+          return;
+        }
+
+        if (user) {
+          const profile = await getOrCreateUserProfile(user);
+          persistProfile(profile);
+          if (!profile.phone && !publicRoutes.includes(location.pathname.toLowerCase()) &&
+              location.pathname.toLowerCase() !== "/mobile") {
+            navigate("/mobile", { replace: true });
+          }
+        }
+      } catch (error) {
+        console.error("Authentication check failed:", error);
+        if (!publicRoutes.includes(location.pathname.toLowerCase())) {
+          navigate("/login", { replace: true });
+        }
+      } finally {
+        setAuthChecked(true);
+      }
+    });
+    return () => unsubscribe();
+  }, [location.pathname, navigate]);
 
   // Pages where navbar & footer should NOT appear
   const noLayoutRoutes = [
@@ -62,7 +102,7 @@ export default function App() {
   const handleMicClose = () => setMicOpen(false);
 
   // 🔥 Loader Overlay (Top Priority)
-  if (showLoader) {
+  if (showLoader || !authChecked) {
     return <SanskaraaLoader />;
   }
 
@@ -96,6 +136,8 @@ export default function App() {
             path="/service-provider/profile"
             element={<ServiceProviderProfile />}
           />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/contactpage" element={<ContactPage />} />
           <Route path="/ContactPage" element={<ContactPage />} />
           <Route
             path="/vendor-registration"

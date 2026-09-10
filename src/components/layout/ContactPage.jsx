@@ -31,6 +31,13 @@ import {
   Menu,
   ArrowLeft,
 } from "lucide-react";
+import {
+  SUPPORT_EMAIL,
+  SUPPORT_PHONE,
+  SUPPORT_PHONE_DISPLAY,
+  SUPPORT_HOURS,
+  SUPPORT_WHATSAPP_URL,
+} from "../../lib/support";
 
 /* =====================================================
    FULLY RESPONSIVE MOBILE-FIRST SUPPORT PAGE
@@ -42,9 +49,6 @@ import {
 ===================================================== */
 
 // ---------------- CONFIG ----------------
-const SUPPORT_PHONE = "916201486202";
-const SUPPORT_EMAIL = "sasanskaara.net@gmail.com";
-
 // ---------------- BRANDING COLORS ----------------
 const PRIMARY = "#7A1A1A";
 const ACCENT = "#FFD7A3";
@@ -508,14 +512,14 @@ export default function ContactPage() {
     {
       label: "Call Now",
       icon: PhoneCall,
-      action: () => (window.location.href = `tel:+${SUPPORT_PHONE}`),
+      action: () => { window.location.href = `tel:${SUPPORT_PHONE}`; },
       color: "from-blue-500 to-blue-600",
       highlight: false,
     },
     {
       label: "WhatsApp",
       icon: MessageCircle,
-      action: () => window.open(`https://wa.me/${SUPPORT_PHONE}`, "_blank"),
+      action: () => window.open(SUPPORT_WHATSAPP_URL, "_blank", "noopener,noreferrer"),
       color: "from-green-500 to-green-600",
       highlight: false,
     },
@@ -695,14 +699,18 @@ export default function ContactPage() {
                         <PhoneCall className="text-blue-600 sm:w-5 sm:h-5" size={18} />
                         <div>
                           <p className="text-xs sm:text-sm text-gray-500">Call us</p>
-                          <p className="font-semibold text-sm sm:text-base">+91 62014 86202</p>
+                          <a href={`tel:${SUPPORT_PHONE}`} className="font-semibold text-sm sm:text-base hover:text-blue-700">
+                            {SUPPORT_PHONE_DISPLAY}
+                          </a>
                         </div>
                       </div>
                       <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
                         <Mail className="text-amber-600 sm:w-5 sm:h-5" size={18} />
                         <div>
                           <p className="text-xs sm:text-sm text-gray-500">Email us</p>
-                          <p className="font-semibold text-sm sm:text-base truncate">{SUPPORT_EMAIL}</p>
+                          <a href={`mailto:${SUPPORT_EMAIL}`} className="font-semibold text-sm sm:text-base truncate hover:text-amber-700">
+                            {SUPPORT_EMAIL}
+                          </a>
                         </div>
                       </div>
                     </div>
@@ -1335,13 +1343,13 @@ export default function ContactPage() {
             </p>
             <p className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto mb-4">
               Sanskaraa is here to support you every step of the way. 
-              For urgent matters, please call us directly at +91 62014 86202.
+              For urgent matters, please call us directly at {SUPPORT_PHONE_DISPLAY}.
             </p>
             
             <div className="flex flex-wrap justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500">
               <span>© {new Date().getFullYear()} Sanskaraa</span>
               <span>•</span>
-              <span>9 AM – 9 PM (IST)</span>
+              <span>{SUPPORT_HOURS}</span>
               <span>•</span>
               <span>Email: {SUPPORT_EMAIL}</span>
             </div>

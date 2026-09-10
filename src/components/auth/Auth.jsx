@@ -13,46 +13,30 @@ import {
   googleProvider,
   signInWithPopup,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
 } from "../../lib/firebase";
+import { getOrCreateUserProfile, persistProfile } from "../../lib/profile";
 
 export default function Auth() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) return;
-
-      const ref = doc(db, "users", user.uid);
-      const snap = await getDoc(ref);
-
-      if (!snap.exists()) {
-        await setDoc(
-          ref,
-          {
-            uid: user.uid,
-            name: user.displayName || "",
-            email: user.email || "",
-            photo: user.photoURL || "",
-            phone: "",
-            phoneVerified: false,
-            createdAt: new Date().toISOString(),
-            lastLogin: new Date().toISOString(),
-          },
-          { merge: true }
-        );
-
-        navigate("/mobile");
-        return;
-      }
-
-      const data = snap.data();
-
-
-      if (!data.phone) {
-        navigate("/mobile");
-      } else {
-        navigate("/");
+      try {
+        const profile = await getOrCreateUserProfile(user);
+        persistProfile(profile);
+        navigate(profile.phone ? "/" : "/mobile", { replace: true });
+      } catch (error) {
+        console.error("Could not load user profile:", error);
+        toast.error("Login succeeded, but your profile could not be loaded.");
       }
     });
 
@@ -65,70 +49,56 @@ export default function Auth() {
 
       const result = await signInWithPopup(auth, googleProvider);
 
-      const user = result.user;
-
-      const userRef = doc(db, "users", user.uid);
-
-      const snap = await getDoc(userRef);
-
-      if (!snap.exists()) {
-        await setDoc(
-          userRef,
-          {
-            uid: user.uid,
-            name: user.displayName || "",
-            email: user.email || "",
-            photo: user.photoURL || "",
-            phone: "",
-            phoneVerified: false,
-            createdAt: new Date().toISOString(),
-            lastLogin: new Date().toISOString(),
-          },
-          { merge: true }
-        );
-
-    
-
-        navigate("/mobile");
-
-        return;
-      }
-
-      await setDoc(
-        userRef,
-        {
-          lastLogin: new Date().toISOString(),
-        },
-        { merge: true }
-      );
-
-      const latest = await getDoc(userRef);
-
-   const userData = latest.data();
-
-localStorage.setItem(
-  "loggedInUser",
-  JSON.stringify(userData)
-);
-
-toast.success("Welcome " + user.displayName);
-
-if (!userData.phone) {
-  navigate("/mobile");
-} else {
-  navigate("/");
-}
+     const profile = await getOrCreateUserProfile(result.user);
+     persistProfile(profile);
+     toast.success("Welcome " + (profile.name || profile.email));
+     navigate(profile.phone ? "/" : "/mobile");
 } catch (err) {
   console.error(err);
 
   if (err.code === "auth/popup-closed-by-user") {
     toast.error("Google Sign In was cancelled.");
+  } else if (err.code === "auth/unauthorized-domain") {
+    toast.error(
+      "Google login is not enabled for this address. Open the app using http://localhost:5173."
+    );
   } else {
     toast.error(err.message);
   }
 } finally {
   setLoading(false);
 }
+  };
+
+  const handleEmailAuth = async (event) => {
+    event.preventDefault();
+    if (!email || password.length < 6 || (isSignUp && !name.trim())) {
+      toast.error(isSignUp
+        ? "Name, email and a 6 character password are required."
+        : "Enter a valid email and 6 character password.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      let result;
+      if (isSignUp) {
+        result = await createUserWithEmailAndPassword(auth, email.trim(), password);
+        await updateProfile(result.user, { displayName: name.trim() });
+      } else {
+        result = await signInWithEmailAndPassword(auth, email.trim(), password);
+      }
+      const profile = await getOrCreateUserProfile(result.user);
+      persistProfile(profile);
+      navigate(profile.phone ? "/" : "/mobile");
+    } catch (err) {
+      console.error(err);
+      toast.error(err.code === "auth/invalid-credential"
+        ? "Email or password is incorrect."
+        : err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
     return (
@@ -184,6 +154,50 @@ if (!userData.phone) {
               </>
             )}
 
+          </button>
+
+          <div className="my-6 flex items-center gap-3 text-xs text-gray-400">
+            <span className="h-px flex-1 bg-gray-200" /> OR <span className="h-px flex-1 bg-gray-200" />
+          </div>
+
+          <form onSubmit={handleEmailAuth} className="space-y-3">
+            {isSignUp && (
+              <input
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                placeholder="Full name"
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-orange-500"
+              />
+            )}
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="Email address"
+              className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-orange-500"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Password (min 6 characters)"
+              className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-orange-500"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-xl bg-orange-500 py-3 font-semibold text-white hover:bg-orange-600 disabled:opacity-60"
+            >
+              {isSignUp ? "Create Account" : "Login with Email"}
+            </button>
+          </form>
+
+          <button
+            type="button"
+            onClick={() => setIsSignUp((value) => !value)}
+            className="mt-4 w-full text-sm font-medium text-orange-600 hover:underline"
+          >
+            {isSignUp ? "Already have an account? Login" : "New user? Create Account"}
           </button>
 
           <div className="mt-8 bg-orange-50 rounded-2xl p-5">

@@ -7,7 +7,8 @@ import {
   Phone, TrendingUp, Check, Cloud
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { auth, isFirebaseConfigured, signOut } from "../lib/firebase";
+import { auth, isFirebaseConfigured, signOut, onAuthStateChanged } from "../lib/firebase";
+import { getOrCreateUserProfile, persistProfile, updateUserProfile } from "../lib/profile";
 import toast from "react-hot-toast";
 
 // ---------------- Enhanced Card Component ----------------
@@ -396,22 +397,53 @@ export default function UserProfile() {
     { label: "Offer Notifications", enabled: false },
     { label: "New Service Updates", enabled: true }
   ]);
+  const [profileForm, setProfileForm] = useState({});
+  const [savingProfile, setSavingProfile] = useState(false);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("loggedInUser");
-    let initialUser = null;
-    try {
-        initialUser = JSON.parse(storedUser);
-    } catch (e) {
-        console.error("Error parsing user data:", e);
-    }
-
-    if (!initialUser || !initialUser.isLoggedIn) {
-      navigate("/login");
-    } else {
-      setUser(initialUser);
-    }
+    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+      if (!authUser) {
+        navigate("/login", { replace: true });
+        return;
+      }
+      try {
+        const profile = await getOrCreateUserProfile(authUser);
+        setUser(profile);
+        setProfileForm({
+          name: profile.name || "",
+          phone: profile.phone || "",
+          dateOfBirth: profile.dateOfBirth || "",
+          gender: profile.gender || "",
+          address: profile.address || "",
+          city: profile.city || "",
+          state: profile.state || "",
+        });
+        persistProfile(profile);
+      } catch (error) {
+        console.error("Profile loading failed:", error);
+        toast.error("Could not load your profile.");
+      }
+    });
+    return () => unsubscribe();
   }, [navigate]);
+
+  const handleProfileSave = async (event) => {
+    event.preventDefault();
+    if (!user?.uid) return;
+    setSavingProfile(true);
+    try {
+      const updated = await updateUserProfile(user.uid, profileForm);
+      const merged = { ...user, ...updated };
+      setUser(merged);
+      persistProfile(merged);
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      console.error("Profile update failed:", error);
+      toast.error("Could not update your profile.");
+    } finally {
+      setSavingProfile(false);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -508,7 +540,7 @@ export default function UserProfile() {
   const userData = {
     ...user,
     coverImage: "src/assets/images/team 1.png",
-    profileImage: "src/assets/images/sanskaraa app.png",
+    profileImage: user.profileImage || "/images/sanskaraa-logo.png",
     stats: { 
       bookings: 5, 
       wishlist: 3, 
@@ -532,9 +564,9 @@ export default function UserProfile() {
       festivalNotifications: "Enabled",
     },
     personalInfo: {
-      dob: "15 Aug 1995",
+      dob: user.dateOfBirth || "Not added",
       payment: "UPI",
-      address: "123, Mumbai, Maharashtra",
+      address: user.address || "Not added",
       language: "Hindi",
       dietType: "Vegetarian",
       allergies: "None",
@@ -658,6 +690,42 @@ export default function UserProfile() {
           </div>
         </div>
 
+        <form onSubmit={handleProfileSave} className="mt-6 rounded-2xl bg-white/95 p-5 shadow-sm">
+          <h3 className="mb-4 text-lg font-bold text-[#5C3A21]">Personal Details</h3>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {[
+              ["name", "Full name"],
+              ["phone", "Phone number"],
+              ["dateOfBirth", "Date of birth"],
+              ["gender", "Gender"],
+              ["address", "Address"],
+              ["city", "City"],
+              ["state", "State"],
+            ].map(([field, label]) => (
+              <label key={field} className={field === "address" ? "sm:col-span-2" : ""}>
+                <span className="mb-1 block text-xs font-semibold text-gray-600">{label}</span>
+                <input
+                  type={field === "dateOfBirth" ? "date" : "text"}
+                  value={profileForm[field] || ""}
+                  onChange={(event) => setProfileForm((current) => ({
+                    ...current,
+                    [field]: event.target.value,
+                  }))}
+                  readOnly={field === "phone"}
+                  className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm outline-none focus:border-orange-500 read-only:bg-gray-100"
+                />
+              </label>
+            ))}
+          </div>
+          <button
+            type="submit"
+            disabled={savingProfile}
+            className="mt-4 rounded-xl bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-60"
+          >
+            {savingProfile ? "Saving..." : "Save Profile"}
+          </button>
+        </form>
+
         {/* Quick Actions */}
         <div className="px-4 mt-6 flex justify-center gap-3 sm:gap-4">
           <button 
@@ -679,12 +747,13 @@ export default function UserProfile() {
               { icon: <Calendar />, label: "Book Puja", color: "bg-orange-500" },
               { icon: <Package />, label: "My Orders", color: "bg-green-500" },
               { icon: <Gift />, label: "Donate", color: "bg-blue-500" },
-              { icon: <Phone />, label: "Support", color: "bg-purple-500" }
+              { icon: <Phone />, label: "Support", color: "bg-purple-500", onClick: () => navigate("/contact") }
             ].map((action, i) => (
               <motion.button 
                 key={i} 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={action.onClick}
                 className={`${action.color} text-white p-3 rounded-xl text-center shadow-lg hover:shadow-xl transition-all`}
               >
                 {React.cloneElement(action.icon, { className: "w-6 h-6 mx-auto" })}

@@ -11,6 +11,7 @@ import {
   getDoc,
   setDoc,
 } from "../../lib/firebase";
+import { getOrCreateUserProfile, persistProfile } from "../../lib/profile";
 
 export default function MobileNumber() {
   const navigate = useNavigate();
@@ -37,16 +38,8 @@ export default function MobileNumber() {
 
       const userRef = doc(db, "users", user.uid);
 
-      const snap = await getDoc(userRef);
-
-      if (!snap.exists()) {
-        toast.error("User not found");
-        navigate("/auth");
-        return;
-      }
-
       const updatedUser = {
-        ...snap.data(),
+        ...(await getOrCreateUserProfile(user)),
         phone: "+91" + phone,
         phoneVerified: false,
         lastLogin: new Date().toISOString(),
@@ -56,10 +49,7 @@ export default function MobileNumber() {
         merge: true,
       });
 
-      localStorage.setItem(
-        "loggedInUser",
-        JSON.stringify(updatedUser)
-      );
+      persistProfile(updatedUser);
 
       toast.success("Mobile Number Saved");
 

@@ -51,6 +51,7 @@ export default function Navbar({ onMicClick }) {
     { name: "Store", path: "/pujakits" },
     { name: "Pandit Booking", path: "/panditbooking" },
     { name: "Event", path: "/EventsPage" },
+    { name: "Support", path: "/contact" },
   ];
 
   return (
