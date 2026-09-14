@@ -7,6 +7,12 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
+import { auth, onAuthStateChanged } from "../lib/firebase";
+import {
+    deleteUserBooking,
+    subscribeToUserBookings,
+    updateUserBooking,
+} from "../lib/bookings";
 
 // --- Mock Data Setup (FIXED: Moved outside component) ---
 const getMockBookings = () => [
@@ -303,16 +309,24 @@ export default function BookingsPage() {
         "2025-11-04": "Chhath Puja"
     };
 
-    // FIX APPLIED HERE: Calling getMockBookings
     useEffect(() => {
-        const savedBookings = JSON.parse(localStorage.getItem("sanskaraa_bookings")) || [];
-        if (savedBookings.length === 0) {
-            const sampleBookings = getMockBookings();
-            localStorage.setItem("sanskaraa_bookings", JSON.stringify(sampleBookings));
-            setBookings(sampleBookings);
-        } else {
-            setBookings(savedBookings);
-        }
+        let unsubscribeBookings;
+        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+            if (unsubscribeBookings) unsubscribeBookings();
+            if (!user) {
+                setBookings([]);
+                return;
+            }
+            unsubscribeBookings = subscribeToUserBookings(
+                user.uid,
+                setBookings,
+                (error) => console.error("Could not load bookings:", error)
+            );
+        });
+        return () => {
+            unsubscribeAuth();
+            if (unsubscribeBookings) unsubscribeBookings();
+        };
     }, []);
 
     const updateBookings = (updatedBookings) => {
@@ -355,24 +369,20 @@ export default function BookingsPage() {
     };
 
     const handleSaveEdit = (updatedBooking) => {
-        const updatedBookings = bookings.map(b => 
-            b.id === updatedBooking.id ? updatedBooking : b
-        );
-        updateBookings(updatedBookings);
-        setEditingBooking(null);
+        updateUserBooking(updatedBooking.id, updatedBooking)
+            .then(() => setEditingBooking(null))
+            .catch((error) => console.error("Could not update booking:", error));
     };
 
     const handleDelete = (id) => {
-        const updatedBookings = bookings.filter(b => b.id !== id);
-        updateBookings(updatedBookings);
-        setDeleteConfirm(null);
+        deleteUserBooking(id)
+            .then(() => setDeleteConfirm(null))
+            .catch((error) => console.error("Could not delete booking:", error));
     };
 
     const handleStatusChange = (id, newStatus) => {
-        const updatedBookings = bookings.map(b =>
-            b.id === id ? { ...b, status: newStatus } : b
-        );
-        updateBookings(updatedBookings);
+        updateUserBooking(id, { status: newStatus })
+            .catch((error) => console.error("Could not update booking status:", error));
     };
 
     const setReminder = (booking, hoursBefore = 24) => {

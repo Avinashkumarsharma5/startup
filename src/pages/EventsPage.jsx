@@ -31,6 +31,7 @@ import {
   FiPlay,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import { saveUserBooking } from "../lib/bookings";
 
 // ========== CULTURAL COLOR THEME ==========
 const colors = {
@@ -1409,7 +1410,7 @@ export default function RentalStore() {
   };
 
   // Handle final confirm from wizard
-  const handleOrderConfirm = (orderPayload) => {
+  const handleOrderConfirm = async (orderPayload) => {
     const order = {
       id: Date.now(),
       items: orderPayload.items,
@@ -1419,6 +1420,36 @@ export default function RentalStore() {
       mode: orderPayload.mode,
       createdAt: new Date().toISOString(),
     };
+
+    const rentalBooking = {
+      id: String(order.id),
+      event: order.customer?.eventType || "Event Rental",
+      service: "Event Decoration & Rental",
+      date: order.schedule?.eventDate || order.createdAt.slice(0, 10),
+      time: order.schedule?.slot || "Delivery",
+      address: [
+        order.customer?.address,
+        order.customer?.city,
+        order.customer?.pincode,
+      ].filter(Boolean).join(", "),
+      notes: `${order.items?.length || 0} rental item(s), ${order.schedule?.rentalDays || 1} day(s)`,
+      pandit: { name: "Sanskaraa Event Rental", image: "" },
+      status: "Confirmed",
+      kitStatus: "Pending",
+      decorationStatus: "Confirmed",
+      totalAmount: order.pricing?.total || 0,
+      type: "event-rental",
+      details: order,
+      createdAt: order.createdAt,
+    };
+
+    try {
+      await saveUserBooking(rentalBooking);
+    } catch (error) {
+      console.error("Could not save rental order:", error);
+      alert("Rental order save nahi ho saka. Please try again.");
+      return;
+    }
 
     const itemsText = order.items
       .map(

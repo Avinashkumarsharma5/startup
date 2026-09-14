@@ -40,6 +40,7 @@ import {
   FiTrash2,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import { saveUserBooking } from "../lib/bookings";
 import { useNavigate } from "react-router-dom";
 
 // ---------- Price Resolver Function ----------
@@ -2987,7 +2988,7 @@ export default function UnifiedPujaStoreWithKitEditor() {
   };
 
   // Handle Order Confirmation
-  const handleOrderConfirm = (orderPayload) => {
+  const handleOrderConfirm = async (orderPayload) => {
     const order = {
       id: Date.now(),
       items: orderPayload.items,
@@ -2999,6 +3000,42 @@ export default function UnifiedPujaStoreWithKitEditor() {
       mode: orderPayload.mode,
       createdAt: new Date().toISOString(),
     };
+
+    const firstItem = order.items?.[0] || {};
+    const orderBooking = {
+      id: String(order.id),
+      event: order.mode === "package"
+        ? (firstItem.name || "Puja Kit Booking")
+        : `Sanskaraa Order (${order.items?.length || 0} items)`,
+      service: order.mode === "package" ? "Puja Kit Service" : "Puja Kit Purchase",
+      date: order.delivery?.date || order.createdAt.slice(0, 10),
+      time: order.delivery?.slot || "Delivery",
+      address: [
+        order.customer?.address,
+        order.customer?.city,
+        order.customer?.pincode,
+      ].filter(Boolean).join(", "),
+      notes: order.additionalNotes || "",
+      pandit: {
+        name: order.includePandit ? "Pandit Service Included" : "N/A",
+        image: "",
+      },
+      status: "Confirmed",
+      kitStatus: "Pending",
+      decorationStatus: "N/A",
+      totalAmount: order.pricing?.total || 0,
+      type: "shop-order",
+      details: order,
+      createdAt: order.createdAt,
+    };
+
+    try {
+      await saveUserBooking(orderBooking);
+    } catch (error) {
+      console.error("Could not save shop order:", error);
+      alert("Order save nahi ho saka. Please try again.");
+      return;
+    }
 
     // Save to localStorage
     try {

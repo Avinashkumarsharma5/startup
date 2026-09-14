@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { saveUserBooking } from "../lib/bookings";
 
 // Temple icon replacement - using Sparkles as fallback
 const Temple = Sparkles;
@@ -1310,7 +1311,7 @@ export default function PujaBooking() {
     setBookingStep(prev => prev - 1);
   };
 
-  const handleBookingComplete = () => {
+  const handleBookingComplete = async () => {
     const newBookingId = `BK${Date.now().toString().slice(-8)}`;
     setBookingId(newBookingId);
     
@@ -1329,8 +1330,34 @@ export default function PujaBooking() {
       status: 'confirmed',
       bookedAt: new Date().toISOString()
     };
-    
-    localStorage.setItem('pujaBookings', JSON.stringify([newBooking, ...bookings]));
+
+    const bookingForBookingsPage = {
+      id: newBookingId,
+      event: selectedPuja.name,
+      service: bookingData.service,
+      date: bookingData.date,
+      time: bookingData.time,
+      address: bookingData.address,
+      notes: bookingData.additionalNotes,
+      pandit: { name: "Sanskaraa Pandit Seva", image: "" },
+      status: "Confirmed",
+      kitStatus: bookingData.includeSamagri ? "Ready" : "N/A",
+      decorationStatus: "Pending",
+      totalAmount: newBooking.totalAmount,
+      type: "puja",
+      details: newBooking,
+      createdAt: newBooking.bookedAt,
+    };
+
+    try {
+      await saveUserBooking(bookingForBookingsPage);
+      const savedBookings = JSON.parse(localStorage.getItem('pujaBookings') || '[]');
+      localStorage.setItem('pujaBookings', JSON.stringify([newBooking, ...savedBookings]));
+    } catch (error) {
+      console.error("Could not save puja booking:", error);
+      setValidationError("Booking save nahi ho saki. Please try again.");
+      return;
+    }
     
     sendWhatsAppMessage(completeBookingData, selectedPuja);
     

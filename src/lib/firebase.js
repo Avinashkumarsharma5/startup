@@ -16,9 +16,14 @@ import {
 import {
   getFirestore,
   doc,
+  collection,
   getDoc,
   setDoc,
   updateDoc,
+  deleteDoc,
+  onSnapshot,
+  query,
+  orderBy,
   serverTimestamp,
 } from "firebase/firestore";
 
@@ -84,9 +89,14 @@ export {
 
   // Firestore
   doc,
+  collection,
   getDoc,
   setDoc,
   updateDoc,
+  deleteDoc,
+  onSnapshot,
+  query,
+  orderBy,
   serverTimestamp,
 
   // Storage
