@@ -50,6 +50,7 @@ export default function BottomNavbar() {
     { name: "Vendor Registration", path: "/vendor-registration", icon: Users },
     ...(role && ["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role)
       ? [
+          { name: "Admin Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
           { name: "Admin Leads", path: "/admin/leads", icon: Users },
           { name: "Vendor Approvals", path: "/admin/vendors", icon: Store },
           { name: "Admin Analytics", path: "/admin/analytics", icon: BarChart3 },

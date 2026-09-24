@@ -27,6 +27,7 @@ import ContactPage from "./components/layout/ContactPage";
 import SanskaraaLoader from "./components/layout/SanskaraaLoader";
 import AdminLeads from "./pages/AdminLeads";
 import AdminVendors from "./pages/AdminVendors";
+import AdminDashboard from "./pages/AdminDashboard";
 import { auth, onAuthStateChanged } from "./lib/firebase";
 import { getOrCreateUserProfile, persistProfile } from "./lib/profile";
 
@@ -175,7 +176,10 @@ export default function App() {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/eventmanagement" element={<EventManagement />} />
           <Route path="/admin/leads" element={<AdminOnly><AdminLeads /></AdminOnly>} />
+          <Route path="/admin/dashboard" element={<AdminOnly><AdminDashboard /></AdminOnly>} />
+          <Route path="/AdminLeads" element={<AdminOnly><AdminLeads /></AdminOnly>} />
           <Route path="/admin/vendors" element={<AdminOnly><AdminVendors /></AdminOnly>} />
+          <Route path="/AdminVendors" element={<AdminOnly><AdminVendors /></AdminOnly>} />
           <Route path="/admin/analytics" element={<AdminOnly><AdminLeads /></AdminOnly>} />
           <Route
             path="/service-provider/profile"

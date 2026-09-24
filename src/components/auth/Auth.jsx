@@ -33,7 +33,8 @@ export default function Auth() {
       try {
         const profile = await getOrCreateUserProfile(user);
         persistProfile(profile);
-        navigate(profile.phone ? "/" : "/mobile", { replace: true });
+        const role = String(profile.role || "").toUpperCase();
+        navigate(["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role) ? "/admin/dashboard" : (profile.phone ? "/" : "/mobile"), { replace: true });
       } catch (error) {
         console.error("Could not load user profile:", error);
         toast.error("Login succeeded, but your profile could not be loaded.");
@@ -52,7 +53,8 @@ export default function Auth() {
      const profile = await getOrCreateUserProfile(result.user);
      persistProfile(profile);
      toast.success("Welcome " + (profile.name || profile.email));
-     navigate(profile.phone ? "/" : "/mobile");
+     const role = String(profile.role || "").toUpperCase();
+     navigate(["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role) ? "/admin/dashboard" : (profile.phone ? "/" : "/mobile"));
 } catch (err) {
   console.error(err);
 
@@ -90,7 +92,8 @@ export default function Auth() {
       }
       const profile = await getOrCreateUserProfile(result.user);
       persistProfile(profile);
-      navigate(profile.phone ? "/" : "/mobile");
+      const role = String(profile.role || "").toUpperCase();
+      navigate(["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role) ? "/admin/dashboard" : (profile.phone ? "/" : "/mobile"));
     } catch (err) {
       console.error(err);
       toast.error(err.code === "auth/invalid-credential"

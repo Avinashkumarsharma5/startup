@@ -9,9 +9,12 @@ export default function Navbar({ onMicClick }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [profileInitial, setProfileInitial] = useState("S");
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    setProfileInitial("S");
+    setIsAdmin(false);
     try {
       const storedUser = localStorage.getItem("loggedInUser");
       if (storedUser) {
@@ -19,13 +22,13 @@ export default function Navbar({ onMicClick }) {
         const source = parsed?.name || parsed?.email || "";
         if (source) {
           setProfileInitial(source.trim().charAt(0).toUpperCase());
-          return;
         }
+        const role = String(parsed?.role || "").toUpperCase();
+        setIsAdmin(["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role));
       }
     } catch (error) {
       console.error("Failed to read user data:", error);
     }
-    setProfileInitial("S");
   }, []);
 
   const handleLogout = async () => {
@@ -137,6 +140,38 @@ export default function Navbar({ onMicClick }) {
                   >
                     View Profile
                   </button>
+
+                  {isAdmin && (
+                    <>
+                      <button
+                        onClick={() => {
+                          setShowProfileMenu(false);
+                          navigate("/admin/dashboard");
+                        }}
+                        className="w-full text-left px-4 py-2 font-semibold text-[#7A1A1A] hover:bg-orange-50"
+                      >
+                        Admin Dashboard
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowProfileMenu(false);
+                          navigate("/admin/leads");
+                        }}
+                        className="w-full text-left px-4 py-2 font-semibold text-[#7A1A1A] hover:bg-orange-50"
+                      >
+                        Admin Leads
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowProfileMenu(false);
+                          navigate("/admin/vendors");
+                        }}
+                        className="w-full text-left px-4 py-2 font-semibold text-[#7A1A1A] hover:bg-orange-50"
+                      >
+                        Vendor Approvals
+                      </button>
+                    </>
+                  )}
 
                   <button
                     onClick={handleLogout}
