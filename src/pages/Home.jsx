@@ -39,6 +39,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import LeadForm from "../components/leads/LeadForm";
 
 // Sanskrit shlokas and quotes for different times of day
 const dailyShlokas = {
@@ -522,6 +523,31 @@ function HeroBanner() {
   );
 }
 
+function LeadCaptureSection() {
+  return (
+    <section className="mt-8 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+      <div className="rounded-3xl border border-[#E8D19B] bg-gradient-to-r from-[#FFF8EB] to-[#FFF1D1] p-5 sm:p-6 shadow-sm">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#A35A00]">Need help fast?</p>
+        <h3 className="mt-3 text-2xl font-bold text-[#7A1A1A]">Book a trusted Pandit, puja kit or event service</h3>
+        <p className="mt-2 text-sm text-slate-700">
+          Tell us your requirement and our team will connect you with the right specialist in your city.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-2 text-xs font-medium text-slate-700">
+          <span className="rounded-full bg-white px-3 py-1.5 border border-[#E8D19B]">Quick Callback</span>
+          <span className="rounded-full bg-white px-3 py-1.5 border border-[#E8D19B]">Verified Pandits</span>
+          <span className="rounded-full bg-white px-3 py-1.5 border border-[#E8D19B]">Event Support</span>
+        </div>
+      </div>
+
+      <LeadForm
+        service="Puja & Event Consultation"
+        title="Request a callback"
+        subtitle="Share your requirement and our team will contact you within a few minutes."
+        className="max-w-full"
+      />
+    </section>
+  );
+}
 
 // ----------------- Services -----------------
 function ServicesSection() {
@@ -1663,6 +1689,7 @@ export default function EnhancedHome() {
         <AnimatedSearch onVoiceSearch={handleVoiceSearch} />
 
         <HeroBanner />
+        <LeadCaptureSection />
         <ServicesSection />
 
         <EnhancedUpcomingEvents />

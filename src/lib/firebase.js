@@ -15,9 +15,11 @@ import {
 
 import {
   getFirestore,
+  addDoc,
   doc,
   collection,
   getDoc,
+  getDocs,
   setDoc,
   updateDoc,
   deleteDoc,
@@ -25,6 +27,7 @@ import {
   query,
   orderBy,
   serverTimestamp,
+  arrayUnion,
 } from "firebase/firestore";
 
 import {
@@ -90,7 +93,9 @@ export {
   // Firestore
   doc,
   collection,
+  addDoc,
   getDoc,
+  getDocs,
   setDoc,
   updateDoc,
   deleteDoc,
@@ -98,6 +103,7 @@ export {
   query,
   orderBy,
   serverTimestamp,
+  arrayUnion,
 
   // Storage
   ref,

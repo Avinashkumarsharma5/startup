@@ -1,5 +1,17 @@
-import React, { useState } from "react";
-import { Home as HomeIcon, Search, Package, Bookmark, Menu, User } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import {
+  Home as HomeIcon,
+  Search,
+  Package,
+  Bookmark,
+  Menu,
+  User,
+  LayoutDashboard,
+  Users,
+  BarChart3,
+  CalendarCheck,
+  Store,
+} from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 export default function BottomNavbar() {
@@ -8,6 +20,16 @@ export default function BottomNavbar() {
   const [showMore, setShowMore] = useState(false);
   const [role, setRole] = useState(null);
   const [serviceProviderType, setServiceProviderType] = useState(null);
+
+  useEffect(() => {
+    try {
+      const storedProfile = JSON.parse(localStorage.getItem("loggedInUser") || "null");
+      setRole(String(storedProfile?.role || "").toUpperCase() || null);
+    } catch (error) {
+      console.error("Unable to load navigation role:", error);
+      setRole(null);
+    }
+  }, [location.pathname]);
 
   const navItems = [
     { name: "Home", path: "/", icon: HomeIcon },
@@ -20,6 +42,20 @@ export default function BottomNavbar() {
     setShowMore(false);
     navigate("/service-provider/profile");
   };
+
+  const quickLinks = [
+    { name: "My Dashboard", path: "/dashboard", icon: LayoutDashboard },
+    { name: "Pandit Booking", path: "/pandit-booking", icon: CalendarCheck },
+    { name: "Vendor Dashboard", path: "/vendor/dashboard", icon: Store },
+    { name: "Vendor Registration", path: "/vendor-registration", icon: Users },
+    ...(role && ["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role)
+      ? [
+          { name: "Admin Leads", path: "/admin/leads", icon: Users },
+          { name: "Vendor Approvals", path: "/admin/vendors", icon: Store },
+          { name: "Admin Analytics", path: "/admin/analytics", icon: BarChart3 },
+        ]
+      : []),
+  ];
 
   return (
     <>
@@ -60,6 +96,28 @@ export default function BottomNavbar() {
       {showMore && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-end z-50" onClick={() => setShowMore(false)}>
           <div className="bg-white rounded-t-xl sm:rounded-t-2xl w-full max-w-md p-4 sm:p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-5">
+              <h2 className="text-lg sm:text-xl font-semibold text-center text-[#800000] mb-3">
+                Sanskaraa Quick Access
+              </h2>
+              <div className="grid grid-cols-2 gap-2">
+                {quickLinks.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setShowMore(false)}
+                      className="flex items-center gap-2 rounded-xl border border-orange-100 bg-orange-50 px-3 py-3 text-xs font-semibold text-[#800000] transition hover:bg-orange-100"
+                    >
+                      <Icon className="h-4 w-4 shrink-0" />
+                      <span>{item.name}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
             {!role ? (
               <>
                 <h2 className="text-lg sm:text-xl font-semibold text-center text-[#800000] mb-4 sm:mb-6">

@@ -4,6 +4,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiUpload, FiCamera, FiFile, FiCheck, FiChevronLeft, FiChevronRight, FiInfo, FiGlobe } from "react-icons/fi";
+import toast from "react-hot-toast";
+import { createVendorApplication } from "../../lib/vendors";
 
 /**
  * Enhanced Vendor Registration (features added):
@@ -317,31 +319,19 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
     }
 
     try {
-      // prepare registration object (in real app, send formData to backend)
-      const regs = JSON.parse(localStorage.getItem("vendorRegistrations") || "[]");
-      // duplicate check
-      if (regs.some(r => r.phone === values.phone)) {
-        alert("An account with this phone already exists.");
-        setSubmitting(false);
-        return;
-      }
-
       const vendorId = values.vendorId || generateVendorId();
-      const registration = {
+      const filesMeta = Object.keys(files).reduce((acc, k) => {
+        acc[k] = (files[k] || []).map(f => f.name);
+        return acc;
+      }, {});
+
+      await createVendorApplication({
         ...values,
         vendorId,
-        filesMeta: Object.keys(files).reduce((acc, k) => {
-          acc[k] = (files[k] || []).map(f => f.name);
-          return acc;
-        }, {}),
         ifscBankName,
-        status: "pending",
-        submittedAt: new Date().toISOString(),
-        estimatedApproval: new Date(Date.now() + 48 * 3600 * 1000).toISOString() // 48 hours
-      };
+        estimatedApproval: new Date(Date.now() + 48 * 3600 * 1000).toISOString(),
+      }, filesMeta);
 
-      regs.push(registration);
-      localStorage.setItem("vendorRegistrations", JSON.stringify(regs));
       // clear draft
       localStorage.removeItem("vendorDraft");
 
@@ -354,10 +344,10 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
       setOtpCode(null);
       setOtpInput("");
       setOtpVerified(false);
-      alert(`Registration submitted. Your Vendor ID: ${vendorId}. Estimated review: within 48 hours.`);
+      toast.success(`Application submitted. Vendor ID: ${vendorId}. Await admin approval.`);
     } catch (err) {
       console.error(err);
-      alert("Submission failed. Try again.");
+      toast.error(err.message || "Submission failed. Try again.");
     } finally {
       setSubmitting(false);
     }

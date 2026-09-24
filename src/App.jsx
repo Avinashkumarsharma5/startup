@@ -25,8 +25,29 @@ import SanskaraaShopApp from "./pages/SanskaraaShopApp";
 import EventManagement from "./pages/EventManagement";
 import ContactPage from "./components/layout/ContactPage";
 import SanskaraaLoader from "./components/layout/SanskaraaLoader";
+import AdminLeads from "./pages/AdminLeads";
+import AdminVendors from "./pages/AdminVendors";
 import { auth, onAuthStateChanged } from "./lib/firebase";
 import { getOrCreateUserProfile, persistProfile } from "./lib/profile";
+
+function AdminOnly({ children }) {
+  const navigate = useNavigate();
+  const [allowed, setAllowed] = useState(null);
+
+  useEffect(() => {
+    const profile = JSON.parse(localStorage.getItem("loggedInUser") || "null");
+    const role = String(profile?.role || "").toUpperCase();
+    if (auth.currentUser && ["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role)) {
+      setAllowed(true);
+      return;
+    }
+    setAllowed(false);
+    navigate("/", { replace: true });
+  }, [navigate]);
+
+  if (allowed === null) return <SanskaraaLoader />;
+  return allowed ? children : null;
+}
 
 export default function App() {
   const location = useLocation();
@@ -46,17 +67,30 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const publicRoutes = [
+    const normalizePath = (path) => path.toLowerCase().replace(/\/+$/, "") || "/";
+    const publicRoutes = new Set([
+      "/",
       "/auth",
       "/login",
       "/signup",
       "/forget-password",
       "/contact",
       "/contactpage",
-    ];
+      "/services",
+      "/pujakits",
+      "/panditbooking",
+      "/eventspage",
+      "/search",
+      "/vendor-registration",
+      "/service-provider/profile",
+    ]);
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       try {
-        if (!user && !publicRoutes.includes(location.pathname.toLowerCase())) {
+        const currentPath = normalizePath(location.pathname);
+        const isPublicRoute = publicRoutes.has(currentPath);
+
+        if (!user && !isPublicRoute) {
           navigate("/login", { replace: true });
           return;
         }
@@ -64,14 +98,18 @@ export default function App() {
         if (user) {
           const profile = await getOrCreateUserProfile(user);
           persistProfile(profile);
-          if (!profile.phone && !publicRoutes.includes(location.pathname.toLowerCase()) &&
-              location.pathname.toLowerCase() !== "/mobile") {
+          if (
+            !profile.phone &&
+            !isPublicRoute &&
+            currentPath !== "/mobile"
+          ) {
             navigate("/mobile", { replace: true });
           }
         }
       } catch (error) {
         console.error("Authentication check failed:", error);
-        if (!publicRoutes.includes(location.pathname.toLowerCase())) {
+        const currentPath = normalizePath(location.pathname);
+        if (!publicRoutes.has(currentPath)) {
           navigate("/login", { replace: true });
         }
       } finally {
@@ -126,12 +164,19 @@ export default function App() {
 
           {/* Pages */}
           <Route path="/panditbooking" element={<PanditBooking />} />
+          <Route path="/pandit-booking" element={<PanditBooking />} />
           <Route path="/eventspage" element={<EventsPage />} />
           <Route path="/bookingspage" element={<BookingsPage />} />
+          <Route path="/dashboard" element={<UserProfile />} />
+          <Route path="/customer/dashboard" element={<UserProfile />} />
+          <Route path="/vendor/dashboard" element={<ServiceProviderProfile />} />
           <Route path="/mobile" element={<MobileNumber />} />
           <Route path="/userprofile" element={<UserProfile />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/eventmanagement" element={<EventManagement />} />
+          <Route path="/admin/leads" element={<AdminOnly><AdminLeads /></AdminOnly>} />
+          <Route path="/admin/vendors" element={<AdminOnly><AdminVendors /></AdminOnly>} />
+          <Route path="/admin/analytics" element={<AdminOnly><AdminLeads /></AdminOnly>} />
           <Route
             path="/service-provider/profile"
             element={<ServiceProviderProfile />}
