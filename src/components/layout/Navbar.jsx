@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Bell, Menu, X, Mic } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { auth, isFirebaseConfigured, signOut } from "../../lib/firebase";
 import toast from "react-hot-toast";
 
@@ -11,6 +11,7 @@ export default function Navbar({ onMicClick }) {
   const [profileInitial, setProfileInitial] = useState("S");
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     setProfileInitial("S");
@@ -29,7 +30,7 @@ export default function Navbar({ onMicClick }) {
     } catch (error) {
       console.error("Failed to read user data:", error);
     }
-  }, []);
+  }, [location.pathname]);
 
   const handleLogout = async () => {
     try {
@@ -169,6 +170,15 @@ export default function Navbar({ onMicClick }) {
                         className="w-full text-left px-4 py-2 font-semibold text-[#7A1A1A] hover:bg-orange-50"
                       >
                         Vendor Approvals
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowProfileMenu(false);
+                          navigate("/admin/bookings");
+                        }}
+                        className="w-full text-left px-4 py-2 font-semibold text-[#7A1A1A] hover:bg-orange-50"
+                      >
+                        Manage Bookings
                       </button>
                     </>
                   )}

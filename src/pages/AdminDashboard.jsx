@@ -64,6 +64,7 @@ export default function AdminDashboard() {
     { label: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
     { label: "Leads", path: "/admin/leads", icon: Users },
     { label: "Vendor Approvals", path: "/admin/vendors", icon: Store },
+    { label: "Bookings", path: "/admin/bookings", icon: CalendarCheck },
     { label: "Analytics", path: "/admin/analytics", icon: BarChart3 },
     { label: "Services", path: "/services", icon: Settings },
   ];
@@ -141,7 +142,7 @@ export default function AdminDashboard() {
           <div className="mt-8 rounded-2xl border border-[#E8D19B] bg-white p-5">
             <h2 className="mb-4 text-lg font-bold text-[#7A1A1A]">Quick Actions</h2>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {[["Manage Leads", "/admin/leads"], ["Approve Vendors", "/admin/vendors"], ["View Analytics", "/admin/analytics"], ["Manage Services", "/services"]].map(([label, path]) => <Link key={path} to={path} className="rounded-xl bg-[#FFF7E2] px-4 py-3 text-center text-sm font-semibold text-[#7A1A1A] hover:bg-[#FBE9B5]">{label}</Link>)}
+              {[["Manage Leads", "/admin/leads"], ["Approve Vendors", "/admin/vendors"], ["Manage Bookings", "/admin/bookings"], ["View Analytics", "/admin/analytics"], ["Manage Services", "/services"]].map(([label, path]) => <Link key={path} to={path} className="rounded-xl bg-[#FFF7E2] px-4 py-3 text-center text-sm font-semibold text-[#7A1A1A] hover:bg-[#FBE9B5]">{label}</Link>)}
             </div>
           </div>
         </div>

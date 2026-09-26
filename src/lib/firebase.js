@@ -9,6 +9,9 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  linkWithPhoneNumber,
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
@@ -26,8 +29,10 @@ import {
   onSnapshot,
   query,
   orderBy,
+  where,
   serverTimestamp,
   arrayUnion,
+  writeBatch,
 } from "firebase/firestore";
 
 import {
@@ -98,10 +103,12 @@ export {
   getDocs,
   setDoc,
   updateDoc,
+  writeBatch,
   deleteDoc,
   onSnapshot,
   query,
   orderBy,
+  where,
   serverTimestamp,
   arrayUnion,
 
@@ -117,6 +124,9 @@ export {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  linkWithPhoneNumber,
   signOut,
   onAuthStateChanged,
 };

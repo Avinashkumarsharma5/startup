@@ -19,12 +19,94 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read: if isOwner(userId) || isAdmin();
-      allow create: if isOwner(userId);
-      allow update: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId)
+        && request.resource.data.role == 'CUSTOMER'
+        && request.resource.data.keys().hasOnly([
+          'uid', 'name', 'email', 'phone', 'profileImage', 'dateOfBirth',
+          'gender', 'address', 'city', 'state', 'phoneVerified', 'role',
+          'accountStatus', 'createdAt', 'updatedAt'
+        ]);
+      allow update: if isAdmin()
+        || (
+          isOwner(userId)
+          && resource.data.get('bookingStatus', 'PENDING') == 'PENDING'
+          && resource.data.get('paymentStatus', 'UNPAID') == 'UNPAID'
+          && resource.data.get('vendorId', '') == ''
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'event', 'date', 'time', 'address', 'notes',
+            'status', 'bookingStatus', 'updatedAt'
+          ])
+          && (
+            !request.resource.data.diff(resource.data).affectedKeys().hasAny(['bookingStatus'])
+            || request.resource.data.bookingStatus == 'CANCELLED'
+          )
+        )
+        || (
+          isOwner(userId)
+          && request.resource.data.get('role', 'CUSTOMER') == resource.data.get('role', 'CUSTOMER')
+          && request.resource.data.get('accountStatus', 'ACTIVE') == resource.data.get('accountStatus', 'ACTIVE')
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'name', 'email', 'phone', 'profileImage', 'dateOfBirth', 'gender',
+            'address', 'city', 'state', 'updatedAt', 'lastLogin', 'phoneVerified'
+          ])
+          && (
+            !request.resource.data.diff(resource.data).affectedKeys().hasAny(['phoneVerified'])
+            || (
+              request.resource.data.phoneVerified == true
+              && request.auth.token.phone_number == request.resource.data.phone
+            )
+          )
+        );
       allow delete: if isAdmin();
 
       match /bookings/{bookingId} {
-        allow read, write: if isOwner(userId) || isAdmin();
+        allow read: if isOwner(userId) || isAdmin()
+          || (signedIn() && resource.data.vendorId == request.auth.uid);
+        allow create: if isOwner(userId)
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.bookingStatus == 'PENDING'
+          && request.resource.data.paymentStatus == 'UNPAID'
+          && request.resource.data.status == 'Pending';
+        allow update: if isAdmin()
+          || (
+            isOwner(userId)
+            && resource.data.get('bookingStatus', 'PENDING') == 'PENDING'
+            && resource.data.get('paymentStatus', 'UNPAID') == 'UNPAID'
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+              'event', 'date', 'time', 'address', 'notes',
+              'status', 'bookingStatus', 'updatedAt'
+            ])
+            && (
+              !request.resource.data.diff(resource.data).affectedKeys().hasAny(['status', 'bookingStatus'])
+              || (
+                request.resource.data.bookingStatus == 'CANCELLED'
+                && request.resource.data.status == 'Cancelled'
+              )
+            )
+          )
+          || (
+            signedIn()
+            && resource.data.vendorId == request.auth.uid
+            && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+              in ['VENDOR', 'PANDIT']
+            && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.vendorStatus
+              == 'APPROVED'
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+              'bookingStatus', 'status', 'updatedAt'
+            ])
+            && request.resource.data.status == request.resource.data.bookingStatus
+            && (
+              (
+                resource.data.bookingStatus == 'PENDING'
+                && request.resource.data.bookingStatus in ['ACCEPTED', 'REJECTED']
+              )
+              || (
+                resource.data.bookingStatus in ['ACCEPTED', 'IN_PROGRESS']
+                && request.resource.data.bookingStatus in ['IN_PROGRESS', 'COMPLETED']
+              )
+            )
+          );
+        allow delete: if isAdmin();
       }
     }
 
@@ -35,10 +117,23 @@ service cloud.firestore {
         'source', 'campaign', 'medium', 'content', 'term', 'landingPage',
         'status', 'priority', 'assignedTo', 'assignedVendorId', 'notes',
         'userId', 'createdAt', 'updatedAt', 'lastContactedAt',
-        'nextFollowUpAt', 'history'
+        'nextFollowUpAt', 'history', 'referrer'
       ])
       && request.resource.data.status == 'NEW'
-      && request.resource.data.priority in ['LOW', 'MEDIUM', 'HIGH', 'URGENT'];
+      && request.resource.data.priority == 'MEDIUM'
+      && request.resource.data.assignedTo == ''
+      && request.resource.data.assignedVendorId == ''
+      && request.resource.data.notes == ''
+      && (
+        request.resource.data.userId == ''
+        || (signedIn() && request.resource.data.userId == request.auth.uid)
+      )
+      && request.resource.data.name is string
+      && request.resource.data.name.size() > 1
+      && request.resource.data.phone is string
+      && request.resource.data.phone.size() >= 10
+      && request.resource.data.service is string
+      && request.resource.data.service.size() > 0;
       allow read: if isAdmin()
         || (signedIn() && resource.data.userId == request.auth.uid)
         || (signedIn() && resource.data.assignedVendorId == request.auth.uid);
@@ -49,7 +144,13 @@ service cloud.firestore {
 
     match /bookings/{bookingId} {
       allow create: if signedIn()
-        && request.resource.data.customerId == request.auth.uid;
+        && request.resource.data.customerId == request.auth.uid
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.bookingStatus == 'PENDING'
+        && request.resource.data.paymentStatus == 'UNPAID'
+        && request.resource.data.status == 'Pending'
+        && request.resource.data.vendorId == ''
+        && request.resource.data.panditId == '';
       allow read: if isAdmin()
         || (signedIn() && (
           resource.data.customerId == request.auth.uid
@@ -57,11 +158,46 @@ service cloud.firestore {
           || resource.data.panditId == request.auth.uid
         ));
       allow update: if isAdmin()
-        || (signedIn() && (
-          resource.data.customerId == request.auth.uid
-          || resource.data.vendorId == request.auth.uid
-          || resource.data.panditId == request.auth.uid
-        ));
+        || (
+          signedIn()
+          && resource.data.customerId == request.auth.uid
+          && resource.data.bookingStatus == 'PENDING'
+          && resource.data.paymentStatus == 'UNPAID'
+          && resource.data.vendorId == ''
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'event', 'date', 'time', 'address', 'notes',
+            'status', 'bookingStatus', 'updatedAt'
+          ])
+          && (
+            !request.resource.data.diff(resource.data).affectedKeys().hasAny(['status', 'bookingStatus'])
+            || (
+              request.resource.data.bookingStatus == 'CANCELLED'
+              && request.resource.data.status == 'Cancelled'
+            )
+          )
+        )
+        || (
+          signedIn()
+          && resource.data.vendorId == request.auth.uid
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+            in ['VENDOR', 'PANDIT']
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.vendorStatus
+            == 'APPROVED'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'bookingStatus', 'status', 'updatedAt'
+          ])
+          && request.resource.data.status == request.resource.data.bookingStatus
+          && (
+            (
+              resource.data.bookingStatus == 'PENDING'
+              && request.resource.data.bookingStatus in ['ACCEPTED', 'REJECTED']
+            )
+            || (
+              resource.data.bookingStatus in ['ACCEPTED', 'IN_PROGRESS']
+              && request.resource.data.bookingStatus in ['IN_PROGRESS', 'COMPLETED']
+            )
+          )
+        );
       allow delete: if isAdmin();
     }
 
@@ -77,8 +213,24 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /vendors/{vendorId} {
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.uid == request.auth.uid && resource.data.status == 'APPROVED');
+      allow write: if isAdmin();
+    }
+
     match /vendorApplications/{applicationId} {
-      allow create: if true;
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.phone == request.auth.token.phone_number
+        && request.resource.data.status == 'PENDING'
+        && request.resource.data.keys().hasOnly([
+          'userId', 'name', 'phone', 'email', 'location', 'vendorType',
+          'services', 'experience', 'certifications', 'pricing', 'gst',
+          'vendorId', 'ifscBankName', 'estimatedApproval', 'filesMeta',
+          'additionalInfo',
+          'status', 'submittedAt', 'updatedAt', 'reviewedAt', 'reviewedBy'
+        ]);
       allow read: if isAdmin()
         || (signedIn() && resource.data.userId == request.auth.uid);
       allow update: if isAdmin();
