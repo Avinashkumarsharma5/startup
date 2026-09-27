@@ -64,7 +64,6 @@ export function normalizeLeadPayload(leadInput = {}) {
     medium: data.medium || "",
     content: data.content || "",
     term: data.term || "",
-    referrer: data.referrer || "",
     landingPage: data.landingPage || window.location.pathname,
     status: data.status || "NEW",
     priority: data.priority || "MEDIUM",

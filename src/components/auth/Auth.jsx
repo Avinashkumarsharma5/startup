@@ -34,14 +34,7 @@ export default function Auth() {
         const profile = await getOrCreateUserProfile(user);
         persistProfile(profile);
         const role = String(profile.role || "").toUpperCase();
-        navigate(
-          ["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role)
-            ? "/admin/dashboard"
-            : role === "VENDOR" && profile.vendorStatus === "APPROVED"
-              ? "/vendor/dashboard"
-              : "/",
-          { replace: true }
-        );
+        navigate(["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role) ? "/admin/dashboard" : (profile.phone ? "/" : "/mobile"), { replace: true });
       } catch (error) {
         console.error("Could not load user profile:", error);
         toast.error("Login succeeded, but your profile could not be loaded.");
@@ -61,13 +54,7 @@ export default function Auth() {
      persistProfile(profile);
      toast.success("Welcome " + (profile.name || profile.email));
      const role = String(profile.role || "").toUpperCase();
-     navigate(
-       ["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role)
-         ? "/admin/dashboard"
-         : role === "VENDOR" && profile.vendorStatus === "APPROVED"
-           ? "/vendor/dashboard"
-           : "/"
-     );
+     navigate(["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role) ? "/admin/dashboard" : (profile.phone ? "/" : "/mobile"));
 } catch (err) {
   console.error(err);
 
@@ -106,13 +93,7 @@ export default function Auth() {
       const profile = await getOrCreateUserProfile(result.user);
       persistProfile(profile);
       const role = String(profile.role || "").toUpperCase();
-      navigate(
-        ["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role)
-          ? "/admin/dashboard"
-          : role === "VENDOR" && profile.vendorStatus === "APPROVED"
-            ? "/vendor/dashboard"
-            : "/"
-      );
+      navigate(["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role) ? "/admin/dashboard" : (profile.phone ? "/" : "/mobile"));
     } catch (err) {
       console.error(err);
       toast.error(err.code === "auth/invalid-credential"

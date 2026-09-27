@@ -53,7 +53,6 @@ export default function BottomNavbar() {
           { name: "Admin Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
           { name: "Admin Leads", path: "/admin/leads", icon: Users },
           { name: "Vendor Approvals", path: "/admin/vendors", icon: Store },
-          { name: "Manage Bookings", path: "/admin/bookings", icon: CalendarCheck },
           { name: "Admin Analytics", path: "/admin/analytics", icon: BarChart3 },
         ]
       : []),

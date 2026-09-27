@@ -6,8 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiUpload, FiCamera, FiFile, FiCheck, FiChevronLeft, FiChevronRight, FiInfo, FiGlobe } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { createVendorApplication } from "../../lib/vendors";
-import { Link } from "react-router-dom";
-import { auth, RecaptchaVerifier, linkWithPhoneNumber, doc, db, updateDoc, serverTimestamp } from "../../lib/firebase";
 
 /**
  * Enhanced Vendor Registration (features added):
@@ -32,21 +30,28 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
   const [showPreview, setShowPreview] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState(null); // generated OTP (for dev)
   const [otpInput, setOtpInput] = useState("");
-  const [phoneConfirmation, setPhoneConfirmation] = useState(null);
-  const [otpBusy, setOtpBusy] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [savingDraft, setSavingDraft] = useState(false);
+  const [ifscBankName, setIfscBankName] = useState("");
+  const [duplicateWarning, setDuplicateWarning] = useState("");
   const [useLocationLoading, setUseLocationLoading] = useState(false);
 
   const formRefs = [useRef(null), useRef(null), useRef(null)];
-  const recaptchaVerifier = useRef(null);
+
+  // tiny mock IFSC map (replace with real API)
+  const IFSC_MAP = {
+    "SBIN0000123": { bank: "State Bank of India", branch: "Main Branch" },
+    "HDFC0000456": { bank: "HDFC Bank", branch: "MG Road" },
+    "ICIC0000789": { bank: "ICICI Bank", branch: "Park Street" }
+  };
 
   // translations
   const translations = {
     english: {
       title: "Vendor Registration",
-      steps: ["Basic Info", "Services & Documents", "Business Details"],
+      steps: ["Basic Info", "Services & Documents", "Bank Details"],
       name: "Full Name",
       namePlaceholder: "Enter full name as per PAN card",
       phone: "Phone Number",
@@ -54,6 +59,8 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
       location: "City / Location",
       vendorType: "Vendor Type",
       services: "Services Offered",
+      bankAccount: "Bank Account Number",
+      ifsc: "IFSC Code",
       additionalInfo: "Additional Information",
       next: "Next",
       back: "Back",
@@ -68,7 +75,7 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
     },
     hindi: {
       title: "विक्रेता पंजीकरण",
-      steps: ["मूल जानकारी", "सेवाएं और दस्तावेज़", "व्यवसाय विवरण"],
+      steps: ["मूल जानकारी", "सेवाएं और दस्तावेज़", "बैंक विवरण"],
       name: "पूरा नाम",
       namePlaceholder: "पैन कार्ड के अनुसार पूरा नाम दर्ज करें",
       phone: "फोन नंबर",
@@ -76,6 +83,8 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
       location: "शहर / स्थान",
       vendorType: "विक्रेता प्रकार",
       services: "प्रदान की जाने वाली सेवाएं",
+      bankAccount: "बैंक खाता नंबर",
+      ifsc: "आईएफएससी कोड",
       additionalInfo: "अतिरिक्त जानकारी",
       next: "अगला",
       back: "पिछला",
@@ -113,11 +122,6 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
 
   // load draft from localStorage if exists
   const savedDraft = JSON.parse(localStorage.getItem("vendorDraft") || "null");
-  if (savedDraft && (savedDraft.bankAccount || savedDraft.ifsc)) {
-    delete savedDraft.bankAccount;
-    delete savedDraft.ifsc;
-    localStorage.setItem("vendorDraft", JSON.stringify(savedDraft));
-  }
   const initialValues = savedDraft || {
     name: "",
     phone: "",
@@ -125,6 +129,8 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
     location: "",
     vendorType: vendorType || "",
     services: [],
+    bankAccount: "",
+    ifsc: "",
     additionalInfo: "",
     experience: "",
     certifications: "",
@@ -150,9 +156,8 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
       experience: Yup.number().min(0).max(50).required("Experience required"),
     }),
     Yup.object({
-      gst: Yup.string(),
-      pricing: Yup.string(),
-      additionalInfo: Yup.string(),
+      bankAccount: Yup.string().matches(/^\d{9,18}$/, "Invalid account number").required(t.bankAccount + " required"),
+      ifsc: Yup.string().matches(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC code").required(t.ifsc + " required"),
     }),
   ];
 
@@ -222,79 +227,63 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
   };
   const handleDragOver = (e) => { e.preventDefault(); e.stopPropagation(); };
 
-  const sendOtp = async (phone) => {
-    if (!auth.currentUser) {
-      toast.error("Sign in before applying as a vendor.");
-      return;
-    }
-    if (!/^\d{10}$/.test(phone)) {
-      toast.error("Enter a valid 10-digit phone number.");
-      return;
-    }
-
-    setOtpBusy(true);
-    try {
-      if (!recaptchaVerifier.current) {
-        recaptchaVerifier.current = new RecaptchaVerifier(auth, "vendor-phone-recaptcha", {
-          size: "invisible",
-        });
-      }
-      const confirmation = await linkWithPhoneNumber(
-        auth.currentUser,
-        `+91${phone}`,
-        recaptchaVerifier.current
-      );
-      setPhoneConfirmation(confirmation);
-      setOtpSent(true);
-      setOtpVerified(false);
-      toast.success("Verification code sent to your phone.");
-    } catch (error) {
-      console.error("Could not send vendor phone verification code:", error);
-      recaptchaVerifier.current?.clear();
-      recaptchaVerifier.current = null;
-      toast.error(error.message || "Could not send verification code.");
-    } finally {
-      setOtpBusy(false);
-    }
+  // OTP simulation: generate and 'send'
+  const sendOtp = (phone) => {
+    if (!/^\d{10}$/.test(phone)) { alert("Enter a valid 10-digit phone first."); return; }
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    setOtpCode(code);
+    setOtpSent(true);
+    setOtpVerified(false);
+    // In production: call SMS API here
+    alert(`(DEV) OTP for ${phone}: ${code} — use it to verify`);
   };
 
-  const verifyOtp = async () => {
-    if (!phoneConfirmation || !auth.currentUser) return;
-    setOtpBusy(true);
-    try {
-      const credential = await phoneConfirmation.confirm(otpInput);
-      await credential.user.getIdToken(true);
-      await updateDoc(doc(db, "users", credential.user.uid), {
-        phone: credential.user.phoneNumber,
-        phoneVerified: true,
-        updatedAt: serverTimestamp(),
-      });
+  const verifyOtp = () => {
+    if (otpInput === otpCode) {
       setOtpVerified(true);
-      toast.success("Phone number verified.");
-    } catch (error) {
-      console.error("Vendor phone verification failed:", error);
-      toast.error(error.message || "Invalid verification code.");
-    } finally {
-      setOtpBusy(false);
+      alert("OTP verified!");
+    } else {
+      alert("Invalid OTP.");
     }
   };
 
   // Save draft to localStorage
   const saveDraft = async (values) => {
     setSavingDraft(true);
-    const { bankAccount, ifsc, ...safeValues } = values;
     const draft = {
-      ...safeValues,
+      ...values,
       filesMeta: Object.keys(files).reduce((acc, k) => {
         acc[k] = (files[k] || []).map(f => ({ name: f.name, size: f.size, type: f.type }));
         return acc;
       }, {}),
-      vendorId: safeValues.vendorId || generateVendorId(),
+      vendorId: values.vendorId || generateVendorId(),
       savedAt: new Date().toISOString()
     };
     localStorage.setItem("vendorDraft", JSON.stringify(draft));
     setTimeout(() => setSavingDraft(false), 400);
     alert("Draft saved locally. You can continue later.");
+  };
+
+  // Duplicate check by phone (simple)
+  const checkDuplicate = (phone) => {
+    const regs = JSON.parse(localStorage.getItem("vendorRegistrations") || "[]");
+    const found = regs.find(r => r.phone === phone);
+    if (found) {
+      setDuplicateWarning(`An account already exists for ${phone} (Vendor ID: ${found.vendorId}).`);
+    } else {
+      setDuplicateWarning("");
+    }
+  };
+
+  // IFSC lookup (mock)
+  const lookupIfsc = (ifsc) => {
+    if (!ifsc) { setIfscBankName(""); return; }
+    const up = ifsc.toUpperCase();
+    if (IFSC_MAP[up]) {
+      setIfscBankName(`${IFSC_MAP[up].bank} — ${IFSC_MAP[up].branch}`);
+    } else {
+      setIfscBankName("");
+    }
   };
 
   // Geolocation autofill
@@ -317,19 +306,13 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
 
   // handle final submit
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    if (!auth.currentUser) {
-      toast.error("Sign in or create an account before submitting your application.");
-      setSubmitting(false);
-      return;
-    }
     if (!otpVerified) {
       alert("Please verify your phone with OTP before final submission.");
       setSubmitting(false);
       return;
     }
     // basic files check: require profilePhoto and one ID doc
-    const hasIdDocument = ["aadhaar", "pan"].some((key) => (files[key] || []).length > 0);
-    if (!(files.profilePhoto && files.profilePhoto.length > 0) || !hasIdDocument) {
+    if (!(files.profilePhoto && files.profilePhoto.length > 0) || !(files.aadhaar || files.pan)) {
       alert("Please upload a profile photo and at least one ID document (Aadhaar or PAN).");
       setSubmitting(false);
       return;
@@ -337,11 +320,17 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
 
     try {
       const vendorId = values.vendorId || generateVendorId();
+      const filesMeta = Object.keys(files).reduce((acc, k) => {
+        acc[k] = (files[k] || []).map(f => f.name);
+        return acc;
+      }, {});
+
       await createVendorApplication({
         ...values,
         vendorId,
+        ifscBankName,
         estimatedApproval: new Date(Date.now() + 48 * 3600 * 1000).toISOString(),
-      }, files);
+      }, filesMeta);
 
       // clear draft
       localStorage.removeItem("vendorDraft");
@@ -352,7 +341,7 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
       setFiles({});
       setPreviewUrls({});
       setOtpSent(false);
-      setPhoneConfirmation(null);
+      setOtpCode(null);
       setOtpInput("");
       setOtpVerified(false);
       toast.success(`Application submitted. Vendor ID: ${vendorId}. Await admin approval.`);
@@ -441,8 +430,8 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
       
       <h3 className="text-xl font-bold text-amber-700 border-b pb-2 mb-4 pt-4">3. {t.steps[2]}</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <p><strong>GST:</strong> {values.gst || "Not provided"}</p>
-        <p><strong>Pricing:</strong> {values.pricing || "Not provided"}</p>
+        <p><strong>{t.bankAccount}:</strong> {values.bankAccount ? `${values.bankAccount.slice(0,4)}...${values.bankAccount.slice(-4)}` : 'N/A'}</p>
+        <p><strong>{t.ifsc}:</strong> {values.ifsc} {ifscBankName && <span className="text-xs text-gray-500"> — {ifscBankName}</span>}</p>
       </div>
       <p><strong>{t.additionalInfo}:</strong> <span className="block mt-1 p-2 bg-gray-100 rounded-lg whitespace-pre-wrap">{values.additionalInfo || 'N/A'}</span></p>
       <p className="text-sm text-gray-600">Estimated review time: <strong>24–48 hours</strong>. Your Vendor ID will be shared after approval.</p>
@@ -469,14 +458,7 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white shadow-2xl rounded-2xl p-6 md:p-10 text-gray-800">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-center text-amber-700 mb-2 font-serif">{t.title}</h2>
           <p className="text-center text-sm mb-4 text-gray-500">{t.steps[step - 1]}</p>
-          {!auth.currentUser && (
-            <p className="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
-              Sign in or create a customer account before applying.{" "}
-              <Link className="font-semibold underline" to="/login">Sign in / create account</Link>
-            </p>
-          )}
           <ProgressSteps />
-          <div id="vendor-phone-recaptcha" />
 
           <Formik
             initialValues={initialValues}
@@ -501,16 +483,17 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">{t.phone}</label>
                             <div className="flex gap-2">
-                              <Field name="phone" type="tel" placeholder="10-digit mobile number" className="w-full border-2 border-gray-300 p-3 rounded-xl focus:border-amber-500 transition-all shadow-sm" />
-                              <button type="button" onClick={() => sendOtp(values.phone)} disabled={!/^\d{10}$/.test(values.phone) || otpBusy || !auth.currentUser} className="px-3 py-2 bg-amber-600 text-white rounded-xl disabled:opacity-50"> {otpBusy ? "Please wait..." : t.otpSend} </button>
+                              <Field name="phone" type="tel" placeholder="10-digit mobile number" className="w-full border-2 border-gray-300 p-3 rounded-xl focus:border-amber-500 transition-all shadow-sm" onBlur={(e) => { checkDuplicate(e.target.value); }} />
+                              <button type="button" onClick={() => sendOtp(values.phone)} disabled={!/^\d{10}$/.test(values.phone)} className="px-3 py-2 bg-amber-600 text-white rounded-xl"> {t.otpSend} </button>
                             </div>
                             <ErrorMessage name="phone" component="div" className="text-red-500 text-sm mt-1" />
+                            {duplicateWarning && <div className="text-yellow-600 text-sm mt-2">{duplicateWarning}</div>}
                             {/* OTP Input */}
                             {otpSent && !otpVerified && (
                               <div className="mt-3 flex gap-2 items-center">
                                 <input value={otpInput} onChange={(e) => setOtpInput(e.target.value)} placeholder="Enter OTP" className="px-3 py-2 border rounded-xl w-40" />
-                                <button type="button" onClick={verifyOtp} disabled={otpBusy} className="px-3 py-2 bg-green-600 text-white rounded-xl disabled:opacity-50"> {t.otpVerify} </button>
-                                <button type="button" onClick={() => sendOtp(values.phone)} disabled={otpBusy} className="px-2 py-1 text-sm text-gray-600">Resend</button>
+                                <button type="button" onClick={verifyOtp} className="px-3 py-2 bg-green-600 text-white rounded-xl"> {t.otpVerify} </button>
+                                <button type="button" onClick={() => sendOtp(values.phone)} className="px-2 py-1 text-sm text-gray-600">Resend</button>
                               </div>
                             )}
                             {otpVerified && <div className="text-green-600 mt-2">Phone verified ✓</div>}
@@ -632,9 +615,22 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
                       {/* Step 3 */}
                       {step === 3 && (
                         <div ref={formRefs[2]} className="space-y-6">
-                          <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
-                            Bank account details are not collected during onboarding. They will be requested through a secure payout integration when settlements are enabled.
-                          </p>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">{t.bankAccount}</label>
+                              <Field name="bankAccount" placeholder="Enter full account number" className="w-full border-2 border-gray-300 p-3 rounded-xl focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition-all shadow-sm" />
+                              <ErrorMessage name="bankAccount" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">{t.ifsc} <FiInfo className="inline ml-1 text-gray-400" title="Format: ABCD0123456" /></label>
+                              <div className="flex gap-2">
+                                <Field name="ifsc" placeholder="e.g., SBIN0000123 (CAPS)" onBlur={(e) => lookupIfsc(e.target.value)} className="w-full border-2 border-gray-300 p-3 rounded-xl focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition-all shadow-sm" />
+                                <div className="px-3 py-2 rounded-xl border bg-white text-sm">{ifscBankName || 'Bank not found'}</div>
+                              </div>
+                              <ErrorMessage name="ifsc" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
+                          </div>
 
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">GST Number (Optional)</label>

@@ -32,8 +32,6 @@ export async function getOrCreateUserProfile(user) {
       city: "",
       state: "",
       phoneVerified: false,
-      role: "CUSTOMER",
-      accountStatus: "ACTIVE",
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     };

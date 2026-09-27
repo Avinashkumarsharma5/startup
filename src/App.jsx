@@ -17,6 +17,7 @@ import BookingsPage from "./pages/BookingsPage";
 import UserProfile from "./pages/UserProfile";
 import VoiceAssistant from "./pages/VoiceAssistant";
 import SearchPage from "./pages/SearchPage";
+import ServiceProviderProfile from "./pages/ServiceProviderProfile";
 import VendorRegistration from "./components/layout/VendorRegistration";
 import SanskaraaNotifications from "./pages/Notification";
 import ForgetPassword from "./pages/ForgetPassword";
@@ -27,9 +28,7 @@ import SanskaraaLoader from "./components/layout/SanskaraaLoader";
 import AdminLeads from "./pages/AdminLeads";
 import AdminVendors from "./pages/AdminVendors";
 import AdminDashboard from "./pages/AdminDashboard";
-import VendorDashboard from "./pages/VendorDashboard";
-import AdminBookings from "./pages/AdminBookings";
-import { auth, db, doc, getDoc, onAuthStateChanged } from "./lib/firebase";
+import { auth, onAuthStateChanged } from "./lib/firebase";
 import { getOrCreateUserProfile, persistProfile } from "./lib/profile";
 
 function AdminOnly({ children }) {
@@ -37,34 +36,14 @@ function AdminOnly({ children }) {
   const [allowed, setAllowed] = useState(null);
 
   useEffect(() => {
-    let active = true;
-    const verifyAdmin = async () => {
-      if (!auth.currentUser) {
-        if (active) {
-          setAllowed(false);
-          navigate("/login", { replace: true });
-        }
-        return;
-      }
-
-      try {
-        const snapshot = await getDoc(doc(db, "users", auth.currentUser.uid));
-        const role = String(snapshot.data()?.role || "").toUpperCase();
-        const isAllowed = snapshot.exists() && ["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role);
-        if (active) {
-          setAllowed(isAllowed);
-          if (!isAllowed) navigate("/", { replace: true });
-        }
-      } catch (error) {
-        console.error("Admin authorization check failed:", error);
-        if (active) {
-          setAllowed(false);
-          navigate("/", { replace: true });
-        }
-      }
-    };
-    verifyAdmin();
-    return () => { active = false; };
+    const profile = JSON.parse(localStorage.getItem("loggedInUser") || "null");
+    const role = String(profile?.role || "").toUpperCase();
+    if (auth.currentUser && ["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role)) {
+      setAllowed(true);
+      return;
+    }
+    setAllowed(false);
+    navigate("/", { replace: true });
   }, [navigate]);
 
   if (allowed === null) return <SanskaraaLoader />;
@@ -104,6 +83,7 @@ export default function App() {
       "/eventspage",
       "/search",
       "/vendor-registration",
+      "/service-provider/profile",
     ]);
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -119,6 +99,13 @@ export default function App() {
         if (user) {
           const profile = await getOrCreateUserProfile(user);
           persistProfile(profile);
+          if (
+            !profile.phone &&
+            !isPublicRoute &&
+            currentPath !== "/mobile"
+          ) {
+            navigate("/mobile", { replace: true });
+          }
         }
       } catch (error) {
         console.error("Authentication check failed:", error);
@@ -183,21 +170,20 @@ export default function App() {
           <Route path="/bookingspage" element={<BookingsPage />} />
           <Route path="/dashboard" element={<UserProfile />} />
           <Route path="/customer/dashboard" element={<UserProfile />} />
-          <Route path="/vendor/dashboard" element={<VendorDashboard />} />
+          <Route path="/vendor/dashboard" element={<ServiceProviderProfile />} />
           <Route path="/mobile" element={<MobileNumber />} />
           <Route path="/userprofile" element={<UserProfile />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/eventmanagement" element={<EventManagement />} />
           <Route path="/admin/leads" element={<AdminOnly><AdminLeads /></AdminOnly>} />
           <Route path="/admin/dashboard" element={<AdminOnly><AdminDashboard /></AdminOnly>} />
-          <Route path="/admin/bookings" element={<AdminOnly><AdminBookings /></AdminOnly>} />
           <Route path="/AdminLeads" element={<AdminOnly><AdminLeads /></AdminOnly>} />
           <Route path="/admin/vendors" element={<AdminOnly><AdminVendors /></AdminOnly>} />
           <Route path="/AdminVendors" element={<AdminOnly><AdminVendors /></AdminOnly>} />
           <Route path="/admin/analytics" element={<AdminOnly><AdminLeads /></AdminOnly>} />
           <Route
             path="/service-provider/profile"
-            element={<VendorDashboard />}
+            element={<ServiceProviderProfile />}
           />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/contactpage" element={<ContactPage />} />
