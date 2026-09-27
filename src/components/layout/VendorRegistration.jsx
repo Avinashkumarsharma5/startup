@@ -5,7 +5,9 @@ import * as Yup from "yup";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiUpload, FiCamera, FiFile, FiCheck, FiChevronLeft, FiChevronRight, FiInfo, FiGlobe } from "react-icons/fi";
 import toast from "react-hot-toast";
-import { createVendorApplication } from "../../lib/vendors";
+import { useNavigate } from "react-router-dom";
+import { auth, ref, storage, uploadBytes } from "../../lib/firebase";
+import { createVendorApplication, findExistingVendorApplicationForUser } from "../../lib/vendors";
 
 /**
  * Enhanced Vendor Registration (features added):
@@ -22,21 +24,43 @@ import { createVendorApplication } from "../../lib/vendors";
  * - Estimated approval time messaging
  */
 
-export default function VendorRegistration({ role, vendorType, setRole, setServiceProviderType, setShowMore }) {
+export default function VendorRegistration() {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [files, setFiles] = useState({}); // { profilePhoto: [File], aadhaar: [File], pan: [File], business: [File], portfolio: [File], signature: [File] }
   const [previewUrls, setPreviewUrls] = useState({});
   const [language, setLanguage] = useState("english");
   const [showPreview, setShowPreview] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpCode, setOtpCode] = useState(null); // generated OTP (for dev)
-  const [otpInput, setOtpInput] = useState("");
-  const [otpVerified, setOtpVerified] = useState(false);
+  const [application, setApplication] = useState(null);
+  const [applicationLoading, setApplicationLoading] = useState(true);
   const [savingDraft, setSavingDraft] = useState(false);
   const [ifscBankName, setIfscBankName] = useState("");
-  const [duplicateWarning, setDuplicateWarning] = useState("");
   const [useLocationLoading, setUseLocationLoading] = useState(false);
+  const draftKey = `vendorDraft:${auth.currentUser?.uid || "guest"}`;
+
+  useEffect(() => {
+    let active = true;
+    const loadApplication = async () => {
+      if (!auth.currentUser?.uid) {
+        setApplicationLoading(false);
+        return;
+      }
+
+      try {
+        const existing = await findExistingVendorApplicationForUser(auth.currentUser.uid);
+        if (active) setApplication(existing);
+      } catch (error) {
+        console.error("Unable to load vendor application:", error);
+        toast.error("Your vendor application status could not be loaded.");
+      } finally {
+        if (active) setApplicationLoading(false);
+      }
+    };
+
+    loadApplication();
+    return () => { active = false; };
+  }, []);
 
   const formRefs = [useRef(null), useRef(null), useRef(null)];
 
@@ -68,8 +92,6 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
       preview: "Preview",
       success: "Registration Successful!",
       saveDraft: "Save & Continue Later",
-      otpSend: "Send OTP",
-      otpVerify: "Verify OTP",
       useLocation: "Use My Current Location",
       vendorIdLabel: "Vendor ID"
     },
@@ -92,8 +114,6 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
       preview: "पूर्वावलोकन",
       success: "पंजीकरण सफल!",
       saveDraft: "ड्राफ्ट सहेजें",
-      otpSend: "OTP भेजें",
-      otpVerify: "OTP सत्यापित करें",
       useLocation: "मौजूदा स्थान उपयोग करें",
       vendorIdLabel: "वेंडर आईडी"
     }
@@ -121,13 +141,13 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
   ];
 
   // load draft from localStorage if exists
-  const savedDraft = JSON.parse(localStorage.getItem("vendorDraft") || "null");
+  const savedDraft = JSON.parse(localStorage.getItem(draftKey) || "null");
   const initialValues = savedDraft || {
     name: "",
     phone: "",
     email: "",
     location: "",
-    vendorType: vendorType || "",
+    vendorType: "",
     services: [],
     bankAccount: "",
     ifsc: "",
@@ -136,7 +156,8 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
     certifications: "",
     pricing: "",
     gst: "",
-    vendorId: ""
+    vendorId: "",
+    ...(application || {}),
   };
 
   // small helper to generate Vendor ID
@@ -165,9 +186,9 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
     // If saved draft exists, ensure vendorId exists
     if (savedDraft && !savedDraft.vendorId) {
       savedDraft.vendorId = generateVendorId();
-      localStorage.setItem("vendorDraft", JSON.stringify(savedDraft));
+      localStorage.setItem(draftKey, JSON.stringify(savedDraft));
     }
-  }, []); // run once
+  }, [draftKey]);
 
   // Auto-focus first field on step change
   useEffect(() => {
@@ -227,26 +248,6 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
   };
   const handleDragOver = (e) => { e.preventDefault(); e.stopPropagation(); };
 
-  // OTP simulation: generate and 'send'
-  const sendOtp = (phone) => {
-    if (!/^\d{10}$/.test(phone)) { alert("Enter a valid 10-digit phone first."); return; }
-    const code = String(Math.floor(100000 + Math.random() * 900000));
-    setOtpCode(code);
-    setOtpSent(true);
-    setOtpVerified(false);
-    // In production: call SMS API here
-    alert(`(DEV) OTP for ${phone}: ${code} — use it to verify`);
-  };
-
-  const verifyOtp = () => {
-    if (otpInput === otpCode) {
-      setOtpVerified(true);
-      alert("OTP verified!");
-    } else {
-      alert("Invalid OTP.");
-    }
-  };
-
   // Save draft to localStorage
   const saveDraft = async (values) => {
     setSavingDraft(true);
@@ -259,20 +260,9 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
       vendorId: values.vendorId || generateVendorId(),
       savedAt: new Date().toISOString()
     };
-    localStorage.setItem("vendorDraft", JSON.stringify(draft));
+    localStorage.setItem(draftKey, JSON.stringify(draft));
     setTimeout(() => setSavingDraft(false), 400);
     alert("Draft saved locally. You can continue later.");
-  };
-
-  // Duplicate check by phone (simple)
-  const checkDuplicate = (phone) => {
-    const regs = JSON.parse(localStorage.getItem("vendorRegistrations") || "[]");
-    const found = regs.find(r => r.phone === phone);
-    if (found) {
-      setDuplicateWarning(`An account already exists for ${phone} (Vendor ID: ${found.vendorId}).`);
-    } else {
-      setDuplicateWarning("");
-    }
   };
 
   // IFSC lookup (mock)
@@ -306,11 +296,6 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
 
   // handle final submit
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    if (!otpVerified) {
-      alert("Please verify your phone with OTP before final submission.");
-      setSubmitting(false);
-      return;
-    }
     // basic files check: require profilePhoto and one ID doc
     if (!(files.profilePhoto && files.profilePhoto.length > 0) || !(files.aadhaar || files.pan)) {
       alert("Please upload a profile photo and at least one ID document (Aadhaar or PAN).");
@@ -319,32 +304,49 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
     }
 
     try {
-      const vendorId = values.vendorId || generateVendorId();
-      const filesMeta = Object.keys(files).reduce((acc, k) => {
-        acc[k] = (files[k] || []).map(f => f.name);
-        return acc;
-      }, {});
+      const userId = auth.currentUser?.uid;
+      if (!userId) throw new Error("Please sign in before submitting an application.");
 
-      await createVendorApplication({
-        ...values,
-        vendorId,
+      const applicationValues = {
+        userId,
+        name: values.name,
+        phone: values.phone,
+        email: values.email || auth.currentUser.email || "",
+        location: values.location,
+        vendorType: values.vendorType,
+        services: values.services,
+        bankAccount: values.bankAccount,
+        ifsc: values.ifsc,
+        additionalInfo: values.additionalInfo || "",
+        experience: values.experience,
+        certifications: values.certifications || "",
+        pricing: values.pricing || "",
+        gst: values.gst || "",
+        vendorId: values.vendorId || application?.vendorId || generateVendorId(),
         ifscBankName,
         estimatedApproval: new Date(Date.now() + 48 * 3600 * 1000).toISOString(),
-      }, filesMeta);
+      };
+      const filesMeta = { ...(application?.filesMeta || {}) };
+      await Promise.all(Object.entries(files).map(async ([category, selectedFiles]) => {
+        filesMeta[category] = await Promise.all(selectedFiles.map(async (file, index) => {
+          const path = `vendorApplications/${userId}/${applicationValues.vendorId}/${category}-${index}-${encodeURIComponent(file.name)}`;
+          await uploadBytes(ref(storage, path), file, { contentType: file.type });
+          return { name: file.name, path, contentType: file.type, size: file.size };
+        }));
+      }));
+
+      const applicationId = await createVendorApplication(applicationValues, filesMeta);
+      setApplication({ ...applicationValues, id: applicationId, status: "PENDING" });
 
       // clear draft
-      localStorage.removeItem("vendorDraft");
+      localStorage.removeItem(draftKey);
 
       setSubmitted(true);
       setShowPreview(false);
       resetForm();
       setFiles({});
       setPreviewUrls({});
-      setOtpSent(false);
-      setOtpCode(null);
-      setOtpInput("");
-      setOtpVerified(false);
-      toast.success(`Application submitted. Vendor ID: ${vendorId}. Await admin approval.`);
+      toast.success(`Application submitted. Vendor ID: ${applicationValues.vendorId}. Await admin approval.`);
     } catch (err) {
       console.error(err);
       toast.error(err.message || "Submission failed. Try again.");
@@ -356,15 +358,15 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
   // autosave: whenever files or language change, keep draft updated
   useEffect(() => {
     const interval = setInterval(() => {
-      const currentDraft = JSON.parse(localStorage.getItem("vendorDraft") || "null");
+      const currentDraft = JSON.parse(localStorage.getItem(draftKey) || "null");
       if (currentDraft) {
         // update timestamp only
         currentDraft.savedAt = new Date().toISOString();
-        localStorage.setItem("vendorDraft", JSON.stringify(currentDraft));
+        localStorage.setItem(draftKey, JSON.stringify(currentDraft));
       }
     }, 30000); // update savedAt every 30s if draft exists
     return () => clearInterval(interval);
-  }, []);
+  }, [draftKey]);
 
   // Progress Steps UI
   const ProgressSteps = () => (
@@ -406,8 +408,44 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
       <div className="min-h-screen bg-gradient-to-br from-amber-50 to-rose-50 p-4 flex items-center justify-center">
         <div className="max-w-2xl mx-auto p-6 bg-white shadow-xl rounded-2xl w-full">
           <SuccessAnimation />
+          <div className="flex flex-wrap justify-center gap-3">
+            <button type="button" onClick={() => setSubmitted(false)} className="rounded-xl bg-amber-600 px-5 py-3 font-semibold text-white">Track application</button>
+            <button type="button" onClick={() => navigate("/")} className="rounded-xl border border-slate-200 px-5 py-3 font-semibold text-slate-700">Back to home</button>
+          </div>
         </div>
       </div>
+    );
+  }
+
+  if (applicationLoading) {
+    return <div className="flex min-h-screen items-center justify-center bg-amber-50 p-6 text-slate-600">Loading your vendor application...</div>;
+  }
+
+  const applicationStatus = String(application?.status || "").toUpperCase();
+  if (["PENDING", "APPROVED", "SUSPENDED"].includes(applicationStatus)) {
+    const statusCopy = {
+      PENDING: "Your application is with our admin team for review.",
+      APPROVED: "Your vendor account is approved and your dashboard is ready.",
+      SUSPENDED: "Your vendor account is currently suspended. Contact support for help.",
+    };
+
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-amber-50 to-rose-50 p-4">
+        <section className="w-full max-w-xl rounded-2xl bg-white p-8 text-center shadow-xl">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 text-amber-700"><FiInfo className="h-7 w-7" /></div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">Vendor application</p>
+          <h1 className="mt-2 text-2xl font-bold text-slate-900">{applicationStatus === "APPROVED" ? "You're approved" : applicationStatus === "PENDING" ? "Application under review" : "Account suspended"}</h1>
+          <p className="mt-3 text-slate-600">{statusCopy[applicationStatus]}</p>
+          <p className="mt-4 text-sm text-slate-500">Application ID: <span className="font-semibold text-slate-700">{application.vendorId || application.id}</span></p>
+          {applicationStatus === "APPROVED" ? (
+            <button type="button" onClick={() => navigate("/vendor/dashboard")} className="mt-6 rounded-xl bg-amber-600 px-5 py-3 font-semibold text-white">Open vendor dashboard</button>
+          ) : applicationStatus === "SUSPENDED" ? (
+            <button type="button" onClick={() => navigate("/contact")} className="mt-6 rounded-xl bg-amber-600 px-5 py-3 font-semibold text-white">Contact support</button>
+          ) : (
+            <button type="button" onClick={() => navigate("/")} className="mt-6 rounded-xl border border-slate-200 px-5 py-3 font-semibold text-slate-700">Back to home</button>
+          )}
+        </section>
+      </main>
     );
   }
 
@@ -443,7 +481,7 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
       <div className="max-w-4xl mx-auto w-full mt-12 mb-12">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <button onClick={() => { setRole(null); setServiceProviderType(null); setShowMore(false); }} className="p-2 rounded-full bg-white shadow-lg text-gray-700 hover:bg-gray-100 transition">
+          <button onClick={() => navigate(-1)} className="p-2 rounded-full bg-white shadow-lg text-gray-700 hover:bg-gray-100 transition">
             <FiChevronLeft className="w-6 h-6" />
           </button>
 
@@ -482,21 +520,8 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
 
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">{t.phone}</label>
-                            <div className="flex gap-2">
-                              <Field name="phone" type="tel" placeholder="10-digit mobile number" className="w-full border-2 border-gray-300 p-3 rounded-xl focus:border-amber-500 transition-all shadow-sm" onBlur={(e) => { checkDuplicate(e.target.value); }} />
-                              <button type="button" onClick={() => sendOtp(values.phone)} disabled={!/^\d{10}$/.test(values.phone)} className="px-3 py-2 bg-amber-600 text-white rounded-xl"> {t.otpSend} </button>
-                            </div>
+                            <Field name="phone" type="tel" placeholder="10-digit mobile number" className="w-full border-2 border-gray-300 p-3 rounded-xl focus:border-amber-500 transition-all shadow-sm" />
                             <ErrorMessage name="phone" component="div" className="text-red-500 text-sm mt-1" />
-                            {duplicateWarning && <div className="text-yellow-600 text-sm mt-2">{duplicateWarning}</div>}
-                            {/* OTP Input */}
-                            {otpSent && !otpVerified && (
-                              <div className="mt-3 flex gap-2 items-center">
-                                <input value={otpInput} onChange={(e) => setOtpInput(e.target.value)} placeholder="Enter OTP" className="px-3 py-2 border rounded-xl w-40" />
-                                <button type="button" onClick={verifyOtp} className="px-3 py-2 bg-green-600 text-white rounded-xl"> {t.otpVerify} </button>
-                                <button type="button" onClick={() => sendOtp(values.phone)} className="px-2 py-1 text-sm text-gray-600">Resend</button>
-                              </div>
-                            )}
-                            {otpVerified && <div className="text-green-600 mt-2">Phone verified ✓</div>}
                           </div>
 
                           <div>
@@ -685,7 +710,7 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
                           <FiChevronRight />
                         </motion.button>
                       ) : (
-                        <motion.button type="submit" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} disabled={isSubmitting || !isValid || !otpVerified} className="px-6 sm:px-8 py-2 sm:py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 disabled:bg-green-300 transition-colors text-sm sm:text-base">
+                        <motion.button type="submit" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} disabled={isSubmitting || !isValid} className="px-6 sm:px-8 py-2 sm:py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 disabled:bg-green-300 transition-colors text-sm sm:text-base">
                           {t.submit}
                         </motion.button>
                       )}
@@ -711,6 +736,12 @@ export default function VendorRegistration({ role, vendorType, setRole, setServi
               </>
             )}
           </Formik>
+
+          {applicationStatus === "REJECTED" && (
+            <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+              Your previous application was not approved. Update the details above and resubmit for review.
+            </div>
+          )}
 
           {/* estimated approval / vendor id area */}
           <div className="mt-6 text-center text-sm text-gray-600">

@@ -19,8 +19,21 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read: if isOwner(userId) || isAdmin();
-      allow create: if isOwner(userId);
-      allow update: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId)
+        && request.resource.data.keys().hasOnly([
+          'uid', 'name', 'email', 'phone', 'profileImage', 'dateOfBirth',
+          'gender', 'address', 'city', 'state', 'phoneVerified',
+          'createdAt', 'updatedAt', 'role'
+        ])
+        && (!request.resource.data.keys().hasAny(['role'])
+          || request.resource.data.role == 'CUSTOMER');
+      allow update: if isOwner(userId)
+        && request.resource.data.role == resource.data.role
+        || isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'role', 'vendorApplicationStatus', 'vendorApplicationId',
+          'name', 'email', 'phone', 'updatedAt'
+        ]);
       allow delete: if isAdmin();
 
       match /bookings/{bookingId} {
@@ -78,11 +91,37 @@ service cloud.firestore {
     }
 
     match /vendorApplications/{applicationId} {
-      allow create: if true;
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+          'userId', 'vendorType', 'services', 'status', 'submittedAt',
+          'updatedAt', 'reviewedAt', 'reviewedBy', 'name', 'phone', 'email',
+          'location', 'bankAccount', 'ifsc', 'additionalInfo', 'experience',
+          'certifications', 'pricing', 'gst', 'vendorId', 'filesMeta',
+          'estimatedApproval', 'ifscBankName'
+        ])
+        && request.resource.data.status == 'PENDING';
       allow read: if isAdmin()
         || (signedIn() && resource.data.userId == request.auth.uid);
-      allow update: if isAdmin();
+      allow update: if isAdmin()
+        || (signedIn()
+          && resource.data.userId == request.auth.uid
+          && resource.data.status == 'REJECTED'
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.status == 'PENDING'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'name', 'phone', 'email', 'location', 'vendorType', 'services',
+            'bankAccount', 'ifsc', 'additionalInfo', 'experience',
+            'certifications', 'pricing', 'gst', 'vendorId', 'filesMeta',
+            'estimatedApproval', 'ifscBankName', 'status', 'submittedAt',
+            'updatedAt', 'reviewedAt', 'reviewedBy'
+          ]));
       allow delete: if isAdmin();
+    }
+
+    match /vendors/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create, update, delete: if isAdmin();
     }
   }
 }

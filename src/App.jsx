@@ -30,24 +30,70 @@ import AdminVendors from "./pages/AdminVendors";
 import AdminDashboard from "./pages/AdminDashboard";
 import { auth, onAuthStateChanged } from "./lib/firebase";
 import { getOrCreateUserProfile, persistProfile } from "./lib/profile";
+import {
+  getCurrentUserProfile,
+  getRoleFromProfile,
+  getVendorApplicationForUser,
+  ROLE,
+} from "./lib/roleAccess";
 
-function AdminOnly({ children }) {
+function ProtectedRoute({
+  children,
+  allowRoles = null,
+  requireVendorApproved = false,
+  redirectTo = "/login",
+}) {
   const navigate = useNavigate();
-  const [allowed, setAllowed] = useState(null);
+  const [isAuthorized, setIsAuthorized] = useState(null);
 
   useEffect(() => {
-    const profile = JSON.parse(localStorage.getItem("loggedInUser") || "null");
-    const role = String(profile?.role || "").toUpperCase();
-    if (auth.currentUser && ["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role)) {
-      setAllowed(true);
-      return;
-    }
-    setAllowed(false);
-    navigate("/", { replace: true });
-  }, [navigate]);
+    let active = true;
 
-  if (allowed === null) return <SanskaraaLoader />;
-  return allowed ? children : null;
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        if (active) {
+          setIsAuthorized(false);
+          navigate(redirectTo, { replace: true });
+        }
+        return;
+      }
+
+      try {
+        const profile = (await getCurrentUserProfile()) || (await getOrCreateUserProfile(user));
+        const role = getRoleFromProfile(profile);
+        const vendorStatus = String(profile?.vendorApplicationStatus || "").toUpperCase();
+        const roleAllowed = !allowRoles || allowRoles.includes(role);
+        const vendorAllowed = !requireVendorApproved || (role === ROLE.VENDOR && vendorStatus === "APPROVED");
+        const allowed = roleAllowed && vendorAllowed;
+
+        if (active) {
+          setIsAuthorized(allowed);
+          if (!allowed) {
+            const redirect = role === ROLE.ADMIN || role === ROLE.SUPER_ADMIN || role === ROLE.STAFF
+              ? "/admin/dashboard"
+              : role === ROLE.VENDOR
+                ? "/vendor-registration"
+                : "/";
+            navigate(redirect, { replace: true });
+          }
+        }
+      } catch (error) {
+        console.error("Access check failed:", error);
+        if (active) {
+          setIsAuthorized(false);
+          navigate(redirectTo, { replace: true });
+        }
+      }
+    });
+
+    return () => {
+      active = false;
+      unsubscribe();
+    };
+  }, [allowRoles, navigate, redirectTo, requireVendorApproved]);
+
+  if (isAuthorized === null) return <SanskaraaLoader />;
+  return isAuthorized ? children : null;
 }
 
 export default function App() {
@@ -168,29 +214,29 @@ export default function App() {
           <Route path="/pandit-booking" element={<PanditBooking />} />
           <Route path="/eventspage" element={<EventsPage />} />
           <Route path="/bookingspage" element={<BookingsPage />} />
-          <Route path="/dashboard" element={<UserProfile />} />
-          <Route path="/customer/dashboard" element={<UserProfile />} />
-          <Route path="/vendor/dashboard" element={<ServiceProviderProfile />} />
+          <Route path="/dashboard" element={<ProtectedRoute allowRoles={[ROLE.CUSTOMER, ROLE.VENDOR, ROLE.ADMIN, ROLE.SUPER_ADMIN, ROLE.STAFF]}><UserProfile /></ProtectedRoute>} />
+          <Route path="/customer/dashboard" element={<ProtectedRoute allowRoles={[ROLE.CUSTOMER, ROLE.VENDOR, ROLE.ADMIN, ROLE.SUPER_ADMIN, ROLE.STAFF]}><UserProfile /></ProtectedRoute>} />
+          <Route path="/vendor/dashboard" element={<ProtectedRoute allowRoles={[ROLE.VENDOR]} requireVendorApproved><ServiceProviderProfile /></ProtectedRoute>} />
           <Route path="/mobile" element={<MobileNumber />} />
-          <Route path="/userprofile" element={<UserProfile />} />
+          <Route path="/userprofile" element={<ProtectedRoute allowRoles={[ROLE.CUSTOMER, ROLE.VENDOR, ROLE.ADMIN, ROLE.SUPER_ADMIN, ROLE.STAFF]}><UserProfile /></ProtectedRoute>} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/eventmanagement" element={<EventManagement />} />
-          <Route path="/admin/leads" element={<AdminOnly><AdminLeads /></AdminOnly>} />
-          <Route path="/admin/dashboard" element={<AdminOnly><AdminDashboard /></AdminOnly>} />
-          <Route path="/AdminLeads" element={<AdminOnly><AdminLeads /></AdminOnly>} />
-          <Route path="/admin/vendors" element={<AdminOnly><AdminVendors /></AdminOnly>} />
-          <Route path="/AdminVendors" element={<AdminOnly><AdminVendors /></AdminOnly>} />
-          <Route path="/admin/analytics" element={<AdminOnly><AdminLeads /></AdminOnly>} />
+          <Route path="/admin/leads" element={<ProtectedRoute allowRoles={[ROLE.ADMIN, ROLE.SUPER_ADMIN, ROLE.STAFF]}><AdminLeads /></ProtectedRoute>} />
+          <Route path="/admin/dashboard" element={<ProtectedRoute allowRoles={[ROLE.ADMIN, ROLE.SUPER_ADMIN, ROLE.STAFF]}><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/AdminLeads" element={<ProtectedRoute allowRoles={[ROLE.ADMIN, ROLE.SUPER_ADMIN, ROLE.STAFF]}><AdminLeads /></ProtectedRoute>} />
+          <Route path="/admin/vendors" element={<ProtectedRoute allowRoles={[ROLE.ADMIN, ROLE.SUPER_ADMIN]}><AdminVendors /></ProtectedRoute>} />
+          <Route path="/AdminVendors" element={<ProtectedRoute allowRoles={[ROLE.ADMIN, ROLE.SUPER_ADMIN]}><AdminVendors /></ProtectedRoute>} />
+          <Route path="/admin/analytics" element={<ProtectedRoute allowRoles={[ROLE.ADMIN, ROLE.SUPER_ADMIN]}><AdminLeads /></ProtectedRoute>} />
           <Route
             path="/service-provider/profile"
-            element={<ServiceProviderProfile />}
+            element={<ProtectedRoute allowRoles={[ROLE.VENDOR]} requireVendorApproved><ServiceProviderProfile /></ProtectedRoute>}
           />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/contactpage" element={<ContactPage />} />
           <Route path="/ContactPage" element={<ContactPage />} />
           <Route
             path="/vendor-registration"
-            element={<VendorRegistration />}
+            element={<ProtectedRoute allowRoles={[ROLE.CUSTOMER, ROLE.VENDOR]}><VendorRegistration /></ProtectedRoute>}
           />
           <Route
             path="/notifications"

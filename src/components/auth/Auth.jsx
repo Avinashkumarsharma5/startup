@@ -18,6 +18,18 @@ import {
   updateProfile,
 } from "../../lib/firebase";
 import { getOrCreateUserProfile, persistProfile } from "../../lib/profile";
+import { getVendorApplicationForUser } from "../../lib/roleAccess";
+
+async function getPostLoginPath(user, profile) {
+  const role = String(profile.role || "").toUpperCase();
+  if (["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role)) return "/admin/dashboard";
+
+  const application = await getVendorApplicationForUser(user.uid);
+  const status = String(application?.status || profile.vendorApplicationStatus || "").toUpperCase();
+  if (status === "APPROVED") return "/vendor/dashboard";
+  if (["PENDING", "REJECTED", "SUSPENDED"].includes(status)) return "/vendor-registration";
+  return profile.phone ? "/" : "/mobile";
+}
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -33,8 +45,7 @@ export default function Auth() {
       try {
         const profile = await getOrCreateUserProfile(user);
         persistProfile(profile);
-        const role = String(profile.role || "").toUpperCase();
-        navigate(["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role) ? "/admin/dashboard" : (profile.phone ? "/" : "/mobile"), { replace: true });
+        navigate(await getPostLoginPath(user, profile), { replace: true });
       } catch (error) {
         console.error("Could not load user profile:", error);
         toast.error("Login succeeded, but your profile could not be loaded.");
@@ -53,8 +64,7 @@ export default function Auth() {
      const profile = await getOrCreateUserProfile(result.user);
      persistProfile(profile);
      toast.success("Welcome " + (profile.name || profile.email));
-     const role = String(profile.role || "").toUpperCase();
-     navigate(["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role) ? "/admin/dashboard" : (profile.phone ? "/" : "/mobile"));
+    navigate(await getPostLoginPath(result.user, profile));
 } catch (err) {
   console.error(err);
 
@@ -92,8 +102,7 @@ export default function Auth() {
       }
       const profile = await getOrCreateUserProfile(result.user);
       persistProfile(profile);
-      const role = String(profile.role || "").toUpperCase();
-      navigate(["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role) ? "/admin/dashboard" : (profile.phone ? "/" : "/mobile"));
+      navigate(await getPostLoginPath(result.user, profile));
     } catch (err) {
       console.error(err);
       toast.error(err.code === "auth/invalid-credential"

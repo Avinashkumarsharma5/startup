@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Bell, Menu, X, Mic } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, isFirebaseConfigured, signOut } from "../../lib/firebase";
+import { auth, isFirebaseConfigured, onAuthStateChanged, signOut } from "../../lib/firebase";
+import { getCurrentUserProfile, getRoleFromProfile, getVendorApplicationForUser } from "../../lib/roleAccess";
 import toast from "react-hot-toast";
 
 export default function Navbar({ onMicClick }) {
@@ -10,25 +11,40 @@ export default function Navbar({ onMicClick }) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [profileInitial, setProfileInitial] = useState("S");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [profileDestination, setProfileDestination] = useState({ path: "/userprofile", label: "View Profile" });
   const navigate = useNavigate();
 
   useEffect(() => {
-    setProfileInitial("S");
-    setIsAdmin(false);
-    try {
-      const storedUser = localStorage.getItem("loggedInUser");
-      if (storedUser) {
-        const parsed = JSON.parse(storedUser);
-        const source = parsed?.name || parsed?.email || "";
-        if (source) {
-          setProfileInitial(source.trim().charAt(0).toUpperCase());
-        }
-        const role = String(parsed?.role || "").toUpperCase();
-        setIsAdmin(["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role));
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        setProfileInitial("S");
+        setIsAdmin(false);
+        setProfileDestination({ path: "/userprofile", label: "View Profile" });
+        return;
       }
-    } catch (error) {
-      console.error("Failed to read user data:", error);
-    }
+
+      try {
+        const profile = await getCurrentUserProfile();
+        const role = getRoleFromProfile(profile);
+        const application = await getVendorApplicationForUser(user.uid);
+        const applicationStatus = String(application?.status || profile?.vendorApplicationStatus || "").toUpperCase();
+        const name = profile?.name || user.displayName || user.email || "S";
+        setProfileInitial(name.trim().charAt(0).toUpperCase());
+        setIsAdmin(["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role));
+        setProfileDestination(role === "VENDOR" || applicationStatus === "APPROVED"
+          ? { path: "/vendor/dashboard", label: "Vendor Dashboard" }
+          : ["PENDING", "REJECTED"].includes(applicationStatus)
+            ? { path: "/vendor-registration", label: "Vendor Application Status" }
+            : { path: "/userprofile", label: "View Profile" });
+      } catch (error) {
+        console.error("Failed to read user data:", error);
+        setProfileInitial("S");
+        setIsAdmin(false);
+        setProfileDestination({ path: "/userprofile", label: "View Profile" });
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const handleLogout = async () => {
@@ -122,7 +138,7 @@ export default function Navbar({ onMicClick }) {
           >
             <div
               className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white text-orange-500 border-2 border-white flex items-center justify-center font-semibold hover:scale-110 transition-transform cursor-pointer"
-              onClick={() => navigate("/userprofile")}
+              onClick={() => navigate(profileDestination.path)}
             >
               {profileInitial}
             </div>
@@ -134,11 +150,11 @@ export default function Navbar({ onMicClick }) {
                   <button
                     onClick={() => {
                       setShowProfileMenu(false);
-                      navigate("/userprofile");
+                      navigate(profileDestination.path);
                     }}
                     className="w-full text-left px-4 py-2 hover:bg-orange-50 text-gray-700"
                   >
-                    View Profile
+                    {profileDestination.label}
                   </button>
 
                   {isAdmin && (
