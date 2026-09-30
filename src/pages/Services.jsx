@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, createContext, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import {
   Search, Package, Flower2, Star,
@@ -11,6 +12,9 @@ import {
   Truck, RotateCcw, ShieldCheck, Share2, Mail,
   ShoppingCart, Trash2, Minus, Eye, ChevronLeft, ChevronRight
 } from "lucide-react";
+import { requireSupabase } from "../lib/supabase";
+import { getCurrentUser } from "../lib/supabaseAuth";
+import { saveUserBooking } from "../lib/bookings";
 
 // --------------------------- Theme Constants ---------------------------
 const THEME = {
@@ -363,7 +367,9 @@ const Toast = ({ toast, onClose }) => {
 };
 
 const BookingWizardModal = ({ service, isOpen, onClose, onSuccess }) => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -409,52 +415,64 @@ const BookingWizardModal = ({ service, isOpen, onClose, onSuccess }) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const validateStep = () => {
+    if (step === 1) {
+      if (!formData.name.trim()) return addToast("Enter your name to continue.", "error");
+      if (!isValidIndianMobile(formData.phone)) return addToast("Enter a valid 10-digit Indian mobile number.", "error");
+      if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) return addToast("Enter a valid email address.", "error");
+    }
+    if (step === 2) {
+      if (!formData.eventType) return addToast("Choose an event type.", "error");
+      if (!isFutureOrTodayDate(formData.eventDate)) return addToast("Choose today or a future date.", "error");
+      if (service.unit?.toLowerCase().includes("plate") && (!Number.isInteger(Number(formData.guestCount)) || Number(formData.guestCount) < 1)) {
+        return addToast("Enter the guest count for per-person pricing.", "error");
+      }
+    }
+    if (step === 3 && formData.location.trim().length < 8) return addToast("Enter the complete service address.", "error");
+    return true;
+  };
+
   /* ================= FINAL SUBMIT ================= */
-  const handleSubmit = () => {
-    if (!formData.name.trim()) {
-      addToast("Name is required", "error");
-      return;
+  const handleSubmit = async () => {
+    if (!validateStep()) return;
+    setSaving(true);
+    try {
+      const user = await getCurrentUser();
+      if (!user) {
+        addToast("Sign in before placing a booking request.", "error");
+        navigate("/login", { state: { returnTo: "/services" } });
+        return;
+      }
+
+      const amount = Number(service.price || 0) * (service.unit?.toLowerCase().includes("plate") ? Number(formData.guestCount) : 1);
+      const id = await saveUserBooking({
+        serviceId: service.id,
+        service: service.name,
+        event: formData.eventType,
+        type: "SERVICE",
+        date: formData.eventDate,
+        address: formData.location.trim(),
+        subtotal: amount,
+        totalAmount: amount,
+        notes: formData.message.trim(),
+        customer: { name: formData.name.trim(), phone: formData.phone, email: formData.email.trim() },
+        guestCount: formData.guestCount ? Number(formData.guestCount) : null,
+      });
+      onSuccess({
+        id,
+        status: "PENDING",
+        service,
+        customer: formData,
+        totalAmount: amount,
+        timestamp: new Date().toISOString(),
+      });
+      onClose();
+    } catch (error) {
+      console.error("Service booking could not be saved:", error);
+      addToast(error.message || "Booking request could not be saved. Please try again.", "error");
+    } finally {
+      setSaving(false);
     }
-
-    if (!isValidIndianMobile(formData.phone)) {
-      addToast("Enter valid 10-digit Indian mobile number", "error");
-      return;
-    }
-
-    if (!isFutureOrTodayDate(formData.eventDate)) {
-      addToast("Please select today or a future date", "error");
-      return;
-    }
-
-    const message = `🎊 *NEW SERVICE ENQUIRY - Sanskaraa* 🎊
-
-Service: ${service.name}
-Price: ₹${service.price}
-
-Name: ${formData.name}
-Phone: ${formData.phone}
-Email: ${formData.email || "N/A"}
-Event Type: ${formData.eventType || "N/A"}
-Event Date: ${formData.eventDate}
-Guests: ${formData.guestCount || "N/A"}
-Location: ${formData.location || "N/A"}
-
-Message: ${formData.message || "N/A"}
-`;
-
-    window.open(
-      `https://wa.me/916201486202?text=${encodeURIComponent(message)}`,
-      "_blank"
-    );
-
-    onSuccess({
-      service,
-      customer: formData,
-      timestamp: new Date().toISOString(),
-      id: Date.now()
-    });
-
-    onClose();
   };
 
   if (!isOpen) return null;
@@ -582,15 +600,11 @@ Message: ${formData.message || "N/A"}
           )}
 
           {step === 3 && (
-            <textarea
-              rows={4}
-              placeholder="Additional Message"
-              value={formData.message}
-              onChange={(e) =>
-                handleInputChange("message", e.target.value)
-              }
-              className="w-full px-3 py-2 border rounded-lg"
-            />
+            <>
+              <input type="text" placeholder="Service address and city *" value={formData.location} onChange={(e) => handleInputChange("location", e.target.value)} className="w-full px-3 py-2 border rounded-lg" />
+              <textarea rows={4} placeholder="Additional notes (optional)" value={formData.message} onChange={(e) => handleInputChange("message", e.target.value)} className="w-full px-3 py-2 border rounded-lg" />
+              <p className="text-xs text-stone-500">Estimated request amount: ₹{(Number(service.price || 0) * (service.unit?.toLowerCase().includes("plate") ? (Number(formData.guestCount) || 0) : 1)).toLocaleString("en-IN")}. Final amount may be confirmed by the service provider.</p>
+            </>
           )}
         </div>
 
@@ -607,17 +621,18 @@ Message: ${formData.message || "N/A"}
 
           {step < 3 ? (
             <button
-              onClick={() => setStep(step + 1)}
+              onClick={() => { if (validateStep()) setStep(step + 1); }}
               className="flex-1 bg-[#800000] text-white rounded-lg py-2"
             >
               Next
             </button>
           ) : (
             <button
-              onClick={handleSubmit}
-              className="flex-1 bg-[#800000] text-white rounded-lg py-2"
+              onClick={() => void handleSubmit()}
+              disabled={saving}
+              className="flex-1 bg-[#800000] text-white rounded-lg py-2 disabled:opacity-60"
             >
-              Send via WhatsApp
+              {saving ? "Saving…" : "Submit booking request"}
             </button>
           )}
         </div>
@@ -628,11 +643,7 @@ Message: ${formData.message || "N/A"}
 
 
 const BookingSuccessModal = ({ booking, isOpen, onClose }) => {
-  useEffect(() => {
-    if (!isOpen) return;
-    const t = setTimeout(onClose, 6000);
-    return () => clearTimeout(t);
-  }, [isOpen, onClose]);
+  const navigate = useNavigate();
 
   if (!isOpen || !booking) return null;
 
@@ -665,7 +676,7 @@ const BookingSuccessModal = ({ booking, isOpen, onClose }) => {
           </motion.div>
 
           <h2 className="text-2xl font-serif font-bold text-[#800000] mb-2">
-            Enquiry Sent Successfully
+            Booking request saved
           </h2>
 
           <p className="text-gray-600 text-sm mb-1">
@@ -678,7 +689,7 @@ const BookingSuccessModal = ({ booking, isOpen, onClose }) => {
           <div className="bg-gray-50 rounded-xl p-4 text-left space-y-2 text-sm">
             <div className="flex gap-2">
               <UserCheck className="w-4 h-4 text-[#800000]" />
-              Our executive will contact you shortly
+              Your request is saved. Track status updates from My Bookings.
             </div>
             <div className="flex gap-2">
               <Phone className="w-4 h-4 text-[#800000]" />
@@ -691,15 +702,16 @@ const BookingSuccessModal = ({ booking, isOpen, onClose }) => {
           </div>
 
           <div className="mt-5 bg-[#FFF7E0] border border-[#FFD700] rounded-xl p-3 text-sm text-[#800000]">
-            📞 Need urgent help? Call <b>+91 6201486202</b>
+            Booking ID: <b className="break-all">{booking.id}</b> · Status: <b>Pending</b>
           </div>
 
           <button
-            onClick={onClose}
+            onClick={() => { onClose(); navigate("/bookingspage"); }}
             className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-[#800000] to-[#A52A2A] text-white font-semibold"
           >
-            Continue Browsing
+            View my bookings
           </button>
+          <button onClick={onClose} className="mt-3 w-full rounded-xl border border-stone-200 py-3 text-sm font-semibold text-stone-700">Continue browsing</button>
         </motion.div>
       </motion.div>
     </AnimatePresence>
@@ -1492,6 +1504,7 @@ export default function App() {
   const [wishlist, setWishlist] = useState(new Set());
   const [sortOption, setSortOption] = useState("rating");
   const [isLoading, setIsLoading] = useState(true);
+  const [databaseServices, setDatabaseServices] = useState(null);
 
   // Booking flow states
   const [selectedService, setSelectedService] = useState(null);
@@ -1500,16 +1513,31 @@ export default function App() {
   const [showBookingSuccess, setShowBookingSuccess] = useState(false);
   const [latestBooking, setLatestBooking] = useState(null);
 
-  // Simulate loading
   useEffect(() => {
-    setTimeout(() => setIsLoading(false), 1500);
+    let active = true;
+    const loadServices = async () => {
+      try {
+        const { data, error } = await requireSupabase().from("services").select("id,name,slug,category,description,image_url,base_price").eq("is_active", true).order("name").limit(200);
+        if (error) throw error;
+        if (active && data.length) setDatabaseServices(data.map((row) => ({
+          id: row.id, name: row.name, description: row.description || "", price: Number(row.base_price || 0),
+          category: row.category, serviceCategory: row.category, location: "All Cities",
+          rating: 0, reviews: 0, media: row.image_url ? [{ type: "image", src: row.image_url }] : [],
+        })));
+      } catch (error) {
+        console.error("Unable to load the Supabase service catalog; using the built-in catalog:", error);
+      } finally { if (active) setIsLoading(false); }
+    };
+    void loadServices();
+    return () => { active = false; };
   }, []);
 
   const allServices = useMemo(() => {
+    if (databaseServices?.length) return databaseServices;
     return Object.entries(servicesData).flatMap(([cat, items]) => 
         items.map(item => ({...item, serviceCategory: cat}))
     );
-  }, []);
+  }, [databaseServices]);
 
   const filteredServices = useMemo(() => {
     let result = allServices.filter(s => {

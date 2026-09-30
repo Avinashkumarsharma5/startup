@@ -3,7 +3,6 @@ import { CalendarDays, CheckCircle2, MessageSquare, Phone } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { createLead, getLeadSourceMeta } from "../../lib/leads";
-import { auth } from "../../lib/firebase";
 
 const DEFAULT_FORM = {
   name: "",
@@ -66,9 +65,7 @@ export default function LeadForm({
           term: sourceMeta.term || "",
           landingPage: sourceMeta.landingPage || window.location.pathname,
         },
-        {
-          userId: auth.currentUser?.uid || "",
-        }
+        {}
       );
 
       setLeadId(result.id);

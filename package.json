@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --configLoader runner",
     "preview": "vite preview"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
-    "firebase": "^10.9.0",
+    "@supabase/supabase-js": "^2.117.2",
     "formik": "^2.4.6",
     "framer-motion": "^12.23.24",
     "lottie-react": "^2.4.1",

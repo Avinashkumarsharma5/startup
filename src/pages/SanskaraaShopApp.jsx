@@ -24,6 +24,7 @@ import {
   Filter,
   ArrowRight 
 } from "lucide-react";
+import { requireSupabase } from "../lib/supabase";
 
 /* ==========================================================================
    1. DATA LAYER (Unchanged)
@@ -131,6 +132,11 @@ const PRODUCTS = [
     tags: ["Practical", "Traditional"]
   }
 ];
+const PRODUCT_DATABASE_IDS = {
+  1: "10000000-0000-4000-8000-000000000001", 2: "10000000-0000-4000-8000-000000000002",
+  3: "10000000-0000-4000-8000-000000000003", 4: "10000000-0000-4000-8000-000000000004",
+  5: "10000000-0000-4000-8000-000000000005", 6: "10000000-0000-4000-8000-000000000006",
+};
 
 const CATEGORIES = [
   { id: "all", name: "All", icon: Grid },
@@ -557,6 +563,8 @@ const BookingWizard = ({ product, onComplete, onCancel }) => {
   const [formData, setFormData] = useState({
     quantity: product.minOrder || 1, name: "", phone: "", email: "", address: "", city: "", pincode: ""
   });
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   const steps = [
     { id: 1, title: "Details", icon: ShoppingBag },
@@ -567,7 +575,22 @@ const BookingWizard = ({ product, onComplete, onCancel }) => {
 
   const handleInputChange = (field, value) => setFormData(prev => ({ ...prev, [field]: value }));
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setSaving(true);
+    setSaveError("");
+    try {
+      const { error } = await requireSupabase().rpc("create_order", {
+        p_items: [{ product_id: PRODUCT_DATABASE_IDS[product.id], quantity: Number(formData.quantity) }],
+        p_shipping_address: { name: formData.name, phone: formData.phone, email: formData.email, address: formData.address, city: formData.city, pincode: formData.pincode },
+        p_shipping_fee: 0,
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.error("Unable to create shop order:", error);
+      setSaveError(error.message || "Order could not be placed. Please sign in and try again.");
+      setSaving(false);
+      return;
+    }
     const message = `New Booking: ${product.name}\nQuantity: ${formData.quantity}\nName: ${formData.name}\nPhone: ${formData.phone}\nAddress: ${formData.address}, ${formData.city} - ${formData.pincode}\nTotal: ₹${(product.price * formData.quantity).toLocaleString()}`;
     window.open(`https://wa.me/916201486202?text=${encodeURIComponent(message)}`, '_blank');
     onComplete();
@@ -597,6 +620,7 @@ const BookingWizard = ({ product, onComplete, onCancel }) => {
 
       {/* Form Content */}
       <div className="flex-1 overflow-y-auto">
+        {saveError && <p role="alert" className="mb-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{saveError}</p>}
         {step === 1 && (
           <div className="space-y-4">
             <div className="bg-white p-3 rounded-xl border border-orange-200 shadow-sm">

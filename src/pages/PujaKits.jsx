@@ -41,6 +41,8 @@ import {
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { saveUserBooking } from "../lib/bookings";
+import { requireSupabase } from "../lib/supabase";
+import { getCurrentUser } from "../lib/supabaseAuth";
 import { useNavigate } from "react-router-dom";
 
 // ---------- Price Resolver Function ----------
@@ -1930,6 +1932,7 @@ const ProductCard = ({
   onQuantityChange,
 }) => {
   const [imgError, setImgError] = useState(false);
+  const unavailable = !isPackage && (!product.productId || Number(product.stock) < 1);
 
   return (
     <motion.div
@@ -2055,15 +2058,18 @@ const ProductCard = ({
             </>
           ) : (
             <>
+              {unavailable && <p className="text-center text-xs font-semibold text-red-700">{product.productId ? "Out of stock" : "Inventory unavailable"}</p>}
               <button
                 onClick={onAddToCart}
-                className="w-full bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-lg py-2 text-sm font-semibold flex items-center justify-center gap-2"
+                disabled={unavailable}
+                className="w-full bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-lg py-2 text-sm font-semibold flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <FiShoppingCart /> Add to Cart
               </button>
               <button
                 onClick={onBuyNow}
-                className="w-full border border-amber-400 text-amber-700 rounded-lg py-2 text-sm hover:bg-amber-50"
+                disabled={unavailable}
+                className="w-full border border-amber-400 text-amber-700 rounded-lg py-2 text-sm hover:bg-amber-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Buy Now
               </button>
@@ -2361,7 +2367,7 @@ const KitItemsModal = ({ kit, onClose, onAddToCart }) => {
                     transition-all
                   "
                 >
-                  Add Kit to Cart
+                  Continue to Booking
                 </button>
               </div>
             </div>
@@ -2674,68 +2680,18 @@ const UnifiedOrderWizardModal = ({
   );
 };
 
-// ---------- Enhanced Unified Success Page (AUTO WHATSAPP) ----------
-const UnifiedSuccessPage = ({ order, onBackToHome }) => {
-  const [sent, setSent] = useState(false);
+// ---------- Unified order and booking confirmation ----------
+const UnifiedSuccessPage = ({ order, onBackToHome, onViewOrders }) => {
   const isPackage = order?.mode === "package";
 
   const safe = {
-    id: order?.id || `SK-${Date.now()}`,
+    id: order?.id || "",
     items: order?.items || [],
     pricing: order?.pricing || { total: 0 },
     customer: order?.customer || {},
     delivery: order?.delivery || {},
     includePandit: order?.includePandit,
   };
-
-  // 🔥 AUTO WHATSAPP SEND (ON LOAD)
-  useEffect(() => {
-    if (sent) return;
-
-    const itemsText = safe.items
-      .map(
-        (item) =>
-          `• ${item.name} (x${item.qty}) - ₹${
-            (item.type === "package" && item.includePandit
-              ? item.price + 500
-              : item.price) * item.qty
-          }`
-      )
-      .join("\n");
-
-    const message = `🪷 *Sanskaraa ${isPackage ? "Puja Booking" : "Order"} Confirmed* 🪷
-
-🆔 *ID:* ${safe.id}
-👤 *Name:* ${safe.customer.name || "-"}
-📞 *Phone:* ${safe.customer.phone || "-"}
-
-📦 *${isPackage ? "Puja Details" : "Items"}*
-${itemsText}
-
-📅 *Date:* ${
-      safe.delivery.date
-        ? new Date(safe.delivery.date).toLocaleDateString("en-IN")
-        : "-"
-    }
-⏰ *${isPackage ? "Time" : "Slot"}:* ${safe.delivery.slot || "-"}
-
-📍 *Address:* ${safe.customer.address || "-"}, ${safe.customer.city || ""} ${
-      safe.customer.pincode ? `- ${safe.customer.pincode}` : ""
-    }
-
-💰 *Total:* ₹${safe.pricing.total}
-
-${isPackage && safe.includePandit ? "✅ Pandit Service Included\n" : ""}
-🙏 Thank you for trusting *Sanskaraa*`;
-
-    const url = `https://wa.me/916201486202?text=${encodeURIComponent(
-      message
-    )}`;
-
-    window.open(url, "_blank");
-    setSent(true);
-  }, [sent]);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 via-white to-rose-50 flex items-center justify-center p-4">
       <motion.div
@@ -2759,18 +2715,18 @@ ${isPackage && safe.includePandit ? "✅ Pandit Service Included\n" : ""}
         </div>
 
         <h1 className="text-2xl font-extrabold text-rose-800">
-          {isPackage ? "Puja Booked Successfully 🙏" : "Order Confirmed 🎉"}
+          {isPackage ? "Puja Request Received 🙏" : "Order Request Placed"}
         </h1>
 
         <p className="text-sm text-gray-600 mt-2">
           {isPackage
-            ? "Pandit & samagri will be arranged as per your booking."
-            : "Your puja items will reach you on time."}
+            ? "The provider will confirm your booking request."
+            : "Your order is recorded. Payment is due separately; online payment is not available yet."}
         </p>
 
         {/* Confirmation Banner */}
         <div className="mt-4 bg-green-50 border border-green-200 rounded-xl p-3 text-sm text-green-700">
-          ✅ Confirmation has been sent to your WhatsApp
+          {isPackage ? "Booking request saved to your account." : "Order request saved to your account."}
         </div>
 
         {/* Summary */}
@@ -2806,6 +2762,9 @@ ${isPackage && safe.includePandit ? "✅ Pandit Service Included\n" : ""}
         >
           Continue Shopping
         </button>
+        <button onClick={onViewOrders} className="mt-3 w-full rounded-xl border border-rose-200 py-3 text-sm font-semibold text-rose-800 hover:bg-rose-50">
+          {isPackage ? "View my bookings" : "View my orders"}
+        </button>
 
         <p className="text-xs text-gray-500 mt-4 italic">
           “सर्वे भवन्तु सुखिनः, सर्वे सन्तु निरामयाः”
@@ -2823,6 +2782,8 @@ export default function UnifiedPujaStoreWithKitEditor() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
+  const [databaseProducts, setDatabaseProducts] = useState(null);
+  const [catalogError, setCatalogError] = useState("");
   const [viewMode, setViewMode] = useState("all");
   const [quantities, setQuantities] = useState(() => {
     const initial = {};
@@ -2855,10 +2816,52 @@ export default function UnifiedPujaStoreWithKitEditor() {
   const [coupon, setCoupon] = useState("");
   const [couponApplied, setCouponApplied] = useState(null);
 
-  // Simulate loading
+  // Load live purchasable puja items. Ritual packages remain booking requests;
+  // physical items must exist in the database catalog with available stock.
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 800);
-    return () => clearTimeout(t);
+    let active = true;
+    const loadCatalog = async () => {
+      try {
+        const { data, error } = await requireSupabase()
+          .from("products")
+          .select("id,name,slug,description,category,price,stock,image_url,is_active")
+          .eq("category", "Single Items")
+          .eq("is_active", true)
+          .order("name")
+          .limit(200);
+        if (error) throw error;
+        const localById = new Map(singleItems.map((item) => [String(item.id), item]));
+        const mapped = (data || []).map((row) => {
+          const idMatch = String(row.slug || "").match(/^puja-single-(\d+)$/);
+          const local = idMatch ? localById.get(idMatch[1]) : null;
+          return {
+            ...(local || {}),
+            id: local?.id ?? row.id,
+            productId: row.id,
+            name: row.name,
+            description: row.description || "",
+            category: row.category,
+            subcategory: local?.subcategory || row.category,
+            type: "single",
+            price: Number(row.price || 0),
+            stock: Number(row.stock || 0),
+            img: row.image_url || local?.img || "",
+            unit: local?.unit || "piece",
+          };
+        });
+        if (active) setDatabaseProducts(mapped);
+      } catch (error) {
+        console.error("Could not load the live puja item catalog:", error);
+        if (active) {
+          setDatabaseProducts([]);
+          setCatalogError("Store inventory is unavailable. Puja packages can still be booked; item purchases are temporarily disabled.");
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    void loadCatalog();
+    return () => { active = false; };
   }, []);
 
   // Persist cart & wishlist
@@ -2873,8 +2876,13 @@ export default function UnifiedPujaStoreWithKitEditor() {
   }, []);
 
   // Derived filtered list
+  const catalogProducts = useMemo(
+    () => [...kits, ...(databaseProducts ?? singleItems)],
+    [databaseProducts]
+  );
+
   const filtered = useMemo(() => {
-    let list = allProducts.filter((p) => {
+    let list = catalogProducts.filter((p) => {
       // View mode filter
       if (viewMode === 'packages' && p.type !== 'package') return false;
       if (viewMode === 'single' && p.type !== 'single') return false;
@@ -2896,7 +2904,7 @@ export default function UnifiedPujaStoreWithKitEditor() {
     });
 
     return list;
-  }, [search, selectedCategory, viewMode]);
+  }, [search, selectedCategory, viewMode, catalogProducts]);
 
   // Quantity handlers for single items
   const changeQty = (id, delta) => {
@@ -2909,6 +2917,10 @@ export default function UnifiedPujaStoreWithKitEditor() {
 
   // Cart handlers with proper kit support
   const addToCart = (product, qty = 1) => {
+    if (!product.productId || Number(product.stock) < qty) {
+      alert("This item is not available in live inventory right now.");
+      return;
+    }
     if (qty < 1) qty = 1;
     setCart((prev) => {
       const idx = prev.findIndex((item) => 
@@ -2958,6 +2970,15 @@ export default function UnifiedPujaStoreWithKitEditor() {
     setOrderMode('package');
     setOrderProduct(kit);
     setOrderQty(1);
+    setShowOrderWizard(true);
+  };
+
+  const bookCustomKit = (customKit) => {
+    setOrderMode("package");
+    setOrderProduct({ ...customKit, type: "package", qty: 1, includePandit: false });
+    setOrderQty(1);
+    setShowKitItemsModal(false);
+    setSelectedKitForDetails(null);
     setShowOrderWizard(true);
   };
 
@@ -3030,24 +3051,39 @@ export default function UnifiedPujaStoreWithKitEditor() {
     };
 
     try {
-      await saveUserBooking(orderBooking);
+      const user = await getCurrentUser();
+      if (!user) {
+        alert("Please sign in before booking a puja or placing an order.");
+        navigate("/login", { state: { returnTo: "/pujakits" } });
+        return;
+      }
+
+      if (order.mode === "package") {
+        order.id = await saveUserBooking(orderBooking);
+        order.status = "PENDING";
+      } else {
+        const items = order.items.map((item) => {
+          const inventoryItem = databaseProducts?.find((product) =>
+            String(product.productId) === String(item.productId) || String(product.id) === String(item.id)
+          );
+          if (!inventoryItem?.productId) throw new Error(`${item.name || "A cart item"} is not available in the live catalog.`);
+          if (Number(inventoryItem.stock) < Number(item.qty)) throw new Error(`${inventoryItem.name} does not have enough stock.`);
+          return { product_id: inventoryItem.productId, quantity: Number(item.qty) };
+        });
+        const { data, error } = await requireSupabase().rpc("create_order", {
+          p_items: items,
+          p_shipping_address: { ...order.customer, delivery: order.delivery, notes: order.additionalNotes },
+          p_shipping_fee: 0,
+        });
+        if (error) throw error;
+        order.id = data.id;
+        order.totalAmount = Number(data.total_amount);
+        order.orderStatus = data.order_status;
+      }
     } catch (error) {
       console.error("Could not save shop order:", error);
-      alert("Order save nahi ho saka. Please try again.");
+      alert(error.message || "Order save nahi ho saka. Please try again.");
       return;
-    }
-
-    // Save to localStorage
-    try {
-      const prev = JSON.parse(
-        localStorage.getItem("sanskaraa_orders") || "[]"
-      );
-      localStorage.setItem(
-        "sanskaraa_orders",
-        JSON.stringify([...prev, order])
-      );
-    } catch (e) {
-      console.error(e);
     }
 
     // Clear cart if cart order
@@ -3061,7 +3097,7 @@ export default function UnifiedPujaStoreWithKitEditor() {
     // Browser notification
     if ("Notification" in window && Notification.permission === "granted") {
       new Notification("Sanskaraa", {
-        body: `${order.mode === 'package' ? 'Puja' : 'Order'} confirmed for ₹${order.pricing.total}`,
+        body: order.mode === "package" ? "Puja booking request received." : `Order request received for ₹${order.totalAmount ?? order.pricing.total}. Payment is not collected online yet.`,
         icon: "/images/logo.png",
       });
     }
@@ -3095,6 +3131,7 @@ export default function UnifiedPujaStoreWithKitEditor() {
     return (
       <UnifiedSuccessPage
         order={orderSuccess}
+        onViewOrders={() => navigate("/bookingspage")}
         onBackToHome={() => {
           setOrderSuccess(null);
           setOrderMode(null);
@@ -3166,6 +3203,8 @@ export default function UnifiedPujaStoreWithKitEditor() {
             </button>
           </div>
         </div>
+
+        {catalogError && <p role="status" className="mt-3 rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">{catalogError}</p>}
 
         {/* View Mode Tabs */}
         <div className="bg-white/95 backdrop-blur-md py-3 sm:py-4 mt-3 sm:mt-4 rounded-xl sm:rounded-2xl shadow-lg border border-amber-100">
@@ -3497,7 +3536,7 @@ export default function UnifiedPujaStoreWithKitEditor() {
                 setShowKitItemsModal(false);
                 setSelectedKitForDetails(null);
               }}
-              onAddToCart={addToCart}
+              onAddToCart={bookCustomKit}
             />
           )}
         </AnimatePresence>

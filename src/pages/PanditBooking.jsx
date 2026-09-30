@@ -61,7 +61,7 @@ const sendWhatsAppMessage = (bookingDetails, puja) => {
     day: 'numeric'
   });
 
-  const message = `🪷 *Puja Booking Confirmed* 🪷
+  const message = `🪷 *Puja Booking Request Received* 🪷
 
 📅 *Booking Details:*
 • *Puja Type:* ${puja.name}
@@ -79,7 +79,7 @@ const sendWhatsAppMessage = (bookingDetails, puja) => {
 
 🆔 *Booking ID:* ${bookingId}
 
-_We wish you a blessed and prosperous puja!_
+_Your request is awaiting confirmation. We wish you a blessed and prosperous puja!_
 _For any queries, contact support._`;
 
   const encodedMessage = encodeURIComponent(message);
@@ -1199,9 +1199,6 @@ export default function PujaBooking() {
     if (savedFavorites) setFavorites(JSON.parse(savedFavorites));
     if (savedRecentlyViewed) setRecentlyViewed(JSON.parse(savedRecentlyViewed));
     
-    if (!localStorage.getItem("pujaBookings")) {
-      localStorage.setItem('pujaBookings', JSON.stringify([]));
-    }
   }, []);
 
   useEffect(() => {
@@ -1313,14 +1310,12 @@ export default function PujaBooking() {
 
   const handleBookingComplete = async () => {
     const newBookingId = `BK${Date.now().toString().slice(-8)}`;
-    setBookingId(newBookingId);
     
     const completeBookingData = {
       ...bookingData,
       bookingId: newBookingId
     };
 
-    const bookings = JSON.parse(localStorage.getItem('pujaBookings') || '[]');
     const selectedPujaData = pujaList.find(p => p.id === selectedPuja.id);
     const newBooking = {
       id: newBookingId,
@@ -1350,12 +1345,16 @@ export default function PujaBooking() {
     };
 
     try {
-      await saveUserBooking(bookingForBookingsPage);
-      const savedBookings = JSON.parse(localStorage.getItem('pujaBookings') || '[]');
-      localStorage.setItem('pujaBookings', JSON.stringify([newBooking, ...savedBookings]));
+      const persistedBookingId = await saveUserBooking(bookingForBookingsPage);
+      setBookingId(persistedBookingId);
+      completeBookingData.bookingId = persistedBookingId;
+      newBooking.id = persistedBookingId;
     } catch (error) {
       console.error("Could not save puja booking:", error);
-      setValidationError("Booking save nahi ho saki. Please try again.");
+      setValidationError(error.message === "You must be signed in to save a booking."
+        ? "Booking karne ke liye pehle sign in karein. Please sign in before booking."
+        : "Booking save nahi ho saki. Please try again.");
+      if (error.message === "You must be signed in to save a booking.") navigate("/login", { state: { returnTo: "/panditbooking" } });
       return;
     }
     
@@ -2180,7 +2179,7 @@ export default function PujaBooking() {
       <AnimatePresence>
         {showToast && (
           <Toast
-            message={`Your ${selectedPuja?.name} puja is confirmed!`}
+            message={`Your ${selectedPuja?.name} booking request has been received and is awaiting confirmation.`}
             type="success"
             bookingId={bookingId}
             bookingDetails={{

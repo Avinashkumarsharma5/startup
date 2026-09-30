@@ -1,23 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Briefcase, CheckCircle, MapPin, Mail, Phone, ShieldCheck, User } from "lucide-react";
-import { auth, db } from "../lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { requireSupabase } from "../lib/supabase";
+import { getCurrentUser } from "../lib/supabaseAuth";
+import { subscribeToProviderBookings, updateUserBooking } from "../lib/bookings";
+import { startProviderLocationSharing } from "../lib/liveLocations";
 
 export default function ServiceProviderProfile() {
   const [vendorData, setVendorData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [bookings, setBookings] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const locationStop = useRef(null);
+  const subscriptionStop = useRef(null);
 
   useEffect(() => {
     const loadVendor = async () => {
-      if (!auth.currentUser) {
+      const user = await getCurrentUser();
+      if (!user) {
         setLoading(false);
         return;
       }
 
+      subscriptionStop.current = subscribeToProviderBookings(user.id, setBookings, (error) => {
+        console.error("Unable to load assigned bookings:", error);
+        setErrorMessage("Bookings could not be refreshed. Please reload the page.");
+      });
+
       try {
-        const vendorRef = doc(db, "vendors", auth.currentUser.uid);
-        const snapshot = await getDoc(vendorRef);
-        setVendorData(snapshot.exists() ? { uid: auth.currentUser.uid, ...snapshot.data() } : null);
+        const { data, error } = await requireSupabase().from("vendor_profiles").select("*").eq("user_id", user.id).maybeSingle();
+        if (error) throw error;
+        setVendorData(data ? {
+          ...data, uid: user.id, name: data.business_name, vendorType: data.vendor_type,
+          location: [data.city, data.state].filter(Boolean).join(", "), email: data.email || user.email,
+        } : null);
       } catch (error) {
         console.error("Unable to load vendor profile:", error);
         setVendorData(null);
@@ -27,6 +42,7 @@ export default function ServiceProviderProfile() {
     };
 
     loadVendor();
+    return () => { subscriptionStop.current?.(); void locationStop.current?.(); };
   }, []);
 
   if (loading) {
@@ -98,9 +114,55 @@ export default function ServiceProviderProfile() {
               <p className="text-sm font-medium text-slate-700">No vendor data has been published yet.</p>
               <p className="mt-1 text-sm text-slate-500">This dashboard will display your approved vendor profile and activity once it is available.</p>
             </div>
+            <section className="mt-8">
+              <h2 className="mb-3 text-lg font-semibold text-[#7A1A1A]">Assigned bookings</h2>
+              {errorMessage && <p role="alert" className="mb-3 rounded-lg bg-red-50 p-3 text-sm text-red-700">{errorMessage}</p>}
+              {bookings.length === 0 ? <p className="rounded-xl bg-slate-50 p-4 text-sm text-slate-600">No bookings are assigned to you yet.</p> : <div className="space-y-3">
+                {bookings.map((booking) => <ProviderBookingCard key={booking.id} booking={booking} onError={setErrorMessage} />)}
+              </div>}
+            </section>
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+function ProviderBookingCard({ booking, onError }) {
+  const [busy, setBusy] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const stopLocation = useRef(null);
+  useEffect(() => () => { void stopLocation.current?.(); }, []);
+  useEffect(() => {
+    const status = booking.status?.toUpperCase().replaceAll(" ", "_");
+    if (["COMPLETED", "CANCELLED", "REJECTED"].includes(status) && stopLocation.current) {
+      void stopLocation.current();
+      stopLocation.current = null;
+      setSharing(false);
+    }
+  }, [booking.status]);
+  const actions = {
+    ASSIGNED: ["ACCEPTED", "REJECTED"], ACCEPTED: ["ON_THE_WAY"], ON_THE_WAY: ["ARRIVED"],
+    ARRIVED: ["IN_PROGRESS"], IN_PROGRESS: ["COMPLETED"],
+  }[booking.status?.toUpperCase().replaceAll(" ", "_")] || [];
+  const transition = async (next) => {
+    setBusy(true);
+    try {
+      await updateUserBooking(booking.id, { booking_status: next });
+      onError("");
+      if (["COMPLETED", "REJECTED"].includes(next)) { await stopLocation.current?.(); stopLocation.current = null; setSharing(false); }
+    } catch (error) { console.error("Booking update failed:", error); onError(error.message || "Booking could not be updated."); }
+    finally { setBusy(false); }
+  };
+  const toggleLocation = async () => {
+    try {
+      if (sharing) { await stopLocation.current?.(); stopLocation.current = null; setSharing(false); }
+      else { stopLocation.current = await startProviderLocationSharing(booking.id, (error) => onError(error.message || "Location update failed.")); setSharing(true); }
+    } catch (error) { onError(error.message || "Location sharing could not start. Check browser location permission."); }
+  };
+  return <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="flex flex-wrap items-start justify-between gap-2"><div><h3 className="font-semibold text-[#7A1A1A]">{booking.service || booking.event || "Service booking"}</h3><p className="text-sm text-slate-600">{booking.date || "Date not set"} · {booking.address || "Address not set"}</p></div><span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">{booking.status}</span></div>
+    <div className="mt-3 flex flex-wrap gap-2">{actions.map((action) => <button key={action} disabled={busy} onClick={() => void transition(action)} className="rounded-lg bg-[#800000] px-3 py-2 text-xs font-semibold text-white disabled:opacity-50">{action.replaceAll("_", " ")}</button>)}
+      {["ACCEPTED", "ON_THE_WAY", "ARRIVED", "IN_PROGRESS"].includes(booking.status?.toUpperCase().replaceAll(" ", "_")) && <button onClick={() => void toggleLocation()} className="rounded-lg border border-orange-300 px-3 py-2 text-xs font-semibold text-[#800000]">{sharing ? "Stop location sharing" : "Share live location"}</button>}</div>
+  </article>;
 }

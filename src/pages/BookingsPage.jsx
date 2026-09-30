@@ -7,41 +7,27 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
-import { auth, onAuthStateChanged } from "../lib/firebase";
+import { useNavigate } from "react-router-dom";
+import { subscribeToAuthState } from "../lib/supabaseAuth";
+import { requireSupabase } from "../lib/supabase";
 import {
     deleteUserBooking,
     subscribeToUserBookings,
-    updateUserBooking,
+    updatePendingBookingDetails,
 } from "../lib/bookings";
+import { subscribeToBookingLocation } from "../lib/liveLocations";
 
-// --- Mock Data Setup (FIXED: Moved outside component) ---
-const getMockBookings = () => [
-    { 
-        id: "1", event: "Satyanarayan Katha", service: "Full Puja Service", date: "2025-11-15", time: "10:00", 
-        address: "Ranchi, Jharkhand", pandit: { name: "Pandit Ram Shastri", image: "/pandit1.jpg" }, 
-        notes: "Bring ghee lamp & flowers.", status: "Confirmed", kitStatus: "Ready", decorationStatus: "Confirmed", isFestival: true, festivalName: "Diwali"
-    },
-    { 
-        id: "2", event: "Navratri Kalash Sthapana", service: "Vedic Ritual", date: "2025-10-05", time: "07:30", 
-        address: "Mumbai, Maharashtra", pandit: { name: "Acharya Mohan Verma", image: "/pandit2.jpg" }, 
-        notes: "Early morning slot.", status: "Pending", kitStatus: "Pending", decorationStatus: "Pending", isFestival: true, festivalName: "Navratri"
-    },
-    { 
-        id: "3", event: "Griha Pravesh", service: "House Warming Puja", date: "2025-09-01", time: "11:00", 
-        address: "Delhi, NCR", pandit: { name: "Pandit Suresh Sharma", image: "/pandit3.jpg" }, 
-        notes: "New home blessing.", status: "Completed", kitStatus: "Delivered", decorationStatus: "Confirmed", isFestival: false
-    },
-    { 
-        id: "4", event: "Mundan Sanskar", service: "Child Ceremony", date: "2025-07-20", time: "12:00", 
-        address: "Kolkata, WB", pandit: { name: "Pandit Ram Shastri", image: "/pandit1.jpg" }, 
-        notes: "Completed successfully.", status: "Completed", kitStatus: "Delivered", decorationStatus: "N/A"
-    },
-    { 
-        id: "5", event: "Diwali Lakshmi Puja", service: "Festival Ritual", date: "2024-11-01", time: "19:30", 
-        address: "Ranchi, Jharkhand", pandit: { name: "Pandit Suresh Sharma", image: "/pandit3.jpg" }, 
-        notes: "Cancelled due to personal emergency.", status: "Cancelled", kitStatus: "Returned", decorationStatus: "N/A", isFestival: true, festivalName: "Diwali"
-    },
-];
+function BookingLiveLocation({ bookingId }) {
+    const [location, setLocation] = useState(null);
+    const [error, setError] = useState("");
+    useEffect(() => subscribeToBookingLocation(bookingId, setLocation, (cause) => {
+        console.error("Unable to receive booking location:", cause);
+        setError("Live location is temporarily unavailable.");
+    }), [bookingId]);
+    if (error) return <p className="mt-3 text-xs text-slate-600">{error}</p>;
+    if (!location?.is_sharing) return <p className="mt-3 text-xs text-slate-600">Provider is not currently sharing a live location.</p>;
+    return <a className="mt-3 inline-flex text-sm font-semibold text-[#800000] underline" href={`https://www.google.com/maps?q=${location.latitude},${location.longitude}`} target="_blank" rel="noreferrer">View provider live location</a>;
+}
 
 // Helper functions for date/time calculations
 const getBookingDate = (date) => new Date(date);
@@ -212,14 +198,14 @@ function DeleteConfirmationModal({ onConfirm, onCancel }) {
                 <h3 className="text-xl font-bold text-red-600 mb-2 flex items-center gap-2">
                     <Trash2 className="w-5 h-5" /> Confirm Deletion
                 </h3>
-                <p className="text-gray-600 mb-6">Are you sure you want to delete this booking? This action cannot be undone.</p>
+                <p className="text-gray-600 mb-6">Cancel this booking request? The status will update in your booking history.</p>
                 
                 <div className="flex gap-3">
                     <button
                         onClick={onConfirm}
                         className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition font-semibold"
                     >
-                        Delete Permanently
+                        Cancel Booking
                     </button>
                     <button
                         onClick={onCancel}
@@ -237,7 +223,7 @@ function DeleteConfirmationModal({ onConfirm, onCancel }) {
 function QRCodeModal({ booking, onClose }) {
     const qrValue = JSON.stringify({
         event: booking.event,
-        pandit: booking.pandit.name,
+        provider: booking.pandit?.name || booking.service || "Sanskaraa provider",
         date: booking.date,
         time: booking.time,
         address: booking.address,
@@ -292,7 +278,10 @@ function QRCodeModal({ booking, onClose }) {
 
 // --- Main Component ---
 export default function BookingsPage() {
+    const navigate = useNavigate();
     const [bookings, setBookings] = useState([]);
+    const [orders, setOrders] = useState([]);
+    const [ordersError, setOrdersError] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
     const [sortBy, setSortBy] = useState("date");
@@ -311,19 +300,40 @@ export default function BookingsPage() {
 
     useEffect(() => {
         let unsubscribeBookings;
-        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+        let active = true;
+        const unsubscribeAuth = subscribeToAuthState(async (_event, session) => {
+            const user = session?.user;
             if (unsubscribeBookings) unsubscribeBookings();
             if (!user) {
                 setBookings([]);
+                setOrders([]);
+                setOrdersError("");
                 return;
             }
+            try {
+                const { data, error } = await requireSupabase()
+                    .from("orders")
+                    .select("id,subtotal,shipping_fee,discount,total_amount,payment_status,order_status,shipping_address,created_at")
+                    .eq("customer_id", user.id)
+                    .order("created_at", { ascending: false })
+                    .limit(50);
+                if (error) throw error;
+                if (active) {
+                    setOrders(data || []);
+                    setOrdersError("");
+                }
+            } catch (error) {
+                console.error("Could not load store orders:", error);
+                if (active) setOrdersError("Store orders could not be loaded right now.");
+            }
             unsubscribeBookings = subscribeToUserBookings(
-                user.uid,
+                user.id,
                 setBookings,
                 (error) => console.error("Could not load bookings:", error)
             );
         });
         return () => {
+            active = false;
             unsubscribeAuth();
             if (unsubscribeBookings) unsubscribeBookings();
         };
@@ -331,7 +341,6 @@ export default function BookingsPage() {
 
     const updateBookings = (updatedBookings) => {
         setBookings(updatedBookings);
-        localStorage.setItem("sanskaraa_bookings", JSON.stringify(updatedBookings));
     };
 
     // Filter and sort bookings
@@ -369,20 +378,18 @@ export default function BookingsPage() {
     };
 
     const handleSaveEdit = (updatedBooking) => {
-        updateUserBooking(updatedBooking.id, updatedBooking)
+        updatePendingBookingDetails(updatedBooking)
             .then(() => setEditingBooking(null))
-            .catch((error) => console.error("Could not update booking:", error));
+            .catch((error) => {
+                console.error("Could not update booking:", error);
+                window.alert(error.message || "This booking can no longer be edited.");
+            });
     };
 
     const handleDelete = (id) => {
         deleteUserBooking(id)
             .then(() => setDeleteConfirm(null))
             .catch((error) => console.error("Could not delete booking:", error));
-    };
-
-    const handleStatusChange = (id, newStatus) => {
-        updateUserBooking(id, { status: newStatus })
-            .catch((error) => console.error("Could not update booking status:", error));
     };
 
     const setReminder = (booking, hoursBefore = 24) => {
@@ -406,7 +413,7 @@ export default function BookingsPage() {
     const shareBooking = async (booking) => {
         const shareData = {
             title: `My ${booking.event} Booking`,
-            text: `I've booked ${booking.event} with ${booking.pandit.name} on ${booking.date} at ${booking.time} via Sanskaraa.`,
+            text: `I requested ${booking.event || booking.service || "a service"} on ${booking.date || "a date to be confirmed"} at ${booking.time || "a time to be confirmed"} via Sanskaraa.`,
             url: window.location.href,
         };
         
@@ -423,20 +430,18 @@ export default function BookingsPage() {
         }
     };
 
-    const downloadInvoice = (booking) => {
-        // Simple mock function for download
-        const invoiceContent = `SANSAKRAA INVOICE\nEvent: ${booking.event}\nDate: ${booking.date}\nPandit: ${booking.pandit.name}\nStatus: ${booking.status}`;
+    const downloadBookingSummary = (booking) => {
+        const summary = `SANSAKRAA BOOKING SUMMARY\nBooking ID: ${booking.id}\nService: ${booking.service || booking.event || "Service booking"}\nDate: ${booking.date || "To be confirmed"}\nTime: ${booking.time || "To be confirmed"}\nAddress: ${booking.address || "Not provided"}\nStatus: ${booking.status}\nPayment status: ${booking.paymentStatus || "UNPAID"}\nAmount: ₹${Number(booking.totalAmount || 0).toLocaleString("en-IN")}\n\nThis is a booking summary, not a tax invoice or payment receipt.`;
         
-        const blob = new Blob([invoiceContent], { type: 'text/plain' });
+        const blob = new Blob([summary], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Sanskaraa_Invoice_${booking.id}.txt`;
+        a.download = `Sanskaraa_Booking_${booking.id}.txt`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        alert('Invoice download simulated (as a .txt file).');
     };
     
     const openGoogleMaps = (address) => {
@@ -481,6 +486,36 @@ export default function BookingsPage() {
                         Manage your puja bookings and ceremonies
                     </p>
                 </motion.div>
+
+                <section className="mb-8 rounded-2xl border border-[#FFD7AA] bg-white/90 p-4 shadow-lg sm:p-6">
+                    <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <h2 className="text-xl font-bold text-[#800000]">Puja kit & shop orders</h2>
+                            <p className="text-sm text-gray-600">Orders placed from the puja store and shop.</p>
+                        </div>
+                        <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-900">{orders.length} order{orders.length === 1 ? "" : "s"}</span>
+                    </div>
+                    {ordersError && <p role="alert" className="mb-3 rounded-lg bg-red-50 p-3 text-sm text-red-700">{ordersError}</p>}
+                    {orders.length === 0 ? (
+                        <p className="rounded-xl bg-amber-50 p-4 text-sm text-gray-600">No store orders yet.</p>
+                    ) : (
+                        <div className="grid gap-3 md:grid-cols-2">
+                            {orders.map((order) => (
+                                <article key={order.id} className="rounded-xl border border-amber-100 bg-amber-50/60 p-4">
+                                    <div className="flex flex-wrap items-start justify-between gap-2">
+                                        <div><p className="text-xs text-gray-500">Order ID</p><p className="break-all font-mono text-xs font-semibold text-gray-800">{order.id}</p></div>
+                                        <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-amber-800">{String(order.order_status || "PENDING").replaceAll("_", " ")}</span>
+                                    </div>
+                                    <div className="mt-3 flex items-center justify-between border-t border-amber-100 pt-3 text-sm">
+                                        <span className="text-gray-600">{order.payment_status || "UNPAID"}</span>
+                                        <strong className="text-[#800000]">₹{Number(order.total_amount || 0).toLocaleString("en-IN")}</strong>
+                                    </div>
+                                    <p className="mt-2 text-xs text-gray-500">Placed {new Date(order.created_at).toLocaleString("en-IN")}</p>
+                                </article>
+                            ))}
+                        </div>
+                    )}
+                </section>
 
                 {/* Search and Filters */}
                 <motion.div
@@ -626,6 +661,13 @@ export default function BookingsPage() {
                                                     </div>
                                                 </div>
 
+                                                {booking.providerId && ["ASSIGNED", "ACCEPTED", "ON_THE_WAY", "ARRIVED", "IN_PROGRESS"].includes(String(booking.status || "").toUpperCase().replaceAll(" ", "_")) && (
+                                                    <div className="rounded-xl border border-orange-200 bg-white/70 p-3">
+                                                        <p className="text-sm font-semibold text-[#800000]">Provider tracking</p>
+                                                        <BookingLiveLocation bookingId={booking.id} />
+                                                    </div>
+                                                )}
+
                                                 {/* Puja Kit & Decoration Status */}
                                                 <div className="flex flex-wrap gap-2 text-xs pt-2">
                                                     <div className={`px-2 py-1 rounded-full font-semibold flex items-center gap-1 ${getKitStatusIcon(booking.kitStatus).class}`}>
@@ -661,12 +703,14 @@ export default function BookingsPage() {
 
                                             {/* Action Buttons */}
                                             <div className="flex flex-wrap gap-2 pt-4 border-t border-[#FFD7A3]">
-                                                <button
-                                                    onClick={() => handleEdit(booking)}
-                                                    className="flex items-center justify-center gap-1 text-sm text-white bg-[#800000] px-3 py-2 rounded-lg hover:bg-[#A00000] transition flex-1 sm:flex-none"
-                                                >
-                                                    <Edit className="w-4 h-4" /> Edit
-                                                </button>
+                                                  {booking.status === "Pending" && (
+                                                      <button
+                                                          onClick={() => handleEdit(booking)}
+                                                          className="flex items-center justify-center gap-1 text-sm text-white bg-[#800000] px-3 py-2 rounded-lg hover:bg-[#A00000] transition flex-1 sm:flex-none"
+                                                      >
+                                                          <Edit className="w-4 h-4" /> Edit
+                                                      </button>
+                                                  )}
                                                 <button
                                                     onClick={() => setReminder(booking, 24)}
                                                     className="flex items-center justify-center gap-1 text-sm text-gray-700 bg-white border border-[#FFD7A3] px-3 py-2 rounded-lg hover:bg-gray-50 transition flex-1 sm:flex-none"
@@ -686,34 +730,22 @@ export default function BookingsPage() {
                                                     <QrCode className="w-4 h-4" /> QR
                                                 </button>
                                                 <button
-                                                    onClick={() => downloadInvoice(booking)}
+                                                    onClick={() => downloadBookingSummary(booking)}
                                                     className="flex items-center justify-center gap-1 text-sm text-gray-700 bg-white border border-[#FFD7A3] px-3 py-2 rounded-lg hover:bg-gray-50 transition flex-1 sm:flex-none"
                                                 >
-                                                    <Download className="w-4 h-4" /> Invoice
+                                                    <Download className="w-4 h-4" /> Summary
                                                 </button>
                                                 
-                                                <button
+                                                {["Pending", "Confirmed", "Assigned"].includes(booking.status) && <button
                                                     onClick={() => setDeleteConfirm(booking.id)}
                                                     className="flex items-center justify-center gap-1 text-sm text-white bg-red-600 px-3 py-2 rounded-lg hover:bg-red-700 transition flex-1 sm:flex-none"
                                                 >
-                                                    <Trash2 className="w-4 h-4" /> Delete
-                                                </button>
+                                                    <Trash2 className="w-4 h-4" /> Cancel booking
+                                                </button>}
                                             </div>
 
-                                            {/* Status Management */}
-                                            {booking.status !== "Completed" && booking.status !== "Cancelled" && (
-                                                <div className="flex gap-2 mt-3 pt-2 border-t border-dashed border-[#FFD7A3]">
-                                                    <select
-                                                        value={booking.status}
-                                                        onChange={(e) => handleStatusChange(booking.id, e.target.value)}
-                                                        className="flex-1 text-sm border border-[#FFD7A3] rounded-lg px-2 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-[#800000]"
-                                                    >
-                                                        <option value="Pending">Mark as Pending</option>
-                                                        <option value="Confirmed">Mark as Confirmed</option>
-                                                        <option value="Completed">Mark as Completed</option>
-                                                        <option value="Cancelled">Mark as Cancelled</option>
-                                                    </select>
-                                                </div>
+                                            {!["Completed", "Cancelled", "Rejected"].includes(booking.status) && (
+                                                <p className="mt-3 border-t border-dashed border-[#FFD7A3] pt-2 text-xs text-slate-600">Booking status is updated by the assigned provider.</p>
                                             )}
                                         </div>
                                     </motion.div>
@@ -728,7 +760,7 @@ export default function BookingsPage() {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     className="fixed bottom-8 right-8 bg-[#800000] text-white p-4 rounded-full shadow-2xl hover:bg-[#A00000] transition z-50"
-                    onClick={() => alert("Navigate to booking form")}
+                    onClick={() => navigate("/services")}
                 >
                     <Plus className="w-6 h-6" />
                 </motion.button>

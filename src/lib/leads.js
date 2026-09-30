@@ -1,17 +1,5 @@
-import {
-  addDoc,
-  arrayUnion,
-  collection,
-  doc,
-  getDocs,
-  query,
-  serverTimestamp,
-  updateDoc,
-  where,
-  orderBy,
-} from "firebase/firestore";
-
-import { db } from "./firebase";
+import { requireSupabase } from "./supabase";
+import { getCurrentUser } from "./supabaseAuth";
 
 export const LEAD_STATUSES = [
   "NEW",
@@ -71,16 +59,7 @@ export function normalizeLeadPayload(leadInput = {}) {
     assignedVendorId: data.assignedVendorId || "",
     notes: data.notes || "",
     userId: data.userId || "",
-    createdAt: data.createdAt || serverTimestamp(),
-    updatedAt: data.updatedAt || serverTimestamp(),
-    lastContactedAt: data.lastContactedAt || null,
-    nextFollowUpAt: data.nextFollowUpAt || null,
-    history: data.history || [
-      {
-        status: "NEW",
-        changedAt: today.toISOString(),
-      },
-    ],
+    createdAt: data.createdAt || today.toISOString(),
   };
 }
 
@@ -91,8 +70,19 @@ export async function createLead(leadInput = {}, context = {}) {
     ...context,
   });
 
-  const leadRef = await addDoc(collection(db, "leads"), payload);
-  return { id: leadRef.id, ...payload };
+  const user = await getCurrentUser();
+  const dbPayload = {
+    user_id: user?.id || null, name: payload.name || "Visitor", phone: payload.phone,
+    email: payload.email || null, city: payload.city || null, service: payload.service,
+    event_type: payload.eventType || null, event_date: payload.eventDate || null,
+    event_time: payload.eventTime || null, budget: payload.budget || null, address: payload.address || null,
+    message: payload.message || null, source: payload.source, campaign: payload.campaign || null,
+    medium: payload.medium || null, content: payload.content || null, term: payload.term || null,
+    landing_page: payload.landingPage || null, referrer: getLeadSourceMeta().referrer || null,
+  };
+  const { data, error } = await requireSupabase().from("leads").insert(dbPayload).select("id").single();
+  if (error) throw error;
+  return { id: data.id, ...payload };
 }
 
 export async function fetchLeads({
@@ -103,59 +93,24 @@ export async function fetchLeads({
   priority = "",
   search = "",
 } = {}) {
-  const q = collection(db, "leads");
-  const constraints = [];
-
-  if (status) constraints.push(where("status", "==", status));
-  if (service) constraints.push(where("service", "==", service));
-  if (city) constraints.push(where("city", "==", city));
-  if (source) constraints.push(where("source", "==", source));
-  if (priority) constraints.push(where("priority", "==", priority));
-
-  constraints.push(orderBy("createdAt", "desc"));
-  const snapshot = await getDocs(query(q, ...constraints));
-
-  const rows = snapshot.docs.map((docSnap) => ({
-    id: docSnap.id,
-    ...docSnap.data(),
-  }));
-
-  if (!search) return rows;
-
-  const lowerSearch = search.toLowerCase();
-  return rows.filter((lead) => {
-    const searchable = [
-      lead.name,
-      lead.phone,
-      lead.email,
-      lead.city,
-      lead.service,
-      lead.eventType,
-      lead.source,
-      lead.assignedTo,
-      lead.message,
-    ].join(" ").toLowerCase();
-
-    return searchable.includes(lowerSearch);
-  });
+  let q = requireSupabase().from("leads").select("*").order("created_at", { ascending: false }).limit(1000);
+  if (status) q = q.eq("status", status);
+  if (service) q = q.eq("service", service);
+  if (city) q = q.eq("city", city);
+  if (source) q = q.eq("source", source);
+  if (priority) q = q.eq("priority", priority);
+  if (search) {
+    const safeSearch = search.replace(/[^a-zA-Z0-9@ +_-]/g, " ").trim();
+    if (safeSearch) q = q.or(`name.ilike.%${safeSearch}%,phone.ilike.%${safeSearch}%,email.ilike.%${safeSearch}%,message.ilike.%${safeSearch}%`);
+  }
+  const { data, error } = await q;
+  if (error) throw error;
+  return data.map((lead) => ({ ...lead, userId: lead.user_id, eventType: lead.event_type, eventDate: lead.event_date, eventTime: lead.event_time, landingPage: lead.landing_page, assignedTo: lead.assigned_to, assignedVendorId: lead.assigned_vendor_id, lastContactedAt: lead.last_contacted_at, nextFollowUpAt: lead.next_follow_up_at, createdAt: lead.created_at, updatedAt: lead.updated_at }));
 }
 
 export async function updateLeadStatus(leadId, status, changedBy = "admin") {
-  const leadRef = doc(db, "leads", leadId);
-
-  const historyEntry = {
-    status,
-    changedBy,
-    changedAt: new Date().toISOString(),
-  };
-
-  await updateDoc(leadRef, {
-    status,
-    updatedAt: serverTimestamp(),
-    lastContactedAt: serverTimestamp(),
-    history: arrayUnion(historyEntry),
-  });
-
+  const { error } = await requireSupabase().rpc("update_lead_status", { p_lead_id: leadId, p_status: status, p_changed_by: changedBy });
+  if (error) throw error;
   return { leadId, status };
 }
 

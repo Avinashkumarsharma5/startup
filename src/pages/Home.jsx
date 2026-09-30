@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
+import { getCurrentUserProfile } from "../lib/roleAccess";
 
 
 import {
@@ -333,17 +334,12 @@ function DynamicGreeting() {
       setShloka(shlokas[randomIndex]);
     };
 
-    const loadUserName = () => {
+    const loadUserName = async () => {
       try {
-        const stored = localStorage.getItem("loggedInUser");
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          setUserName(parsed?.name || parsed?.email?.split("@")[0] || "Sanskaraa Seeker");
-        } else {
-          setUserName("Sanskaraa Seeker");
-        }
+        const profile = await getCurrentUserProfile();
+        setUserName(profile?.name || profile?.email?.split("@")[0] || "Sanskaraa Seeker");
       } catch (error) {
-        console.error("Failed to parse user info:", error);
+        console.error("Failed to load current profile:", error);
         setUserName("Sanskaraa Seeker");
       }
     };

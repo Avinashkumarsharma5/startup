@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Mail, CheckCircle, Loader2, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
+import { resetPassword } from "../lib/supabaseAuth";
 
 export default function ForgetPassword() {
     const [email, setEmail] = useState("");
@@ -26,27 +27,9 @@ export default function ForgetPassword() {
             return;
         }
 
-        // API-ready reset simulation
         setLoading(true);
         try {
-            // Simulate API call - replace with actual API endpoint
-            const response = await fetch("/api/send-reset", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email }),
-            });
-
-            // Simulate network delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-
-            const data = await response.json();
-            
+            await resetPassword(email);
             setLoading(false);
             setSuccess(true);
             setEmail("");
@@ -56,8 +39,8 @@ export default function ForgetPassword() {
             
         } catch (error) {
             setLoading(false);
-            setError("Failed to send reset link. Please try again.");
-            toast.error("Failed to send reset link. Please try again.");
+            setError(error.message || "Failed to send reset link. Please try again.");
+            toast.error(error.message || "Failed to send reset link. Please try again.");
         }
     };
 

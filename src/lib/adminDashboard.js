@@ -1,90 +1,59 @@
-import {
-  collection,
-  db,
-  getDocs,
-  orderBy,
-  query,
-} from "./firebase";
+import { requireSupabase } from "./supabase";
 
-function timestampToDate(value) {
-  if (!value) return null;
-  if (typeof value?.toDate === "function") return value.toDate();
-  if (typeof value?.seconds === "number") return new Date(value.seconds * 1000);
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? null : date;
+function mapLead(row) {
+  return { ...row, eventType: row.event_type, createdAt: row.created_at, submittedAt: row.created_at, nextFollowUpAt: row.next_follow_up_at };
+}
+
+function mapVendor(row) {
+  return { ...row, userId: row.user_id, name: row.applicant_name || row.business_name, vendorType: row.vendor_type, submittedAt: row.submitted_at };
+}
+
+function mapBooking(row) {
+  let details = {};
+  try { details = row.notes ? JSON.parse(row.notes) : {}; } catch { /* notes may be plain text */ }
+  return { ...details, ...row, service: details.service || row.booking_type, status: row.booking_status, bookingStatus: row.booking_status, totalAmount: Number(row.total_amount || 0), createdAt: row.created_at };
 }
 
 export function formatDashboardDate(value) {
-  const date = timestampToDate(value);
-  return date ? date.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : "—";
-}
-
-function sortNewest(rows) {
-  return [...rows].sort((a, b) => {
-    const left = timestampToDate(a.createdAt || a.submittedAt || a.updatedAt)?.getTime() || 0;
-    const right = timestampToDate(b.createdAt || b.submittedAt || b.updatedAt)?.getTime() || 0;
-    return right - left;
-  });
+  if (!value) return "—";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
 }
 
 export async function fetchAdminDashboardData() {
-  const [leadSnapshot, vendorSnapshot, userSnapshot] = await Promise.all([
-    getDocs(query(collection(db, "leads"), orderBy("createdAt", "desc"))),
-    getDocs(query(collection(db, "vendorApplications"), orderBy("submittedAt", "desc"))),
-    getDocs(collection(db, "users")),
+  const client = requireSupabase();
+  const now = new Date();
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+  const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
+  const [statsResult, leadsResult, vendorsResult, bookingsResult, followUpsResult, providersResult] = await Promise.all([
+    client.rpc("admin_dashboard_stats"),
+    client.from("leads").select("*").order("created_at", { ascending: false }).limit(6),
+    client.from("vendor_applications").select("*").order("submitted_at", { ascending: false }).limit(100),
+    client.from("bookings").select("*").order("created_at", { ascending: false }).limit(6),
+    client.from("leads").select("*").gte("next_follow_up_at", startOfDay).lt("next_follow_up_at", endOfDay).order("next_follow_up_at", { ascending: true }).limit(100),
+    client.from("vendor_profiles").select("user_id,business_name,vendor_type").eq("verification_status", "APPROVED").order("business_name").limit(200),
   ]);
-
-  const leads = leadSnapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
-  const vendors = vendorSnapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
-  const users = userSnapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
-
-  const bookingGroups = await Promise.all(
-    users.map(async (user) => {
-      const snapshot = await getDocs(
-        query(collection(db, "users", user.id, "bookings"), orderBy("createdAt", "desc"))
-      );
-      return snapshot.docs.map((item) => ({
-        id: item.id,
-        customerId: user.id,
-        ...item.data(),
-      }));
-    })
-  );
-  const bookings = bookingGroups.flat();
-
-  const todayKey = new Date().toLocaleDateString("en-CA");
-  const followUpsToday = leads.filter((lead) => {
-    const followUp = timestampToDate(lead.nextFollowUpAt);
-    return followUp?.toLocaleDateString("en-CA") === todayKey;
-  });
-
-  const revenue = bookings.reduce((total, booking) => {
-    const status = String(booking.paymentStatus || "").toUpperCase();
-    if (!["PAID", "PARTIAL", "COMPLETED"].includes(status)) return total;
-    const amount = Number(booking.amount || booking.total || booking.price || 0);
-    return total + (Number.isFinite(amount) ? amount : 0);
-  }, 0);
-
+  for (const result of [statsResult, leadsResult, vendorsResult, bookingsResult, followUpsResult, providersResult]) if (result.error) throw result.error;
+  const stats = statsResult.data || {};
+  const leads = leadsResult.data.map(mapLead);
+  const vendors = vendorsResult.data.map(mapVendor);
+  const bookings = bookingsResult.data.map(mapBooking);
+  const followUpsToday = followUpsResult.data.map(mapLead);
   return {
-    leads,
-    vendors,
-    users,
-    bookings,
-    followUpsToday,
-    revenue,
+    leads, vendors, users: [], bookings, followUpsToday, providers: providersResult.data,
+    revenue: 0,
     stats: {
-      totalLeads: leads.length,
-      newLeads: leads.filter((lead) => lead.status === "NEW").length,
-      totalBookings: bookings.length,
-      confirmedBookings: bookings.filter((booking) =>
-        ["CONFIRMED", "confirmed", "PAID"].includes(booking.bookingStatus || booking.status)
-      ).length,
-      totalCustomers: users.filter((user) => !["VENDOR", "PANDIT", "ADMIN", "STAFF", "SUPER_ADMIN"].includes(String(user.role || "").toUpperCase())).length,
-      totalVendors: vendors.length,
-      pendingVendors: vendors.filter((vendor) => String(vendor.status || "PENDING").toUpperCase() === "PENDING").length,
+      totalLeads: Number(stats.totalLeads || 0), newLeads: Number(stats.newLeads || 0),
+      totalBookings: Number(stats.totalBookings || 0), confirmedBookings: Number(stats.confirmedBookings || 0),
+      totalCustomers: Number(stats.totalCustomers || 0), totalVendors: Number(stats.totalVendors || 0),
+      totalUsers: Number(stats.totalUsers || 0), totalPandits: Number(stats.totalPandits || 0),
+      totalOrders: Number(stats.totalOrders || 0), totalProducts: Number(stats.totalProducts || 0),
+      totalReviews: Number(stats.totalReviews || 0),
+      pendingVendors: Number(stats.pendingVendors || 0), completedBookings: Number(stats.completedBookings || 0),
+      cancelledBookings: Number(stats.cancelledBookings || 0), activeVendors: Number(stats.activeVendors || 0),
+      pendingApplications: Number(stats.pendingApplications || 0), approvedApplications: Number(stats.approvedApplications || 0),
     },
-    recentLeads: sortNewest(leads).slice(0, 6),
-    recentBookings: sortNewest(bookings).slice(0, 6),
-    pendingVendors: vendors.filter((vendor) => String(vendor.status || "PENDING").toUpperCase() === "PENDING").slice(0, 6),
+    recentLeads: leads, recentBookings: bookings,
+    pendingVendors: vendors.filter((vendor) => vendor.status === "PENDING").slice(0, 6),
   };
 }

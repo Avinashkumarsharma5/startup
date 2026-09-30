@@ -4,14 +4,8 @@ import { Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import {
-  auth,
-  db,
-  doc,
-  getDoc,
-  setDoc,
-} from "../../lib/firebase";
-import { getOrCreateUserProfile, persistProfile } from "../../lib/profile";
+import { getOrCreateUserProfile, updateUserProfile } from "../../lib/profile";
+import { getCurrentUser } from "../../lib/supabaseAuth";
 
 export default function MobileNumber() {
   const navigate = useNavigate();
@@ -25,7 +19,9 @@ export default function MobileNumber() {
       return;
     }
 
-    if (!auth.currentUser) {
+    let user;
+    try { user = await getCurrentUser(); } catch { user = null; }
+    if (!user) {
       toast.error("Please login first");
       navigate("/auth");
       return;
@@ -34,22 +30,8 @@ export default function MobileNumber() {
     setLoading(true);
 
     try {
-      const user = auth.currentUser;
-
-      const userRef = doc(db, "users", user.uid);
-
-      const updatedUser = {
-        ...(await getOrCreateUserProfile(user)),
-        phone: "+91" + phone,
-        phoneVerified: false,
-        lastLogin: new Date().toISOString(),
-      };
-
-      await setDoc(userRef, updatedUser, {
-        merge: true,
-      });
-
-      persistProfile(updatedUser);
+      await getOrCreateUserProfile(user);
+      await updateUserProfile(user.id, { phone: "+91" + phone });
 
       toast.success("Mobile Number Saved");
 

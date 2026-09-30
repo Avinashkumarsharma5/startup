@@ -1,13 +1,25 @@
 // src/components/VendorRegistration.jsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiUpload, FiCamera, FiFile, FiCheck, FiChevronLeft, FiChevronRight, FiInfo, FiGlobe } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { auth, ref, storage, uploadBytes } from "../../lib/firebase";
+import { requireSupabase } from "../../lib/supabase";
+import { getCurrentUser } from "../../lib/supabaseAuth";
 import { createVendorApplication, findExistingVendorApplicationForUser } from "../../lib/vendors";
+
+function readVendorDraft(key) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key) || "null");
+    if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+    const { bankAccount: _discardedBankAccount, ...safeDraft } = value;
+    return safeDraft;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Enhanced Vendor Registration (features added):
@@ -37,22 +49,26 @@ export default function VendorRegistration() {
   const [savingDraft, setSavingDraft] = useState(false);
   const [ifscBankName, setIfscBankName] = useState("");
   const [useLocationLoading, setUseLocationLoading] = useState(false);
-  const draftKey = `vendorDraft:${auth.currentUser?.uid || "guest"}`;
+  const [currentUser, setCurrentUser] = useState(null);
+  const draftKey = `vendorDraft:${currentUser?.id || "guest"}`;
+  const [savedDraft, setSavedDraft] = useState(() => readVendorDraft(draftKey));
 
   useEffect(() => {
     let active = true;
     const loadApplication = async () => {
-      if (!auth.currentUser?.uid) {
-        setApplicationLoading(false);
-        return;
-      }
-
       try {
-        const existing = await findExistingVendorApplicationForUser(auth.currentUser.uid);
+        const user = await getCurrentUser();
+        if (!active) return;
+        if (!user?.id) {
+          setApplicationLoading(false);
+          return;
+        }
+        setCurrentUser(user);
+        const existing = await findExistingVendorApplicationForUser(user.id);
         if (active) setApplication(existing);
       } catch (error) {
         console.error("Unable to load vendor application:", error);
-        toast.error("Your vendor application status could not be loaded.");
+        if (active) toast.error("Your vendor application status could not be loaded.");
       } finally {
         if (active) setApplicationLoading(false);
       }
@@ -140,25 +156,37 @@ export default function VendorRegistration() {
     "Catering Services", "Prasad Preparation", "Vedic Rituals", "Horoscope Services"
   ];
 
-  // load draft from localStorage if exists
-  const savedDraft = JSON.parse(localStorage.getItem(draftKey) || "null");
-  const initialValues = savedDraft || {
-    name: "",
-    phone: "",
-    email: "",
-    location: "",
-    vendorType: "",
-    services: [],
+  // Remove any bank number saved by older versions, then load a safe draft.
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(draftKey);
+      const parsed = raw ? JSON.parse(raw) : null;
+      if (parsed && Object.prototype.hasOwnProperty.call(parsed, "bankAccount")) {
+        delete parsed.bankAccount;
+        localStorage.setItem(draftKey, JSON.stringify(parsed));
+      }
+    } catch (error) {
+      console.warn("Could not restore the vendor application draft.", error);
+    }
+    setSavedDraft(readVendorDraft(draftKey));
+  }, [draftKey]);
+
+  const initialValues = useMemo(() => ({
+    name: String(savedDraft?.name ?? application?.name ?? ""),
+    phone: String(savedDraft?.phone ?? application?.phone ?? ""),
+    email: String(savedDraft?.email ?? application?.email ?? currentUser?.email ?? ""),
+    location: String(savedDraft?.location ?? application?.location ?? ""),
+    vendorType: String(savedDraft?.vendorType ?? application?.vendorType ?? ""),
+    services: Array.isArray(savedDraft?.services) ? savedDraft.services : Array.isArray(application?.services) ? application.services : [],
     bankAccount: "",
-    ifsc: "",
-    additionalInfo: "",
-    experience: "",
-    certifications: "",
-    pricing: "",
-    gst: "",
-    vendorId: "",
-    ...(application || {}),
-  };
+    ifsc: String(savedDraft?.ifsc ?? application?.ifsc ?? ""),
+    additionalInfo: String(savedDraft?.additionalInfo ?? ""),
+    experience: String(savedDraft?.experience ?? application?.experience ?? ""),
+    certifications: String(savedDraft?.certifications ?? application?.certifications ?? ""),
+    pricing: String(savedDraft?.pricing ?? application?.pricing ?? ""),
+    gst: String(savedDraft?.gst ?? ""),
+    vendorId: String(savedDraft?.vendorId ?? application?.vendorId ?? ""),
+  }), [application, currentUser?.email, savedDraft]);
 
   // small helper to generate Vendor ID
   const generateVendorId = () => `SKR-VDR-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 90000) + 10000)}`;
@@ -181,14 +209,15 @@ export default function VendorRegistration() {
       ifsc: Yup.string().matches(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC code").required(t.ifsc + " required"),
     }),
   ];
-
-  useEffect(() => {
-    // If saved draft exists, ensure vendorId exists
-    if (savedDraft && !savedDraft.vendorId) {
-      savedDraft.vendorId = generateVendorId();
-      localStorage.setItem(draftKey, JSON.stringify(savedDraft));
-    }
-  }, [draftKey]);
+  const completeValidationSchema = validationSchema.reduce(
+    (schema, currentSchema) => schema.concat(currentSchema),
+    Yup.object()
+  );
+  const fieldsByStep = [
+    ["name", "phone", "email", "location"],
+    ["vendorType", "services", "experience"],
+    ["bankAccount", "ifsc"],
+  ];
 
   // Auto-focus first field on step change
   useEffect(() => {
@@ -204,6 +233,13 @@ export default function VendorRegistration() {
     const validFiles = selectedFiles.filter(file => {
       if (file.size > 5 * 1024 * 1024) {
         alert(`File ${file.name} is too large. Max size is 5MB.`);
+        return false;
+      }
+      const allowed = key === "profilePhoto" || key === "portfolio"
+        ? ["image/jpeg", "image/png", "image/webp"]
+        : ["application/pdf", "image/jpeg", "image/png"];
+      if (!allowed.includes(file.type)) {
+        alert(`File ${file.name} has an unsupported type.`);
         return false;
       }
       return true;
@@ -248,11 +284,13 @@ export default function VendorRegistration() {
   };
   const handleDragOver = (e) => { e.preventDefault(); e.stopPropagation(); };
 
-  // Save draft to localStorage
-  const saveDraft = async (values) => {
+  // Save non-sensitive form fields only. Bank numbers and document contents
+  // are never stored in browser storage.
+  const saveDraft = (values) => {
     setSavingDraft(true);
+    const { bankAccount: _bankAccount, ...safeValues } = values;
     const draft = {
-      ...values,
+      ...safeValues,
       filesMeta: Object.keys(files).reduce((acc, k) => {
         acc[k] = (files[k] || []).map(f => ({ name: f.name, size: f.size, type: f.type }));
         return acc;
@@ -260,9 +298,16 @@ export default function VendorRegistration() {
       vendorId: values.vendorId || generateVendorId(),
       savedAt: new Date().toISOString()
     };
-    localStorage.setItem(draftKey, JSON.stringify(draft));
-    setTimeout(() => setSavingDraft(false), 400);
-    alert("Draft saved locally. You can continue later.");
+    try {
+      localStorage.setItem(draftKey, JSON.stringify(draft));
+      setSavedDraft(draft);
+      toast.success("Draft saved on this device. Bank details and documents were not saved.");
+    } catch (error) {
+      console.error("Could not save vendor draft:", error);
+      toast.error("Draft could not be saved in this browser.");
+    } finally {
+      setSavingDraft(false);
+    }
   };
 
   // IFSC lookup (mock)
@@ -295,23 +340,40 @@ export default function VendorRegistration() {
   };
 
   // handle final submit
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm, setErrors, setTouched }) => {
+    try {
+      await completeValidationSchema.validate(values, { abortEarly: false });
+    } catch (validationError) {
+      const errors = {};
+      for (const issue of validationError.inner || []) {
+        if (issue.path && !errors[issue.path]) errors[issue.path] = issue.message;
+      }
+      setErrors(errors);
+      setTouched(Object.fromEntries(Object.keys(errors).map((field) => [field, true])));
+      const firstInvalidStep = fieldsByStep.findIndex((fields) => fields.some((field) => errors[field]));
+      if (firstInvalidStep >= 0) setStep(firstInvalidStep + 1);
+      setSubmitting(false);
+      return;
+    }
+
     // basic files check: require profilePhoto and one ID doc
-    if (!(files.profilePhoto && files.profilePhoto.length > 0) || !(files.aadhaar || files.pan)) {
+    const hasProfilePhoto = Boolean(files.profilePhoto?.length);
+    const hasIdDocument = Boolean(files.aadhaar?.length || files.pan?.length);
+    if (!hasProfilePhoto || !hasIdDocument) {
       alert("Please upload a profile photo and at least one ID document (Aadhaar or PAN).");
       setSubmitting(false);
       return;
     }
 
     try {
-      const userId = auth.currentUser?.uid;
+      const userId = currentUser?.id;
       if (!userId) throw new Error("Please sign in before submitting an application.");
 
       const applicationValues = {
         userId,
         name: values.name,
         phone: values.phone,
-        email: values.email || auth.currentUser.email || "",
+        email: values.email || currentUser.email || "",
         location: values.location,
         vendorType: values.vendorType,
         services: values.services,
@@ -327,16 +389,32 @@ export default function VendorRegistration() {
         estimatedApproval: new Date(Date.now() + 48 * 3600 * 1000).toISOString(),
       };
       const filesMeta = { ...(application?.filesMeta || {}) };
-      await Promise.all(Object.entries(files).map(async ([category, selectedFiles]) => {
-        filesMeta[category] = await Promise.all(selectedFiles.map(async (file, index) => {
-          const path = `vendorApplications/${userId}/${applicationValues.vendorId}/${category}-${index}-${encodeURIComponent(file.name)}`;
-          await uploadBytes(ref(storage, path), file, { contentType: file.type });
-          return { name: file.name, path, contentType: file.type, size: file.size };
-        }));
-      }));
+      const uploadedFiles = [];
+      try {
+        for (const [category, selectedFiles] of Object.entries(files)) {
+          if (!selectedFiles?.length) continue;
+          const bucket = category === "portfolio" ? "vendor-portfolio" : "vendor-documents";
+          filesMeta[category] = [];
+          for (const file of selectedFiles) {
+            const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+            const uniqueId = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+            const path = `${userId}/${applicationValues.vendorId}/${category}-${uniqueId}-${safeName}`;
+            const { error } = await requireSupabase().storage.from(bucket).upload(path, file, { contentType: file.type, upsert: false });
+            if (error) throw error;
+            uploadedFiles.push({ bucket, path });
+            filesMeta[category].push({ name: file.name, path, bucket, contentType: file.type, size: file.size });
+          }
+        }
 
-      const applicationId = await createVendorApplication(applicationValues, filesMeta);
-      setApplication({ ...applicationValues, id: applicationId, status: "PENDING" });
+        const applicationId = await createVendorApplication(applicationValues, filesMeta);
+        setApplication({ ...applicationValues, id: applicationId, status: "PENDING" });
+      } catch (uploadOrSaveError) {
+        await Promise.all(uploadedFiles.map(({ bucket, path }) =>
+          requireSupabase().storage.from(bucket).remove([path])
+            .catch((cleanupError) => console.warn("Could not clean up an incomplete vendor upload:", cleanupError))
+        ));
+        throw uploadOrSaveError;
+      }
 
       // clear draft
       localStorage.removeItem(draftKey);
@@ -355,18 +433,14 @@ export default function VendorRegistration() {
     }
   };
 
-  // autosave: whenever files or language change, keep draft updated
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const currentDraft = JSON.parse(localStorage.getItem(draftKey) || "null");
-      if (currentDraft) {
-        // update timestamp only
-        currentDraft.savedAt = new Date().toISOString();
-        localStorage.setItem(draftKey, JSON.stringify(currentDraft));
-      }
-    }, 30000); // update savedAt every 30s if draft exists
-    return () => clearInterval(interval);
-  }, [draftKey]);
+  const advanceStep = async (validateForm, setTouched) => {
+    const errors = await validateForm();
+    if (Object.keys(errors).length) {
+      setTouched(Object.fromEntries(fieldsByStep[step - 1].map((field) => [field, true])));
+      return;
+    }
+    setStep((currentStep) => Math.min(3, currentStep + 1));
+  };
 
   // Progress Steps UI
   const ProgressSteps = () => (
@@ -504,7 +578,7 @@ export default function VendorRegistration() {
             onSubmit={handleSubmit}
             enableReinitialize={true}
           >
-            {({ values, setFieldValue, isValid, dirty, isSubmitting, resetForm }) => (
+            {({ values, setFieldValue, isValid, isSubmitting, resetForm, validateForm, setTouched, submitForm }) => (
               <>
                 <Form id="vendor-form" className="space-y-8">
                   <AnimatePresence mode="wait">
@@ -705,7 +779,7 @@ export default function VendorRegistration() {
                       )}
 
                       {step < 3 ? (
-                        <motion.button type="button" onClick={() => { if (isValid) setStep(s => s + 1); else alert("Please complete required fields."); }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-amber-600 text-white rounded-xl font-semibold hover:bg-amber-700 transition-colors text-sm sm:text-base">
+                        <motion.button type="button" onClick={() => void advanceStep(validateForm, setTouched)} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-amber-600 text-white rounded-xl font-semibold hover:bg-amber-700 transition-colors text-sm sm:text-base">
                           {t.next}
                           <FiChevronRight />
                         </motion.button>
@@ -727,7 +801,7 @@ export default function VendorRegistration() {
                         <PreviewComponent values={values} />
                         <div className="flex flex-col sm:flex-row gap-4 justify-end mt-8 pt-4 border-t">
                           <motion.button type="button" onClick={() => setShowPreview(false)} className="w-full sm:w-auto px-6 py-2 bg-gray-500 text-white rounded-xl font-semibold hover:bg-gray-600 transition-colors"> {t.back} </motion.button>
-                          <motion.button type="button" onClick={() => { setShowPreview(false); document.getElementById('vendor-form').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true })); }} className="w-full sm:w-auto px-6 py-2 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors"> Confirm Submission </motion.button>
+                          <motion.button type="button" disabled={isSubmitting} onClick={() => { setShowPreview(false); void submitForm(); }} className="w-full sm:w-auto px-6 py-2 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 disabled:opacity-60 transition-colors"> Confirm Submission </motion.button>
                         </div>
                       </motion.div>
                     </motion.div>

@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Bell, Menu, X, Mic } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, isFirebaseConfigured, onAuthStateChanged, signOut } from "../../lib/firebase";
+import { signOut, subscribeToAuthState } from "../../lib/supabaseAuth";
+import { requireSupabase } from "../../lib/supabase";
 import { getCurrentUserProfile, getRoleFromProfile, getVendorApplicationForUser } from "../../lib/roleAccess";
 import toast from "react-hot-toast";
 
@@ -12,10 +13,12 @@ export default function Navbar({ onMicClick }) {
   const [profileInitial, setProfileInitial] = useState("S");
   const [isAdmin, setIsAdmin] = useState(false);
   const [profileDestination, setProfileDestination] = useState({ path: "/userprofile", label: "View Profile" });
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = subscribeToAuthState(async (_event, session) => {
+      const user = session?.user;
       if (!user) {
         setProfileInitial("S");
         setIsAdmin(false);
@@ -26,9 +29,9 @@ export default function Navbar({ onMicClick }) {
       try {
         const profile = await getCurrentUserProfile();
         const role = getRoleFromProfile(profile);
-        const application = await getVendorApplicationForUser(user.uid);
+        const application = await getVendorApplicationForUser(user.id);
         const applicationStatus = String(application?.status || profile?.vendorApplicationStatus || "").toUpperCase();
-        const name = profile?.name || user.displayName || user.email || "S";
+        const name = profile?.name || user.user_metadata?.name || user.email || "S";
         setProfileInitial(name.trim().charAt(0).toUpperCase());
         setIsAdmin(["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role));
         setProfileDestination(role === "VENDOR" || applicationStatus === "APPROVED"
@@ -47,17 +50,33 @@ export default function Navbar({ onMicClick }) {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    let active = true;
+    let channel;
+    const unsubscribe = subscribeToAuthState(async (_event, session) => {
+      if (channel) { await requireSupabase().removeChannel(channel); channel = null; }
+      const user = session?.user;
+      if (!user) { if (active) setUnreadCount(0); return; }
+      const client = requireSupabase();
+      const refreshCount = async () => {
+        const { count, error } = await client.from("notifications").select("id", { count: "exact", head: true }).eq("recipient_id", user.id).eq("is_read", false);
+        if (error) { console.error("Could not refresh unread notification count:", error); return; }
+        if (active) setUnreadCount(count || 0);
+      };
+      await refreshCount();
+      channel = client.channel(`navbar-notifications:${user.id}`).on("postgres_changes", { event: "*", schema: "public", table: "notifications", filter: `recipient_id=eq.${user.id}` }, refreshCount).subscribe();
+    });
+    return () => { active = false; unsubscribe(); if (channel) void requireSupabase().removeChannel(channel); };
+  }, []);
+
   const handleLogout = async () => {
     try {
-      if (isFirebaseConfigured && auth) {
-        await signOut(auth);
-      }
+      await signOut();
     } catch (error) {
       console.error("Logout failed:", error);
       toast.error("Unable to log out. Please try again.");
       return;
     } finally {
-      localStorage.removeItem("loggedInUser");
     }
 
     toast.success("Logged out successfully");
@@ -120,7 +139,10 @@ export default function Navbar({ onMicClick }) {
         {/* Right Side */}
         <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
           <Link to="/notifications">
-            <Bell className="w-5 h-5 sm:w-6 sm:h-6 text-white hover:scale-110 transition-transform" />
+            <span className="relative block">
+              <Bell className="w-5 h-5 sm:w-6 sm:h-6 text-white hover:scale-110 transition-transform" />
+              {unreadCount > 0 && <span className="absolute -right-2 -top-2 min-w-4 rounded-full bg-red-600 px-1 text-center text-[10px] font-bold leading-4 text-white">{unreadCount > 99 ? "99+" : unreadCount}</span>}
+            </span>
           </Link>
 
           <button

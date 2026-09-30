@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Home as HomeIcon, Search, Package, Bookmark, Menu } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { auth, onAuthStateChanged, signOut } from "../../lib/firebase";
+import { signOut, subscribeToAuthState } from "../../lib/supabaseAuth";
 import { getCurrentUserProfile, getMoreMenuItems, getVendorApplicationForUser, getRoleFromProfile } from "../../lib/roleAccess";
 import toast from "react-hot-toast";
 
@@ -13,7 +13,8 @@ export default function BottomNavbar() {
   const [vendorApplication, setVendorApplication] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = subscribeToAuthState(async (_event, session) => {
+      const user = session?.user;
       if (!user) {
         setProfile(null);
         setVendorApplication(null);
@@ -21,8 +22,8 @@ export default function BottomNavbar() {
       }
 
       try {
-        const userProfile = (await getCurrentUserProfile()) || { uid: user.uid, role: "CUSTOMER" };
-        const application = await getVendorApplicationForUser(user.uid);
+        const userProfile = (await getCurrentUserProfile()) || { uid: user.id, role: "CUSTOMER" };
+        const application = await getVendorApplicationForUser(user.id);
         setProfile(userProfile);
         setVendorApplication(application);
       } catch (error) {
@@ -37,8 +38,7 @@ export default function BottomNavbar() {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      localStorage.removeItem("loggedInUser");
+      await signOut();
       setShowMore(false);
       toast.success("Logged out successfully");
       navigate("/login", { replace: true });

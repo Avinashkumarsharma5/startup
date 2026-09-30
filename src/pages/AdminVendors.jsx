@@ -6,7 +6,7 @@ import {
   updateVendorApplicationStatus,
   VENDOR_STATUSES,
 } from "../lib/vendors";
-import { auth, getBytes, ref, storage } from "../lib/firebase";
+import { requireSupabase } from "../lib/supabase";
 
 export default function AdminVendors() {
   const [vendors, setVendors] = useState([]);
@@ -30,7 +30,7 @@ export default function AdminVendors() {
 
   const changeStatus = async (vendor, status) => {
     try {
-      await updateVendorApplicationStatus(vendor, status, auth.currentUser?.uid || "admin");
+      await updateVendorApplicationStatus(vendor, status);
 
       setVendors((current) =>
         current.map((item) => (item.id === vendor.id ? { ...item, status } : item))
@@ -45,13 +45,10 @@ export default function AdminVendors() {
   const openDocument = async (file) => {
     if (!file?.path) return;
     try {
-      const bytes = await getBytes(ref(storage, file.path), 5 * 1024 * 1024);
-      const url = URL.createObjectURL(new Blob([bytes], { type: file.contentType || "application/octet-stream" }));
-      const download = document.createElement("a");
-      download.href = url;
-      download.download = file.name || "vendor-document";
-      download.click();
-      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      const bucket = file.bucket || "vendor-documents";
+      const { data, error } = await requireSupabase().storage.from(bucket).createSignedUrl(file.path, 60);
+      if (error) throw error;
+      window.open(data.signedUrl, "_blank", "noopener,noreferrer");
     } catch (error) {
       console.error("Unable to open vendor document:", error);
       toast.error("This vendor document could not be opened.");

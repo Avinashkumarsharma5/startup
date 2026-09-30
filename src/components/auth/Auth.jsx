@@ -2,37 +2,30 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Shield, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import {
-  auth,
-  db,
-  doc,
-  getDoc,
-  setDoc,
-  googleProvider,
-  signInWithPopup,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  updateProfile,
-} from "../../lib/firebase";
-import { getOrCreateUserProfile, persistProfile } from "../../lib/profile";
+import { getOrCreateUserProfile } from "../../lib/profile";
+import { getCurrentUser, signInWithEmail, signInWithGoogle, signUpWithEmail, subscribeToAuthState } from "../../lib/supabaseAuth";
 import { getVendorApplicationForUser } from "../../lib/roleAccess";
 
-async function getPostLoginPath(user, profile) {
+const BOOKING_RETURN_PATHS = new Set(["/services", "/pujakits", "/panditbooking", "/eventspage"]);
+
+async function getPostLoginPath(user, profile, returnTo) {
   const role = String(profile.role || "").toUpperCase();
   if (["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role)) return "/admin/dashboard";
 
-  const application = await getVendorApplicationForUser(user.uid);
+  const application = await getVendorApplicationForUser(user.id);
   const status = String(application?.status || profile.vendorApplicationStatus || "").toUpperCase();
   if (status === "APPROVED") return "/vendor/dashboard";
   if (["PENDING", "REJECTED", "SUSPENDED"].includes(status)) return "/vendor-registration";
+  if (String(profile.role || "CUSTOMER").toUpperCase() === "CUSTOMER" && BOOKING_RETURN_PATHS.has(returnTo)) return returnTo;
   return profile.phone ? "/" : "/mobile";
 }
 
 export default function Auth() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnToFromLogin = location.state?.returnTo || new URLSearchParams(location.search).get("returnTo");
   const [loading, setLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
@@ -40,12 +33,12 @@ export default function Auth() {
   const [name, setName] = useState("");
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = subscribeToAuthState(async (_event, session) => {
+      const user = session?.user;
       if (!user) return;
       try {
         const profile = await getOrCreateUserProfile(user);
-        persistProfile(profile);
-        navigate(await getPostLoginPath(user, profile), { replace: true });
+        navigate(await getPostLoginPath(user, profile, returnToFromLogin), { replace: true });
       } catch (error) {
         console.error("Could not load user profile:", error);
         toast.error("Login succeeded, but your profile could not be loaded.");
@@ -53,30 +46,19 @@ export default function Auth() {
     });
 
     return () => unsubscribe();
-  }, [navigate]);
+  }, [navigate, returnToFromLogin]);
 
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
 
-      const result = await signInWithPopup(auth, googleProvider);
-
-     const profile = await getOrCreateUserProfile(result.user);
-     persistProfile(profile);
-     toast.success("Welcome " + (profile.name || profile.email));
-    navigate(await getPostLoginPath(result.user, profile));
+      const callbackUrl = new URL(`${window.location.origin}/auth`);
+      if (BOOKING_RETURN_PATHS.has(returnToFromLogin)) callbackUrl.searchParams.set("returnTo", returnToFromLogin);
+      await signInWithGoogle(callbackUrl.toString());
 } catch (err) {
   console.error(err);
 
-  if (err.code === "auth/popup-closed-by-user") {
-    toast.error("Google Sign In was cancelled.");
-  } else if (err.code === "auth/unauthorized-domain") {
-    toast.error(
-      "Google login is not enabled for this address. Open the app using http://localhost:5173."
-    );
-  } else {
-    toast.error(err.message);
-  }
+  toast.error(err.message || "Google sign in could not be started. Check Google OAuth configuration.");
 } finally {
   setLoading(false);
 }
@@ -93,21 +75,22 @@ export default function Auth() {
 
     setLoading(true);
     try {
-      let result;
       if (isSignUp) {
-        result = await createUserWithEmailAndPassword(auth, email.trim(), password);
-        await updateProfile(result.user, { displayName: name.trim() });
+        const result = await signUpWithEmail({ name, email, password });
+        if (!result.session) {
+          toast.success("Account created. Check your email to verify your account, then sign in.");
+          setIsSignUp(false);
+          return;
+        }
       } else {
-        result = await signInWithEmailAndPassword(auth, email.trim(), password);
+        await signInWithEmail({ email, password });
       }
-      const profile = await getOrCreateUserProfile(result.user);
-      persistProfile(profile);
-      navigate(await getPostLoginPath(result.user, profile));
+      const user = await getCurrentUser();
+      const profile = await getOrCreateUserProfile(user);
+      navigate(await getPostLoginPath(user, profile, returnToFromLogin));
     } catch (err) {
       console.error(err);
-      toast.error(err.code === "auth/invalid-credential"
-        ? "Email or password is incorrect."
-        : err.message);
+      toast.error(err.message || "Unable to sign in.");
     } finally {
       setLoading(false);
     }
@@ -154,11 +137,7 @@ export default function Auth() {
               </>
             ) : (
               <>
-                <img
-                  src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                  className="w-6 h-6"
-                  alt="Google"
-                />
+                <span aria-hidden="true" className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 font-bold text-blue-600">G</span>
 
                 <span className="font-semibold text-gray-700">
                   Continue with Google

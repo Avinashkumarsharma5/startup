@@ -31,7 +31,9 @@ import {
   FiPlay,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { saveUserBooking } from "../lib/bookings";
+import { getCurrentUser } from "../lib/supabaseAuth";
 
 // ========== CULTURAL COLOR THEME ==========
 const colors = {
@@ -1052,9 +1054,9 @@ const RentalSuccessPage = ({ order, onBack }) => {
       )
       .join("\n");
 
-    const msg = `🎉 *Sanskaraa Rental Order Confirmed!* 🎉
+    const msg = `🎉 *Sanskaraa Rental Booking Request* 🎉
 
-🆔 Order ID: R${order.id}
+🆔 Booking ID: ${order.id}
 👤 Name: ${order.customer.name}
 📞 Phone: ${order.customer.phone}
 
@@ -1072,7 +1074,7 @@ ${itemsText}
 📍 Address:
 ${order.customer.address}, ${order.customer.city} - ${order.customer.pincode}
 
-🙏 Thank you for choosing Sanskaraa`;
+🙏 Request received. It is awaiting provider confirmation.`;
 
     const url = `https://wa.me/916201486202?text=${encodeURIComponent(msg)}`;
     window.open(url, "_blank");
@@ -1136,14 +1138,14 @@ ${order.customer.address}, ${order.customer.city} - ${order.customer.pincode}
             className="text-xl font-bold text-center font-serif"
             style={{ color: colors.culturalRed }}
           >
-            Rental Confirmed 🎉
+            Rental request received 🎉
           </h1>
 
           <p
             className="text-sm text-center mt-1 mb-4"
             style={{ color: colors.culturalRed + "B0" }}
           >
-            Your event rental has been successfully booked.
+            Your request is saved and is waiting for provider confirmation.
           </p>
 
           {/* Order Summary */}
@@ -1154,7 +1156,7 @@ ${order.customer.address}, ${order.customer.city} - ${order.customer.pincode}
               borderColor: colors.culturalRed + "15",
             }}
           >
-            <SummaryRow label="Order ID" value={`R${order.id}`} />
+            <SummaryRow label="Booking ID" value={order.id} />
             <SummaryRow
               label="Items"
               value={`${order.items.length} item(s)`}
@@ -1239,6 +1241,7 @@ const SummaryRow = ({ label, value, highlight, success }) => (
 
 // ========== MAIN RENTAL STORE PAGE ==========
 export default function RentalStore() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [cart, setCart] = useState([]);
@@ -1444,55 +1447,18 @@ export default function RentalStore() {
     };
 
     try {
-      await saveUserBooking(rentalBooking);
+      const user = await getCurrentUser();
+      if (!user) {
+        alert("Please sign in before placing a rental booking request.");
+        navigate("/login", { state: { returnTo: "/eventspage" } });
+        return;
+      }
+      order.id = await saveUserBooking(rentalBooking);
+      order.status = "PENDING";
     } catch (error) {
       console.error("Could not save rental order:", error);
-      alert("Rental order save nahi ho saka. Please try again.");
+      alert(error.message || "Rental order save nahi ho saka. Please try again.");
       return;
-    }
-
-    const itemsText = order.items
-      .map(
-        (item) =>
-          `• ${item.name} (x${item.qty} for ${item.rentalDays} days) - ₹${
-            item.price * item.qty * item.rentalDays
-          }`
-      )
-      .join("\n");
-
-    const msg = `🎪 *Sanskaraa Rental Service New Order* 🎪
-
-*Order ID:* R${order.id}
-*Customer:* ${order.customer.name}
-*Phone:* ${order.customer.phone}
-*Event:* ${order.customer.eventType} (${order.customer.guestCount} guests)
-
-*Rental Items:*
-${itemsText}
-
-*Total:* ₹${order.pricing.total}
-*Refundable Deposit:* ₹${order.pricing.refundable}
-
-*Schedule:*
-• Event Date: ${new Date(order.schedule.eventDate).toLocaleDateString("en-IN")}
-• Delivery: ${new Date(order.schedule.deliveryDate).toLocaleDateString("en-IN")} (${
-      order.schedule.slot
-    })
-• Return: ${new Date(order.schedule.returnDate).toLocaleDateString("en-IN")}
-• Address: ${order.customer.address}, ${order.customer.city} - ${order.customer.pincode}
-
-_Sent automatically from Sanskaraa Rental Service_`;
-
-    const encoded = encodeURIComponent(msg);
-    const myWhatsapp = "916201486202";
-    window.open(`https://wa.me/${myWhatsapp}?text=${encoded}`, "_blank");
-
-    // Save to localStorage
-    try {
-      const prev = JSON.parse(localStorage.getItem("sanskaraa_rental_orders") || "[]");
-      localStorage.setItem("sanskaraa_rental_orders", JSON.stringify([...prev, order]));
-    } catch (e) {
-      console.error(e);
     }
 
     // If order from cart, clear cart
@@ -1506,7 +1472,7 @@ _Sent automatically from Sanskaraa Rental Service_`;
     // Browser notification
     if ("Notification" in window && Notification.permission === "granted") {
       new Notification("Sanskaraa Rental Service", {
-        body: `Rental order confirmed for ₹${order.pricing.total}. Event on ${new Date(
+        body: `Rental request saved for ₹${order.pricing.total}. Event on ${new Date(
           order.schedule.eventDate
         ).toLocaleDateString("en-IN")}.`,
         icon: "/images/logo.png",

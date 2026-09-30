@@ -21,6 +21,7 @@ import ServiceProviderProfile from "./pages/ServiceProviderProfile";
 import VendorRegistration from "./components/layout/VendorRegistration";
 import SanskaraaNotifications from "./pages/Notification";
 import ForgetPassword from "./pages/ForgetPassword";
+import ResetPassword from "./pages/ResetPassword";
 import SanskaraaShopApp from "./pages/SanskaraaShopApp";
 import EventManagement from "./pages/EventManagement";
 import ContactPage from "./components/layout/ContactPage";
@@ -28,12 +29,13 @@ import SanskaraaLoader from "./components/layout/SanskaraaLoader";
 import AdminLeads from "./pages/AdminLeads";
 import AdminVendors from "./pages/AdminVendors";
 import AdminDashboard from "./pages/AdminDashboard";
-import { auth, onAuthStateChanged } from "./lib/firebase";
-import { getOrCreateUserProfile, persistProfile } from "./lib/profile";
+import { getOrCreateUserProfile } from "./lib/profile";
+import { subscribeToAuthState } from "./lib/supabaseAuth";
 import {
   getCurrentUserProfile,
   getRoleFromProfile,
   getVendorApplicationForUser,
+  isVendorRole,
   ROLE,
 } from "./lib/roleAccess";
 
@@ -49,7 +51,8 @@ function ProtectedRoute({
   useEffect(() => {
     let active = true;
 
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = subscribeToAuthState(async (_event, session) => {
+      const user = session?.user;
       if (!user) {
         if (active) {
           setIsAuthorized(false);
@@ -61,9 +64,10 @@ function ProtectedRoute({
       try {
         const profile = (await getCurrentUserProfile()) || (await getOrCreateUserProfile(user));
         const role = getRoleFromProfile(profile);
-        const vendorStatus = String(profile?.vendorApplicationStatus || "").toUpperCase();
+        const application = await getVendorApplicationForUser(user.id);
+        const vendorStatus = String(application?.status || profile?.vendorApplicationStatus || "").toUpperCase();
         const roleAllowed = !allowRoles || allowRoles.includes(role);
-        const vendorAllowed = !requireVendorApproved || (role === ROLE.VENDOR && vendorStatus === "APPROVED");
+        const vendorAllowed = !requireVendorApproved || (isVendorRole(role) && vendorStatus === "APPROVED");
         const allowed = roleAllowed && vendorAllowed;
 
         if (active) {
@@ -121,6 +125,7 @@ export default function App() {
       "/login",
       "/signup",
       "/forget-password",
+      "/reset-password",
       "/contact",
       "/contactpage",
       "/services",
@@ -132,7 +137,8 @@ export default function App() {
       "/service-provider/profile",
     ]);
 
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = subscribeToAuthState(async (_event, session) => {
+      const user = session?.user;
       try {
         const currentPath = normalizePath(location.pathname);
         const isPublicRoute = publicRoutes.has(currentPath);
@@ -144,7 +150,6 @@ export default function App() {
 
         if (user) {
           const profile = await getOrCreateUserProfile(user);
-          persistProfile(profile);
           if (
             !profile.phone &&
             !isPublicRoute &&
@@ -173,6 +178,7 @@ export default function App() {
     "/signup",
      "/mobile",   
     "/forget-password",
+    "/reset-password",
     "/vendor-registration",
     "/service-provider/profile",
     "/alphastore/checkout",
@@ -208,6 +214,7 @@ export default function App() {
           <Route path="/login" element={<Auth />} />
           <Route path="/signup" element={<Auth />} />
           <Route path="/forget-password" element={<ForgetPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Pages */}
           <Route path="/panditbooking" element={<PanditBooking />} />
@@ -216,7 +223,7 @@ export default function App() {
           <Route path="/bookingspage" element={<BookingsPage />} />
           <Route path="/dashboard" element={<ProtectedRoute allowRoles={[ROLE.CUSTOMER, ROLE.VENDOR, ROLE.ADMIN, ROLE.SUPER_ADMIN, ROLE.STAFF]}><UserProfile /></ProtectedRoute>} />
           <Route path="/customer/dashboard" element={<ProtectedRoute allowRoles={[ROLE.CUSTOMER, ROLE.VENDOR, ROLE.ADMIN, ROLE.SUPER_ADMIN, ROLE.STAFF]}><UserProfile /></ProtectedRoute>} />
-          <Route path="/vendor/dashboard" element={<ProtectedRoute allowRoles={[ROLE.VENDOR]} requireVendorApproved><ServiceProviderProfile /></ProtectedRoute>} />
+          <Route path="/vendor/dashboard" element={<ProtectedRoute allowRoles={[ROLE.VENDOR, ROLE.PANDIT]} requireVendorApproved><ServiceProviderProfile /></ProtectedRoute>} />
           <Route path="/mobile" element={<MobileNumber />} />
           <Route path="/userprofile" element={<ProtectedRoute allowRoles={[ROLE.CUSTOMER, ROLE.VENDOR, ROLE.ADMIN, ROLE.SUPER_ADMIN, ROLE.STAFF]}><UserProfile /></ProtectedRoute>} />
           <Route path="/search" element={<SearchPage />} />
@@ -229,7 +236,7 @@ export default function App() {
           <Route path="/admin/analytics" element={<ProtectedRoute allowRoles={[ROLE.ADMIN, ROLE.SUPER_ADMIN]}><AdminLeads /></ProtectedRoute>} />
           <Route
             path="/service-provider/profile"
-            element={<ProtectedRoute allowRoles={[ROLE.VENDOR]} requireVendorApproved><ServiceProviderProfile /></ProtectedRoute>}
+            element={<ProtectedRoute allowRoles={[ROLE.VENDOR, ROLE.PANDIT]} requireVendorApproved><ServiceProviderProfile /></ProtectedRoute>}
           />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/contactpage" element={<ContactPage />} />

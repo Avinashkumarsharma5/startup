@@ -3,66 +3,39 @@ import React, { useState, useEffect } from "react";
 import { Bell, X, Clock, Calendar, Gift, CheckCircle, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { getCurrentUser } from "../lib/supabaseAuth";
+import { requireSupabase } from "../lib/supabase";
 
 export default function SanskaraaNotifications() {
   const [showPopup, setShowPopup] = useState(false);
-  const [showToast, setShowToast] = useState(false);
   const [activeTab, setActiveTab] = useState("All");
   const navigate = useNavigate();
 
-  // Load notifications from localStorage or use default
-  const [notifications, setNotifications] = useState(() => {
-    const saved = localStorage.getItem("sanskaraa-notifications");
-    return saved ? JSON.parse(saved) : [
-      {
-        id: 1,
-        title: "Puja Booking Confirmed 🙏",
-        message: "Your Satyanarayan Puja is confirmed for 20 Oct, 9 AM.",
-        time: "2 hrs ago",
-        type: "Booking",
-        read: false,
-        image: "/images/puja-icon.png",
-        bookingId: "BK001",
-        scheduled: false
-      },
-      {
-        id: 2,
-        title: "Special Offer 🎉",
-        message: "Get 10% off on Navratri Puja Kits. Limited time offer!",
-        time: "1 day ago",
-        type: "Offer",
-        read: false,
-        image: "/images/offer-banner.png",
-        offerCode: "NAVRATRI10",
-        scheduled: false
-      },
-      {
-        id: 3,
-        title: "Reminder ⏰",
-        message: "Tomorrow: Ganesh Puja with Pandit Sharma Ji at 8 AM.",
-        time: "2 days ago",
-        type: "Reminder",
-        read: true,
-        image: "/images/reminder-icon.png",
-        scheduled: true
-      },
-      {
-        id: 4,
-        title: "Upcoming Puja 🔔",
-        message: "Diwali Lakshmi Puja scheduled for next week.",
-        time: "3 days ago",
-        type: "Booking",
-        read: false,
-        image: "/images/diya-icon.png",
-        scheduled: true
-      }
-    ];
-  });
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Save to localStorage whenever notifications change
   useEffect(() => {
-    localStorage.setItem("sanskaraa-notifications", JSON.stringify(notifications));
-  }, [notifications]);
+    let active = true;
+    let channel;
+    const load = async () => {
+      try {
+        const user = await getCurrentUser();
+        if (!user) { if (active) setNotifications([]); return; }
+        const client = requireSupabase();
+        const refresh = async () => {
+          const { data, error } = await client.from("notifications").select("*").eq("recipient_id", user.id).order("created_at", { ascending: false }).limit(100);
+          if (error) throw error;
+          if (active) setNotifications(data.map((row) => ({ ...row, read: row.is_read, type: row.type.startsWith("BOOKING_") || row.type.startsWith("VENDOR_") ? "Booking" : row.type.startsWith("PAYMENT_") ? "Payment" : row.type.startsWith("APPLICATION_") ? "Vendor" : "Notification", time: new Date(row.created_at).toLocaleString("en-IN") })));
+        };
+        await refresh();
+        channel = client.channel(`notifications:${user.id}`).on("postgres_changes", { event: "*", schema: "public", table: "notifications", filter: `recipient_id=eq.${user.id}` }, refresh).subscribe();
+      } catch (error) {
+        console.error("Could not load notifications:", error);
+      } finally { if (active) setLoading(false); }
+    };
+    void load();
+    return () => { active = false; if (channel) void requireSupabase().removeChannel(channel); };
+  }, []);
 
   // Filter notifications based on active tab
   const filteredNotifications = activeTab === "All" 
@@ -70,43 +43,40 @@ export default function SanskaraaNotifications() {
     : notifications.filter(note => note.type === activeTab);
 
   // Mark all as read
-  const markAllAsRead = () => {
-    setNotifications(prev => prev.map(note => ({ ...note, read: true })));
+  const markAllAsRead = async () => {
+    try {
+      const user = await getCurrentUser();
+      if (!user) return;
+      const { error } = await requireSupabase().from("notifications").update({ is_read: true }).eq("recipient_id", user.id).eq("is_read", false);
+      if (error) throw error;
+      setNotifications(prev => prev.map(note => ({ ...note, read: true, is_read: true })));
+    } catch (error) { console.error("Could not mark notifications read:", error); }
   };
 
   // Clear all notifications
-  const clearAllNotifications = () => {
-    setNotifications([]);
+  const clearAllNotifications = async () => {
+    try {
+      const user = await getCurrentUser();
+      if (!user) return;
+      const { error } = await requireSupabase().from("notifications").delete().eq("recipient_id", user.id);
+      if (error) throw error;
+      setNotifications([]);
+    } catch (error) { console.error("Could not clear notifications:", error); }
   };
 
   // Delete single notification
-  const deleteNotification = (id) => {
-    setNotifications(prev => prev.filter(note => note.id !== id));
+  const deleteNotification = async (id) => {
+    try {
+      const { error } = await requireSupabase().from("notifications").delete().eq("id", id);
+      if (error) throw error;
+      setNotifications(prev => prev.filter(note => note.id !== id));
+    } catch (error) { console.error("Could not delete notification:", error); }
   };
 
   // Play notification sound
   const playNotificationSound = () => {
     const audio = new Audio("/sounds/notification-ding.mp3");
     audio.play().catch(() => console.log("Audio play failed"));
-  };
-
-  // Simulate new notification
-  const addMockNotification = () => {
-    const newNotification = {
-      id: Date.now(),
-      title: "New Puja Available! 🪔",
-      message: "Special Ganesh Chaturthi puja just added to our services.",
-      time: "Just now",
-      type: "Offer",
-      read: false,
-      image: "/images/ganesh-icon.png",
-      scheduled: false
-    };
-    
-    setNotifications(prev => [newNotification, ...prev]);
-    playNotificationSound();
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
   };
 
   // Get icon based on notification type
@@ -142,18 +112,12 @@ export default function SanskaraaNotifications() {
           >
             Mark All Read
           </button>
-          <button
-            onClick={addMockNotification}
-            className="bg-[#5C3A21] text-white px-4 py-2 rounded-xl hover:opacity-90 text-sm transition-all"
-          >
-            Test Notification
-          </button>
         </div>
       </div>
 
       {/* Category Tabs */}
       <div className="flex flex-wrap justify-center gap-2 mb-6">
-        {["All", "Booking", "Offer", "Reminder"].map((tab) => (
+        {["All", "Booking", "Payment", "Vendor", "Notification"].map((tab) => (
           <motion.button
             key={tab}
             whileHover={{ scale: 1.05 }}
@@ -207,14 +171,14 @@ export default function SanskaraaNotifications() {
               <div className="flex items-start gap-3">
                 {/* Notification Image */}
                 <div className="flex-shrink-0">
-                  <img 
+                  {note.image && <img
                     src={note.image} 
                     alt={note.type}
                     className="w-12 h-12 rounded-full object-cover border-2 border-[#C19A6B]/20"
                     onError={(e) => {
                       e.target.style.display = 'none';
                     }}
-                  />
+                  />}
                 </div>
 
                 {/* Content */}
@@ -273,7 +237,7 @@ export default function SanskaraaNotifications() {
         </AnimatePresence>
 
         {/* Empty State */}
-        {filteredNotifications.length === 0 && (
+          {!loading && filteredNotifications.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

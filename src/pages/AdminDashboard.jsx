@@ -15,8 +15,9 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { auth, isFirebaseConfigured, signOut } from "../lib/firebase";
+import { signOut } from "../lib/supabaseAuth";
 import { fetchAdminDashboardData, formatDashboardDate } from "../lib/adminDashboard";
+import { requireSupabase } from "../lib/supabase";
 
 const cardStyles = [
   "border-amber-200 bg-amber-50 text-amber-800",
@@ -51,8 +52,7 @@ export default function AdminDashboard() {
 
   const handleLogout = async () => {
     try {
-      if (isFirebaseConfigured) await signOut(auth);
-      localStorage.removeItem("loggedInUser");
+      await signOut();
       navigate("/login", { replace: true });
     } catch (logoutError) {
       console.error("Admin logout failed:", logoutError);
@@ -90,8 +90,11 @@ export default function AdminDashboard() {
     ["Confirmed Bookings", data.stats.confirmedBookings],
     ["Total Customers", data.stats.totalCustomers],
     ["Total Vendors", data.stats.totalVendors],
-    ["Pending Approvals", data.stats.pendingVendors],
-    ["Revenue", `₹${data.revenue.toLocaleString("en-IN")}`],
+    ["Total Pandits", data.stats.totalPandits],
+    ["Pending Approvals", data.stats.pendingApplications],
+    ["Total Orders", data.stats.totalOrders],
+    ["Products", data.stats.totalProducts],
+    ["Reviews", data.stats.totalReviews],
   ];
 
   return (
@@ -133,7 +136,7 @@ export default function AdminDashboard() {
 
           <div className="mt-8 grid gap-6 xl:grid-cols-2">
             <DashboardList title="Recent Leads" icon={Users} rows={data.recentLeads} empty="No leads yet." render={(row) => <><b>{row.name || "Unnamed lead"}</b><span>{row.service || "General enquiry"} · {row.status || "NEW"}</span><small>{formatDashboardDate(row.createdAt)}</small></>} />
-            <DashboardList title="Recent Bookings" icon={CalendarCheck} rows={data.recentBookings} empty="No bookings yet." render={(row) => <><b>{row.service || row.name || "Booking"}</b><span>{row.bookingStatus || row.status || "PENDING"}</span><small>{formatDashboardDate(row.createdAt)}</small></>} />
+            <DashboardList title="Recent Bookings" icon={CalendarCheck} rows={data.recentBookings} empty="No bookings yet." render={(row) => <div className="flex w-full flex-wrap items-center justify-between gap-2"><div className="flex flex-col"><b>{row.service || row.name || "Booking"}</b><span>{row.bookingStatus || row.status || "PENDING"}</span><small>{formatDashboardDate(row.createdAt)}</small></div>{!row.provider_id && ["PENDING", "CONFIRMED"].includes(row.booking_status) && <AssignBooking booking={row} providers={data.providers} onAssigned={loadDashboard} />}</div>} />
             <DashboardList title="Pending Vendor Approvals" icon={ShieldCheck} rows={data.pendingVendors} empty="No pending approvals." render={(row) => <><b>{row.name || "Unnamed vendor"}</b><span>{row.vendorType || "Vendor"}</span><small>{formatDashboardDate(row.submittedAt)}</small></>} />
             <DashboardList title="Today's Follow-ups" icon={Bell} rows={data.followUpsToday} empty="No follow-ups today." render={(row) => <><b>{row.name || "Lead"}</b><span>{row.service || "Enquiry"}</span><small>{row.nextFollowUpAt || "Today"}</small></>} />
           </div>
@@ -148,6 +151,25 @@ export default function AdminDashboard() {
       </main>
     </div>
   );
+}
+
+function AssignBooking({ booking, providers, onAssigned }) {
+  const [providerId, setProviderId] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const assign = async () => {
+    if (!providerId) return;
+    setBusy(true); setError("");
+    try {
+      const { error: rpcError } = await requireSupabase().rpc("assign_booking", { p_booking_id: booking.id, p_provider_id: providerId });
+      if (rpcError) throw rpcError;
+      await onAssigned();
+    } catch (cause) {
+      console.error("Booking assignment failed:", cause);
+      setError(cause.message || "Could not assign provider.");
+    } finally { setBusy(false); }
+  };
+  return <div className="flex flex-wrap items-center gap-2"><select aria-label="Choose an approved provider" value={providerId} onChange={(event) => setProviderId(event.target.value)} className="max-w-48 rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs"><option value="">Assign provider</option>{providers.map((provider) => <option key={provider.user_id} value={provider.user_id}>{provider.business_name} · {provider.vendor_type}</option>)}</select><button disabled={!providerId || busy} onClick={() => void assign()} className="rounded-lg bg-[#800000] px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">{busy ? "Assigning…" : "Assign"}</button>{error && <span role="alert" className="w-full text-xs text-red-700">{error}</span>}</div>;
 }
 
 function DashboardList({ title, icon: Icon, rows, empty, render }) {
