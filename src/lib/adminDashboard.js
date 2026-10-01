@@ -20,18 +20,24 @@ export function formatDashboardDate(value) {
   return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
 }
 
-export async function fetchAdminDashboardData() {
+export async function fetchAdminDashboardData({ role = "ADMIN" } = {}) {
   const client = requireSupabase();
+  const normalizedRole = String(role || "").toUpperCase();
+  const canManageVendors = ["ADMIN", "SUPER_ADMIN"].includes(normalizedRole);
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
   const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
   const [statsResult, leadsResult, vendorsResult, bookingsResult, followUpsResult, providersResult] = await Promise.all([
     client.rpc("admin_dashboard_stats"),
     client.from("leads").select("*").order("created_at", { ascending: false }).limit(6),
-    client.from("vendor_applications").select("*").order("submitted_at", { ascending: false }).limit(100),
+    canManageVendors
+      ? client.from("vendor_applications").select("*").order("submitted_at", { ascending: false }).limit(100)
+      : Promise.resolve({ data: [], error: null }),
     client.from("bookings").select("*").order("created_at", { ascending: false }).limit(6),
     client.from("leads").select("*").gte("next_follow_up_at", startOfDay).lt("next_follow_up_at", endOfDay).order("next_follow_up_at", { ascending: true }).limit(100),
-    client.from("vendor_profiles").select("user_id,business_name,vendor_type").eq("verification_status", "APPROVED").order("business_name").limit(200),
+    canManageVendors
+      ? client.from("vendor_profiles").select("user_id,business_name,vendor_type").eq("verification_status", "APPROVED").order("business_name").limit(200)
+      : Promise.resolve({ data: [], error: null }),
   ]);
   for (const result of [statsResult, leadsResult, vendorsResult, bookingsResult, followUpsResult, providersResult]) if (result.error) throw result.error;
   const stats = statsResult.data || {};

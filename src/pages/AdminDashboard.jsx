@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import { signOut } from "../lib/supabaseAuth";
 import { fetchAdminDashboardData, formatDashboardDate } from "../lib/adminDashboard";
 import { requireSupabase } from "../lib/supabase";
+import { getCurrentUserProfile, normalizeRole } from "../lib/roleAccess";
 
 const cardStyles = [
   "border-amber-200 bg-amber-50 text-amber-800",
@@ -32,12 +33,17 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [adminProfile, setAdminProfile] = useState(null);
 
   const loadDashboard = async () => {
     try {
       setLoading(true);
       setError("");
-      setData(await fetchAdminDashboardData());
+      const profile = await getCurrentUserProfile();
+      const role = normalizeRole(profile?.role);
+      if (!["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role)) throw new Error("Administrative access is required.");
+      setAdminProfile(profile);
+      setData(await fetchAdminDashboardData({ role }));
     } catch (loadError) {
       console.error("Unable to load admin dashboard:", loadError);
       setError(loadError.message || "Dashboard data could not be loaded.");
@@ -60,11 +66,15 @@ export default function AdminDashboard() {
     }
   };
 
+  const role = normalizeRole(adminProfile?.role);
   const links = [
     { label: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
     { label: "Leads", path: "/admin/leads", icon: Users },
-    { label: "Vendor Approvals", path: "/admin/vendors", icon: Store },
-    { label: "Analytics", path: "/admin/analytics", icon: BarChart3 },
+    ...(["ADMIN", "SUPER_ADMIN"].includes(role) ? [
+      { label: "Vendor Approvals", path: "/admin/vendors", icon: Store },
+      { label: "Analytics", path: "/admin/analytics", icon: BarChart3 },
+    ] : []),
+    ...(role === "SUPER_ADMIN" ? [{ label: "User Roles", path: "/admin/users", icon: ShieldCheck }] : []),
     { label: "Services", path: "/services", icon: Settings },
   ];
 
@@ -121,8 +131,8 @@ export default function AdminDashboard() {
 
       <main className="lg:ml-64">
         <header className="flex items-center justify-between border-b border-[#E8D19B] bg-white px-5 py-4 pl-16 lg:pl-8">
-          <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C9A24D]">Admin Dashboard</p><h1 className="text-2xl font-bold text-[#7A1A1A]">Good day, Admin</h1></div>
-          <div className="flex items-center gap-3"><Bell className="h-5 w-5 text-slate-500" /><button type="button" onClick={loadDashboard} className="rounded-full border border-slate-200 p-2"><RefreshCw className="h-4 w-4" /></button><div className="rounded-full bg-[#7A1A1A] px-3 py-2 text-sm font-semibold text-white">ADMIN</div></div>
+          <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C9A24D]">Admin Dashboard</p><h1 className="text-2xl font-bold text-[#7A1A1A]">Good day, {adminProfile?.name || "Administrator"}</h1></div>
+          <div className="flex items-center gap-3"><Bell className="h-5 w-5 text-slate-500" /><button type="button" onClick={loadDashboard} className="rounded-full border border-slate-200 p-2"><RefreshCw className="h-4 w-4" /></button><div className="rounded-full bg-[#7A1A1A] px-3 py-2 text-sm font-semibold text-white">{role}</div></div>
         </header>
 
         <div className="p-5 lg:p-8">
@@ -144,7 +154,7 @@ export default function AdminDashboard() {
           <div className="mt-8 rounded-2xl border border-[#E8D19B] bg-white p-5">
             <h2 className="mb-4 text-lg font-bold text-[#7A1A1A]">Quick Actions</h2>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {[["Manage Leads", "/admin/leads"], ["Approve Vendors", "/admin/vendors"], ["View Analytics", "/admin/analytics"], ["Manage Services", "/services"]].map(([label, path]) => <Link key={path} to={path} className="rounded-xl bg-[#FFF7E2] px-4 py-3 text-center text-sm font-semibold text-[#7A1A1A] hover:bg-[#FBE9B5]">{label}</Link>)}
+              {[["Manage Leads", "/admin/leads"], ["Approve Vendors", "/admin/vendors"], ["View Analytics", "/admin/analytics"], ["Manage Services", "/services"], ["Manage User Roles", "/admin/users"]].filter(([, path]) => (path !== "/admin/vendors" && path !== "/admin/analytics" || ["ADMIN", "SUPER_ADMIN"].includes(role)) && (path !== "/admin/users" || role === "SUPER_ADMIN")).map(([label, path]) => <Link key={path} to={path} className="rounded-xl bg-[#FFF7E2] px-4 py-3 text-center text-sm font-semibold text-[#7A1A1A] hover:bg-[#FBE9B5]">{label}</Link>)}
             </div>
           </div>
         </div>

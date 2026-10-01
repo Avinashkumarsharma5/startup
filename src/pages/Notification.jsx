@@ -1,347 +1,230 @@
-// src/components/SanskaraaNotifications.jsx
-import React, { useState, useEffect } from "react";
-import { Bell, X, Clock, Calendar, Gift, CheckCircle, Trash2 } from "lucide-react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Bell, Clock, Trash2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { getCurrentUser } from "../lib/supabaseAuth";
+import toast from "react-hot-toast";
+import { subscribeToAuthState } from "../lib/supabaseAuth";
 import { requireSupabase } from "../lib/supabase";
 
-export default function SanskaraaNotifications() {
-  const [showPopup, setShowPopup] = useState(false);
-  const [activeTab, setActiveTab] = useState("All");
-  const navigate = useNavigate();
+function categoryFor(type = "") {
+  if (type.startsWith("BOOKING_") || type.startsWith("VENDOR_")) return "Booking";
+  if (type.startsWith("APPLICATION_")) return "Vendor";
+  if (type.startsWith("ORDER_")) return "Order";
+  if (type.startsWith("PAYMENT_")) return "Payment";
+  return "Notification";
+}
 
+function mapNotification(row) {
+  return { ...row, category: categoryFor(row.type), read: row.is_read };
+}
+
+export default function SanskaraaNotifications() {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("All");
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let active = true;
-    let channel;
-    const load = async () => {
+    let channel = null;
+    let client = null;
+    let requestVersion = 0;
+    let currentUserId = null;
+
+    const unsubscribeAuth = subscribeToAuthState(async (_event, session) => {
+      const user = session?.user || null;
+      if (channel && client) {
+        await client.removeChannel(channel);
+        channel = null;
+      }
+      currentUserId = user?.id || null;
+      requestVersion += 1;
+      const version = requestVersion;
+      if (!active) return;
+      setNotifications([]);
+      setErrorMessage("");
+      setLoading(Boolean(user));
+      if (!user) return;
+
       try {
-        const user = await getCurrentUser();
-        if (!user) { if (active) setNotifications([]); return; }
-        const client = requireSupabase();
+        client = requireSupabase();
         const refresh = async () => {
-          const { data, error } = await client.from("notifications").select("*").eq("recipient_id", user.id).order("created_at", { ascending: false }).limit(100);
+          const { data, error } = await client
+            .from("notifications")
+            .select("id,recipient_id,type,title,message,data,is_read,created_at")
+            .eq("recipient_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(100);
           if (error) throw error;
-          if (active) setNotifications(data.map((row) => ({ ...row, read: row.is_read, type: row.type.startsWith("BOOKING_") || row.type.startsWith("VENDOR_") ? "Booking" : row.type.startsWith("PAYMENT_") ? "Payment" : row.type.startsWith("APPLICATION_") ? "Vendor" : "Notification", time: new Date(row.created_at).toLocaleString("en-IN") })));
+          if (active && requestVersion === version && currentUserId === user.id) {
+            setNotifications((data || []).map(mapNotification));
+            setErrorMessage("");
+          }
         };
+
         await refresh();
-        channel = client.channel(`notifications:${user.id}`).on("postgres_changes", { event: "*", schema: "public", table: "notifications", filter: `recipient_id=eq.${user.id}` }, refresh).subscribe();
-      } catch (error) {
-        console.error("Could not load notifications:", error);
-      } finally { if (active) setLoading(false); }
+        if (!active || requestVersion !== version || currentUserId !== user.id) return;
+        channel = client
+          .channel(`notifications:${user.id}`)
+          .on("postgres_changes", {
+            event: "*", schema: "public", table: "notifications", filter: `recipient_id=eq.${user.id}`,
+          }, () => { void refresh().catch((cause) => {
+            console.error("Could not refresh notifications:", cause);
+            if (active && requestVersion === version) setErrorMessage("New notifications could not be loaded. Try refreshing this page.");
+          }); })
+          .subscribe((status, cause) => {
+            if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+              console.error("Notification realtime subscription failed:", cause);
+              if (active && requestVersion === version) setErrorMessage("Live updates are temporarily unavailable. Your notifications can still be refreshed.");
+            }
+          });
+      } catch (cause) {
+        console.error("Could not load notifications:", cause);
+        if (active && requestVersion === version) setErrorMessage("Notifications could not be loaded. Please check your connection and try again.");
+      } finally {
+        if (active && requestVersion === version) setLoading(false);
+      }
+    });
+
+    return () => {
+      active = false;
+      unsubscribeAuth();
+      if (channel && client) void client.removeChannel(channel);
     };
-    void load();
-    return () => { active = false; if (channel) void requireSupabase().removeChannel(channel); };
+  }, [reloadKey]);
+
+  const filteredNotifications = useMemo(() => activeTab === "All"
+    ? notifications
+    : notifications.filter((note) => note.category === activeTab), [activeTab, notifications]);
+  const unreadCount = notifications.filter((note) => !note.read).length;
+
+  const markAllAsRead = useCallback(async () => {
+    try {
+      const user = await getSignedInUser();
+      if (!user) return;
+      const { error } = await requireSupabase().from("notifications")
+        .update({ is_read: true }).eq("recipient_id", user.id).eq("is_read", false);
+      if (error) throw error;
+      setNotifications((current) => current.map((note) => ({ ...note, is_read: true, read: true })));
+      setErrorMessage("");
+    } catch (cause) {
+      console.error("Could not mark notifications as read:", cause);
+      toast.error("Notifications could not be marked as read.");
+    }
   }, []);
 
-  // Filter notifications based on active tab
-  const filteredNotifications = activeTab === "All" 
-    ? notifications 
-    : notifications.filter(note => note.type === activeTab);
-
-  // Mark all as read
-  const markAllAsRead = async () => {
+  const markOneAsRead = async (note) => {
+    if (note.read) return;
     try {
-      const user = await getCurrentUser();
-      if (!user) return;
-      const { error } = await requireSupabase().from("notifications").update({ is_read: true }).eq("recipient_id", user.id).eq("is_read", false);
+      const { error } = await requireSupabase().from("notifications")
+        .update({ is_read: true }).eq("id", note.id).eq("recipient_id", note.recipient_id);
       if (error) throw error;
-      setNotifications(prev => prev.map(note => ({ ...note, read: true, is_read: true })));
-    } catch (error) { console.error("Could not mark notifications read:", error); }
+      setNotifications((current) => current.map((item) => item.id === note.id ? { ...item, read: true, is_read: true } : item));
+    } catch (cause) {
+      console.error("Could not mark notification as read:", cause);
+      toast.error("This notification could not be marked as read.");
+    }
   };
 
-  // Clear all notifications
   const clearAllNotifications = async () => {
     try {
-      const user = await getCurrentUser();
+      const user = await getSignedInUser();
       if (!user) return;
       const { error } = await requireSupabase().from("notifications").delete().eq("recipient_id", user.id);
       if (error) throw error;
       setNotifications([]);
-    } catch (error) { console.error("Could not clear notifications:", error); }
-  };
-
-  // Delete single notification
-  const deleteNotification = async (id) => {
-    try {
-      const { error } = await requireSupabase().from("notifications").delete().eq("id", id);
-      if (error) throw error;
-      setNotifications(prev => prev.filter(note => note.id !== id));
-    } catch (error) { console.error("Could not delete notification:", error); }
-  };
-
-  // Play notification sound
-  const playNotificationSound = () => {
-    const audio = new Audio("/sounds/notification-ding.mp3");
-    audio.play().catch(() => console.log("Audio play failed"));
-  };
-
-  // Get icon based on notification type
-  const getTypeIcon = (type) => {
-    switch (type) {
-      case "Booking": return "🙏";
-      case "Offer": return "🎉";
-      case "Reminder": return "⏰";
-      default: return "🔔";
+      setErrorMessage("");
+    } catch (cause) {
+      console.error("Could not clear notifications:", cause);
+      toast.error("Notifications could not be cleared.");
     }
   };
 
+  const deleteNotification = async (note) => {
+    try {
+      const { error } = await requireSupabase().from("notifications")
+        .delete().eq("id", note.id).eq("recipient_id", note.recipient_id);
+      if (error) throw error;
+      setNotifications((current) => current.filter((item) => item.id !== note.id));
+    } catch (cause) {
+      console.error("Could not delete notification:", cause);
+      toast.error("This notification could not be deleted.");
+    }
+  };
+
+  const openRelatedPage = async (note) => {
+    await markOneAsRead(note);
+    const path = note.type === "VENDOR_ASSIGNED"
+      ? "/vendor/dashboard"
+      : note.type === "APPLICATION_SUBMITTED"
+        ? "/admin/vendors"
+        : note.type === "APPLICATION_APPROVED" || note.type === "APPLICATION_REJECTED"
+          ? "/vendor-registration"
+          : note.category === "Booking" || note.category === "Order"
+            ? "/bookingspage"
+            : "/userprofile";
+    navigate(path);
+  };
+
   return (
-    <div className="min-h-screen bg-glow p-4 sm:p-6 font-serif text-[#5C3A21] mt-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 mt-12 gap-4">
-        <div className="flex items-center gap-3">
-          <div className="bg-[#C19A6B] p-2 rounded-full">
-            <Bell className="text-white w-6 h-6" />
+    <main className="min-h-screen bg-glow px-4 pb-12 pt-20 font-serif text-[#5C3A21] sm:px-6">
+      <div className="mx-auto max-w-4xl">
+        <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="rounded-full bg-[#C19A6B] p-2"><Bell className="h-6 w-6 text-white" /></div>
+            <h1 className="text-2xl font-bold">Notifications</h1>
+            {unreadCount > 0 && <span className="rounded-full bg-red-500 px-2 py-1 text-xs text-white">{unreadCount}</span>}
           </div>
-          <h1 className="text-2xl font-bold">Notifications</h1>
-          {notifications.filter(n => !n.read).length > 0 && (
-            <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-              {notifications.filter(n => !n.read).length}
-            </span>
-          )}
-        </div>
-        
-        <div className="flex gap-2">
-          <button
-            onClick={markAllAsRead}
-            className="bg-[#C19A6B] text-white px-4 py-2 rounded-xl hover:opacity-90 text-sm transition-all"
-          >
-            Mark All Read
-          </button>
-        </div>
-      </div>
+          <div className="flex gap-3">
+            {unreadCount > 0 && <button type="button" onClick={() => void markAllAsRead()} className="rounded-xl bg-[#C19A6B] px-4 py-2 text-sm text-white hover:opacity-90">Mark all read</button>}
+            {notifications.length > 0 && <button type="button" onClick={() => void clearAllNotifications()} className="flex items-center gap-1 rounded-xl border border-[#C19A6B] px-4 py-2 text-sm hover:bg-[#C19A6B]/10"><Trash2 className="h-4 w-4" /> Clear all</button>}
+          </div>
+        </header>
 
-      {/* Category Tabs */}
-      <div className="flex flex-wrap justify-center gap-2 mb-6">
-        {["All", "Booking", "Payment", "Vendor", "Notification"].map((tab) => (
-          <motion.button
-            key={tab}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-full border text-sm font-medium transition-all ${
-              activeTab === tab
-                ? "bg-[#C19A6B] text-white border-transparent shadow-lg"
-                : "border-[#C19A6B] text-[#5C3A21] hover:bg-[#C19A6B]/10"
-            }`}
-          >
-            {getTypeIcon(tab)} {tab}
-          </motion.button>
-        ))}
-      </div>
+        {errorMessage && <div role="alert" className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900"><span>{errorMessage}</span><button type="button" onClick={() => { setLoading(true); setReloadKey((key) => key + 1); }} className="rounded-lg border border-amber-400 px-3 py-1.5 font-semibold">Retry</button></div>}
 
-      {/* Clear All Button */}
-      {notifications.length > 0 && (
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={clearAllNotifications}
-            className="text-sm underline text-[#C19A6B] hover:text-[#5C3A21] flex items-center gap-1 transition-colors"
-          >
-            <Trash2 className="w-4 h-4" />
-            Clear All
-          </button>
-        </div>
-      )}
-
-      {/* Notification List */}
-      <div className="space-y-4 max-w-4xl mx-auto">
-        <AnimatePresence>
-          {filteredNotifications.map((note) => (
-            <motion.div
-              key={note.id}
-              layout
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9, x: 100 }}
-              transition={{ duration: 0.3 }}
-              className={`bg-white p-4 rounded-2xl shadow-md hover:shadow-lg transition-all duration-200 border-l-4 ${
-                note.scheduled 
-                  ? 'border-l-yellow-400 bg-yellow-50' 
-                  : note.type === 'Booking' 
-                    ? 'border-l-green-400' 
-                    : note.type === 'Offer' 
-                      ? 'border-l-orange-400' 
-                      : 'border-l-blue-400'
-              } ${!note.read ? 'ring-2 ring-[#C19A6B]/20' : ''}`}
-            >
-              <div className="flex items-start gap-3">
-                {/* Notification Image */}
-                <div className="flex-shrink-0">
-                  {note.image && <img
-                    src={note.image} 
-                    alt={note.type}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-[#C19A6B]/20"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />}
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h2 className="font-semibold text-lg flex items-center gap-2">
-                        {note.title}
-                        {!note.read && (
-                          <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                        )}
-                      </h2>
-                      <p className="text-sm text-[#7B5A38] mt-1">{note.message}</p>
-                    </div>
-                    
-                    {/* Delete Button */}
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => deleteNotification(note.id)}
-                      className="text-gray-400 hover:text-red-500 transition-colors flex-shrink-0 ml-2"
-                    >
-                      <X className="w-4 h-4" />
-                    </motion.button>
-                  </div>
-
-                  {/* Actions and Time */}
-                  <div className="flex items-center justify-between mt-3">
-                    <div className="flex gap-2">
-                      {(note.type === "Booking" || note.scheduled) && (
-                        <button
-                          onClick={() => navigate(`/booking/${note.bookingId || 'details'}`)}
-                          className="text-sm text-[#C19A6B] underline hover:text-[#5C3A21] transition-colors"
-                        >
-                          View Details
-                        </button>
-                      )}
-                      {note.type === "Offer" && note.offerCode && (
-                        <button
-                          onClick={() => navigate('/offers')}
-                          className="text-sm text-[#C19A6B] underline hover:text-[#5C3A21] transition-colors"
-                        >
-                          Use Code: {note.offerCode}
-                        </button>
-                      )}
-                    </div>
-                    <p className="text-xs text-[#A98A6E] flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {note.time}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+        <div className="mb-6 flex flex-wrap justify-center gap-2">
+          {["All", "Booking", "Order", "Vendor", "Payment", "Notification"].map((tab) => (
+            <button key={tab} type="button" onClick={() => setActiveTab(tab)} className={`rounded-full border px-4 py-2 text-sm font-medium transition ${activeTab === tab ? "border-transparent bg-[#C19A6B] text-white shadow" : "border-[#C19A6B] hover:bg-[#C19A6B]/10"}`}>
+              {tab === "All" ? "🔔" : tab === "Booking" ? "🙏" : tab === "Order" ? "📦" : tab === "Vendor" ? "🏪" : tab === "Payment" ? "💳" : "🔔"} {tab}
+            </button>
           ))}
-        </AnimatePresence>
+        </div>
 
-        {/* Empty State */}
-          {!loading && filteredNotifications.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-12 text-[#7B5A38] italic"
-          >
-            <div className="text-6xl mb-4">🕉️</div>
-            <p className="text-xl">No notifications found</p>
-            <p className="text-sm mt-2">Om Shanti - Peace and blessings to you</p>
-            {activeTab !== "All" && (
-              <button
-                onClick={() => setActiveTab("All")}
-                className="mt-4 text-[#C19A6B] underline hover:text-[#5C3A21]"
-              >
-                View all notifications
-              </button>
-            )}
-          </motion.div>
+        {loading ? <p className="py-12 text-center text-sm text-[#7B5A38]">Loading notifications…</p> : filteredNotifications.length === 0 ? (
+          <div className="rounded-2xl bg-white py-12 text-center text-[#7B5A38] shadow-sm">
+            <div className="mb-4 text-5xl">🕉️</div><p className="text-xl">{notifications.length ? "No notifications in this category" : "No notifications yet"}</p>
+            <p className="mt-2 text-sm">Booking and account updates will appear here.</p>
+            {activeTab !== "All" && <button type="button" onClick={() => setActiveTab("All")} className="mt-4 underline">View all</button>}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <AnimatePresence>
+              {filteredNotifications.map((note) => (
+                <motion.article key={note.id} layout initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: 40 }} className={`rounded-2xl border-l-4 bg-white p-4 shadow-sm ${note.read ? "border-l-[#C19A6B]" : "border-l-green-500 ring-1 ring-[#C19A6B]/20"}`}>
+                  <div className="flex items-start gap-3">
+                    <button type="button" onClick={() => void openRelatedPage(note)} className="min-w-0 flex-1 text-left">
+                      <h2 className="flex items-center gap-2 text-lg font-semibold">{note.title || "Sanskaraa update"}{!note.read && <span className="h-2 w-2 rounded-full bg-red-500" />}</h2>
+                      <p className="mt-1 text-sm text-[#7B5A38]">{note.message}</p>
+                      <span className="mt-3 inline-flex items-center gap-1 text-xs text-[#A98A6E]"><Clock className="h-3 w-3" />{new Date(note.created_at).toLocaleString("en-IN")}</span>
+                    </button>
+                    <button type="button" aria-label="Delete notification" onClick={() => void deleteNotification(note)} className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-600"><X className="h-4 w-4" /></button>
+                  </div>
+                  {(note.category === "Booking" || note.category === "Order") && <button type="button" onClick={() => void openRelatedPage(note)} className="ml-11 mt-2 text-sm font-medium text-[#C19A6B] underline">View {note.category.toLowerCase()} details</button>}
+                </motion.article>
+              ))}
+            </AnimatePresence>
+          </div>
         )}
       </div>
-
-      {/* Toast Notification */}
-      <AnimatePresence>
-        {showToast && (
-          <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.8 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 50, scale: 0.8 }}
-            className="fixed bottom-5 right-5 bg-[#5C3A21] text-white px-6 py-4 rounded-xl shadow-2xl max-w-sm z-50"
-          >
-            <div className="flex items-center gap-3">
-              <CheckCircle className="w-5 h-5 text-green-300" />
-              <div>
-                <p className="font-semibold">New Notification! 🔔</p>
-                <p className="text-sm text-gray-200">Check your notifications for updates</p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Popup Notification */}
-      <AnimatePresence>
-        {showPopup && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-[#FFF8E7] p-6 rounded-2xl shadow-2xl max-w-md w-full text-center border-2 border-[#C19A6B]"
-            >
-              <div className="flex justify-end">
-                <button 
-                  onClick={() => setShowPopup(false)}
-                  className="text-[#5C3A21] hover:text-[#C19A6B] transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              
-              <motion.div
-                animate={{ 
-                  scale: [1, 1.1, 1],
-                  rotate: [0, -5, 5, 0]
-                }}
-                transition={{ duration: 0.5 }}
-              >
-                <Bell className="mx-auto text-[#C19A6B] w-12 h-12 mb-4" />
-              </motion.div>
-              
-              <h2 className="text-xl font-semibold mb-2">
-                Puja Confirmed Successfully 🙏
-              </h2>
-              <p className="text-sm text-[#7B5A38] mb-6">
-                Your booking with Pandit Sharma Ji is scheduled for 20 Oct, 9 AM.
-                You'll receive a reminder 1 hour before the puja.
-              </p>
-              
-              <div className="flex gap-3 justify-center">
-                <button
-                  onClick={() => setShowPopup(false)}
-                  className="bg-gray-300 text-gray-700 px-6 py-2 rounded-xl hover:bg-gray-400 transition-colors"
-                >
-                  Later
-                </button>
-                <button
-                  onClick={() => {
-                    setShowPopup(false);
-                    setShowToast(true);
-                    setTimeout(() => setShowToast(false), 3000);
-                  }}
-                  className="bg-[#C19A6B] text-white px-6 py-2 rounded-xl hover:opacity-90 transition-all"
-                >
-                  View Details
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+    </main>
   );
+}
+
+async function getSignedInUser() {
+  const { data, error } = await requireSupabase().auth.getUser();
+  if (error) throw error;
+  return data.user || null;
 }

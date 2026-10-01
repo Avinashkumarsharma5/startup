@@ -22,7 +22,8 @@ export default function BottomNavbar() {
       }
 
       try {
-        const userProfile = (await getCurrentUserProfile()) || { uid: user.id, role: "CUSTOMER" };
+        const userProfile = await getCurrentUserProfile();
+        if (!userProfile?.role) throw new Error("Your account role could not be loaded.");
         const application = await getVendorApplicationForUser(user.id);
         setProfile(userProfile);
         setVendorApplication(application);

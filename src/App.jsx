@@ -29,8 +29,10 @@ import SanskaraaLoader from "./components/layout/SanskaraaLoader";
 import AdminLeads from "./pages/AdminLeads";
 import AdminVendors from "./pages/AdminVendors";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminUsers from "./pages/AdminUsers";
 import { getOrCreateUserProfile } from "./lib/profile";
 import { subscribeToAuthState } from "./lib/supabaseAuth";
+import { isSupabaseConfigured } from "./lib/supabase";
 import {
   getCurrentUserProfile,
   getRoleFromProfile,
@@ -201,6 +203,12 @@ export default function App() {
     <div className="min-h-screen flex flex-col">
       <Toaster position="top-right" />
 
+      {!isSupabaseConfigured && (
+        <div role="alert" className="border-b border-amber-300 bg-amber-50 px-4 py-3 text-center text-sm text-amber-950">
+          Sign-in and saved bookings are temporarily unavailable because this deployment is missing its Supabase configuration.
+        </div>
+      )}
+
       {!hideLayout && <Navbar onMicClick={handleMicClick} />}
 
       <main className="flex-grow relative">
@@ -230,6 +238,7 @@ export default function App() {
           <Route path="/eventmanagement" element={<EventManagement />} />
           <Route path="/admin/leads" element={<ProtectedRoute allowRoles={[ROLE.ADMIN, ROLE.SUPER_ADMIN, ROLE.STAFF]}><AdminLeads /></ProtectedRoute>} />
           <Route path="/admin/dashboard" element={<ProtectedRoute allowRoles={[ROLE.ADMIN, ROLE.SUPER_ADMIN, ROLE.STAFF]}><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute allowRoles={[ROLE.SUPER_ADMIN]}><AdminUsers /></ProtectedRoute>} />
           <Route path="/AdminLeads" element={<ProtectedRoute allowRoles={[ROLE.ADMIN, ROLE.SUPER_ADMIN, ROLE.STAFF]}><AdminLeads /></ProtectedRoute>} />
           <Route path="/admin/vendors" element={<ProtectedRoute allowRoles={[ROLE.ADMIN, ROLE.SUPER_ADMIN]}><AdminVendors /></ProtectedRoute>} />
           <Route path="/AdminVendors" element={<ProtectedRoute allowRoles={[ROLE.ADMIN, ROLE.SUPER_ADMIN]}><AdminVendors /></ProtectedRoute>} />
@@ -247,7 +256,7 @@ export default function App() {
           />
           <Route
             path="/notifications"
-            element={<SanskaraaNotifications />}
+            element={<ProtectedRoute><SanskaraaNotifications /></ProtectedRoute>}
           />
           <Route
             path="/sanskaraashopapp"

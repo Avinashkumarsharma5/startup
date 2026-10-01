@@ -5,11 +5,11 @@ export const ROLE = { CUSTOMER: "CUSTOMER", VENDOR: "VENDOR", PANDIT: "PANDIT", 
 export const ADMIN_ROLES = [ROLE.ADMIN, ROLE.SUPER_ADMIN];
 export const STAFF_ROLES = [ROLE.STAFF];
 export const normalizeRole = (value) => String(value ?? "").trim().toUpperCase();
-export const getRoleFromProfile = (profile) => normalizeRole(profile?.role) || ROLE.CUSTOMER;
+export const getRoleFromProfile = (profile) => normalizeRole(profile?.role) || "UNKNOWN";
 export const isAdminRole = (role) => [...ADMIN_ROLES, ...STAFF_ROLES].includes(normalizeRole(role));
 export const isStaffRole = (role) => normalizeRole(role) === ROLE.STAFF;
 export const isVendorRole = (role) => [ROLE.VENDOR, ROLE.PANDIT].includes(normalizeRole(role));
-export const isCustomerRole = (role) => normalizeRole(role) === ROLE.CUSTOMER || !normalizeRole(role);
+export const isCustomerRole = (role) => normalizeRole(role) === ROLE.CUSTOMER;
 
 function mapApplication(row) {
   if (!row) return null;
@@ -41,7 +41,13 @@ export async function getVendorApplicationForUser(uid) {
 export function getMoreMenuItems({ profile, vendorApplication, logoutAction }) {
   const role = getRoleFromProfile(profile);
   const status = String(vendorApplication?.status || profile?.vendorApplicationStatus || "").toUpperCase();
-  if ([ROLE.ADMIN, ROLE.SUPER_ADMIN].includes(role)) return [
+  if (role === ROLE.SUPER_ADMIN) return [
+    { label: "Admin Dashboard", to: "/admin/dashboard" }, { label: "Vendor Approvals", to: "/admin/vendors" },
+    { label: "Leads", to: "/admin/leads" }, { label: "Analytics", to: "/admin/analytics" },
+    { label: "User Roles", to: "/admin/users" },
+    { label: "Profile", to: "/userprofile" }, { label: "Notifications", to: "/notifications" }, { label: "Logout", action: logoutAction },
+  ];
+  if (role === ROLE.ADMIN) return [
     { label: "Admin Dashboard", to: "/admin/dashboard" }, { label: "Vendor Approvals", to: "/admin/vendors" },
     { label: "Leads", to: "/admin/leads" }, { label: "Analytics", to: "/admin/analytics" },
     { label: "Profile", to: "/userprofile" }, { label: "Notifications", to: "/notifications" }, { label: "Logout", action: logoutAction },

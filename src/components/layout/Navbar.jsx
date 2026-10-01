@@ -12,6 +12,7 @@ export default function Navbar({ onMicClick }) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [profileInitial, setProfileInitial] = useState("S");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [profileRole, setProfileRole] = useState("");
   const [profileDestination, setProfileDestination] = useState({ path: "/userprofile", label: "View Profile" });
   const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ export default function Navbar({ onMicClick }) {
       if (!user) {
         setProfileInitial("S");
         setIsAdmin(false);
+        setProfileRole("");
         setProfileDestination({ path: "/userprofile", label: "View Profile" });
         return;
       }
@@ -29,6 +31,7 @@ export default function Navbar({ onMicClick }) {
       try {
         const profile = await getCurrentUserProfile();
         const role = getRoleFromProfile(profile);
+        setProfileRole(role);
         const application = await getVendorApplicationForUser(user.id);
         const applicationStatus = String(application?.status || profile?.vendorApplicationStatus || "").toUpperCase();
         const name = profile?.name || user.user_metadata?.name || user.email || "S";
@@ -43,6 +46,7 @@ export default function Navbar({ onMicClick }) {
         console.error("Failed to read user data:", error);
         setProfileInitial("S");
         setIsAdmin(false);
+        setProfileRole("");
         setProfileDestination({ path: "/userprofile", label: "View Profile" });
       }
     });
@@ -190,24 +194,22 @@ export default function Navbar({ onMicClick }) {
                       >
                         Admin Dashboard
                       </button>
-                      <button
-                        onClick={() => {
-                          setShowProfileMenu(false);
-                          navigate("/admin/leads");
-                        }}
+                      {["ADMIN", "SUPER_ADMIN"].includes(profileRole) && <button
+                        onClick={() => { setShowProfileMenu(false); navigate("/admin/vendors"); }}
                         className="w-full text-left px-4 py-2 font-semibold text-[#7A1A1A] hover:bg-orange-50"
-                      >
-                        Admin Leads
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowProfileMenu(false);
-                          navigate("/admin/vendors");
-                        }}
+                      >Vendor Approvals</button>}
+                      {["ADMIN", "SUPER_ADMIN", "STAFF"].includes(profileRole) && <button
+                        onClick={() => { setShowProfileMenu(false); navigate("/admin/leads"); }}
                         className="w-full text-left px-4 py-2 font-semibold text-[#7A1A1A] hover:bg-orange-50"
-                      >
-                        Vendor Approvals
-                      </button>
+                      >Admin Leads</button>}
+                      {profileRole === "SUPER_ADMIN" && <button
+                        onClick={() => { setShowProfileMenu(false); navigate("/admin/users"); }}
+                        className="w-full text-left px-4 py-2 font-semibold text-[#7A1A1A] hover:bg-orange-50"
+                      >User Roles</button>}
+                      {["ADMIN", "SUPER_ADMIN"].includes(profileRole) && <button
+                        onClick={() => { setShowProfileMenu(false); navigate("/admin/analytics"); }}
+                        className="w-full text-left px-4 py-2 font-semibold text-[#7A1A1A] hover:bg-orange-50"
+                      >Analytics</button>}
                     </>
                   )}
 

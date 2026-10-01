@@ -6,19 +6,20 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { getOrCreateUserProfile } from "../../lib/profile";
 import { getCurrentUser, signInWithEmail, signInWithGoogle, signUpWithEmail, subscribeToAuthState } from "../../lib/supabaseAuth";
-import { getVendorApplicationForUser } from "../../lib/roleAccess";
+import { getRoleFromProfile, getVendorApplicationForUser } from "../../lib/roleAccess";
 
 const BOOKING_RETURN_PATHS = new Set(["/services", "/pujakits", "/panditbooking", "/eventspage"]);
 
 async function getPostLoginPath(user, profile, returnTo) {
-  const role = String(profile.role || "").toUpperCase();
+  const role = getRoleFromProfile(profile);
+  if (role === "UNKNOWN") throw new Error("Your account role could not be loaded. Please contact support.");
   if (["ADMIN", "SUPER_ADMIN", "STAFF"].includes(role)) return "/admin/dashboard";
 
   const application = await getVendorApplicationForUser(user.id);
   const status = String(application?.status || profile.vendorApplicationStatus || "").toUpperCase();
   if (status === "APPROVED") return "/vendor/dashboard";
   if (["PENDING", "REJECTED", "SUSPENDED"].includes(status)) return "/vendor-registration";
-  if (String(profile.role || "CUSTOMER").toUpperCase() === "CUSTOMER" && BOOKING_RETURN_PATHS.has(returnTo)) return returnTo;
+  if (role === "CUSTOMER" && BOOKING_RETURN_PATHS.has(returnTo)) return returnTo;
   return profile.phone ? "/" : "/mobile";
 }
 

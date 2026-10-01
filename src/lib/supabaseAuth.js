@@ -1,4 +1,4 @@
-import { requireSupabase } from "./supabase";
+import { isSupabaseConfigured, requireSupabase } from "./supabase";
 
 export async function signUpWithEmail({ name, email, password, redirectTo = `${window.location.origin}/auth` }) {
   const client = requireSupabase();
@@ -59,6 +59,16 @@ export async function getCurrentProfile() {
 }
 
 export function subscribeToAuthState(callback) {
+  if (!isSupabaseConfigured) {
+    // Allow public routes to render and ProtectedRoute to settle into its normal
+    // signed-out state when a deployment is missing its build-time env vars.
+    let active = true;
+    queueMicrotask(() => {
+      if (active) callback("SIGNED_OUT", null);
+    });
+    return () => { active = false; };
+  }
+
   const { data } = requireSupabase().auth.onAuthStateChange((event, session) => {
     queueMicrotask(() => callback(event, session));
   });
